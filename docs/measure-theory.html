@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>測度論 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">解析系</div><nav>
+    <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+    <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+    <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+    <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">代数・幾何系</div><nav>
+    <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+    <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">確率・統計系</div><nav>
+    <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+    <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+    <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+  </nav></div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 測度論</div>
+    <h1>測度論</h1>
+    <p class="tagline">積分を厳密化するルベーグ積分の理論。確率論・関数解析の公理的基盤。リーマン積分では扱えない関数も積分できる。</p>
+    <div class="tags"><span class="tag">σ加法族</span><span class="tag">ルベーグ測度</span><span class="tag">可測関数</span><span class="tag">収束定理</span><span class="tag">Radon-Nikodym</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#sigma-algebra">σ加法族と測度空間</a></li>
+        <li><a href="#lebesgue-measure">ルベーグ測度</a></li>
+        <li><a href="#measurable">可測関数</a></li>
+        <li><a href="#integral">ルベーグ積分</a></li>
+        <li><a href="#convergence">収束定理</a></li>
+        <li><a href="#product">積測度と Fubini の定理</a></li>
+        <li><a href="#radon-nikodym">Radon-Nikodym 定理</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="sigma-algebra">1. σ加法族と測度空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — σ加法族</div>
+      <p>集合 $X$ の部分集合族 $\mathcal{F} \subset 2^X$ が<strong>σ加法族</strong>（$\sigma$-algebra）であるとは，</p>
+      <ol>
+        <li>$\emptyset \in \mathcal{F}$</li>
+        <li>$A \in \mathcal{F} \implies A^c \in \mathcal{F}$（補集合で閉じている）</li>
+        <li>$A_1, A_2, \ldots \in \mathcal{F} \implies \bigcup_{n=1}^\infty A_n \in \mathcal{F}$（可算和で閉じている）</li>
+      </ol>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 測度</div>
+      <p>可測空間 $(X, \mathcal{F})$ 上の写像 $\mu: \mathcal{F} \to [0, \infty]$ が<strong>測度</strong>であるとは，</p>
+      <ol>
+        <li>$\mu(\emptyset) = 0$</li>
+        <li><strong>σ加法性</strong>: 互いに素な $A_1, A_2, \ldots \in \mathcal{F}$ に対して $\mu\!\left(\bigsqcup_{n=1}^\infty A_n\right) = \sum_{n=1}^\infty \mu(A_n)$</li>
+      </ol>
+      <p>$(X, \mathcal{F}, \mu)$ を<strong>測度空間</strong>という。$\mu(X) = 1$ のとき<strong>確率測度</strong>。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例</div>
+      <ul>
+        <li><strong>数え上げ測度</strong>: $\mu(A) = |A|$（有限集合なら個数，無限集合なら $\infty$）</li>
+        <li><strong>Dirac 測度</strong>: $\delta_{x_0}(A) = \mathbf{1}_{x_0 \in A}$</li>
+        <li><strong>ルベーグ測度</strong>: $\mathbb{R}^n$ の "体積" を与える（次節）</li>
+      </ul>
+    </div>
+
+    <h2 id="lebesgue-measure">2. ルベーグ測度</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ルベーグ測度（概略）</div>
+      <p>$\mathbb{R}$ 上の<strong>Borel σ加法族</strong> $\mathcal{B}(\mathbb{R})$ は全ての開集合を含む最小の σ加法族。</p>
+      <p><strong>ルベーグ測度</strong> $\lambda$ は $\mathcal{B}(\mathbb{R})$ 上の測度で，区間の長さ $\lambda([a,b]) = b-a$ を満たす唯一の平行移動不変測度（Carathéodory の拡張定理による）。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ルベーグ可測集合</div>
+      <p>ルベーグ測度は $\mathcal{B}(\mathbb{R})$ をわずかに拡大した<strong>ルベーグ σ加法族</strong>上にも拡張できる。Vitali 集合のように，ルベーグ非可測な集合も存在する（選択公理が必要）。</p>
+    </div>
+
+    <h2 id="measurable">3. 可測関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 可測関数</div>
+      <p>$(X,\mathcal{F})$，$(Y,\mathcal{G})$ を可測空間とする。$f: X \to Y$ が<strong>可測</strong>であるとは，</p>
+      $$\forall B \in \mathcal{G},\;\; f^{-1}(B) \in \mathcal{F}$$
+      <p>$Y = \mathbb{R}$（Borel σ加法族）のとき，これは $\{f &lt; c\} \in \mathcal{F}$ が全 $c$ に対して成り立つことと同値。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 単関数近似定理</div>
+      <p>$f \ge 0$ が可測ならば，$f$ に単調増加かつ各点収束する非負単関数列 $\{s_n\}$ が存在する：</p>
+      $$0 \le s_1 \le s_2 \le \cdots \le f, \quad s_n(x) \to f(x) \;\; \forall x$$
+    </div>
+
+    <h2 id="integral">4. ルベーグ積分</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ルベーグ積分の構成</div>
+      <p><strong>Step 1 — 単関数</strong>: $s = \sum_{k=1}^n a_k \mathbf{1}_{A_k}$ に対して $\int s\,d\mu = \sum_k a_k \mu(A_k)$。</p>
+      <p><strong>Step 2 — 非負可測関数</strong>: $\int f\,d\mu = \sup\left\{\int s\,d\mu \mid 0 \le s \le f,\, s \text{ 単関数}\right\}$。</p>
+      <p><strong>Step 3 — 一般の可測関数</strong>: $f = f^+ - f^-$ として $\int f\,d\mu = \int f^+\,d\mu - \int f^-\,d\mu$（どちらかが有限のとき）。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 リーマン積分との比較</div>
+      <p>ルベーグ積分は：(1) リーマン積分可能な関数は全てルベーグ積分可能で値も一致。(2) $\mathbb{Q}$ の指示関数 $\mathbf{1}_\mathbb{Q}$ はリーマン積分不可能だがルベーグ積分は $0$（$\mathbb{Q}$ がルベーグ測度 $0$）。</p>
+    </div>
+
+    <h2 id="convergence">5. 収束定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 単調収束定理 (MCT)</div>
+      <p>$0 \le f_1 \le f_2 \le \cdots$ が可測関数列で $f_n \to f$ 各点収束するならば，</p>
+      $$\lim_{n\to\infty} \int f_n\,d\mu = \int f\,d\mu$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 優収束定理 (DCT，Lebesgue)</div>
+      <p>可測関数列 $\{f_n\}$ が $f$ に各点収束し，ある可積分関数 $g \ge 0$（$\int g\,d\mu &lt; \infty$）で $|f_n| \le g$ ならば，</p>
+      $$\lim_{n\to\infty} \int f_n\,d\mu = \int f\,d\mu, \quad \lim_{n\to\infty} \int |f_n - f|\,d\mu = 0$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 補題 — Fatou の補題</div>
+      <p>$f_n \ge 0$ が可測ならば，</p>
+      $$\int \liminf_{n\to\infty} f_n\,d\mu \le \liminf_{n\to\infty} \int f_n\,d\mu$$
+    </div>
+
+    <h2 id="product">6. 積測度と Fubini の定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Fubini-Tonelli</div>
+      <p>$(X,\mathcal{F},\mu)$ と $(Y,\mathcal{G},\nu)$ が $\sigma$-有限測度空間で，$f: X \times Y \to \mathbb{R}$ が可積分（Tonelli: 非負可測）ならば，</p>
+      $$\int_{X\times Y} f\,d(\mu\otimes\nu) = \int_X \left(\int_Y f(x,y)\,d\nu(y)\right)d\mu(x) = \int_Y \left(\int_X f(x,y)\,d\mu(x)\right)d\nu(y)$$
+    </div>
+
+    <h2 id="radon-nikodym">7. Radon-Nikodym 定理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 絶対連続性</div>
+      <p>測度 $\nu$ が $\mu$ に対して<strong>絶対連続</strong>（$\nu \ll \mu$）とは，$\mu(A) = 0 \implies \nu(A) = 0$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Radon-Nikodym</div>
+      <p>$\sigma$-有限な測度空間で $\nu \ll \mu$ ならば，ある非負可測関数 $h$（<strong>密度関数</strong>）が存在して，</p>
+      $$\nu(A) = \int_A h\,d\mu \quad \forall A \in \mathcal{F}$$
+      <p>$h = \dfrac{d\nu}{d\mu}$ と書き，<strong>Radon-Nikodym 導関数</strong>という。確率論では $h$ が確率密度関数に対応する。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$f_n(x) = n\mathbf{1}_{[0,1/n]}(x)$ に対して $\lim_{n\to\infty}\int_0^1 f_n\,dx$ を計算し，優収束定理が適用できるか確認せよ。</li>
+        <li>Fatou の補題で等号が成立しない例を構成せよ。</li>
+        <li>確率密度関数 $f$ をもつ確率測度 $P$ はルベーグ測度 $\lambda$ に対して絶対連続であることを示せ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

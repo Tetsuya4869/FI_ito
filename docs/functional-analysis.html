@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>関数解析 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">解析系</div><nav>
+    <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+    <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+    <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+    <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">代数・幾何系</div><nav>
+    <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+    <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">確率・統計系</div><nav>
+    <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+    <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+    <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+  </nav></div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 関数解析</div>
+    <h1>関数解析</h1>
+    <p class="tagline">無限次元の線形代数。バナッハ空間・ヒルベルト空間上の作用素の理論は量子力学・PDE・最適化の数学的言語。</p>
+    <div class="tags"><span class="tag">バナッハ空間</span><span class="tag">ヒルベルト空間</span><span class="tag">有界作用素</span><span class="tag">Hahn-Banach</span><span class="tag">スペクトル</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#normed">ノルム空間とバナッハ空間</a></li>
+        <li><a href="#hilbert">ヒルベルト空間</a></li>
+        <li><a href="#bounded">有界線形作用素</a></li>
+        <li><a href="#big-three">三大定理</a></li>
+        <li><a href="#dual">双対空間と弱収束</a></li>
+        <li><a href="#spectral">スペクトル理論</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="normed">1. ノルム空間とバナッハ空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ノルム空間・バナッハ空間</div>
+      <p>$\|\cdot\|: X \to [0,\infty)$ が<strong>ノルム</strong>であるとは：(1) $\|x\|=0 \iff x=0$，(2) $\|\alpha x\|=|\alpha|\|x\|$，(3) $\|x+y\| \le \|x\|+\|y\|$（三角不等式）。</p>
+      <p>ノルム空間が（ノルムから誘導される距離について）完備なとき<strong>バナッハ空間</strong>という。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 主要なバナッハ空間</div>
+      <ul>
+        <li>$L^p(\Omega)$（$1 \le p \le \infty$）: $\|f\|_p = \left(\int |f|^p\right)^{1/p}$（$p &lt; \infty$），$\|f\|_\infty = \mathrm{ess\,sup}|f|$</li>
+        <li>$C(K)$（$K$ コンパクト）: $\|f\|_\infty = \max_K|f|$</li>
+        <li>$\ell^p = \{(x_n) \mid \sum |x_n|^p &lt; \infty\}$</li>
+        <li>Sobolev 空間 $W^{k,p}(\Omega)$</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Hölder の不等式</div>
+      $$\int |fg|\,d\mu \le \|f\|_p \|g\|_q, \quad \frac{1}{p} + \frac{1}{q} = 1 \quad (1 \le p \le \infty)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Minkowski の不等式</div>
+      $$\|f + g\|_p \le \|f\|_p + \|g\|_p \quad (1 \le p \le \infty)$$
+    </div>
+
+    <h2 id="hilbert">2. ヒルベルト空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ヒルベルト空間</div>
+      <p>内積 $\langle \cdot, \cdot \rangle$ をもち，$\|x\| = \sqrt{\langle x,x\rangle}$ で定まるノルムについて完備なとき<strong>ヒルベルト空間</strong>という。$L^2(\Omega)$ はその典型例。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cauchy-Schwarz の不等式</div>
+      $$|\langle x, y\rangle| \le \|x\|\|y\|$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 射影定理</div>
+      <p>$H$ がヒルベルト空間，$M \subset H$ が閉部分空間のとき，任意の $x \in H$ に対して $x = Px + (x-Px)$ と一意に分解できる（$Px \in M$，$x-Px \perp M$）。$P: H \to M$ を<strong>直交射影</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Riesz の表現定理（ヒルベルト空間版）</div>
+      <p>$H$ 上の有界線形汎関数 $f: H \to \mathbb{F}$ は，ある唯一の $y \in H$ によって $f(x) = \langle x, y\rangle$ と表せる。特に $H^* \cong H$（自己双対）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 完全正規直交系</div>
+      <p>可分ヒルベルト空間は完全正規直交基底 $\{e_n\}$ をもち（Parseval の等式）：</p>
+      $$x = \sum_{n=1}^\infty \langle x, e_n\rangle e_n, \quad \|x\|^2 = \sum_{n=1}^\infty |\langle x, e_n\rangle|^2$$
+    </div>
+
+    <h2 id="bounded">3. 有界線形作用素</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 有界線形作用素</div>
+      <p>線形写像 $T: X \to Y$（$X, Y$ バナッハ空間）が<strong>有界</strong>であるとは，</p>
+      $$\|T\| = \sup_{\|x\|\le 1} \|Tx\| &lt; \infty$$
+      <p>有界 $\iff$ 連続（線形写像では同値）。$\mathcal{B}(X,Y)$ で有界作用素全体を表す。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 作用素の例</div>
+      <ul>
+        <li><strong>微分作用素</strong> $D = d/dx$: $C^1[0,1] \to C[0,1]$（非有界）</li>
+        <li><strong>積分作用素</strong> $T f(x) = \int_0^1 K(x,y)f(y)dy$: $L^2 \to L^2$（核 $K \in L^2$ のとき有界）</li>
+        <li><strong>乗算作用素</strong> $M_\phi f = \phi f$: $L^2 \to L^2$（$\phi \in L^\infty$ のとき $\|M_\phi\| = \|\phi\|_\infty$）</li>
+        <li><strong>シフト作用素</strong> $S(x_1,x_2,\ldots) = (0,x_1,x_2,\ldots)$ on $\ell^2$</li>
+      </ul>
+    </div>
+
+    <h2 id="big-three">4. 三大定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 一様有界定理（Banach-Steinhaus）</div>
+      <p>$X$ がバナッハ空間，$\{T_\alpha\} \subset \mathcal{B}(X,Y)$ が各点有界（$\sup_\alpha \|T_\alpha x\| &lt; \infty$ for all $x$）ならば，一様有界（$\sup_\alpha \|T_\alpha\| &lt; \infty$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 開写像定理</div>
+      <p>$T: X \to Y$ が全射有界線形作用素でバナッハ空間間なら，$T$ は開写像（開集合の像が開集合）。</p>
+      <p>系 — 逆写像定理: $T$ が全単射なら $T^{-1}$ も有界（自動的に連続）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 閉グラフ定理</div>
+      <p>$T: X \to Y$（バナッハ空間間）が線形で，グラフ $\{(x,Tx)\} \subset X \times Y$ が閉集合ならば，$T$ は有界。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Hahn-Banach</div>
+      <p>部分空間 $M \subset X$ 上定義された有界線形汎関数 $f$ は，ノルムを保ちながら $X$ 全体に拡張できる：</p>
+      $$\exists \tilde f \in X^*,\;\; \tilde f|_M = f,\;\; \|\tilde f\|_{X^*} = \|f\|_{M^*}$$
+      <p>系: ノルム空間で $x \ne 0$ ならば $f(x) = \|x\|$，$\|f\|=1$ な汎関数が存在（点の分離）。</p>
+    </div>
+
+    <h2 id="dual">5. 双対空間と弱収束</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 双対空間</div>
+      <p>$X^* = \mathcal{B}(X, \mathbb{F})$（有界線形汎関数の空間）を<strong>双対空間</strong>という。</p>
+      <table>
+        <tr><th>空間 $X$</th><th>双対 $X^*$</th></tr>
+        <tr><td>$L^p(\Omega)$（$1 \le p &lt; \infty$）</td><td>$L^q(\Omega)$（$1/p+1/q=1$）</td></tr>
+        <tr><td>$\ell^p$（$1 \le p &lt; \infty$）</td><td>$\ell^q$</td></tr>
+        <tr><td>$C(K)$</td><td>正則 Borel 測度の空間（Riesz 表現）</td></tr>
+        <tr><td>ヒルベルト空間 $H$</td><td>$H$（自己双対）</td></tr>
+      </table>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 弱収束</div>
+      <p>$x_n \rightharpoonup x$（弱収束）とは，$\forall f \in X^*,\; f(x_n) \to f(x)$。強収束 $\|x_n - x\| \to 0$ より弱い。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Banach-Alaoglu</div>
+      <p>バナッハ空間 $X$ の単位球 $\{x \mid \|x\| \le 1\}$ は弱* 位相でコンパクト。</p>
+      <p>系: 反射的バナッハ空間（$X^{**} = X$）では有界列は弱収束部分列をもつ。</p>
+    </div>
+
+    <h2 id="spectral">6. スペクトル理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — スペクトルと固有値</div>
+      <p>$T \in \mathcal{B}(X)$。$\lambda \in \mathbb{C}$ が<strong>レゾルベント集合</strong>に属するとは，$(\lambda I - T)^{-1} \in \mathcal{B}(X)$ が存在すること。</p>
+      <p><strong>スペクトル</strong> $\sigma(T) = \mathbb{C} \setminus \rho(T)$（$\rho(T)$ はレゾルベント集合）。有限次元では固有値の集合。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ スペクトルの基本性質</div>
+      <ul>
+        <li>$\sigma(T) \subset \{|\lambda| \le \|T\|\}$（コンパクト集合）</li>
+        <li>スペクトル半径 $r(T) = \sup_{\lambda \in \sigma(T)}|\lambda| = \lim_{n\to\infty}\|T^n\|^{1/n}$</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — コンパクト自己共役作用素のスペクトル定理</div>
+      <p>$T = T^*$ がヒルベルト空間 $H$ 上のコンパクト自己共役作用素ならば：</p>
+      <ul>
+        <li>固有値は全て実数</li>
+        <li>異なる固有値の固有空間は直交</li>
+        <li>$H = \bigoplus_n \ker(\lambda_n I - T)$（固有空間の直交和）</li>
+        <li>$Tx = \sum_n \lambda_n \langle x, e_n\rangle e_n$（$\{e_n\}$ は正規直交固有ベクトル系）</li>
+      </ul>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$L^p[0,1]$（$1 \le p &lt; \infty$）は可分なバナッハ空間であることを示せ。</li>
+        <li>$H = L^2[0,1]$，$T f(x) = \int_0^x f(t)dt$ のノルム $\|T\|$ を求めよ。</li>
+        <li>$\ell^1$ の双対が $\ell^\infty$ であることを示せ（Hölder の不等式を使う）。</li>
+        <li>閉グラフ定理を使って，$T: C^1[0,1] \to C[0,1]$，$Tf = f'$ が非有界であることを示せ（$\|T\| = \infty$ を直接示してもよい）。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

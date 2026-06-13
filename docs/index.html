@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高等数学 学習サイト</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="index.html">
+      <div class="logo-icon">∑</div>
+      <div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div>
+    </a>
+  </div>
+  <div class="sidebar-section">
+    <nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">解析系</div>
+    <nav>
+      <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+      <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+      <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+      <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">代数・幾何系</div>
+    <nav>
+      <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+      <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">確率・統計系</div>
+    <nav>
+      <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+      <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+      <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+    </nav>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="hero">
+    <h1>高等数学 学習サイト</h1>
+    <p class="sub">解析学・代数学・確率論・確率微分方程式まで，大学院レベルの数学を体系的に学ぶ。</p>
+    <div class="cta">
+      <a href="stochastic.html" class="btn btn-primary">確率微分方程式を学ぶ →</a>
+      <a href="analysis.html" class="btn btn-secondary">解析学から始める</a>
+    </div>
+    <p style="margin-top:28px;font-size:0.85rem;color:var(--text3)">
+      数式は KaTeX でレンダリング。例: $e^{i\pi}+1=0$，$\int_0^\infty e^{-x^2}dx = \dfrac{\sqrt{\pi}}{2}$
+    </p>
+  </div>
+
+  <div class="grid-section">
+    <h2>解析系</h2>
+    <div class="card-grid">
+      <a href="analysis.html" class="card">
+        <div class="card-icon">ε</div>
+        <h3>解析学</h3>
+        <p>実数の完備性，ε-δ論法，微積分の厳密な基礎，テイラー展開，リーマン積分の理論。</p>
+        <div class="card-tags"><span>極限</span><span>連続性</span><span>微分積分</span><span>級数</span></div>
+      </a>
+      <a href="complex-analysis.html" class="card">
+        <div class="card-icon">ℂ</div>
+        <h3>複素解析</h3>
+        <p>正則関数，Cauchy積分定理，留数定理，等角写像。実解析よりも豊かな構造を持つ。</p>
+        <div class="card-tags"><span>正則関数</span><span>Cauchy</span><span>留数</span><span>等角写像</span></div>
+      </a>
+      <a href="pde.html" class="card">
+        <div class="card-icon">∂</div>
+        <h3>偏微分方程式</h3>
+        <p>熱方程式・波動方程式・ラプラス方程式の解法，フーリエ変換，弱解の理論。</p>
+        <div class="card-tags"><span>熱方程式</span><span>波動</span><span>フーリエ</span><span>弱解</span></div>
+      </a>
+      <a href="functional-analysis.html" class="card">
+        <div class="card-icon">ℋ</div>
+        <h3>関数解析</h3>
+        <p>バナッハ空間，ヒルベルト空間，有界線形作用素，開写像定理，スペクトル理論。</p>
+        <div class="card-tags"><span>バナッハ</span><span>ヒルベルト</span><span>作用素</span><span>スペクトル</span></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <h2>代数・幾何系</h2>
+    <div class="card-grid">
+      <a href="linear-algebra.html" class="card">
+        <div class="card-icon">⊞</div>
+        <h3>線形代数</h3>
+        <p>ベクトル空間，固有値分解，Jordan標準形，内積空間，特異値分解（SVD）。</p>
+        <div class="card-tags"><span>固有値</span><span>行列式</span><span>SVD</span><span>Jordan</span></div>
+      </a>
+      <a href="topology.html" class="card">
+        <div class="card-icon">⊙</div>
+        <h3>位相空間論</h3>
+        <p>開集合・コンパクト性・連結性，完備距離空間，Baireのカテゴリー定理，Banachの不動点定理。</p>
+        <div class="card-tags"><span>コンパクト</span><span>連続写像</span><span>不動点</span><span>完備性</span></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="grid-section">
+    <h2>確率・統計系</h2>
+    <div class="card-grid">
+      <a href="measure-theory.html" class="card">
+        <div class="card-icon">μ</div>
+        <h3>測度論</h3>
+        <p>σ加法族，ルベーグ測度，可測関数，優収束定理，Radon-Nikodym定理。確率論の公理的基盤。</p>
+        <div class="card-tags"><span>ルベーグ積分</span><span>σ加法族</span><span>収束定理</span></div>
+      </a>
+      <a href="probability.html" class="card">
+        <div class="card-icon">𝑃</div>
+        <h3>確率論</h3>
+        <p>確率空間，確率変数と分布，特性関数，大数の法則，中心極限定理，条件付き期待値。</p>
+        <div class="card-tags"><span>CLT</span><span>大数の法則</span><span>条件付き期待値</span></div>
+      </a>
+      <a href="stochastic.html" class="card">
+        <div class="card-icon">W</div>
+        <h3>確率微分方程式</h3>
+        <p>ブラウン運動，伊藤積分，<strong>伊藤の公式</strong>，SDE，Girsanov変換，ブラック・ショールズ。</p>
+        <div class="card-tags"><span>伊藤の公式</span><span>SDE</span><span>Girsanov</span><span>BS公式</span></div>
+      </a>
+    </div>
+  </div>
+
+  <footer style="text-align:center;padding:32px;border-top:1px solid var(--border);color:var(--text3);font-size:0.82rem">
+    高等数学学習サイト · <a href="https://github.com/Tetsuya4869/FI_ito">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

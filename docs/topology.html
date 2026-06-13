@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>位相空間論 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">解析系</div><nav>
+    <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+    <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+    <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+    <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">代数・幾何系</div><nav>
+    <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+    <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">確率・統計系</div><nav>
+    <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+    <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+    <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+  </nav></div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 位相空間論</div>
+    <h1>位相空間論</h1>
+    <p class="tagline">「近い」という概念を抽象化した数学。コンパクト性・連結性・完備性は解析学・関数解析の中枢概念。</p>
+    <div class="tags"><span class="tag">位相空間</span><span class="tag">コンパクト</span><span class="tag">連結性</span><span class="tag">完備距離空間</span><span class="tag">不動点定理</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#topology">位相空間の定義</a></li>
+        <li><a href="#continuous">連続写像</a></li>
+        <li><a href="#compact">コンパクト性</a></li>
+        <li><a href="#connected">連結性</a></li>
+        <li><a href="#metric">完備距離空間</a></li>
+        <li><a href="#baire">Baire のカテゴリー定理</a></li>
+        <li><a href="#fixed-point">不動点定理</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="topology">1. 位相空間の定義</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 位相空間</div>
+      <p>集合 $X$ と開集合の族 $\mathcal{O} \subset 2^X$ の対 $(X, \mathcal{O})$ が<strong>位相空間</strong>であるとは：</p>
+      <ol>
+        <li>$\emptyset, X \in \mathcal{O}$</li>
+        <li>$U_1, U_2 \in \mathcal{O} \implies U_1 \cap U_2 \in \mathcal{O}$（有限交差で閉じている）</li>
+        <li>$\{U_\alpha\}_\alpha \subset \mathcal{O} \implies \bigcup_\alpha U_\alpha \in \mathcal{O}$（任意和で閉じている）</li>
+      </ol>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 距離空間</div>
+      <p>$d: X \times X \to [0,\infty)$ が<strong>距離</strong>であるとは：(1) $d(x,y)=0 \iff x=y$，(2) $d(x,y)=d(y,x)$，(3) $d(x,z) \le d(x,y)+d(y,z)$（三角不等式）。</p>
+      <p>距離空間は $\varepsilon$-球 $B(x,\varepsilon)=\{y \mid d(x,y)&lt;\varepsilon\}$ を基底にした位相をもつ。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 位相の例</div>
+      <ul>
+        <li><strong>密着位相</strong>: $\mathcal{O} = \{\emptyset, X\}$（最小）</li>
+        <li><strong>離散位相</strong>: $\mathcal{O} = 2^X$（最大，全部が開集合）</li>
+        <li><strong>通常のユークリッド位相</strong>: $\varepsilon$-近傍で生成</li>
+        <li><strong>Zariski 位相</strong>（代数幾何学）: 代数的集合の補集合を開集合とする</li>
+      </ul>
+    </div>
+
+    <h2 id="continuous">2. 連続写像</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 連続写像</div>
+      <p>位相空間 $(X,\mathcal{O}_X)$，$(Y,\mathcal{O}_Y)$ 間の写像 $f: X \to Y$ が<strong>連続</strong>であるとは，</p>
+      $$\forall V \in \mathcal{O}_Y,\;\; f^{-1}(V) \in \mathcal{O}_X$$
+      <p>全単射で $f$ も $f^{-1}$ も連続なとき<strong>同相写像</strong>（homeomorphism）という。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 距離空間での同値条件</div>
+      <p>距離空間では，$f$ が $x_0$ で連続 $\iff$ $x_n \to x_0 \implies f(x_n) \to f(x_0)$（$\iff$ ε-δ論法が成立）。</p>
+    </div>
+
+    <h2 id="compact">3. コンパクト性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — コンパクト集合</div>
+      <p>$K \subset X$ が<strong>コンパクト</strong>であるとは，$K$ の任意の開被覆が有限部分被覆を持つことをいう：</p>
+      $$K \subset \bigcup_{\alpha} U_\alpha \implies \exists \alpha_1,\ldots,\alpha_n,\;\; K \subset U_{\alpha_1} \cup \cdots \cup U_{\alpha_n}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Heine-Borel（$\mathbb{R}^n$）</div>
+      <p>$K \subset \mathbb{R}^n$ がコンパクト $\iff$ $K$ は有界かつ閉。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ コンパクト集合の性質</div>
+      <ul>
+        <li>コンパクト集合の連続像はコンパクト（$\implies$ 閉区間上の連続関数は最大・最小値をとる）</li>
+        <li>コンパクト集合上の連続関数は一様連続</li>
+        <li>コンパクト距離空間の点列は収束部分列をもつ（点列コンパクト）</li>
+        <li>Hausdorff 空間でコンパクト集合は閉</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Arzelà-Ascoli</div>
+      <p>$K$ がコンパクト距離空間のとき，$C(K)$ の部分集合が（比較的）コンパクトであることと，一様有界かつ同等連続であることは同値。</p>
+    </div>
+
+    <h2 id="connected">4. 連結性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 連結空間</div>
+      <p>$X$ が<strong>連結</strong>であるとは，$X$ を 2 つの互いに素な空でない開集合の和として書けないことをいう（空集合と $X$ 以外の同時開閉集合が存在しない）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 弧状連結</div>
+      <p>任意の 2 点 $x,y \in X$ を結ぶ連続曲線 $\gamma: [0,1] \to X$（$\gamma(0)=x$，$\gamma(1)=y$）が存在するとき，<strong>弧状連結</strong>という。弧状連結 $\implies$ 連結。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理</div>
+      <ul>
+        <li>$\mathbb{R}^n$ の連結部分集合は弧状連結（局所弧状連結な空間で連結 $\iff$ 弧状連結）</li>
+        <li>連続写像の連結集合の像は連結（中間値定理の一般化）</li>
+        <li>$X,Y$ がコンパクトかつ連結 $\implies$ $X \times Y$ もコンパクトかつ連結</li>
+      </ul>
+    </div>
+
+    <h2 id="metric">5. 完備距離空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 完備距離空間</div>
+      <p>距離空間 $(X,d)$ が<strong>完備</strong>であるとは，$X$ の任意の Cauchy 列が $X$ 内の点に収束することをいう。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 完備性の例</div>
+      <ul>
+        <li>$\mathbb{R}^n$，$\mathbb{C}^n$: 完備</li>
+        <li>$\mathbb{Q}$: 完備でない（$\sqrt{2}$ に収束する有理数 Cauchy 列が存在）</li>
+        <li>$C([0,1])$（一様ノルム）: 完備</li>
+        <li>$(0,1)$（ユークリッド距離）: 完備でない（$1/n$ は Cauchy 列だが $(0,1)$ 内に収束点なし）</li>
+      </ul>
+    </div>
+
+    <h2 id="baire">6. Baire のカテゴリー定理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 疎集合・第一類集合</div>
+      <p>$A$ の閉包の内部が空 $(\mathrm{int}(\bar A) = \emptyset)$ のとき $A$ を<strong>疎集合</strong>という。可算個の疎集合の和集合を<strong>第一類集合</strong>（meager），そうでないものを<strong>第二類集合</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Baire のカテゴリー定理</div>
+      <p>完備距離空間（または局所コンパクト Hausdorff 空間）は第二類集合である。すなわち，可算個の開稠密集合の交差は稠密。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 応用</div>
+      <ul>
+        <li>$\mathbb{R}$ は可算集合でない（各1点集合は疎）</li>
+        <li>「至るところ微分不可能な連続関数」が $C([0,1])$ で稠密に存在する</li>
+        <li>関数解析の開写像定理・一様有界定理の証明に使われる</li>
+      </ul>
+    </div>
+
+    <h2 id="fixed-point">7. 不動点定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Banach の不動点定理（縮小写像定理）</div>
+      <p>$(X,d)$ を完備距離空間，$T: X \to X$ を<strong>縮小写像</strong>（$\exists k \in [0,1),\; d(Tx,Ty) \le k\,d(x,y)$）とするとき，$T$ の不動点 $x^* = Tx^*$ が一意に存在する。</p>
+      <p>さらに任意の $x_0 \in X$ に対して，$x_{n+1} = Tx_n$ として $x_n \to x^*$（事前誤差評価: $d(x_n, x^*) \le k^n d(x_0, x^*)/(1-k)$）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 応用 — Picard-Lindelöf（ODE の存在一意性）</div>
+      <p>ODE $y' = f(t,y)$，$y(t_0)=y_0$（$f$ が $y$ について Lipschitz）の解の存在一意性は，積分方程式 $y(t) = y_0 + \int_{t_0}^t f(s,y(s))ds$ の右辺を $C([t_0-h,t_0+h])$ 上の縮小写像とみなして Banach の不動点定理で示す。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Brouwer の不動点定理</div>
+      <p>$B^n \subset \mathbb{R}^n$ を閉球とする。連続写像 $f: B^n \to B^n$ は不動点をもつ。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$(0,1)$ がコンパクトでないことを，開被覆 $\{(1/n, 1)\}$ を使って示せ。</li>
+        <li>$f: [0,1] \to [0,1]$ が連続ならば不動点をもつことを中間値定理で示せ。</li>
+        <li>$T(x) = x/2 + 1/x$（$x &gt; 0$）が $[\sqrt{2}, 2]$ 上の縮小写像であることを確認し，不動点を求めよ。</li>
+        <li>$\mathbb{Q}$ の全体は $\mathbb{R}$ の第一類集合であることを示せ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

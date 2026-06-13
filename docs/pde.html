@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>偏微分方程式 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">解析系</div><nav>
+    <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+    <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+    <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+    <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">代数・幾何系</div><nav>
+    <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+    <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">確率・統計系</div><nav>
+    <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+    <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+    <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+  </nav></div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 偏微分方程式</div>
+    <h1>偏微分方程式 (PDE)</h1>
+    <p class="tagline">物理・工学・金融に現れる三大方程式（熱・波動・ラプラス）とその解法。フーリエ変換，弱解の理論。</p>
+    <div class="tags"><span class="tag">熱方程式</span><span class="tag">波動方程式</span><span class="tag">ラプラス</span><span class="tag">フーリエ変換</span><span class="tag">弱解</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#classification">PDE の分類</a></li>
+        <li><a href="#heat">熱方程式</a></li>
+        <li><a href="#wave">波動方程式</a></li>
+        <li><a href="#laplace">ラプラス方程式</a></li>
+        <li><a href="#fourier">フーリエ変換法</a></li>
+        <li><a href="#weak">弱解と Sobolev 空間</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="classification">1. PDE の分類</h2>
+    <p>2 階線形 PDE $au_{xx} + 2bu_{xy} + cu_{yy} + \cdots = 0$ の判別式 $\Delta = b^2 - ac$ で分類する：</p>
+    <table>
+      <tr><th>型</th><th>条件</th><th>代表例</th><th>物理的意味</th></tr>
+      <tr><td>楕円型</td><td>$\Delta &lt; 0$</td><td>Laplace 方程式 $\Delta u=0$</td><td>定常状態</td></tr>
+      <tr><td>放物型</td><td>$\Delta = 0$</td><td>熱方程式 $u_t = \kappa u_{xx}$</td><td>拡散・時間発展</td></tr>
+      <tr><td>双曲型</td><td>$\Delta > 0$</td><td>波動方程式 $u_{tt} = c^2 u_{xx}$</td><td>波の伝播</td></tr>
+    </table>
+
+    <h2 id="heat">2. 熱方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 熱方程式</div>
+      $$u_t = \kappa \Delta u \quad (x \in \mathbb{R}^n,\, t > 0), \quad u(x,0) = u_0(x)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 基本解（熱核）</div>
+      <p>$\mathbb{R}^n$ での基本解（熱核）：</p>
+      $$\Phi(x,t) = \frac{1}{(4\pi\kappa t)^{n/2}} \exp\!\left(-\frac{|x|^2}{4\kappa t}\right)$$
+      <p>初期値問題の解：</p>
+      $$u(x,t) = \int_{\mathbb{R}^n} \Phi(x-y, t)\,u_0(y)\,dy = (\Phi(\cdot,t) * u_0)(x)$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 分離変数法（有界領域）</div>
+      <p>$u_t = \kappa u_{xx}$，$x \in [0,L]$，$u(0,t)=u(L,t)=0$，$u(x,0)=f(x)$</p>
+      <p>$u(x,t) = X(x)T(t)$ とおくと，$T'/(\kappa T) = X''/X = -\lambda$。</p>
+      $$u(x,t) = \sum_{n=1}^\infty b_n e^{-\kappa n^2\pi^2 t/L^2} \sin\!\left(\frac{n\pi x}{L}\right), \quad b_n = \frac{2}{L}\int_0^L f(x)\sin\!\left(\frac{n\pi x}{L}\right)dx$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 最大値原理</div>
+      <p>$u_t - \kappa\Delta u = 0$ が $Q_T = \Omega \times (0,T]$ で成り立つとき，</p>
+      $$\max_{\bar Q_T} u = \max_{\partial_p Q_T} u$$
+      <p>（$\partial_p Q_T$ は放物境界 $= \{t=0\} \cup \{\partial\Omega \times [0,T]\}$）</p>
+    </div>
+
+    <h2 id="wave">3. 波動方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 波動方程式</div>
+      $$u_{tt} = c^2 \Delta u, \quad u(x,0) = f(x),\;\; u_t(x,0) = g(x)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ d'Alembert の公式（1 次元）</div>
+      $$u(x,t) = \frac{f(x+ct)+f(x-ct)}{2} + \frac{1}{2c}\int_{x-ct}^{x+ct} g(s)\,ds$$
+      <p>解は 2 つの進行波 $f(x+ct)/2$ と $f(x-ct)/2$ の重ね合わせ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ エネルギー保存則</div>
+      $$E(t) = \frac{1}{2}\int_{\mathbb{R}} \left(u_t^2 + c^2 u_x^2\right)dx = \text{const}$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Huygens の原理（3 次元）</div>
+      <p>3 次元波動方程式では，初期データの台が $B(x_0, R)$ に含まれるとき，$x$ での解は $ct = |x-x_0|$ 付近でのみ非零（シャープな波面）。2 次元では尾を引く（Huygens の原理は奇数次元でのみ成立）。</p>
+    </div>
+
+    <h2 id="laplace">4. ラプラス方程式・ポアソン方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 ラプラス方程式・ポアソン方程式</div>
+      $$\Delta u = 0 \quad (\text{ラプラス}), \quad \Delta u = -f \quad (\text{ポアソン})$$
+      <p>ラプラス方程式の解を<strong>調和関数</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 平均値性質</div>
+      <p>$u$ が $\Omega$ 上で調和ならば，$B(x,r) \Subset \Omega$ に対して，</p>
+      $$u(x) = \frac{1}{|\partial B(x,r)|}\int_{\partial B(x,r)} u\,dS = \frac{1}{|B(x,r)|}\int_{B(x,r)} u\,dy$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 最大値原理（楕円型）</div>
+      <p>$\Omega$ 上の調和関数は，$\overline\Omega$ 内の最大値と最小値を $\partial\Omega$ 上で達成する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 Green 関数（自由空間）</div>
+      $$G(x) = \begin{cases} -\dfrac{1}{2\pi}\ln|x| & n=2 \\[6pt] \dfrac{1}{(n-2)\omega_n |x|^{n-2}} & n \ge 3 \end{cases}$$
+      <p>$\omega_n$ は $\mathbb{R}^n$ の単位球の体積。$\Delta G(x) = \delta(x)$。</p>
+    </div>
+
+    <h2 id="fourier">5. フーリエ変換法</h2>
+    <div class="box def">
+      <div class="box-title">📖 フーリエ変換</div>
+      $$\hat f(\xi) = \mathcal{F}[f](\xi) = \int_{\mathbb{R}^n} f(x) e^{-i\xi\cdot x}\,dx$$
+      $$f(x) = \mathcal{F}^{-1}[\hat f](x) = \frac{1}{(2\pi)^n}\int_{\mathbb{R}^n} \hat f(\xi) e^{i\xi\cdot x}\,d\xi$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 基本性質</div>
+      <ul>
+        <li>微分: $\widehat{\partial^\alpha f}(\xi) = (i\xi)^\alpha \hat f(\xi)$</li>
+        <li>畳み込み: $\widehat{f*g} = \hat f \cdot \hat g$</li>
+        <li>Parseval: $\|f\|_{L^2} = \|\hat f\|_{L^2}/(2\pi)^{n/2}$</li>
+        <li>Gauss 関数: $\mathcal{F}[e^{-|x|^2/2}](\xi) = (2\pi)^{n/2}e^{-|\xi|^2/2}$</li>
+      </ul>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 フーリエ変換で熱方程式を解く</div>
+      <p>$u_t = \kappa\Delta u$ に $x$ についてフーリエ変換を適用すると，</p>
+      $$\partial_t \hat u(t,\xi) = -\kappa|\xi|^2 \hat u(t,\xi) \implies \hat u(t,\xi) = \hat u_0(\xi) e^{-\kappa|\xi|^2 t}$$
+      <p>逆変換: $u(x,t) = \Phi(\cdot,t) * u_0$（熱核との畳み込み）。</p>
+    </div>
+
+    <h2 id="weak">6. 弱解と Sobolev 空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Sobolev 空間</div>
+      $$W^{k,p}(\Omega) = \{u \in L^p(\Omega) \mid \partial^\alpha u \in L^p(\Omega),\; |\alpha| \le k\}$$
+      $$H^k(\Omega) = W^{k,2}(\Omega), \quad \|u\|_{H^k}^2 = \sum_{|\alpha|\le k}\|\partial^\alpha u\|_{L^2}^2$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 弱解</div>
+      <p>$-\Delta u = f$ の<strong>弱解</strong>とは，$u \in H^1_0(\Omega)$ で，</p>
+      $$\int_\Omega \nabla u \cdot \nabla v\,dx = \int_\Omega f v\,dx \quad \forall v \in H^1_0(\Omega)$$
+      <p>を満たすもの（部分積分で得られる変分形式）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Lax-Milgram</div>
+      <p>Hilbert 空間 $H$ 上で $a(\cdot,\cdot)$ が連続かつ強圧的（coercive）なら，$a(u,v) = \langle f, v\rangle$ の解 $u \in H$ が一意に存在する。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>熱方程式 $u_t = u_{xx}$，$u(x,0) = \delta(x)$ の基本解を求めよ。</li>
+        <li>1 次元波動方程式 $u_{tt} = u_{xx}$，$f(x) = \sin x$，$g(x) = 0$ の解を d'Alembert 公式で求めよ。</li>
+        <li>$\Delta u = 0$（$\mathbb{R}^2 \setminus \{0\}$）の球対称解を求めよ。</li>
+        <li>$\widehat{e^{-a|x|}}(\xi)$（$a&gt;0$）を計算せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

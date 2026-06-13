@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>複素解析 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">解析系</div><nav>
+    <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+    <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+    <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+    <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">代数・幾何系</div><nav>
+    <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+    <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">確率・統計系</div><nav>
+    <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+    <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+    <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+  </nav></div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 複素解析</div>
+    <h1>複素解析</h1>
+    <p class="tagline">複素平面上の解析的関数の美しい理論。一度微分可能なら無限回微分可能，という実解析との鮮烈な違い。</p>
+    <div class="tags"><span class="tag">正則関数</span><span class="tag">C-R方程式</span><span class="tag">Cauchy積分</span><span class="tag">留数定理</span><span class="tag">等角写像</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#complex-numbers">複素数と複素平面</a></li>
+        <li><a href="#holomorphic">正則関数と C-R 方程式</a></li>
+        <li><a href="#cauchy">Cauchy積分定理と積分公式</a></li>
+        <li><a href="#taylor-laurent">Taylor・Laurent 展開</a></li>
+        <li><a href="#residue">留数定理と実積分への応用</a></li>
+        <li><a href="#conformal">等角写像</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="complex-numbers">1. 複素数と複素平面</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 複素数</div>
+      <p>$z = x + iy$（$x,y \in \mathbb{R}$，$i^2 = -1$）。$\text{Re}(z) = x$，$\text{Im}(z) = y$，$|z| = \sqrt{x^2+y^2}$，$\bar z = x - iy$。</p>
+      <p>極形式: $z = r e^{i\theta} = r(\cos\theta + i\sin\theta)$，$r = |z|$，$\theta = \arg z$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Euler の公式</div>
+      $$e^{i\theta} = \cos\theta + i\sin\theta, \quad e^{i\pi} + 1 = 0$$
+    </div>
+
+    <h2 id="holomorphic">2. 正則関数と C-R 方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 正則関数 (Holomorphic)</div>
+      <p>$f: \Omega \to \mathbb{C}$（$\Omega \subset \mathbb{C}$ 開集合）が $z_0 \in \Omega$ で<strong>複素微分可能</strong>であるとは，</p>
+      $$f'(z_0) = \lim_{h \to 0} \frac{f(z_0+h) - f(z_0)}{h} \quad (h \in \mathbb{C})$$
+      <p>が存在すること。$\Omega$ の全点で複素微分可能なとき，$f$ は $\Omega$ 上で<strong>正則</strong>（holomorphic）という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cauchy-Riemann 方程式</div>
+      <p>$f(x+iy) = u(x,y) + iv(x,y)$ が $z_0$ で複素微分可能 $\iff$ $u,v$ が $z_0$ で全微分可能かつ，</p>
+      $$\frac{\partial u}{\partial x} = \frac{\partial v}{\partial y}, \quad \frac{\partial u}{\partial y} = -\frac{\partial v}{\partial x}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 正則関数は調和関数を生む</div>
+      <p>$f = u+iv$ が正則 $\implies$ $u,v$ はどちらも調和関数: $\Delta u = \Delta v = 0$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例</div>
+      <ul>
+        <li>$f(z) = z^n$，$e^z$，$\sin z$，$\cos z$，$\ln z$（分枝切断を除いた領域で）は正則。</li>
+        <li>$f(z) = \bar z$，$|z|$ は正則でない（C-R 方程式を満たさない）。</li>
+      </ul>
+    </div>
+
+    <h2 id="cauchy">3. Cauchy 積分定理と積分公式</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cauchy 積分定理</div>
+      <p>$f$ が単連結領域 $\Omega$ 上で正則ならば，$\Omega$ 内の任意の閉曲線 $\gamma$ に対して，</p>
+      $$\oint_\gamma f(z)\,dz = 0$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cauchy 積分公式</div>
+      <p>$f$ が $\Omega$ 上正則，$C$ が $\Omega$ 内の（反時計回りの）単純閉曲線，$z_0$ が $C$ の内部の点ならば，</p>
+      $$f(z_0) = \frac{1}{2\pi i} \oint_C \frac{f(z)}{z - z_0}\,dz$$
+      <p>より一般に，$n$ 階導関数についても，</p>
+      $$f^{(n)}(z_0) = \frac{n!}{2\pi i} \oint_C \frac{f(z)}{(z-z_0)^{n+1}}\,dz$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 系 — 正則関数は無限回微分可能</div>
+      <p>正則関数は（実解析とは違い）自動的に無限回微分可能であり，各 $f^{(n)}$ も正則。</p>
+    </div>
+
+    <h2 id="taylor-laurent">4. Taylor・Laurent 展開</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Taylor 展開</div>
+      <p>$f$ が $|z-z_0| &lt; R$ で正則ならば，この円板内で収束する冪級数展開をもつ：</p>
+      $$f(z) = \sum_{n=0}^\infty c_n (z-z_0)^n, \quad c_n = \frac{f^{(n)}(z_0)}{n!}$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Laurent 展開と特異点</div>
+      <p>$0 &lt; |z-z_0| &lt; R$ において，</p>
+      $$f(z) = \sum_{n=-\infty}^\infty c_n (z-z_0)^n$$
+      <p>$z_0$ が孤立特異点のとき：</p>
+      <ul>
+        <li>$c_n = 0$（$n &lt; 0$）: <strong>除去可能特異点</strong></li>
+        <li>有限個の $c_n \ne 0$（$n &lt; 0$）: <strong>極</strong>（最大次数 $m$ を位数という）</li>
+        <li>無限個の $c_n \ne 0$（$n &lt; 0$）: <strong>真性特異点</strong></li>
+      </ul>
+    </div>
+
+    <h2 id="residue">5. 留数定理と実積分への応用</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 留数 (Residue)</div>
+      <p>孤立特異点 $z_0$ での留数を</p>
+      $$\mathrm{Res}(f, z_0) = c_{-1}$$
+      <p>（Laurent 展開の $-1$ 次の係数）と定義する。$m$ 位の極では，</p>
+      $$\mathrm{Res}(f, z_0) = \frac{1}{(m-1)!}\lim_{z\to z_0} \frac{d^{m-1}}{dz^{m-1}}\left[(z-z_0)^m f(z)\right]$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 留数定理</div>
+      <p>$f$ が閉曲線 $C$ の内部で有限個の孤立特異点 $z_1,\ldots,z_k$ 以外で正則ならば，</p>
+      $$\oint_C f(z)\,dz = 2\pi i \sum_{j=1}^k \mathrm{Res}(f, z_j)$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 実積分への応用</div>
+      <p><strong>$\displaystyle\int_{-\infty}^\infty \frac{1}{1+x^2}\,dx$</strong></p>
+      <p>$f(z) = \frac{1}{1+z^2} = \frac{1}{(z-i)(z+i)}$。上半円弧 $C_R$ を使い，$R\to\infty$。上半平面の極は $z=i$。</p>
+      $$\mathrm{Res}(f,i) = \frac{1}{2i} \implies \int_{-\infty}^\infty \frac{dx}{1+x^2} = 2\pi i \cdot \frac{1}{2i} = \pi$$
+    </div>
+
+    <h2 id="conformal">6. 等角写像</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 等角写像</div>
+      <p>正則かつ $f'(z_0) \ne 0$ な写像は $z_0$ の近傍で<strong>等角</strong>（角度と向きを保存）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Riemann の写像定理</div>
+      <p>$\mathbb{C}$ の単連結な真部分集合 $\Omega$（$\Omega \ne \mathbb{C}$）から単位円板 $\mathbb{D} = \{|z|&lt;1\}$ への双正則写像が存在する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 重要な等角写像</div>
+      <ul>
+        <li>$w = z^2$: 上半平面 → 全平面（$-x$ 軸を除く）</li>
+        <li>$w = e^z$: 帯領域 $\{0 &lt; \text{Im}(z) &lt; \pi\}$ → 上半平面</li>
+        <li>Möbius変換 $w = \dfrac{az+b}{cz+d}$: 円・直線を円・直線へ写す</li>
+        <li>Joukowski変換 $w = z + 1/z$: 翼型の設計に応用</li>
+      </ul>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$f(z)=|z|^2$ が $z=0$ 以外では正則でないことを C-R 方程式を使って示せ。</li>
+        <li>$\displaystyle\oint_{|z|=2} \frac{e^z}{z^2(z-1)}\,dz$ を留数定理で計算せよ。</li>
+        <li>$\displaystyle\int_0^\infty \frac{\cos x}{1+x^2}\,dx$ を複素積分で求めよ。</li>
+        <li>上半平面を単位円板へ写す双正則写像を一つ構成せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

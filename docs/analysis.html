@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>解析学 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">解析系</div>
+    <nav>
+      <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+      <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+      <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+      <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">代数・幾何系</div>
+    <nav>
+      <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+      <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">確率・統計系</div>
+    <nav>
+      <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+      <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+      <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+    </nav>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 解析学</div>
+    <h1>解析学</h1>
+    <p class="tagline">実数の厳密な基礎から微積分，級数まで。ε-δ論法を武器に，直観を厳密化する。</p>
+    <div class="tags"><span class="tag">ε-δ論法</span><span class="tag">連続性</span><span class="tag">微分積分</span><span class="tag">テイラー展開</span><span class="tag">収束</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#real-number">実数の完備性</a></li>
+        <li><a href="#sequences">数列と極限</a></li>
+        <li><a href="#continuity">連続関数</a></li>
+        <li><a href="#differentiation">微分法</a></li>
+        <li><a href="#integration">積分法</a></li>
+        <li><a href="#series">級数とテイラー展開</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <h2 id="real-number">1. 実数の完備性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 上界・下界・上限・下限</div>
+      <p>$S \subset \mathbb{R}$ が空でないとする。</p>
+      <ul>
+        <li>$\forall x \in S,\; x \le M$ を満たす $M$ を <strong>上界 (upper bound)</strong> という。</li>
+        <li>上界の集合が下に有界なとき，その最小値を <strong>上限 $\sup S$</strong> という。</li>
+        <li>下界・下限 $\inf S$ も同様に定義する。</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 実数の完備性公理 (Dedekind)</div>
+      <p>上に有界な空でない実数の部分集合は必ず上限をもつ。</p>
+      $$\emptyset \ne S \subset \mathbb{R},\;\; S \text{ は上に有界} \implies \sup S \in \mathbb{R}$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 注意</div>
+      <p>有理数 $\mathbb{Q}$ は完備でない。例: $S = \{x \in \mathbb{Q} \mid x^2 &lt; 2\}$ の上限 $\sqrt{2} \notin \mathbb{Q}$。</p>
+    </div>
+
+    <!-- 2 -->
+    <h2 id="sequences">2. 数列と極限</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 数列の収束 (ε-N論法)</div>
+      <p>数列 $\{a_n\}$ が $\alpha$ に<strong>収束する</strong>とは，</p>
+      $$\forall \varepsilon > 0,\;\; \exists N \in \mathbb{N},\;\; n > N \implies |a_n - \alpha| < \varepsilon$$
+      <p>が成り立つことをいい，$\lim_{n\to\infty} a_n = \alpha$ と書く。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Cauchy列</div>
+      <p>数列 $\{a_n\}$ が <strong>Cauchy列</strong> であるとは，</p>
+      $$\forall \varepsilon > 0,\;\; \exists N,\;\; m,n > N \implies |a_m - a_n| < \varepsilon$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cauchy の収束判定</div>
+      <p>実数列が収束する $\iff$ Cauchy列である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Bolzano-Weierstrass</div>
+      <p>有界な実数列は収束する部分列をもつ。</p>
+    </div>
+
+    <!-- 3 -->
+    <h2 id="continuity">3. 連続関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 連続性 (ε-δ論法)</div>
+      <p>$f: D \to \mathbb{R}$，$a \in D$。$f$ が $a$ で<strong>連続</strong>であるとは，</p>
+      $$\forall \varepsilon > 0,\;\; \exists \delta > 0,\;\; |x - a| < \delta \implies |f(x) - f(a)| < \varepsilon$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 中間値定理 (IVT)</div>
+      <p>$f: [a,b] \to \mathbb{R}$ が連続で $f(a) \ne f(b)$ ならば，$f(a)$ と $f(b)$ の間の任意の値 $c$ に対して，$f(\xi) = c$ となる $\xi \in (a,b)$ が存在する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最大値・最小値定理</div>
+      <p>閉区間 $[a,b]$ 上の連続関数は最大値と最小値をとる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 一様連続性</div>
+      <p>$f$ が $D$ 上で<strong>一様連続</strong>であるとは，</p>
+      $$\forall \varepsilon > 0,\;\; \exists \delta > 0,\;\; \forall x,y \in D,\;\; |x-y| < \delta \implies |f(x)-f(y)| < \varepsilon$$
+      <p>（$\delta$ が $x$ の選び方によらない点が連続性との違い。）</p>
+    </div>
+
+    <!-- 4 -->
+    <h2 id="differentiation">4. 微分法</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 導関数</div>
+      $$f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h}$$
+      <p>この極限が存在するとき，$f$ は $a$ で<strong>微分可能</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Rolle の定理</div>
+      <p>$f: [a,b] \to \mathbb{R}$ が連続，$(a,b)$ で微分可能，$f(a)=f(b)$ ならば，$f'(\xi)=0$ となる $\xi \in (a,b)$ が存在する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 平均値定理 (MVT)</div>
+      <p>$f: [a,b] \to \mathbb{R}$ が連続，$(a,b)$ で微分可能ならば，</p>
+      $$f(b) - f(a) = f'(\xi)(b-a)$$
+      <p>を満たす $\xi \in (a,b)$ が存在する。</p>
+    </div>
+    <div class="box proof">
+      <div class="box-title">証明（平均値定理）</div>
+      <p>$g(x) = f(x) - \dfrac{f(b)-f(a)}{b-a}(x-a)$ と定義する。$g(a)=g(b)=f(a)$ なので，Rolleの定理より $g'(\xi)=0$ となる $\xi \in (a,b)$ が存在する。$g'(\xi)=f'(\xi)-\dfrac{f(b)-f(a)}{b-a}=0$ を解くと主張が得られる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — L'Hôpital の定理</div>
+      <p>$\lim_{x\to a} f(x) = \lim_{x\to a} g(x) = 0$（または $\pm\infty$）で $g'(x)\ne 0$，$\lim_{x\to a}\frac{f'(x)}{g'(x)} = L$ が存在するとき，</p>
+      $$\lim_{x\to a} \frac{f(x)}{g(x)} = L$$
+    </div>
+
+    <!-- 5 -->
+    <h2 id="integration">5. 積分法</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Riemann積分</div>
+      <p>区間 $[a,b]$ の分割 $\Delta: a=x_0 &lt; x_1 &lt; \cdots &lt; x_n = b$，代表点 $\xi_i \in [x_{i-1},x_i]$ に対して，</p>
+      $$S(\Delta,\xi) = \sum_{i=1}^n f(\xi_i)(x_i - x_{i-1})$$
+      <p>$|\Delta| = \max_i(x_i - x_{i-1}) \to 0$ のとき $S(\Delta,\xi)$ が一定値 $I$ に収束するとき，$f$ は Riemann 積分可能といい，$I = \int_a^b f(x)\,dx$ と書く。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 微分積分学の基本定理 (FTC)</div>
+      <p>$f: [a,b] \to \mathbb{R}$ が連続のとき，$F(x) = \int_a^x f(t)\,dt$ とおけば，</p>
+      $$F'(x) = f(x)$$
+      <p>また $F$ が $f$ の原始関数（$F'=f$）ならば，</p>
+      $$\int_a^b f(x)\,dx = F(b) - F(a)$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Gauss積分</div>
+      $$\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}$$
+      <p>証明のアイデア: $I^2 = \int_{-\infty}^\infty\int_{-\infty}^\infty e^{-(x^2+y^2)}dx\,dy$ を極座標変換 $x=r\cos\theta,\,y=r\sin\theta$ で計算する。</p>
+    </div>
+
+    <!-- 6 -->
+    <h2 id="series">6. 級数とテイラー展開</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — テイラーの定理</div>
+      <p>$f$ が $[a,a+h]$ 上で $n+1$ 回微分可能ならば，</p>
+      $$f(a+h) = \sum_{k=0}^n \frac{f^{(k)}(a)}{k!} h^k + R_n$$
+      <p>剰余項（Lagrange 形）: $R_n = \dfrac{f^{(n+1)}(a+\theta h)}{(n+1)!}h^{n+1}$，$\theta \in (0,1)$</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 主要なマクローリン展開</div>
+      $$e^x = \sum_{n=0}^\infty \frac{x^n}{n!} = 1 + x + \frac{x^2}{2!} + \cdots \quad (|x|<\infty)$$
+      $$\sin x = \sum_{n=0}^\infty \frac{(-1)^n x^{2n+1}}{(2n+1)!} = x - \frac{x^3}{6} + \cdots$$
+      $$\cos x = \sum_{n=0}^\infty \frac{(-1)^n x^{2n}}{(2n)!} = 1 - \frac{x^2}{2} + \cdots$$
+      $$\ln(1+x) = \sum_{n=1}^\infty \frac{(-1)^{n-1}x^n}{n} = x - \frac{x^2}{2} + \frac{x^3}{3} - \cdots \quad (|x|\le 1,\,x\ne -1)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 主な収束判定法</div>
+      <ul>
+        <li><strong>比率判定</strong>: $L = \lim_{n\to\infty}|a_{n+1}/a_n|$。$L&lt;1$ なら絶対収束，$L&gt;1$ なら発散。</li>
+        <li><strong>根判定</strong>: $L = \limsup_{n\to\infty}|a_n|^{1/n}$。$L&lt;1$ なら絶対収束，$L&gt;1$ なら発散。</li>
+        <li><strong>Dirichlet判定</strong>: $\{a_n\}$ が単調減少で $0$ に収束し $\{b_n\}$ の部分和が有界 $\implies \sum a_n b_n$ 収束。</li>
+      </ul>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$\varepsilon$-$\delta$ 論法を用いて $\lim_{x\to 2}(3x-1)=5$ を証明せよ。</li>
+        <li>$f(x)=x^3$ が $\mathbb{R}$ 上で一様連続でないことを示せ。</li>
+        <li>$\displaystyle\int_0^1 x^n \ln x\,dx$ を計算せよ。</li>
+        <li>$e = \sum_{n=0}^\infty 1/n!$ が無理数であることを証明せよ。（ヒント: $e$ が有理数と仮定して矛盾を導く。）</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

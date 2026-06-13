@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>線形代数 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">解析系</div><nav>
+    <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+    <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+    <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+    <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">代数・幾何系</div><nav>
+    <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+    <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">確率・統計系</div><nav>
+    <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+    <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+    <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+  </nav></div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 線形代数</div>
+    <h1>線形代数</h1>
+    <p class="tagline">ベクトル空間と線形写像の代数的構造。固有値分解から特異値分解まで，データ科学・量子力学の数学的基盤。</p>
+    <div class="tags"><span class="tag">ベクトル空間</span><span class="tag">固有値</span><span class="tag">Jordan標準形</span><span class="tag">SVD</span><span class="tag">内積空間</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#vector-space">ベクトル空間</a></li>
+        <li><a href="#linear-map">線形写像と行列</a></li>
+        <li><a href="#determinant">行列式</a></li>
+        <li><a href="#eigenvalue">固有値・固有ベクトル</a></li>
+        <li><a href="#diagonalization">対角化と Jordan 標準形</a></li>
+        <li><a href="#inner-product">内積空間と正規直交基底</a></li>
+        <li><a href="#svd">特異値分解 (SVD)</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="vector-space">1. ベクトル空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ベクトル空間</div>
+      <p>体 $\mathbb{F}$（$\mathbb{R}$ または $\mathbb{C}$）上のベクトル空間 $(V, +, \cdot)$ とは，加法とスカラー倍について8つの公理（結合律・交換律・単位元・逆元・分配律など）を満たす集合 $V$ のことである。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 基底と次元</div>
+      <p>$V$ の部分集合 $B = \{v_1,\ldots,v_n\}$ が<strong>基底</strong>であるとは，$B$ が線形独立かつ $V$ を張ることをいう。基底の個数 $n$ を $V$ の<strong>次元</strong> $\dim V$ という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 次元定理</div>
+      <p>線形写像 $T: V \to W$ に対して，</p>
+      $$\dim V = \dim \ker T + \dim \mathrm{Im}\, T$$
+    </div>
+
+    <h2 id="linear-map">2. 線形写像と行列</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 線形写像</div>
+      <p>$T: V \to W$ が<strong>線形写像</strong>であるとは，任意の $u,v \in V$，$c \in \mathbb{F}$ に対して，</p>
+      $$T(u + v) = T(u) + T(v), \quad T(cv) = cT(v)$$
+    </div>
+    <p>基底を固定すれば，線形写像は行列で表現できる。$n$ 次元空間 $V$ の基底 $\{e_i\}$ と $m$ 次元空間 $W$ の基底 $\{f_j\}$ のもとで，$T$ は $m \times n$ 行列 $A$ で表される:</p>
+    $$T(e_j) = \sum_{i=1}^m a_{ij} f_i, \quad A = (a_{ij})$$
+
+    <h2 id="determinant">3. 行列式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 行列式の公理的定義</div>
+      <p>$\det: M_n(\mathbb{F}) \to \mathbb{F}$ は以下を満たす唯一の写像：</p>
+      <ol>
+        <li>各列について線形（多重線形性）</li>
+        <li>隣り合う2列を入れ替えると符号が変わる（交代性）</li>
+        <li>$\det I = 1$（正規化）</li>
+      </ol>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 性質</div>
+      <ul>
+        <li>$\det(AB) = \det A \cdot \det B$</li>
+        <li>$A$ が正則 $\iff$ $\det A \ne 0$</li>
+        <li>$\det A^T = \det A$</li>
+        <li>$\det A^{-1} = (\det A)^{-1}$</li>
+      </ul>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 Cramer の公式</div>
+      <p>$Ax = b$，$\det A \ne 0$ のとき，</p>
+      $$x_i = \frac{\det A_i}{\det A}$$
+      <p>ただし $A_i$ は $A$ の第 $i$ 列を $b$ で置き換えた行列。</p>
+    </div>
+
+    <h2 id="eigenvalue">4. 固有値・固有ベクトル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 固有値・固有ベクトル</div>
+      <p>$A \in M_n(\mathbb{F})$。スカラー $\lambda$ とゼロでないベクトル $v$ が</p>
+      $$Av = \lambda v$$
+      <p>を満たすとき，$\lambda$ を<strong>固有値</strong>，$v$ を対応する<strong>固有ベクトル</strong>という。</p>
+      <p>固有値は<strong>特性多項式</strong> $p_A(\lambda) = \det(\lambda I - A) = 0$ の根として求まる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cayley-Hamilton</div>
+      <p>$p_A(A) = 0$。すなわち，行列は自身の特性多項式を零にする。</p>
+    </div>
+
+    <h2 id="diagonalization">5. 対角化と Jordan 標準形</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 対角化可能条件</div>
+      <p>$A \in M_n(\mathbb{C})$ が対角化可能 $\iff$ 各固有値の代数的重複度 $=$ 幾何的重複度。</p>
+      <p>特に，$n$ 個の相異なる固有値をもつならば対角化可能。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Jordan 標準形</div>
+      <p>任意の $A \in M_n(\mathbb{C})$ は正則行列 $P$ によって Jordan 標準形に変換できる：</p>
+      $$P^{-1}AP = J = \mathrm{diag}(J_1,J_2,\ldots,J_k)$$
+      <p>各 Jordan ブロック $J_i$ は固有値 $\lambda_i$ のブロック：</p>
+      $$J_i = \begin{pmatrix} \lambda_i & 1 & & \\ & \lambda_i & \ddots & \\ & & \ddots & 1 \\ & & & \lambda_i \end{pmatrix}$$
+    </div>
+
+    <h2 id="inner-product">6. 内積空間と正規直交基底</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 内積空間</div>
+      <p>$\langle \cdot, \cdot \rangle: V \times V \to \mathbb{F}$ が内積であるとは，線形性・共役対称性・正定値性を満たすことをいう。ノルムは $\|v\| = \sqrt{\langle v, v\rangle}$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Gram-Schmidt 直交化</div>
+      <p>線形独立な $\{v_1,\ldots,v_n\}$ から正規直交基底 $\{e_1,\ldots,e_n\}$ を構成できる：</p>
+      $$u_k = v_k - \sum_{j=1}^{k-1} \langle v_k, e_j\rangle e_j, \quad e_k = \frac{u_k}{\|u_k\|}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — スペクトル定理</div>
+      <p>実対称行列（または複素エルミート行列）は正規直交基底をなす固有ベクトルをもち，対角化可能である。すなわち，</p>
+      $$A = Q\Lambda Q^T \quad (\text{または } Q\Lambda Q^*)$$
+      <p>ただし $Q$ は直交行列（ユニタリ行列），$\Lambda$ は対角行列（固有値が対角成分）。</p>
+    </div>
+
+    <h2 id="svd">7. 特異値分解 (SVD)</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 特異値分解</div>
+      <p>任意の実行列 $A \in \mathbb{R}^{m\times n}$ に対して，</p>
+      $$A = U\Sigma V^T$$
+      <p>ここで $U \in \mathbb{R}^{m\times m}$，$V \in \mathbb{R}^{n\times n}$ は直交行列，$\Sigma \in \mathbb{R}^{m\times n}$ は対角成分 $\sigma_1 \ge \sigma_2 \ge \cdots \ge 0$（<strong>特異値</strong>）を持つ行列。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 SVD の応用</div>
+      <ul>
+        <li><strong>低ランク近似</strong>: $A \approx \sum_{i=1}^k \sigma_i u_i v_i^T$（Eckart-Young の定理で最適）</li>
+        <li><strong>Moore-Penrose 擬似逆行列</strong>: $A^+ = V\Sigma^+ U^T$</li>
+        <li><strong>主成分分析 (PCA)</strong>: データ行列の SVD が主成分方向を与える</li>
+        <li><strong>条件数</strong>: $\kappa(A) = \sigma_{\max}/\sigma_{\min}$（数値安定性の指標）</li>
+      </ul>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$A = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}$ の固有値・固有ベクトルを求め，対角化せよ。</li>
+        <li>実対称行列の固有値は実数であることを証明せよ。</li>
+        <li>$A = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$ の Jordan 標準形と $e^{tA}$ を求めよ。</li>
+        <li>行列 $A = \begin{pmatrix} 3 & 1 \\ 0 & 2 \end{pmatrix}$ の SVD を求めよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
