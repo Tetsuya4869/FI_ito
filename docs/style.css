@@ -328,6 +328,54 @@ tr:nth-child(even) td { background: color-mix(in srgb, var(--bg3) 40%, transpare
   background: var(--bg3); border: 1px solid var(--border); color: var(--text3);
 }
 
+/* ── Sidebar search ── */
+.sidebar-search {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-search input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.sidebar-search input::placeholder { color: var(--text3); }
+.sidebar-search input:focus { border-color: var(--blue); }
+
+/* ── Roadmap ── */
+.roadmap {
+  padding: 48px;
+  border-top: 1px solid var(--border);
+}
+.roadmap h2 { font-size: 1.3rem; margin: 0 0 28px; border: none; padding: 0; }
+.road-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 12px; }
+.road-item {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+  font-size: 0.85rem;
+}
+.road-item .road-num {
+  font-size: 0.68rem; font-weight: 700; color: var(--blue);
+  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px;
+}
+.road-item a { color: var(--text); }
+.road-item a:hover { color: var(--blue); text-decoration: none; }
+
+/* ── Stats bar ── */
+.stats-bar {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  padding: 0 48px 32px; justify-content: center;
+}
+.stat { text-align: center; }
+.stat .num { font-size: 2rem; font-weight: 800; color: var(--blue); line-height: 1; }
+.stat .lbl { font-size: 0.75rem; color: var(--text2); margin-top: 4px; }
+
 /* ── Mobile hamburger ── */
 .hamburger {
   display: none;

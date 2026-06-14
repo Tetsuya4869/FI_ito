@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>抽象代数学 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 抽象代数学</div>
+    <h1>抽象代数学</h1>
+    <p class="tagline">群・環・体の代数的構造を公理から展開する。ガロア理論は方程式の可解性と体の拡大を結びつける数学の最高峰の一つ。</p>
+    <div class="tags"><span class="tag">群論</span><span class="tag">環・体</span><span class="tag">Sylow定理</span><span class="tag">ガロア理論</span><span class="tag">準同型定理</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#groups">群の定義と例</a></li>
+        <li><a href="#subgroups">部分群・剰余群・正規部分群</a></li>
+        <li><a href="#homomorphism">群準同型定理</a></li>
+        <li><a href="#action">群の作用と Sylow の定理</a></li>
+        <li><a href="#rings">環と体</a></li>
+        <li><a href="#field-ext">体の拡大</a></li>
+        <li><a href="#galois">ガロア理論</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="groups">1. 群の定義と例</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 群</div>
+      <p>集合 $G$ と二項演算 $\cdot: G \times G \to G$ の対 $(G, \cdot)$ が<strong>群</strong>であるとは：</p>
+      <ol>
+        <li><strong>結合律</strong>: $(a \cdot b) \cdot c = a \cdot (b \cdot c)$</li>
+        <li><strong>単位元</strong>: $\exists e \in G,\; e \cdot a = a \cdot e = a$（$\forall a$）</li>
+        <li><strong>逆元</strong>: $\forall a \in G,\; \exists a^{-1} \in G,\; a \cdot a^{-1} = e$</li>
+      </ol>
+      <p>さらに可換律 $a \cdot b = b \cdot a$ が成り立つとき<strong>Abel 群（可換群）</strong>という。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 群の例</div>
+      <table>
+        <tr><th>群</th><th>演算</th><th>位数</th><th>可換か</th></tr>
+        <tr><td>$(\mathbb{Z}, +)$</td><td>加法</td><td>$\infty$</td><td>はい</td></tr>
+        <tr><td>$(\mathbb{Z}/n\mathbb{Z}, +)$</td><td>加法 mod $n$</td><td>$n$</td><td>はい</td></tr>
+        <tr><td>$(\mathbb{Z}/p\mathbb{Z})^\times$</td><td>乗法 mod $p$（$p$ 素数）</td><td>$p-1$</td><td>はい</td></tr>
+        <tr><td>$S_n$（対称群）</td><td>置換の合成</td><td>$n!$</td><td>$n \ge 3$ で否</td></tr>
+        <tr><td>$GL_n(\mathbb{F})$</td><td>行列の積</td><td>無限</td><td>$n \ge 2$ で否</td></tr>
+        <tr><td>$D_n$（二面体群）</td><td>対称変換</td><td>$2n$</td><td>$n \ge 3$ で否</td></tr>
+      </table>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cayley の定理</div>
+      <p>位数 $n$ の有限群はすべて対称群 $S_n$ の部分群と同型である。</p>
+    </div>
+
+    <h2 id="subgroups">2. 部分群・剰余群・正規部分群</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 部分群・正規部分群</div>
+      <p>$H \subset G$ が<strong>部分群</strong>: $H \ne \emptyset$，$a,b \in H \implies ab^{-1} \in H$。</p>
+      <p>$N \le G$ が<strong>正規部分群</strong>（$N \trianglelefteq G$）: $\forall g \in G,\; gNg^{-1} = N$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Lagrange の定理</div>
+      <p>有限群 $G$ と部分群 $H$ について，$|H|$ は $|G|$ を割り切る。</p>
+      $$[G:H] = \frac{|G|}{|H|} \quad (\text{指数})$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 剰余群</div>
+      <p>$N \trianglelefteq G$ のとき，剰余群 $G/N = \{gN \mid g \in G\}$ は $(gN)(hN) = ghN$ によって群をなす。$|G/N| = [G:N]$。</p>
+    </div>
+
+    <h2 id="homomorphism">3. 群準同型定理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 群準同型</div>
+      <p>$\varphi: G \to H$ が<strong>準同型</strong>: $\varphi(ab) = \varphi(a)\varphi(b)$（$\forall a,b \in G$）。全単射な準同型を<strong>同型</strong>という。</p>
+      <p>核: $\ker\varphi = \{g \in G \mid \varphi(g) = e_H\}$（$G$ の正規部分群）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 第一準同型定理（同型定理）</div>
+      $$G / \ker\varphi \cong \mathrm{Im}\,\varphi$$
+      <p>準同型 $\varphi: G \to H$ に対して，$G/\ker\varphi$ と $\varphi$ の像は同型。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 第二・第三準同型定理</div>
+      <p><strong>第二</strong>: $H \le G$，$N \trianglelefteq G$ のとき $HN/N \cong H/(H \cap N)$。</p>
+      <p><strong>第三</strong>: $N \trianglelefteq K \trianglelefteq G$ のとき $(G/N)/(K/N) \cong G/K$。</p>
+    </div>
+
+    <h2 id="action">4. 群の作用と Sylow の定理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 群の作用</div>
+      <p>群 $G$ が集合 $X$ に<strong>作用する</strong>とは，$\cdot: G \times X \to X$ で (1) $e \cdot x = x$，(2) $g \cdot (h \cdot x) = (gh) \cdot x$ を満たすもの。</p>
+      <p><strong>軌道</strong>: $G \cdot x = \{g \cdot x \mid g \in G\}$，<strong>固定部分群（安定化群）</strong>: $G_x = \{g \in G \mid g \cdot x = x\}$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 軌道・安定化群定理</div>
+      $$|G \cdot x| = [G : G_x] = \frac{|G|}{|G_x|}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Sylow の定理</div>
+      <p>$|G| = p^n m$（$p$ 素数，$\gcd(p,m)=1$）のとき，</p>
+      <ol>
+        <li>位数 $p^n$ の部分群（<strong>Sylow $p$-部分群</strong>）が存在する。</li>
+        <li>Sylow $p$-部分群は全て共役（$gPg^{-1}$）。</li>
+        <li>Sylow $p$-部分群の個数 $n_p$ は $n_p \equiv 1 \pmod{p}$ かつ $n_p \mid m$。</li>
+      </ol>
+    </div>
+
+    <h2 id="rings">5. 環と体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 環と体</div>
+      <p>$(R, +, \cdot)$ が<strong>環</strong>: $(R,+)$ は Abel 群，乗法は結合律・分配律を満たす。単位元 $1 \in R$ があるとき<strong>単位的環</strong>。</p>
+      <p>環 $R$ が<strong>整域</strong>: 可換，$1 \ne 0$，零因子なし（$ab=0 \implies a=0$ または $b=0$）。</p>
+      <p>可換環 $F$ が<strong>体</strong>: $0$ 以外の全元が乗法逆元をもつ（$\mathbb{Q}, \mathbb{R}, \mathbb{C}, \mathbb{F}_p$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — イデアル</div>
+      <p>$I \subset R$ が<strong>イデアル</strong>: $(I,+) \le (R,+)$，$r \in R, a \in I \implies ra, ar \in I$。</p>
+      <p>$R$ が体 $\iff$ イデアルは $\{0\}$ と $R$ のみ。</p>
+      <p><strong>素イデアル</strong>: $ab \in I \implies a \in I$ または $b \in I$。</p>
+      <p><strong>極大イデアル</strong>: $I \subsetneq R$ で，$I \subsetneq J \subsetneq R$ な真のイデアル $J$ が存在しない。$R/\mathfrak{m}$ が体 $\iff$ $\mathfrak{m}$ が極大イデアル。</p>
+    </div>
+
+    <h2 id="field-ext">6. 体の拡大</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 体の拡大</div>
+      <p>$F \subset K$ が体の拡大（$K/F$）のとき，$K$ は $F$-ベクトル空間とみなせる。$[K:F] = \dim_F K$ を<strong>拡大次数</strong>という。</p>
+      <p>$\alpha \in K$ が $F$ 上<strong>代数的</strong>: $f(\alpha) = 0$ となる $0 \ne f \in F[x]$ が存在する。最小多項式の次数を<strong>$\alpha$ の次数</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 拡大次数の推移性</div>
+      $$[K:F] = [K:E][E:F] \quad (F \subset E \subset K)$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例</div>
+      <ul>
+        <li>$[\mathbb{Q}(\sqrt{2}):\mathbb{Q}] = 2$（最小多項式: $x^2 - 2$）</li>
+        <li>$[\mathbb{Q}(\sqrt[3]{2}):\mathbb{Q}] = 3$（最小多項式: $x^3 - 2$）</li>
+        <li>$[\mathbb{C}:\mathbb{R}] = 2$</li>
+        <li>$[\mathbb{F}_{p^n}:\mathbb{F}_p] = n$</li>
+      </ul>
+    </div>
+
+    <h2 id="galois">7. ガロア理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ガロア群</div>
+      <p>$K/F$ が<strong>ガロア拡大</strong>（正規かつ分離的）のとき，<strong>ガロア群</strong></p>
+      $$\mathrm{Gal}(K/F) = \{\sigma: K \to K \mid \sigma \text{ は体自己同型，} \sigma|_F = \mathrm{id}\}$$
+      <p>は $|{\rm Gal}(K/F)| = [K:F]$ を満たす。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ガロアの基本定理（Galois Correspondence）</div>
+      <p>ガロア拡大 $K/F$ において，$F$ と $K$ の間の中間体の集合と $\mathrm{Gal}(K/F)$ の部分群の集合は<strong>反順序同型</strong>：</p>
+      $$\{E \mid F \subset E \subset K\} \overset{1:1}{\longleftrightarrow} \{H \mid H \le \mathrm{Gal}(K/F)\}$$
+      $$E \mapsto \mathrm{Gal}(K/E), \quad H \mapsto K^H = \{x \in K \mid \sigma(x)=x,\; \forall \sigma \in H\}$$
+      <p>$E/F$ がガロア拡大 $\iff$ 対応する $H \trianglelefteq \mathrm{Gal}(K/F)$，かつ $\mathrm{Gal}(E/F) \cong \mathrm{Gal}(K/F)/H$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $\mathbb{Q}(\sqrt[4]{2}, i)/\mathbb{Q}$</div>
+      <p>$x^4 - 2$ の最小分解体。$\mathrm{Gal} \cong D_4$（位数 8 の二面体群）。ガロア対応により，中間体 10 個と $D_4$ の部分群 10 個が対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Abel の定理（5次方程式の代数的非可解性）</div>
+      <p>5次以上の一般方程式は根号による解法（代数的解法）をもたない。</p>
+      <p>証明の鍵: $n \ge 5$ で対称群 $S_n$ は可解でない（$A_n$ が単純群）。方程式が代数的に解けること $\iff$ ガロア群が可解群。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$G = \mathbb{Z}/6\mathbb{Z}$ の全部分群を求め，Lagrangeの定理を確認せよ。</li>
+        <li>$S_3 \cong D_3$ を準同型定理を用いて示せ。</li>
+        <li>$|\mathrm{GL}_2(\mathbb{F}_p)| = (p^2-1)(p^2-p)$ を求めよ。</li>
+        <li>$\mathbb{Q}(\sqrt{2},\sqrt{3})/\mathbb{Q}$ のガロア群を求め，中間体と部分群の対応を完成させよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

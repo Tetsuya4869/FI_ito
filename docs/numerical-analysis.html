@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数値解析 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 数値解析</div>
+    <h1>数値解析</h1>
+    <p class="tagline">連続問題を有限桁の計算で近似する。誤差解析・補間・数値積分・数値線形代数・ODE の数値解法。</p>
+    <div class="tags"><span class="tag">浮動小数点</span><span class="tag">補間</span><span class="tag">数値積分</span><span class="tag">Runge-Kutta</span><span class="tag">反復法</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#floating">浮動小数点数と誤差解析</a></li>
+        <li><a href="#interpolation">補間法</a></li>
+        <li><a href="#integration">数値積分</a></li>
+        <li><a href="#linalg">数値線形代数</a></li>
+        <li><a href="#ode">ODE の数値解法</a></li>
+        <li><a href="#nonlinear">非線形方程式</a></li>
+        <li><a href="#stability">安定性と収束</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="floating">1. 浮動小数点数と誤差解析</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 浮動小数点数 (IEEE 754)</div>
+      <p>倍精度: $\text{fl}(x) = (-1)^s \times 1.m \times 2^{e-1023}$（$s$: 符号，$m$: 52 bit 仮数，$e$: 11 bit 指数）。</p>
+      <p>機械イプシロン: $\varepsilon_{\rm mach} = 2^{-52} \approx 2.2 \times 10^{-16}$（倍精度）。$\text{fl}(x) = x(1 + \delta)$，$|\delta| \le \varepsilon_{\rm mach}$。</p>
+    </div>
+    <div class="box warn">
+      <div class="box-title">⚠️ 桁落ちと情報損失</div>
+      <p>近い値の差 $a - b$（$a \approx b$）では有効桁数が激減する（<strong>桁落ち</strong>）。</p>
+      <p>例: $x = 1.000001$ と $y = 1.000000$ の差は絶対誤差は小さいが相対誤差が大きい。安定な公式への書き換えが必要（例: $\sqrt{x+1} - 1 = \frac{x}{\sqrt{x+1}+1}$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 前向き誤差・後向き誤差</div>
+      <p><strong>前向き誤差</strong>: $|\hat y - y^*|/|y^*|$（計算結果と真値の差）。</p>
+      <p><strong>後向き誤差</strong>: $|\hat x - x^*|/|x^*|$（どんな入力の厳密解が計算結果か）。</p>
+      <p><strong>条件数</strong> $\kappa$: 前向き誤差 $\lesssim \kappa \cdot$ 後向き誤差。$Ax=b$ では $\kappa(A) = \|A\|\|A^{-1}\|$。</p>
+    </div>
+
+    <h2 id="interpolation">2. 補間法</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Lagrange 補間多項式</div>
+      <p>$n+1$ 点 $(x_0,y_0),\ldots,(x_n,y_n)$（$x_i$ 相異）を通る次数 $\le n$ の多項式は一意に存在し，</p>
+      $$p(x) = \sum_{k=0}^n y_k \ell_k(x), \quad \ell_k(x) = \prod_{j \ne k} \frac{x-x_j}{x_k - x_j}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 補間誤差</div>
+      <p>$f \in C^{n+1}[a,b]$ を $n+1$ 点で補間するとき，</p>
+      $$f(x) - p(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!} \prod_{k=0}^n (x - x_k) \quad (\xi \in (a,b))$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Runge 現象と等間隔節点の危険性</div>
+      <p>等間隔節点では次数 $n$ を増やしても補間が発散しうる（Runge 現象）。Chebyshev 節点 $x_k = \cos\!\left(\frac{2k+1}{2n+2}\pi\right)$ を使うと誤差 $\propto 2^{-n}$ で最良に近い。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 三次スプライン</div>
+      <p>各区間で三次多項式，接続点で $C^2$ となるよう補間。$n+1$ 節点に対して $4n$ 個の未知数，$4n-2$ 個の条件。残り 2 自由度は境界条件（natural spline: 両端で $f''=0$ など）で決める。</p>
+    </div>
+
+    <h2 id="integration">3. 数値積分</h2>
+    <div class="box def">
+      <div class="box-title">📖 積分公式と誤差次数</div>
+      <table>
+        <tr><th>公式</th><th>式</th><th>誤差</th></tr>
+        <tr><td>台形則</td><td>$h[f_0/2 + f_1 + \cdots + f_{n-1} + f_n/2]$</td><td>$O(h^2)$</td></tr>
+        <tr><td>Simpson 則</td><td>$h[f_0 + 4f_1 + 2f_2 + \cdots + 4f_{n-1} + f_n]/3$</td><td>$O(h^4)$</td></tr>
+        <tr><td>Gauss-Legendre ($n$ 点)</td><td>$\sum w_i f(x_i)$（節点・重みは最適）</td><td>$O(h^{2n})$</td></tr>
+      </table>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Romberg 積分</div>
+      <p>台形則の Richardson 外挿を繰り返すことで，誤差を $O(h^{2k})$ に加速できる（$k$ 回外挿後）。計算コストは小さく，実用的に高精度。</p>
+    </div>
+
+    <h2 id="linalg">4. 数値線形代数</h2>
+    <div class="box def">
+      <div class="box-title">📖 LU 分解・Cholesky 分解</div>
+      <p><strong>LU 分解</strong>: $PA = LU$（$P$: 部分ピボット置換，$L$: 下三角，$U$: 上三角）。$Ax=b$ を $Ly=Pb$，$Ux=y$ の 2 つの三角系に帰着。計算量 $O(n^3)$。</p>
+      <p><strong>Cholesky</strong>: $A = LL^T$（$A$ 対称正定値）。LU の約 2 倍高速。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Krylov 部分空間法</div>
+      <p><strong>共役勾配法 (CG)</strong>: 対称正定値 $A$ に対し $Ax=b$ を反復法で解く。$n$ 回以内に厳密解（丸め誤差なし）。実用では条件数 $\kappa$ に依存して収束: $O(\sqrt{\kappa}\log(1/\varepsilon))$ 反復。</p>
+      <p><strong>GMRES</strong>: 非対称系に対応するクリロフ反復法。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 QR アルゴリズム（固有値計算）</div>
+      <p>$A = Q_0 R_0$（QR 分解）→ $A_1 = R_0 Q_0$ → $A_1 = Q_1 R_1$ → $A_2 = R_1 Q_1 \to \cdots$。$A_k$ は上三角行列（固有値）に収束。シフト付き QR は実用的に $O(n^3)$ 全固有値算出。</p>
+    </div>
+
+    <h2 id="ode">5. ODE の数値解法</h2>
+    <div class="box def">
+      <div class="box-title">📖 Euler 法・Runge-Kutta 法</div>
+      <p>$y' = f(t,y)$，$y(t_0) = y_0$。</p>
+      <p><strong>前進 Euler</strong>: $y_{n+1} = y_n + hf(t_n, y_n)$（1次精度 $O(h)$）。</p>
+      <p><strong>古典的 Runge-Kutta 4 次 (RK4)</strong>:</p>
+      $$k_1 = f(t_n, y_n),\; k_2 = f(t_n+h/2, y_n+hk_1/2)$$
+      $$k_3 = f(t_n+h/2, y_n+hk_2/2),\; k_4 = f(t_n+h, y_n+hk_3)$$
+      $$y_{n+1} = y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4) \quad (O(h^4))$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 硬い方程式 (Stiff ODE)</div>
+      <p>多時間スケールをもつ系（例: 化学反応）では，陽的法（Euler，RK4）は安定性のため $h$ を極端に小さくする必要がある。<strong>陰的法</strong>（後退 Euler，Crank-Nicolson，BDF）は大きい $h$ でも安定（A安定）。</p>
+    </div>
+
+    <h2 id="nonlinear">6. 非線形方程式</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Newton-Raphson 法</div>
+      <p>$f(x) = 0$ の解を $x_{n+1} = x_n - f(x_n)/f'(x_n)$ で反復。初期値が解に近ければ<strong>2次収束</strong>: $|x_{n+1} - x^*| \le C|x_n - x^*|^2$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 二分法 vs. Newton 法</div>
+      <table>
+        <tr><th>手法</th><th>収束</th><th>前提</th><th>精度 10 桁を得る反復数</th></tr>
+        <tr><td>二分法</td><td>線形 $O(2^{-n})$</td><td>区間に解が存在</td><td>~33 回</td></tr>
+        <tr><td>Newton法</td><td>2次 $O(C^{2^n})$</td><td>初期値が解に近い</td><td>~5 回</td></tr>
+        <tr><td>割線法</td><td>$O(n^{1.618})$</td><td>2点</td><td>~12 回</td></tr>
+      </table>
+    </div>
+
+    <h2 id="stability">7. 安定性と収束</h2>
+    <div class="box def">
+      <div class="box-title">📖 数値スキームの一致・安定性・収束</div>
+      <ul>
+        <li><strong>一致性 (Consistency)</strong>: $h \to 0$ で局所打ち切り誤差 $\to 0$</li>
+        <li><strong>安定性 (Stability)</strong>: 誤差が増幅しない（小さい摂動で解が大きく変わらない）</li>
+        <li><strong>収束性 (Convergence)</strong>: $h \to 0$ で数値解 $\to$ 真の解</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Lax の等価定理</div>
+      <p>適切に設定された線形問題の一致する数値スキームに対して，<strong>安定性 $\iff$ 収束性</strong>。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>Lagrange 補間で $\sin x$ を $x = 0, \pi/6, \pi/3, \pi/2$ の 4 点で補間し，$x = \pi/4$ での誤差を見積もれ。</li>
+        <li>$\int_0^1 e^{-x^2}\,dx$ を台形則（$n=4$）と Simpson 則（$n=4$）で計算し，誤差を比較せよ。</li>
+        <li>$y' = -y$，$y(0)=1$ を前進 Euler 法（$h=0.1$）で $t=1$ まで解き，$e^{-1}$ との誤差を求めよ。</li>
+        <li>$f(x) = x^3 - 2x - 5 = 0$ の正の解を Newton 法で 3 桁精度まで求めよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

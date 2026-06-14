@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>力学系 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 力学系</div>
+    <h1>力学系</h1>
+    <p class="tagline">ODE の定性的理論。平衡点・安定性・分岐・カオス。物理・生態学・経済学の時間発展モデルの数学。</p>
+    <div class="tags"><span class="tag">位相平面</span><span class="tag">Lyapunov安定性</span><span class="tag">分岐理論</span><span class="tag">カオス</span><span class="tag">Lorenz系</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#ode-basics">ODE の基礎</a></li>
+        <li><a href="#phase-plane">位相平面・平衡点</a></li>
+        <li><a href="#linear-sys">線形自律系の分類</a></li>
+        <li><a href="#lyapunov">Lyapunov 安定性</a></li>
+        <li><a href="#stable-mfld">安定多様体定理</a></li>
+        <li><a href="#bifurcation">分岐理論</a></li>
+        <li><a href="#chaos">カオスと Lorenz 系</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="ode-basics">1. ODE の基礎</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 存在一意性（Picard-Lindelöf）</div>
+      <p>$f: U \subset \mathbb{R} \times \mathbb{R}^n \to \mathbb{R}^n$ が連続かつ $x$ について局所 Lipschitz，$(t_0, x_0) \in U$ のとき，IVP</p>
+      $$\dot x = f(t,x), \quad x(t_0) = x_0$$
+      <p>は $t_0$ のある近傍で一意の解をもつ。解は $U$ の境界まで延長できる（最大解）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 補題 — Gronwall の不等式</div>
+      <p>$u(t) \le \alpha + \int_{t_0}^t \beta(s) u(s)\,ds$ ならば，$u(t) \le \alpha \exp\!\left(\int_{t_0}^t \beta(s)\,ds\right)$。</p>
+      <p>ODE の解の一意性証明・安定性解析に頻用される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — フロー</div>
+      <p>自律系 $\dot x = f(x)$ の解を $\varphi_t(x_0)$（時刻 $t$ における $x_0$ 出発の解の値）と書く。$\varphi_0 = \mathrm{id}$，$\varphi_{t+s} = \varphi_t \circ \varphi_s$（群の性質）。</p>
+    </div>
+
+    <h2 id="phase-plane">2. 位相平面・平衡点</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 平衡点・極限集合</div>
+      <p>$f(x^*) = 0$（$\dot x = 0$）となる $x^*$ を<strong>平衡点</strong>（固定点）という。</p>
+      <p><strong>$\omega$-極限集合</strong> $\omega(x_0) = \{y \mid \exists t_n \to \infty,\; \varphi_{t_n}(x_0) \to y\}$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Poincaré-Bendixson（2次元）</div>
+      <p>$\mathbb{R}^2$ のコンパクト正不変集合 $K$ に $\omega(x_0) \subset K$ で，$\omega(x_0)$ が平衡点を含まなければ，$\omega(x_0)$ は閉軌道（極限サイクル）。</p>
+      <p>系: 2次元自律系でカオスは起きない（位相平面は単純な挙動しかとれない）。</p>
+    </div>
+
+    <h2 id="linear-sys">3. 線形自律系の分類</h2>
+    <p>$\dot x = Ax$（$A \in M_2(\mathbb{R})$）の平衡点 $x^*=0$ の分類（固有値 $\lambda_{1,2}$）:</p>
+    <table>
+      <tr><th>固有値の型</th><th>挙動</th><th>安定性</th></tr>
+      <tr><td>$\lambda_1 &lt; \lambda_2 &lt; 0$</td><td>安定結節点</td><td>漸近安定</td></tr>
+      <tr><td>$0 &lt; \lambda_1 &lt; \lambda_2$</td><td>不安定結節点</td><td>不安定</td></tr>
+      <tr><td>$\lambda_1 &lt; 0 &lt; \lambda_2$</td><td>鞍点</td><td>不安定</td></tr>
+      <tr><td>$\lambda = \alpha \pm \beta i$，$\alpha &lt; 0$</td><td>安定渦状点</td><td>漸近安定</td></tr>
+      <tr><td>$\lambda = \pm\beta i$（純虚数）</td><td>中心（閉軌道）</td><td>Lyapunov 安定</td></tr>
+      <tr><td>$\lambda = \alpha \pm \beta i$，$\alpha &gt; 0$</td><td>不安定渦状点</td><td>不安定</td></tr>
+    </table>
+    <div class="box example">
+      <div class="box-title">📝 行列指数関数</div>
+      <p>$\dot x = Ax$ の解は $x(t) = e^{tA} x_0$，$e^{tA} = \sum_{k=0}^\infty \frac{(tA)^k}{k!}$。</p>
+      <p>$A$ が対角化可能（$A = P\Lambda P^{-1}$）なら $e^{tA} = Pe^{t\Lambda}P^{-1}$。Jordan 標準形の場合は Jordan ブロックごとに計算。</p>
+    </div>
+
+    <h2 id="lyapunov">4. Lyapunov 安定性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 安定性の種類</div>
+      <p>平衡点 $x^* = 0$ が：</p>
+      <ul>
+        <li><strong>Lyapunov 安定</strong>: $\forall \varepsilon &gt; 0,\; \exists \delta &gt; 0,\; |x_0| &lt; \delta \implies |\varphi_t(x_0)| &lt; \varepsilon$（$t \ge 0$）</li>
+        <li><strong>漸近安定</strong>: Lyapunov 安定かつ $|x_0| &lt; \delta \implies \varphi_t(x_0) \to 0$（$t \to \infty$）</li>
+        <li><strong>大域漸近安定</strong>: すべての初期値から $\to 0$</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Lyapunov の直接法</div>
+      <p>連続関数 $V: U \to \mathbb{R}$（$V(0)=0$，$V(x)&gt;0$（$x \ne 0$））が</p>
+      <ul>
+        <li>$\dot V(x) = \nabla V(x) \cdot f(x) \le 0$（$\forall x \in U$）$\implies$ $x^*=0$ は Lyapunov 安定</li>
+        <li>$\dot V(x) &lt; 0$（$x \ne 0$）$\implies$ 漸近安定</li>
+      </ul>
+      <p>$V$ を<strong>Lyapunov 関数</strong>という（「エネルギー」の一般化）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 振り子方程式</div>
+      <p>$\ddot\theta + \sin\theta = 0$（$\theta \in (-\pi,\pi)$）。$V = \frac{1}{2}\dot\theta^2 + (1-\cos\theta)$ とおくと $\dot V = \dot\theta\ddot\theta + \dot\theta\sin\theta = 0$。Lyapunov 安定（だが漸近安定でない）。</p>
+    </div>
+
+    <h2 id="stable-mfld">5. 安定多様体定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 安定多様体定理</div>
+      <p>双曲型平衡点 $x^*$（線形化 $Df(x^*)$ の固有値がすべて実部 $\ne 0$）のとき，</p>
+      <ul>
+        <li><strong>安定多様体</strong> $W^s(x^*) = \{x \mid \varphi_t(x) \to x^*,\; t\to+\infty\}$: $\dim = $ 負実部固有値の個数</li>
+        <li><strong>不安定多様体</strong> $W^u(x^*) = \{x \mid \varphi_t(x) \to x^*,\; t\to-\infty\}$: $\dim = $ 正実部固有値の個数</li>
+      </ul>
+      <p>局所的に $W^s, W^u$ は $x^*$ での線形化の固有空間に接する $C^\infty$ 部分多様体。</p>
+    </div>
+
+    <h2 id="bifurcation">6. 分岐理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 主要な局所分岐</div>
+      <table>
+        <tr><th>分岐名</th><th>標準形</th><th>内容</th></tr>
+        <tr><td>鞍点-結節点 (saddle-node)</td><td>$\dot x = \mu - x^2$</td><td>$\mu=0$ で平衡点が消滅・出現</td></tr>
+        <tr><td>転写点 (transcritical)</td><td>$\dot x = \mu x - x^2$</td><td>平衡点の安定性が入れ替わる</td></tr>
+        <tr><td>ピッチフォーク</td><td>$\dot x = \mu x - x^3$</td><td>対称破れ，1→3 個の平衡点</td></tr>
+        <tr><td>Hopf 分岐</td><td>（複素固有値）</td><td>平衡点から極限サイクルが生まれる</td></tr>
+      </table>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Hopf 分岐</div>
+      <p>$\dot r = \mu r - r^3$，$\dot\theta = \omega$（極座標）。$\mu &lt; 0$: 原点は安定渦状点。$\mu &gt; 0$: 不安定渦状点 + 安定極限サイクル $r = \sqrt\mu$。$\mu = 0$ が Hopf 分岐点。</p>
+    </div>
+
+    <h2 id="chaos">7. カオスと Lorenz 系</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Lorenz 方程式</div>
+      $$\dot x = \sigma(y - x),\quad \dot y = x(\rho - z) - y,\quad \dot z = xy - \beta z$$
+      <p>Lorenz が大気対流のモデルとして導出（$\sigma=10$，$\rho=28$，$\beta=8/3$ が典型）。決定論的だが初期値鋭敏依存（<strong>バタフライ効果</strong>）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — カオスの特徴</div>
+      <ul>
+        <li><strong>初期値鋭敏依存性</strong>: Lyapunov 指数 $\lambda_1 &gt; 0$（隣接軌道が指数的に離れる）</li>
+        <li><strong>位相的推移性</strong>: 軌道が位相空間を稠密に走る</li>
+        <li><strong>周期軌道の稠密性</strong>: 周期軌道が稠密に存在</li>
+        <li><strong>ストレンジアトラクター</strong>: 非整数次元のフラクタル構造をもつ吸引子</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Lyapunov 指数</div>
+      $$\lambda = \lim_{t\to\infty} \frac{1}{t}\ln\frac{|\delta x(t)|}{|\delta x(0)|}$$
+      <p>最大 Lyapunov 指数 $\lambda_1 &gt; 0$ がカオスの定量的指標。Lorenz 系では $\lambda_1 \approx 0.9$。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$\dot x = x - x^3$ の平衡点を求め，各平衡点の安定性を調べよ。</li>
+        <li>$V(x,y) = x^2 + y^2$ が $\dot x = -x + xy^2$，$\dot y = -y - x^2 y$ の Lyapunov 関数であることを確認せよ。</li>
+        <li>$\dot x = \mu x + x^3$ のピッチフォーク分岐を調べ，$\mu$ の各範囲での相図を描け。</li>
+        <li>Lorenz 系でスカラー量 $V = x^2 + y^2 + (z-\rho-\sigma)^2$ が $\dot V = -2(\sigma x^2 + y^2 + \beta z(z-(\rho+\sigma)/2)) + \cdots$ 程度の形になることを計算し，解が有界であることを説明せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>最適化・変分法 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 最適化・変分法</div>
+    <h1>最適化・変分法</h1>
+    <p class="tagline">凸解析・KKT条件・双対理論・Euler-Lagrange 方程式。機械学習・制御理論・経済学の数学的中枢。</p>
+    <div class="tags"><span class="tag">凸最適化</span><span class="tag">KKT条件</span><span class="tag">双対性</span><span class="tag">変分法</span><span class="tag">劣微分</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#convex">凸集合と凸関数</a></li>
+        <li><a href="#unconstrained">無制約最適化</a></li>
+        <li><a href="#lagrange">Lagrange 乗数法</a></li>
+        <li><a href="#kkt">KKT 条件</a></li>
+        <li><a href="#duality">双対性理論</a></li>
+        <li><a href="#calculus-var">変分法</a></li>
+        <li><a href="#subdiff">劣微分と近接点法</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="convex">1. 凸集合と凸関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 凸集合・凸関数</div>
+      <p>$C \subset \mathbb{R}^n$ が<strong>凸集合</strong>: $x,y \in C,\; \lambda \in [0,1] \implies \lambda x + (1-\lambda)y \in C$。</p>
+      <p>$f: C \to \mathbb{R}$（$C$ 凸）が<strong>凸関数</strong>:</p>
+      $$f(\lambda x + (1-\lambda)y) \le \lambda f(x) + (1-\lambda)f(y) \quad \forall x,y \in C,\; \lambda \in [0,1]$$
+      <p>$\ge$ は<strong>凹関数</strong>。$f$ が $C^2$ ならば，凸 $\iff$ Hessian $\nabla^2 f \succeq 0$（半正定値）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 凸関数の基本性質</div>
+      <ul>
+        <li>局所最小値 = 大域最小値</li>
+        <li>最小値集合は凸集合</li>
+        <li>劣レベル集合 $\{x \mid f(x) \le c\}$ は凸</li>
+        <li>$\nabla f(x^*) = 0$（一階条件）が最小値の<strong>必要十分</strong>条件（凸の場合）</li>
+      </ul>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 凸関数の例</div>
+      <ul>
+        <li>$f(x) = \|x\|_p$（$p \ge 1$ の $L^p$ ノルム）</li>
+        <li>$f(x) = e^{ax}$，$f(x) = x^2$，$f(x) = -\ln x$（$x>0$）</li>
+        <li>$f(X) = -\ln\det X$（正定値行列の空間上；行列値凸関数）</li>
+        <li>$f(x) = \max_i x_i$，$f(x) = \|Ax-b\|^2$</li>
+      </ul>
+    </div>
+
+    <h2 id="unconstrained">2. 無制約最適化</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 一次・二次の最適性条件</div>
+      <p>$f: \mathbb{R}^n \to \mathbb{R}$ が $C^2$。$x^*$ が局所最小値ならば：</p>
+      <ul>
+        <li><strong>一次必要条件</strong>: $\nabla f(x^*) = 0$</li>
+        <li><strong>二次必要条件</strong>: $\nabla^2 f(x^*) \succeq 0$（半正定値）</li>
+      </ul>
+      <p>十分条件: $\nabla f(x^*)=0$ かつ $\nabla^2 f(x^*) \succ 0$（正定値） $\implies$ 厳密局所最小値。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 最急降下法・Newton 法</div>
+      <p><strong>最急降下法</strong>: $x_{k+1} = x_k - \alpha_k \nabla f(x_k)$（$\alpha_k &gt; 0$: ステップサイズ）。収束率: $\mu$-強凸・$L$-滑らかで $O((1-\mu/L)^k)$。</p>
+      <p><strong>Newton 法</strong>: $x_{k+1} = x_k - [\nabla^2 f(x_k)]^{-1}\nabla f(x_k)$。局所 2 次収束（速い）。</p>
+    </div>
+
+    <h2 id="lagrange">3. Lagrange 乗数法</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Lagrange の乗数定理</div>
+      <p>等式制約最適化: $\min f(x)$ s.t. $h_i(x) = 0$（$i = 1,\ldots,m$）。$x^*$ が正則な局所最小値（制約の勾配が線形独立）ならば，</p>
+      $$\nabla f(x^*) + \sum_{i=1}^m \lambda_i \nabla h_i(x^*) = 0$$
+      <p>を満たす $\lambda = (\lambda_1,\ldots,\lambda_m) \in \mathbb{R}^m$（<strong>Lagrange 乗数</strong>）が存在する。</p>
+      <p>Lagrangian: $\mathcal{L}(x,\lambda) = f(x) + \sum_i \lambda_i h_i(x)$ の停留点。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 球面上の最大・最小</div>
+      <p>$\min f(x) = x_1 + 2x_2$ s.t. $x_1^2 + x_2^2 = 1$。</p>
+      <p>$\nabla f = \lambda \nabla h$: $(1, 2) = \lambda (2x_1, 2x_2)$ → $x_1 = 1/(2\lambda)$，$x_2 = 1/\lambda$。制約に代入: $\lambda = \pm\sqrt{5}/2$。最小値 $-\sqrt{5}$，最大値 $\sqrt{5}$。</p>
+    </div>
+
+    <h2 id="kkt">4. KKT 条件</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — KKT 条件（Karush-Kuhn-Tucker）</div>
+      <p>$\min f(x)$ s.t. $g_j(x) \le 0$（$j=1,\ldots,p$），$h_i(x)=0$（$i=1,\ldots,m$）。正則性（LICQ など）のもとで，局所最小値 $x^*$ は：</p>
+      <ol>
+        <li><strong>停留性</strong>: $\nabla f(x^*) + \sum_j \mu_j \nabla g_j(x^*) + \sum_i \lambda_i \nabla h_i(x^*) = 0$</li>
+        <li><strong>主実行可能性</strong>: $g_j(x^*) \le 0$，$h_i(x^*) = 0$</li>
+        <li><strong>双対実行可能性</strong>: $\mu_j \ge 0$</li>
+        <li><strong>相補スラック条件</strong>: $\mu_j g_j(x^*) = 0$（$\forall j$）</li>
+      </ol>
+      <p>$f, g_j$ が凸，$h_i$ が線形のとき，KKT条件は最適性の<strong>必要十分条件</strong>。</p>
+    </div>
+
+    <h2 id="duality">5. 双対性理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Lagrange 双対問題</div>
+      <p>主問題 $p^* = \inf_x \sup_{\lambda \ge 0, \mu} \mathcal{L}(x,\lambda,\mu)$ に対して，<strong>双対問題</strong>:</p>
+      $$d^* = \sup_{\lambda \ge 0, \mu} \inf_x \mathcal{L}(x,\lambda,\mu) = \sup_{\lambda \ge 0,\mu} q(\lambda,\mu)$$
+      <p>$q(\lambda,\mu) = \inf_x \mathcal{L}(x,\lambda,\mu)$ を<strong>双対関数</strong>（常に凹）という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 弱双対性・強双対性</div>
+      <p><strong>弱双対性</strong>: $d^* \le p^*$（常に成立）。</p>
+      <p><strong>強双対性</strong>: Slater 条件（$\exists \hat x,\; g_j(\hat x) &lt; 0$ かつ $h_i(\hat x) = 0$）のもとで $d^* = p^*$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 線形計画の双対</div>
+      <p>主問題: $\min c^T x$ s.t. $Ax = b$，$x \ge 0$。<br>
+      双対問題: $\max b^T y$ s.t. $A^T y \le c$。強双対性により最適値は一致（$c^Tx^* = b^Ty^*$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Fenchel 共役</div>
+      <p>$f: \mathbb{R}^n \to (-\infty,+\infty]$ の<strong>Fenchel 共役</strong>（凸共役）:</p>
+      $$f^*(y) = \sup_{x} (\langle y, x\rangle - f(x))$$
+      <p>$f^{**} = f$（$f$ が閉凸関数のとき）。Young の不等式: $\langle x,y\rangle \le f(x) + f^*(y)$。</p>
+    </div>
+
+    <h2 id="calculus-var">6. 変分法</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 汎関数と変分</div>
+      <p>汎関数 $J[y] = \int_a^b F(x, y, y')\,dx$ の最小化。$y^* + \varepsilon\eta$（$\eta(a)=\eta(b)=0$）を代入し $\varepsilon=0$ で微分して 0 とおく（第一変分 $= 0$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Euler-Lagrange 方程式</div>
+      <p>$J[y] = \int_a^b F(x,y,y')\,dx$ が $y^*$ で極値をとるならば，</p>
+      $$\frac{\partial F}{\partial y} - \frac{d}{dx}\frac{\partial F}{\partial y'} = 0$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 重要な例</div>
+      <ul>
+        <li><strong>最短路</strong>: $F = \sqrt{1+y'^2}$ → $y'' = 0$（直線）</li>
+        <li><strong>最速降下線（Brachistochrone）</strong>: サイクロイドが解</li>
+        <li><strong>古典力学</strong>: $F = \frac{1}{2}m\dot q^2 - V(q)$（ラグランジアン）→ Newton の運動方程式 $m\ddot q = -\nabla V$</li>
+        <li><strong>測地線</strong>: Riemann 多様体上で $J[c] = \int \sqrt{g_{ij}\dot c^i \dot c^j}\,dt$ の Euler-Lagrange 方程式が測地線方程式</li>
+      </ul>
+    </div>
+
+    <h2 id="subdiff">7. 劣微分と近接点法</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 劣微分</div>
+      <p>凸関数 $f$ の点 $x$ での<strong>劣微分</strong>:</p>
+      $$\partial f(x) = \{g \in \mathbb{R}^n \mid f(y) \ge f(x) + \langle g, y-x\rangle \;\; \forall y\}$$
+      <p>$f$ が $x$ で微分可能なら $\partial f(x) = \{\nabla f(x)\}$。$f(x) = |x|$ では $\partial f(0) = [-1,1]$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 最適性条件</div>
+      $$x^* \text{ が最小値} \iff 0 \in \partial f(x^*)$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 近接点作用素</div>
+      $$\mathrm{prox}_{\alpha f}(x) = \arg\min_y \left(f(y) + \frac{1}{2\alpha}\|y-x\|^2\right)$$
+      <p>LASSO など疎性促進正則化の最適化に使われる近接勾配法（ISTA/FISTA）の中核。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$f(x) = \|x\|_1 = \sum |x_i|$ の劣微分 $\partial f(x)$ を求めよ（各成分別に考えよ）。</li>
+        <li>Lagrange 乗数法で，$\sum x_i = 1$，$x_i \ge 0$ のもとで $-\sum x_i \ln x_i$（エントロピー）を最大化せよ。</li>
+        <li>$F(x,y,y') = y'^2$ の Euler-Lagrange 方程式を解き，境界条件 $y(0)=0$，$y(1)=1$ を満たす解を求めよ。</li>
+        <li>$\min \|x\|_1$ s.t. $Ax=b$ の双対問題を導け。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
