@@ -54,6 +54,22 @@ const SIDEBAR_HTML = `
       <a href="numerical-analysis.html"><span class="nav-icon">≈</span>数値解析</a>
     </nav>
   </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">物理系</div>
+    <nav>
+      <a href="classical-mechanics.html"><span class="nav-icon">⚙</span>古典力学</a>
+      <a href="electromagnetism.html"><span class="nav-icon">⚡</span>電磁気学</a>
+      <a href="quantum-mechanics.html"><span class="nav-icon">ψ</span>量子力学</a>
+      <a href="statistical-mechanics.html"><span class="nav-icon">S</span>統計力学</a>
+      <a href="relativity.html"><span class="nav-icon">c</span>相対性理論</a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">概要</div>
+    <nav>
+      <a href="field-map.html"><span class="nav-icon">⬡</span>学問領域マップ</a>
+    </nav>
+  </div>
 `;
 
 document.addEventListener("DOMContentLoaded", function () {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>高等数学 学習サイト</title>
+  <title>高等数学・物理 学習サイト</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
@@ -19,12 +19,12 @@
 
   <!-- Hero -->
   <div class="hero">
-    <h1>高等数学 学習サイト</h1>
-    <p class="sub">解析学から代数・幾何・確率・応用数学まで，大学院レベルの数学を体系的に学ぶ。</p>
+    <h1>高等数学・物理 学習サイト</h1>
+    <p class="sub">解析学から代数・幾何・確率・応用数学，さらに古典力学・量子力学・相対論まで体系的に学ぶ。</p>
     <div class="stats-bar" style="margin-top:28px;padding:0">
-      <div class="stat"><div class="num">17</div><div class="lbl">分野</div></div>
-      <div class="stat"><div class="num">100+</div><div class="lbl">定理・定義</div></div>
-      <div class="stat"><div class="num">60+</div><div class="lbl">練習問題</div></div>
+      <div class="stat"><div class="num">23</div><div class="lbl">分野</div></div>
+      <div class="stat"><div class="num">150+</div><div class="lbl">定理・定義</div></div>
+      <div class="stat"><div class="num">80+</div><div class="lbl">練習問題</div></div>
       <div class="stat"><div class="num">KaTeX</div><div class="lbl">数式レンダリング</div></div>
     </div>
     <div class="cta" style="margin-top:28px">
@@ -173,6 +173,56 @@
     </div>
   </div>
 
+  <!-- 物理系 -->
+  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <h2>⚛️ 物理系</h2>
+    <div class="card-grid">
+      <a href="classical-mechanics.html" class="card">
+        <div class="card-icon">⚙</div>
+        <h3>古典力学</h3>
+        <p>最小作用の原理，Lagrange・Hamilton 形式，Noether の定理，剛体・中心力・正規モード。</p>
+        <div class="card-tags"><span>Lagrange</span><span>Hamilton</span><span>Noether</span><span>変分法</span></div>
+      </a>
+      <a href="electromagnetism.html" class="card">
+        <div class="card-icon">⚡</div>
+        <h3>電磁気学</h3>
+        <p>Maxwell 方程式，電磁ポテンシャル，ゲージ変換，電磁波，多重極展開，相対論的定式化。</p>
+        <div class="card-tags"><span>Maxwell</span><span>ゲージ</span><span>電磁波</span><span>4-ベクトル</span></div>
+      </a>
+      <a href="quantum-mechanics.html" class="card">
+        <div class="card-icon">ψ</div>
+        <h3>量子力学</h3>
+        <p>Schrödinger 方程式，Hilbert 空間・演算子形式，不確定性原理，調和振動子，水素原子，摂動論。</p>
+        <div class="card-tags"><span>Schrödinger</span><span>演算子</span><span>不確定性</span><span>スピン</span></div>
+      </a>
+      <a href="statistical-mechanics.html" class="card">
+        <div class="card-icon">S</div>
+        <h3>統計力学</h3>
+        <p>統計アンサンブル，分配関数，Boltzmann・Fermi-Dirac・Bose-Einstein 分布，相転移・Ising モデル。</p>
+        <div class="card-tags"><span>分配関数</span><span>アンサンブル</span><span>Ising</span><span>相転移</span></div>
+      </a>
+      <a href="relativity.html" class="card">
+        <div class="card-icon">c</div>
+        <h3>相対性理論</h3>
+        <p>Lorentz 変換・時空図，$E=mc^2$，一般相対論，Einstein 方程式，Schwarzschild 解，重力波。</p>
+        <div class="card-tags"><span>Lorentz</span><span>時空</span><span>Einstein方程式</span><span>重力波</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 概要 -->
+  <div class="grid-section">
+    <h2>🗺️ 領域概要</h2>
+    <div class="card-grid">
+      <a href="field-map.html" class="card">
+        <div class="card-icon">⬡</div>
+        <h3>学問領域マップ</h3>
+        <p>数学と物理学の接続関係を俯瞰する。線形代数→量子力学，微分幾何→相対論，変分法→古典力学など。</p>
+        <div class="card-tags"><span>数学↔物理</span><span>関係図</span><span>ロードマップ</span></div>
+      </a>
+    </div>
+  </div>
+
   <!-- 学習ロードマップ -->
   <div class="roadmap">
     <h2>📍 推奨学習ロードマップ</h2>
@@ -194,6 +244,12 @@
       <div class="road-item"><div class="road-num">応用 1</div><a href="dynamical-systems.html">力学系</a><br><span style="color:var(--text3);font-size:0.78rem">安定性 · カオス</span></div>
       <div class="road-item"><div class="road-num">応用 2</div><a href="optimization.html">最適化</a><br><span style="color:var(--text3);font-size:0.78rem">KKT · 変分法</span></div>
       <div class="road-item"><div class="road-num">応用 3</div><a href="numerical-analysis.html">数値解析</a><br><span style="color:var(--text3);font-size:0.78rem">誤差 · RK4 · Newton</span></div>
+      <div class="road-item"><div class="road-num">物理 1</div><a href="classical-mechanics.html">古典力学</a><br><span style="color:var(--text3);font-size:0.78rem">Lagrange · Noether</span></div>
+      <div class="road-item"><div class="road-num">物理 2</div><a href="electromagnetism.html">電磁気学</a><br><span style="color:var(--text3);font-size:0.78rem">Maxwell · 電磁波</span></div>
+      <div class="road-item"><div class="road-num">物理 3</div><a href="quantum-mechanics.html">量子力学</a><br><span style="color:var(--text3);font-size:0.78rem">Schrödinger · 演算子</span></div>
+      <div class="road-item"><div class="road-num">物理 4</div><a href="statistical-mechanics.html">統計力学</a><br><span style="color:var(--text3);font-size:0.78rem">分配関数 · 相転移</span></div>
+      <div class="road-item"><div class="road-num">物理 5</div><a href="relativity.html">相対性理論</a><br><span style="color:var(--text3);font-size:0.78rem">Lorentz · Einstein方程式</span></div>
+      <div class="road-item"><div class="road-num">総覧</div><a href="field-map.html">学問領域マップ</a><br><span style="color:var(--text3);font-size:0.78rem">数学↔物理の接続</span></div>
     </div>
   </div>
 

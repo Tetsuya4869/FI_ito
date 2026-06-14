@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学問領域マップ | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+  <style>
+    .field-map-grid {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 0;
+      margin: 2rem 0;
+      align-items: start;
+    }
+    .field-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .field-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: var(--fg);
+      transition: border-color 0.15s, background 0.15s;
+      display: block;
+    }
+    .field-card:hover { border-color: var(--blue); background: var(--bg3); }
+    .field-card .fc-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.2rem; }
+    .field-card .fc-sub { font-size: 0.78rem; color: var(--fg-muted); line-height: 1.4; }
+    .field-card.math { border-left: 3px solid var(--blue); }
+    .field-card.physics { border-left: 3px solid var(--green); }
+    .arrow-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 0.5rem;
+    }
+    .arrow-item {
+      color: var(--fg-muted);
+      font-size: 1.2rem;
+      height: calc(0.75rem + 1rem + 1rem + 0.4rem + 0.2rem + 1.4rem * 2);
+      display: flex;
+      align-items: center;
+    }
+    .col-header {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--fg-muted);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.5rem;
+    }
+    .col-header.math-header { color: var(--blue); }
+    .col-header.physics-header { color: var(--green); }
+    .connection-table { margin-top: 2rem; }
+    .connection-table table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .connection-table th { background: var(--bg3); color: var(--fg-muted); font-weight: 600; padding: 0.5rem 0.75rem; text-align: left; border-bottom: 2px solid var(--border); }
+    .connection-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .connection-table tr:hover td { background: var(--bg2); }
+    .badge-math { background: rgba(88,166,255,0.15); color: var(--blue); border-radius: 4px; padding: 1px 6px; font-size: 0.8rem; white-space: nowrap; }
+    .badge-phys { background: rgba(63,185,80,0.15); color: var(--green); border-radius: 4px; padding: 1px 6px; font-size: 0.8rem; white-space: nowrap; }
+    .roadmap-physics { margin-top: 2rem; }
+    .roadmap-physics ol { padding-left: 1.5rem; }
+    .roadmap-physics li { padding: 0.4rem 0; color: var(--fg); }
+    .roadmap-physics li span { color: var(--fg-muted); font-size: 0.85rem; }
+    @media (max-width: 640px) {
+      .field-map-grid { grid-template-columns: 1fr; }
+      .arrow-col { display: none; }
+    }
+  </style>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 学問領域マップ</div>
+    <h1>学問領域マップ</h1>
+    <p class="tagline">数学と物理学の接続関係を俯瞰する。どの数学がどの物理理論を支えているか。</p>
+    <div class="tags"><span class="tag">数学↔物理</span><span class="tag">関係図</span><span class="tag">学習ロードマップ</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#map">領域マップ</a></li>
+        <li><a href="#connections">詳細接続テーブル</a></li>
+        <li><a href="#roadmap">学習ロードマップ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="map">1. 領域マップ</h2>
+    <p>左が数学分野、右が物理分野。矢印は「数学が物理を支える」方向を表す。</p>
+
+    <div class="field-map-grid">
+      <div class="field-col">
+        <div class="col-header math-header">数学</div>
+        <a class="field-card math" href="linear-algebra.html">
+          <div class="fc-title">線形代数</div>
+          <div class="fc-sub">行列・固有値・Hilbert空間</div>
+        </a>
+        <a class="field-card math" href="differential-geometry.html">
+          <div class="fc-title">微分幾何学</div>
+          <div class="fc-sub">多様体・テンソル・曲率</div>
+        </a>
+        <a class="field-card math" href="pde.html">
+          <div class="fc-title">偏微分方程式</div>
+          <div class="fc-sub">波動方程式・熱方程式</div>
+        </a>
+        <a class="field-card math" href="functional-analysis.html">
+          <div class="fc-title">関数解析</div>
+          <div class="fc-sub">演算子スペクトル・Banach空間</div>
+        </a>
+        <a class="field-card math" href="measure-theory.html">
+          <div class="fc-title">測度論・確率論</div>
+          <div class="fc-sub">統計アンサンブル・大偏差理論</div>
+        </a>
+        <a class="field-card math" href="optimization.html">
+          <div class="fc-title">最適化・変分法</div>
+          <div class="fc-sub">Euler-Lagrange・最小作用</div>
+        </a>
+        <a class="field-card math" href="complex-analysis.html">
+          <div class="fc-title">複素解析</div>
+          <div class="fc-sub">留数定理・解析接続</div>
+        </a>
+        <a class="field-card math" href="stochastic.html">
+          <div class="fc-title">確率微分方程式</div>
+          <div class="fc-sub">Langevin・Fokker-Planck</div>
+        </a>
+        <a class="field-card math" href="abstract-algebra.html">
+          <div class="fc-title">群論・Lie代数</div>
+          <div class="fc-sub">対称性・表現論</div>
+        </a>
+      </div>
+
+      <div class="arrow-col">
+        <div style="height:calc(0.8rem + 0.5rem + 0.5rem)"></div>
+        <div class="arrow-item">→</div>
+        <div class="arrow-item">→</div>
+        <div class="arrow-item">→</div>
+        <div class="arrow-item">→</div>
+        <div class="arrow-item">→</div>
+        <div class="arrow-item">→</div>
+        <div class="arrow-item">→</div>
+        <div class="arrow-item">→</div>
+        <div class="arrow-item">→</div>
+      </div>
+
+      <div class="field-col">
+        <div class="col-header physics-header">物理</div>
+        <a class="field-card physics" href="quantum-mechanics.html">
+          <div class="fc-title">量子力学</div>
+          <div class="fc-sub">固有値問題・Hermite演算子</div>
+        </a>
+        <a class="field-card physics" href="relativity.html">
+          <div class="fc-title">一般相対性理論</div>
+          <div class="fc-sub">Riemann多様体・Einstein方程式</div>
+        </a>
+        <a class="field-card physics" href="electromagnetism.html">
+          <div class="fc-title">電磁気学</div>
+          <div class="fc-sub">Maxwell方程式・波動</div>
+        </a>
+        <a class="field-card physics" href="quantum-mechanics.html">
+          <div class="fc-title">量子力学（演算子論）</div>
+          <div class="fc-sub">自己共役拡張・スペクトル</div>
+        </a>
+        <a class="field-card physics" href="statistical-mechanics.html">
+          <div class="fc-title">統計力学</div>
+          <div class="fc-sub">分配関数・相転移・エントロピー</div>
+        </a>
+        <a class="field-card physics" href="classical-mechanics.html">
+          <div class="fc-title">古典力学</div>
+          <div class="fc-sub">Lagrange・Hamilton・Noether</div>
+        </a>
+        <a class="field-card physics" href="quantum-mechanics.html">
+          <div class="fc-title">量子場理論（入門）</div>
+          <div class="fc-sub">経路積分・伝播関数</div>
+        </a>
+        <a class="field-card physics" href="statistical-mechanics.html">
+          <div class="fc-title">非平衡統計力学</div>
+          <div class="fc-sub">揺動散逸・確率過程</div>
+        </a>
+        <a class="field-card physics" href="electromagnetism.html">
+          <div class="fc-title">素粒子・ゲージ理論</div>
+          <div class="fc-sub">Lie群・標準模型の対称性</div>
+        </a>
+      </div>
+    </div>
+
+    <h2 id="connections">2. 詳細接続テーブル</h2>
+    <div class="connection-table">
+      <table>
+        <tr>
+          <th>数学分野</th>
+          <th>物理分野</th>
+          <th>具体的な接続</th>
+        </tr>
+        <tr>
+          <td><span class="badge-math">線形代数</span></td>
+          <td><span class="badge-phys">量子力学</span></td>
+          <td>状態ベクトル $|\psi\rangle \in \mathcal{H}$，観測量 = Hermite 演算子，固有値 = 測定値</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">微分幾何学</span></td>
+          <td><span class="badge-phys">一般相対論</span></td>
+          <td>時空 = 擬 Riemann 多様体，重力 = 曲率，Einstein 方程式 $G_{\mu\nu} = 8\pi G T_{\mu\nu}$</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">PDE</span></td>
+          <td><span class="badge-phys">電磁気学 / 波動</span></td>
+          <td>Maxwell 方程式は双曲型 PDE，波動方程式 $\Box A^\mu = J^\mu / \varepsilon_0$</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">関数解析</span></td>
+          <td><span class="badge-phys">量子力学</span></td>
+          <td>Schrödinger 演算子の自己共役性，スペクトル定理，連続スペクトルと束縛状態</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">測度論・確率論</span></td>
+          <td><span class="badge-phys">統計力学</span></td>
+          <td>Gibbs 測度，確率分布としての分配関数，大偏差理論 ↔ 自由エネルギー</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">変分法</span></td>
+          <td><span class="badge-phys">古典力学</span></td>
+          <td>最小作用の原理 $\delta S = 0$，Euler-Lagrange 方程式 = 運動方程式</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">複素解析</span></td>
+          <td><span class="badge-phys">量子場理論</span></td>
+          <td>経路積分の留数計算，Wick 回転（虚時間），伝播関数の極</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">確率微分方程式</span></td>
+          <td><span class="badge-phys">統計力学</span></td>
+          <td>Langevin 方程式 $\dot x = -\nabla V + \eta(t)$，Fokker-Planck 方程式 ↔ 拡散</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">群論・Lie代数</span></td>
+          <td><span class="badge-phys">素粒子物理</span></td>
+          <td>標準模型 $SU(3)\times SU(2)\times U(1)$，Noether の定理，ゲージ対称性</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">フーリエ解析</span></td>
+          <td><span class="badge-phys">量子力学・光学</span></td>
+          <td>位置⇔運動量の Fourier 変換，不確定性原理 $\Delta x \cdot \Delta p \ge \hbar/2$</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">数値解析</span></td>
+          <td><span class="badge-phys">計算物理全般</span></td>
+          <td>有限要素法・差分法による PDE 数値解，分子動力学シミュレーション</td>
+        </tr>
+        <tr>
+          <td><span class="badge-math">力学系・カオス</span></td>
+          <td><span class="badge-phys">古典力学・プラズマ</span></td>
+          <td>Poincaré 断面，KAM 定理，非線形共鳴，プラズマ乱流</td>
+        </tr>
+      </table>
+    </div>
+
+    <h2 id="roadmap">3. 学習ロードマップ</h2>
+    <div class="box note">
+      <div class="box-title">💡 数学→物理への推奨学習順</div>
+      <div class="roadmap-physics">
+        <ol>
+          <li><strong>微積分・線形代数</strong> <span>— 大学1-2年の基礎</span></li>
+          <li><strong>古典力学（Lagrange・Hamilton）</strong> <span>— 変分法を体で覚える</span></li>
+          <li><strong>電磁気学（Maxwell）</strong> <span>— PDE の最初の大きな応用</span></li>
+          <li><strong>解析学・複素解析</strong> <span>— より深い数学的基礎</span></li>
+          <li><strong>量子力学</strong> <span>— 線形代数・関数解析の直接応用</span></li>
+          <li><strong>統計力学</strong> <span>— 測度論・確率論が背景</span></li>
+          <li><strong>微分幾何学</strong> <span>— 一般相対論への準備</span></li>
+          <li><strong>一般相対性理論</strong> <span>— 微分幾何の物理への展開</span></li>
+          <li><strong>群論・Lie代数</strong> <span>— 素粒子物理の言語</span></li>
+          <li><strong>量子場理論・素粒子物理</strong> <span>— すべての集大成</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="box def">
+      <div class="box-title">📖 分野間の言語対応</div>
+      <table>
+        <tr><th>数学の概念</th><th>物理での名称</th><th>例</th></tr>
+        <tr><td>Hilbert 空間のベクトル</td><td>量子状態</td><td>$|\psi\rangle$</td></tr>
+        <tr><td>自己共役演算子</td><td>観測量</td><td>位置 $\hat x$，運動量 $\hat p$，エネルギー $\hat H$</td></tr>
+        <tr><td>Lie 群の表現</td><td>粒子の種類</td><td>スピン = $SU(2)$ の表現</td></tr>
+        <tr><td>主束・接続</td><td>ゲージ場</td><td>電磁ポテンシャル $A_\mu$</td></tr>
+        <tr><td>Riemann 計量 $g_{\mu\nu}$</td><td>重力場</td><td>時空の距離 $ds^2 = g_{\mu\nu}dx^\mu dx^\nu$</td></tr>
+        <tr><td>Lagrangian 密度 $\mathcal{L}$</td><td>場の理論の作用</td><td>$S = \int \mathcal{L}\,d^4x$</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

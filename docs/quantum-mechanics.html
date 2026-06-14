@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>量子力学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 量子力学</div>
+    <h1>量子力学</h1>
+    <p class="tagline">Schrödinger 方程式・Hilbert 空間・不確定性原理・調和振動子・水素原子・スピン・摂動論。</p>
+    <div class="tags"><span class="tag">Schrödinger方程式</span><span class="tag">演算子形式</span><span class="tag">不確定性原理</span><span class="tag">調和振動子</span><span class="tag">水素原子</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#schrodinger">Schrödinger 方程式</a></li>
+        <li><a href="#hilbert">Hilbert 空間と演算子形式</a></li>
+        <li><a href="#uncertainty">不確定性原理</a></li>
+        <li><a href="#harmonic">調和振動子</a></li>
+        <li><a href="#hydrogen">中心力場・水素原子</a></li>
+        <li><a href="#spin">スピンと角運動量</a></li>
+        <li><a href="#perturbation">摂動論</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="schrodinger">1. Schrödinger 方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 時間依存 Schrödinger 方程式</div>
+      $$i\hbar\frac{\partial}{\partial t}|\Psi(t)\rangle = \hat H |\Psi(t)\rangle$$
+      <p>波動関数 $\Psi(\mathbf{r},t) = \langle\mathbf{r}|\Psi(t)\rangle$，確率密度 $\rho = |\Psi|^2$，$\int|\Psi|^2\,d^3r = 1$。</p>
+      <p>$\hat H = -\dfrac{\hbar^2}{2m}\nabla^2 + V(\mathbf{r})$（位置表示）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 時間非依存 Schrödinger 方程式（定常状態）</div>
+      $$\hat H\psi_n = E_n\psi_n$$
+      <p>一般解: $\Psi(\mathbf{r},t) = \sum_n c_n \psi_n(\mathbf{r})e^{-iE_n t/\hbar}$，$c_n = \langle\psi_n|\Psi(0)\rangle$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 確率流と連続の方程式</div>
+      $$\mathbf{J} = \frac{\hbar}{2mi}(\Psi^*\nabla\Psi - \Psi\nabla\Psi^*), \quad \frac{\partial\rho}{\partial t} + \nabla\cdot\mathbf{J} = 0$$
+    </div>
+
+    <h2 id="hilbert">2. Hilbert 空間と演算子形式</h2>
+    <div class="box def">
+      <div class="box-title">📖 Dirac の bra-ket 記法</div>
+      <p>状態ベクトル: $|\psi\rangle \in \mathcal{H}$（Hilbert 空間）。内積: $\langle\phi|\psi\rangle \in \mathbb{C}$。</p>
+      <p>完全性: $\sum_n |n\rangle\langle n| = \hat I$（離散），$\int |x\rangle\langle x|\,dx = \hat I$（連続）。</p>
+      <p>観測量 = Hermite 演算子 $\hat A = \hat A^\dagger$。期待値: $\langle\hat A\rangle = \langle\psi|\hat A|\psi\rangle$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ スペクトル定理</div>
+      <p>Hermite 演算子 $\hat A$ は実固有値をもち，異なる固有値に対応する固有ベクトルは直交する。完全正規直交基底が存在する（スペクトル分解 $\hat A = \sum_n a_n |n\rangle\langle n|$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 正準交換関係</div>
+      $$[\hat x_i, \hat p_j] = i\hbar\delta_{ij}, \quad [\hat x_i,\hat x_j] = [\hat p_i,\hat p_j] = 0$$
+      <p>位置表示: $\hat x = x$，$\hat p = -i\hbar\nabla$。運動量表示: $\hat p = p$，$\hat x = i\hbar\nabla_p$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Ehrenfest の定理</div>
+      <p>期待値は古典力学の方程式に従う:</p>
+      $$m\frac{d^2}{dt^2}\langle\mathbf{r}\rangle = -\langle\nabla V\rangle$$
+    </div>
+
+    <h2 id="uncertainty">3. 不確定性原理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Robertson の不確定性関係</div>
+      <p>任意の Hermite 演算子 $\hat A, \hat B$ について:</p>
+      $$\Delta A \cdot \Delta B \ge \frac{1}{2}|\langle[\hat A,\hat B]\rangle|$$
+      <p>位置・運動量: $\Delta x \cdot \Delta p \ge \hbar/2$（$[\hat x, \hat p] = i\hbar$）。</p>
+      <p>エネルギー・時間: $\Delta E \cdot \Delta t \ge \hbar/2$（$\Delta E$: エネルギー幅，$\Delta t$: 状態の寿命）。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 不確定性の本質</div>
+      <p>位置と運動量の不確定性は測定の技術的限界ではなく，量子状態自体の性質。両演算子が同時に確定値を持つ（同時固有状態に在る）ことは $[\hat x,\hat p]\ne 0$ ゆえ不可能。</p>
+    </div>
+
+    <h2 id="harmonic">4. 調和振動子</h2>
+    <div class="box def">
+      <div class="box-title">📖 昇降演算子（生成・消滅演算子）</div>
+      <p>$\hat H = \hat p^2/(2m) + m\omega^2\hat x^2/2$ に対して:</p>
+      $$\hat a = \sqrt{\frac{m\omega}{2\hbar}}\left(\hat x + \frac{i\hat p}{m\omega}\right), \quad \hat a^\dagger = \sqrt{\frac{m\omega}{2\hbar}}\left(\hat x - \frac{i\hat p}{m\omega}\right)$$
+      $$[\hat a, \hat a^\dagger] = 1, \quad \hat H = \hbar\omega\left(\hat a^\dagger\hat a + \frac{1}{2}\right)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ エネルギー固有値と固有状態</div>
+      $$E_n = \hbar\omega\left(n + \frac{1}{2}\right), \quad n = 0, 1, 2, \ldots$$
+      <p>$\hat a^\dagger|n\rangle = \sqrt{n+1}|n+1\rangle$，$\hat a|n\rangle = \sqrt{n}|n-1\rangle$，$\hat a|0\rangle = 0$。</p>
+      <p>基底状態波動関数: $\psi_0(x) = \left(\frac{m\omega}{\pi\hbar}\right)^{1/4} e^{-m\omega x^2/(2\hbar)}$（ガウス関数）。</p>
+    </div>
+
+    <h2 id="hydrogen">5. 中心力場・水素原子</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 球面調和関数と角運動量量子数</div>
+      <p>中心力ポテンシャル $V(r)$ では $\psi_{nlm}(r,\theta,\phi) = R_{nl}(r)Y_l^m(\theta,\phi)$。</p>
+      <p>角運動量: $\hat L^2 Y_l^m = \hbar^2 l(l+1)Y_l^m$，$\hat L_z Y_l^m = \hbar m Y_l^m$（$l=0,1,2,\ldots$；$m=-l,\ldots,l$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 水素原子のエネルギー準位</div>
+      <p>クーロンポテンシャル $V(r) = -e^2/(4\pi\varepsilon_0 r)$ のもとでの束縛状態エネルギー:</p>
+      $$E_n = -\frac{m_e e^4}{2(4\pi\varepsilon_0)^2\hbar^2}\cdot\frac{1}{n^2} = -\frac{13.6\,\text{eV}}{n^2}, \quad n = 1,2,3,\ldots$$
+      <p>縮退度: $n^2$（スピンを含めると $2n^2$）。主量子数 $n$，方位量子数 $l=0,\ldots,n-1$，磁気量子数 $m=-l,\ldots,l$。</p>
+    </div>
+
+    <h2 id="spin">6. スピンと角運動量</h2>
+    <div class="box def">
+      <div class="box-title">📖 スピン $1/2$ と Pauli 行列</div>
+      <p>スピン演算子: $\hat S_i = \frac{\hbar}{2}\sigma_i$（$i=x,y,z$）。Pauli 行列:</p>
+      $$\sigma_x = \begin{pmatrix}0&1\\1&0\end{pmatrix}, \quad \sigma_y = \begin{pmatrix}0&-i\\i&0\end{pmatrix}, \quad \sigma_z = \begin{pmatrix}1&0\\0&-1\end{pmatrix}$$
+      <p>固有値 $\pm\hbar/2$，$[\hat S_i,\hat S_j] = i\hbar\varepsilon_{ijk}\hat S_k$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 角運動量の合成（Clebsch-Gordan）</div>
+      <p>$j_1\otimes j_2$ の合成: $|j_1-j_2| \le j \le j_1+j_2$。$|j,m\rangle = \sum_{m_1,m_2}\langle j_1 m_1 j_2 m_2|j m\rangle|j_1 m_1\rangle|j_2 m_2\rangle$。</p>
+    </div>
+
+    <h2 id="perturbation">7. 摂動論</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 時間非依存摂動論</div>
+      <p>$\hat H = \hat H_0 + \lambda\hat H'$（$\lambda$ 小）。$E_n = E_n^{(0)} + \lambda E_n^{(1)} + \lambda^2 E_n^{(2)} + \cdots$</p>
+      $$E_n^{(1)} = \langle n^{(0)}|\hat H'|n^{(0)}\rangle$$
+      $$E_n^{(2)} = \sum_{k\ne n}\frac{|\langle k^{(0)}|\hat H'|n^{(0)}\rangle|^2}{E_n^{(0)}-E_k^{(0)}}$$
+      <p>一階補正波動関数: $|n^{(1)}\rangle = \sum_{k\ne n}\dfrac{\langle k^{(0)}|\hat H'|n^{(0)}\rangle}{E_n^{(0)}-E_k^{(0)}}|k^{(0)}\rangle$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 時間依存摂動論と Fermi の黄金律</div>
+      <p>初期状態 $|i\rangle$ から終状態 $|f\rangle$ への遷移率:</p>
+      $$\Gamma_{i\to f} = \frac{2\pi}{\hbar}|\langle f|\hat H'|i\rangle|^2 \rho(E_f)$$
+      <p>$\rho(E_f)$: 終状態の状態密度。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>無限深さ井戸型ポテンシャル（$0\le x\le a$ で $V=0$，他で $V=\infty$）の固有値・固有関数を求めよ。</li>
+        <li>調和振動子の $\langle x\rangle$，$\langle p\rangle$，$\langle x^2\rangle$，$\langle p^2\rangle$ を昇降演算子で計算せよ。</li>
+        <li>$\hat H_0 = \hbar\omega(\hat a^\dagger\hat a + 1/2)$ に摂動 $\hat H' = \lambda\hat x^2$ を加えたときの一次・二次エネルギー補正を求めよ。</li>
+        <li>スピン1/2系が磁場 $\mathbf{B} = B\hat z$ 中に置かれたとき，Hamiltonian を書き，時間発展を求めよ（Larmor 歳差）。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

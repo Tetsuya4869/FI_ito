@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>統計力学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 統計力学</div>
+    <h1>統計力学</h1>
+    <p class="tagline">ミクロな自由度から巨視的熱力学を導く。アンサンブル・分配関数・相転移・Ising モデル・揺動散逸定理。</p>
+    <div class="tags"><span class="tag">アンサンブル</span><span class="tag">分配関数</span><span class="tag">Boltzmann分布</span><span class="tag">相転移</span><span class="tag">Isingモデル</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#ensemble">統計アンサンブル</a></li>
+        <li><a href="#partition">分配関数と熱力学量</a></li>
+        <li><a href="#quantum-stat">量子統計分布</a></li>
+        <li><a href="#phase">相転移と Ising モデル</a></li>
+        <li><a href="#fluctuation">揺動散逸定理</a></li>
+        <li><a href="#nonequil">非平衡統計力学入門</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="ensemble">1. 統計アンサンブル</h2>
+    <div class="box def">
+      <div class="box-title">📖 ミクロカノニカルアンサンブル（孤立系）</div>
+      <p>エネルギー $E$，粒子数 $N$，体積 $V$ が一定。状態数 $\Omega(E)$ に対して:</p>
+      $$S = k_B\ln\Omega(E) \quad \text{(Boltzmann の公式)}$$
+      <p>温度: $\frac{1}{T} = \left(\frac{\partial S}{\partial E}\right)_{N,V}$。全ての微視的状態は等確率（等重率の原理）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 カノニカルアンサンブル（熱浴と接触）</div>
+      <p>温度 $T$（$\beta = 1/(k_BT)$），$N$，$V$ 一定。微視的状態 $s$ の確率:</p>
+      $$P(s) = \frac{e^{-\beta E(s)}}{Z}, \quad Z = \sum_s e^{-\beta E(s)} \quad \text{(分配関数)}$$
+      <p>Boltzmann 因子 $e^{-\beta E}$。Helmholtz 自由エネルギー: $F = -k_BT\ln Z$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 大カノニカルアンサンブル（熱浴＋粒子浴）</div>
+      <p>$T$，化学ポテンシャル $\mu$，$V$ 一定。状態 $(N,s)$ の確率:</p>
+      $$P(N,s) = \frac{e^{-\beta(E(N,s) - \mu N)}}{\mathcal{Z}}, \quad \mathcal{Z} = \sum_{N,s}e^{-\beta(E-\mu N)}$$
+      <p>大分配関数 $\mathcal{Z}$，グランドポテンシャル: $\Omega = -k_BT\ln\mathcal{Z}$。</p>
+    </div>
+
+    <h2 id="partition">2. 分配関数と熱力学量</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 熱力学量の導出（カノニカル）</div>
+      $$\langle E\rangle = -\frac{\partial\ln Z}{\partial\beta}, \quad F = -k_BT\ln Z$$
+      $$S = -\frac{\partial F}{\partial T} = k_B\left(\ln Z + \beta\langle E\rangle\right)$$
+      $$P = -\frac{\partial F}{\partial V}, \quad C_V = \frac{\partial\langle E\rangle}{\partial T} = k_B\beta^2\left(\langle E^2\rangle - \langle E\rangle^2\right)$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 二準位系</div>
+      <p>エネルギー $0, \varepsilon$ の 2 状態。$Z = 1 + e^{-\beta\varepsilon}$。</p>
+      $$\langle E\rangle = \frac{\varepsilon}{e^{\beta\varepsilon}+1}, \quad C = k_B\left(\frac{\varepsilon}{k_BT}\right)^2\frac{e^{\varepsilon/k_BT}}{(e^{\varepsilon/k_BT}+1)^2}$$
+      <p>低温 ($T\to 0$): $\langle E\rangle\to 0$。高温 ($T\to\infty$): $\langle E\rangle\to\varepsilon/2$（等分配）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ エネルギー等分配則</div>
+      <p>温度 $T$ の古典系で，Hamiltonian が $q_i$ または $p_i$ の二次形式 $a\xi^2$ として現れる各自由度に $k_BT/2$ のエネルギーが配分される。</p>
+    </div>
+
+    <h2 id="quantum-stat">3. 量子統計分布</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Bose-Einstein・Fermi-Dirac 分布</div>
+      <p>一粒子状態 $\varepsilon$ の平均占有数:</p>
+      $$\langle n_\varepsilon\rangle = \frac{1}{e^{\beta(\varepsilon-\mu)} \mp 1} \quad \begin{cases}-: \text{Bose-Einstein (ボソン)}\\ +: \text{Fermi-Dirac (フェルミオン)}\end{cases}$$
+      <p>古典極限 ($e^{\beta(\varepsilon-\mu)}\gg 1$): Boltzmann 分布 $\langle n\rangle \approx e^{-\beta(\varepsilon-\mu)}$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 Fermi 気体と Bose-Einstein 凝縮</div>
+      <table>
+        <tr><th>系</th><th>低温の特徴</th><th>現象</th></tr>
+        <tr><td>Fermi 気体</td><td>Fermi 準位まで充填</td><td>金属電子，中性子星</td></tr>
+        <tr><td>Bose 気体</td><td>基底状態へマクロ凝縮</td><td>Bose-Einstein 凝縮，超流動</td></tr>
+        <tr><td>フォノン</td><td>$C_V\propto T^3$ (Debye)</td><td>固体の比熱</td></tr>
+        <tr><td>光子（黒体輻射）</td><td>$u(\nu) \propto \nu^3/(e^{h\nu/k_BT}-1)$</td><td>Planck 分布</td></tr>
+      </table>
+    </div>
+
+    <h2 id="phase">4. 相転移と Ising モデル</h2>
+    <div class="box def">
+      <div class="box-title">📖 Ising モデル</div>
+      <p>格子点 $i$ にスピン $s_i = \pm 1$。Hamiltonian:</p>
+      $$H = -J\sum_{\langle ij\rangle}s_i s_j - h\sum_i s_i$$
+      <p>$J>0$: 強磁性（平行配列が安定），$h$: 外部磁場。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 1次元 Ising モデルの厳密解</div>
+      <p>転送行列法（transfer matrix）により厳密に解ける:</p>
+      $$Z = \lambda_+^N + \lambda_-^N, \quad \lambda_\pm = e^{\beta J}\cosh(\beta h) \pm \sqrt{e^{2\beta J}\sinh^2(\beta h) + e^{-2\beta J}}$$
+      <p>1次元では $T>0$ で長距離秩序なし（相転移は $T=0$ のみ）。2次元では $T_c > 0$ で相転移（Onsager, 1944）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 相転移の分類と臨界現象</div>
+      <p><strong>1次相転移</strong>: 秩序パラメータが不連続，潜熱あり（例: 融解）。</p>
+      <p><strong>2次相転移（連続）</strong>: 秩序パラメータが連続的に0に，相関長が発散 $\xi \sim |T-T_c|^{-\nu}$。</p>
+      <p>臨界指数（$d=3$ Ising）: $\nu\approx 0.63$，$\beta\approx 0.33$，$\gamma\approx 1.24$。</p>
+      <p>平均場理論: $M \sim (T_c-T)^{1/2}$（実際の $\beta=0.33$ とずれる）。</p>
+    </div>
+
+    <h2 id="fluctuation">5. 揺動散逸定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 揺動散逸定理（Green-Kubo 関係）</div>
+      <p>平衡状態での自発的揺動と外場に対する応答（散逸）が結びつく:</p>
+      $$\chi''(\omega) = \frac{\omega}{2k_BT}S(\omega)$$
+      <p>$\chi''$: 応答関数の虚部（散逸），$S(\omega)$: 揺動のパワースペクトル。</p>
+      <p>拡散係数 $D$ と粘性 $\eta$ の関係（Einstein 関係）: $D = k_BT/(6\pi\eta r)$（Stokes-Einstein）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Johnson-Nyquist ノイズ</div>
+      <p>抵抗 $R$ の熱雑音: $\langle V^2\rangle = 4k_BTR\,\Delta f$（$\Delta f$: 帯域幅）。揺動散逸定理の電気的例。</p>
+    </div>
+
+    <h2 id="nonequil">6. 非平衡統計力学入門</h2>
+    <div class="box def">
+      <div class="box-title">📖 Boltzmann 方程式</div>
+      $$\frac{\partial f}{\partial t} + \mathbf{v}\cdot\nabla_r f + \frac{\mathbf{F}}{m}\cdot\nabla_v f = \left(\frac{\partial f}{\partial t}\right)_{\rm coll}$$
+      <p>$f(\mathbf{r},\mathbf{v},t)$: 分布関数。衝突項を適切に近似することで拡散・熱伝導・粘性などの輸送現象が導ける（Chapmann-Enskog 展開）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ H 定理と不可逆性</div>
+      <p>Boltzmann の $H$ 関数 $H = \int f\ln f\,d^3v$ は時間とともに単調減少（$\dot H \le 0$）。これが熱力学第二法則（エントロピー増大）のミクロな根拠を与える。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$N$ 個の調和振動子からなる系の分配関数を計算し，熱容量 $C_V$ を求めよ（Einstein モデル）。</li>
+        <li>2次元 Ising モデルの平均場近似を行い，臨界温度 $T_c$ を求めよ。</li>
+        <li>理想 Fermi 気体の Fermi エネルギー $E_F$ と，$T=0$ での全エネルギーを計算せよ。</li>
+        <li>Fokker-Planck 方程式 $\partial_t P = \gamma\partial_x(xP) + D\partial_x^2 P$ の定常解を求めよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
