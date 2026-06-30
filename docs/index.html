@@ -22,9 +22,9 @@
     <h1>高等数学・物理 学習サイト</h1>
     <p class="sub">高校レベルの基礎から、解析・代数・幾何・確率，さらに古典力学・量子力学・相対論まで段階的に学ぶ。</p>
     <div class="stats-bar" style="margin-top:28px;padding:0">
-      <div class="stat"><div class="num">35</div><div class="lbl">分野</div></div>
-      <div class="stat"><div class="num">200+</div><div class="lbl">定理・定義</div></div>
-      <div class="stat"><div class="num">130+</div><div class="lbl">練習問題</div></div>
+      <div class="stat"><div class="num">44</div><div class="lbl">分野</div></div>
+      <div class="stat"><div class="num">260+</div><div class="lbl">定理・定義</div></div>
+      <div class="stat"><div class="num">170+</div><div class="lbl">練習問題</div></div>
       <div class="stat"><div class="num">KaTeX</div><div class="lbl">数式レンダリング</div></div>
     </div>
     <div class="cta" style="margin-top:28px">
@@ -139,6 +139,12 @@
         <p>群・環・体の公理的理論。Lagrange定理，Sylow定理，ガロア理論，Abel の不可解性定理。</p>
         <div class="card-tags"><span>群論</span><span>Sylow</span><span>ガロア</span><span>環・体</span></div>
       </a>
+      <a href="representation-theory.html" class="card">
+        <div class="card-icon">ρ</div>
+        <h3>表現論</h3>
+        <p>群の線形表現，既約分解，Maschke の定理，Schur の補題，指標理論，Lie 群の表現。</p>
+        <div class="card-tags"><span>既約表現</span><span>指標</span><span>Schur</span><span>Lie群</span></div>
+      </a>
       <a href="number-theory.html" class="card">
         <div class="card-icon">ℤ</div>
         <h3>数論</h3>
@@ -173,8 +179,27 @@
     </div>
   </div>
 
-  <!-- 幾何・位相 -->
+  <!-- 論理・計算 -->
   <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <h2>🧮 論理・計算</h2>
+    <div class="card-grid">
+      <a href="mathematical-logic.html" class="card">
+        <div class="card-icon">⊢</div>
+        <h3>数理論理</h3>
+        <p>命題・述語論理，完全性定理，ZFC集合論，計算可能性，Gödel の不完全性定理，モデル理論。</p>
+        <div class="card-tags"><span>述語論理</span><span>ZFC</span><span>不完全性</span><span>モデル理論</span></div>
+      </a>
+      <a href="computational-complexity.html" class="card">
+        <div class="card-icon">P</div>
+        <h3>計算複雑性</h3>
+        <p>Turing機械，O記法，P と NP，NP完全性，PSPACE，乱択・近似，P対NP問題。</p>
+        <div class="card-tags"><span>P vs NP</span><span>NP完全</span><span>PSPACE</span><span>Cook-Levin</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 幾何・位相 -->
+  <div class="grid-section">
     <h2>🌐 幾何・位相</h2>
     <div class="card-grid">
       <a href="topology.html" class="card">
@@ -195,11 +220,17 @@
         <p>基本群，Seifert-van Kampen，被覆空間，単体ホモロジー，Euler 標数，CW 複体。</p>
         <div class="card-tags"><span>基本群</span><span>ホモロジー</span><span>Euler標数</span><span>CW複体</span></div>
       </a>
+      <a href="algebraic-geometry.html" class="card">
+        <div class="card-icon">𝕍</div>
+        <h3>代数幾何</h3>
+        <p>アフィン・射影多様体，Hilbert の零点定理，ザリスキ位相，座標環，次元と特異点，スキーム。</p>
+        <div class="card-tags"><span>多様体</span><span>零点定理</span><span>ザリスキ位相</span><span>スキーム</span></div>
+      </a>
     </div>
   </div>
 
   <!-- 確率・統計 -->
-  <div class="grid-section">
+  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
     <h2>🎲 確率・統計</h2>
     <div class="card-grid">
       <a href="measure-theory.html" class="card">
@@ -224,7 +255,7 @@
   </div>
 
   <!-- 応用数学 -->
-  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="grid-section">
     <h2>⚙️ 応用数学</h2>
     <div class="card-grid">
       <a href="dynamical-systems.html" class="card">
@@ -239,6 +270,18 @@
         <p>凸解析，KKT 条件，Lagrange 双対，Fenchel 共役，Euler-Lagrange 方程式，劣微分。</p>
         <div class="card-tags"><span>凸最適化</span><span>KKT</span><span>変分法</span><span>双対性</span></div>
       </a>
+      <a href="control-theory.html" class="card">
+        <div class="card-icon">⟳</div>
+        <h3>制御理論</h3>
+        <p>状態空間表現，安定性，可制御性・可観測性，フィードバック，LQR，Kalman フィルタ。</p>
+        <div class="card-tags"><span>状態空間</span><span>可制御性</span><span>LQR</span><span>Kalman</span></div>
+      </a>
+      <a href="machine-learning.html" class="card">
+        <div class="card-icon">⊛</div>
+        <h3>機械学習の数理</h3>
+        <p>経験リスク最小化，正則化，勾配降下，ニューラルネット，カーネル法，PAC 学習。</p>
+        <div class="card-tags"><span>SGD</span><span>正則化</span><span>SVM</span><span>PAC学習</span></div>
+      </a>
       <a href="numerical-analysis.html" class="card">
         <div class="card-icon">≈</div>
         <h3>数値解析</h3>
@@ -249,7 +292,7 @@
   </div>
 
   <!-- 物理系 -->
-  <div class="grid-section">
+  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
     <h2>⚛️ 物理系</h2>
     <div class="card-grid">
       <a href="classical-mechanics.html" class="card">
@@ -288,6 +331,18 @@
         <p>Lorentz 変換・時空図，$E=mc^2$，一般相対論，Einstein 方程式，Schwarzschild 解，重力波。</p>
         <div class="card-tags"><span>Lorentz</span><span>時空</span><span>Einstein方程式</span><span>重力波</span></div>
       </a>
+      <a href="cosmology.html" class="card">
+        <div class="card-icon">Λ</div>
+        <h3>宇宙論</h3>
+        <p>FLRW 計量，Friedmann 方程式，ΛCDM モデル，CMB，インフレーション，暗黒物質・暗黒エネルギー。</p>
+        <div class="card-tags"><span>Friedmann</span><span>ΛCDM</span><span>CMB</span><span>インフレーション</span></div>
+      </a>
+      <a href="condensed-matter.html" class="card">
+        <div class="card-icon">⬢</div>
+        <h3>物性物理</h3>
+        <p>結晶と逆格子，バンド理論，フォノン，自由電子論，半導体，磁性，超伝導（BCS）。</p>
+        <div class="card-tags"><span>バンド理論</span><span>フォノン</span><span>半導体</span><span>超伝導</span></div>
+      </a>
       <a href="quantum-mechanics.html" class="card">
         <div class="card-icon">ψ</div>
         <h3>量子力学</h3>
@@ -300,11 +355,17 @@
         <p>場の量子化，Klein-Gordon/Dirac場，生成消滅演算子，Feynman図，くりこみ，ゲージ理論。</p>
         <div class="card-tags"><span>場の量子化</span><span>Feynman図</span><span>くりこみ</span><span>標準模型</span></div>
       </a>
+      <a href="particle-physics.html" class="card">
+        <div class="card-icon">⚛</div>
+        <h3>素粒子物理</h3>
+        <p>標準模型，ゲージ対称性，電弱統一，QCD，Higgs 機構，ニュートリノ振動，標準模型を超えて。</p>
+        <div class="card-tags"><span>標準模型</span><span>電弱統一</span><span>QCD</span><span>Higgs</span></div>
+      </a>
     </div>
   </div>
 
   <!-- 概要 -->
-  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="grid-section">
     <h2>🗺️ 領域概要</h2>
     <div class="card-grid">
       <a href="field-map.html" class="card">
@@ -342,19 +403,28 @@
       <div class="road-item"><div class="road-num">発展 3</div><a href="algebraic-topology.html">代数的位相幾何</a><br><span style="color:var(--text3);font-size:0.78rem">ホモロジー · 基本群</span></div>
       <div class="road-item"><div class="road-num">発展 4</div><a href="number-theory.html">数論</a><br><span style="color:var(--text3);font-size:0.78rem">ゼータ · 楕円曲線</span></div>
       <div class="road-item"><div class="road-num">発展 5</div><a href="category-theory.html">圏論</a><br><span style="color:var(--text3);font-size:0.78rem">関手 · 随伴 · モナド</span></div>
+      <div class="road-item"><div class="road-num">発展 6</div><a href="representation-theory.html">表現論</a><br><span style="color:var(--text3);font-size:0.78rem">既約 · 指標 · Lie群</span></div>
+      <div class="road-item"><div class="road-num">発展 7</div><a href="algebraic-geometry.html">代数幾何</a><br><span style="color:var(--text3);font-size:0.78rem">多様体 · スキーム</span></div>
       <div class="road-item"><div class="road-num">離散 1</div><a href="combinatorics.html">組合せ論・グラフ理論</a><br><span style="color:var(--text3);font-size:0.78rem">母関数 · グラフ</span></div>
       <div class="road-item"><div class="road-num">離散 2</div><a href="information-theory.html">情報理論</a><br><span style="color:var(--text3);font-size:0.78rem">エントロピー · 符号化</span></div>
+      <div class="road-item"><div class="road-num">論理 1</div><a href="mathematical-logic.html">数理論理</a><br><span style="color:var(--text3);font-size:0.78rem">完全性 · 不完全性</span></div>
+      <div class="road-item"><div class="road-num">論理 2</div><a href="computational-complexity.html">計算複雑性</a><br><span style="color:var(--text3);font-size:0.78rem">P対NP</span></div>
       <div class="road-item"><div class="road-num">応用 1</div><a href="dynamical-systems.html">力学系</a><br><span style="color:var(--text3);font-size:0.78rem">安定性 · カオス</span></div>
       <div class="road-item"><div class="road-num">応用 2</div><a href="optimization.html">最適化</a><br><span style="color:var(--text3);font-size:0.78rem">KKT · 変分法</span></div>
-      <div class="road-item"><div class="road-num">応用 3</div><a href="numerical-analysis.html">数値解析</a><br><span style="color:var(--text3);font-size:0.78rem">誤差 · RK4 · Newton</span></div>
+      <div class="road-item"><div class="road-num">応用 3</div><a href="control-theory.html">制御理論</a><br><span style="color:var(--text3);font-size:0.78rem">状態空間 · LQR</span></div>
+      <div class="road-item"><div class="road-num">応用 4</div><a href="machine-learning.html">機械学習の数理</a><br><span style="color:var(--text3);font-size:0.78rem">SGD · SVM · PAC</span></div>
+      <div class="road-item"><div class="road-num">応用 5</div><a href="numerical-analysis.html">数値解析</a><br><span style="color:var(--text3);font-size:0.78rem">誤差 · RK4 · Newton</span></div>
       <div class="road-item"><div class="road-num">物理 1</div><a href="classical-mechanics.html">古典力学</a><br><span style="color:var(--text3);font-size:0.78rem">Lagrange · Noether</span></div>
       <div class="road-item"><div class="road-num">物理 2</div><a href="electromagnetism.html">電磁気学</a><br><span style="color:var(--text3);font-size:0.78rem">Maxwell · 電磁波</span></div>
       <div class="road-item"><div class="road-num">物理 3</div><a href="thermodynamics.html">熱力学</a><br><span style="color:var(--text3);font-size:0.78rem">エントロピー · Carnot</span></div>
       <div class="road-item"><div class="road-num">物理 4</div><a href="statistical-mechanics.html">統計力学</a><br><span style="color:var(--text3);font-size:0.78rem">分配関数 · 相転移</span></div>
       <div class="road-item"><div class="road-num">物理 5</div><a href="fluid-dynamics.html">流体力学</a><br><span style="color:var(--text3);font-size:0.78rem">Navier-Stokes · 乱流</span></div>
       <div class="road-item"><div class="road-num">物理 6</div><a href="relativity.html">相対性理論</a><br><span style="color:var(--text3);font-size:0.78rem">Lorentz · Einstein方程式</span></div>
-      <div class="road-item"><div class="road-num">物理 7</div><a href="quantum-mechanics.html">量子力学</a><br><span style="color:var(--text3);font-size:0.78rem">Schrödinger · 演算子</span></div>
-      <div class="road-item"><div class="road-num">物理 8</div><a href="quantum-field-theory.html">量子場理論</a><br><span style="color:var(--text3);font-size:0.78rem">場の量子化 · Feynman図</span></div>
+      <div class="road-item"><div class="road-num">物理 7</div><a href="cosmology.html">宇宙論</a><br><span style="color:var(--text3);font-size:0.78rem">Friedmann · ΛCDM</span></div>
+      <div class="road-item"><div class="road-num">物理 8</div><a href="quantum-mechanics.html">量子力学</a><br><span style="color:var(--text3);font-size:0.78rem">Schrödinger · 演算子</span></div>
+      <div class="road-item"><div class="road-num">物理 9</div><a href="condensed-matter.html">物性物理</a><br><span style="color:var(--text3);font-size:0.78rem">バンド · 超伝導</span></div>
+      <div class="road-item"><div class="road-num">物理 10</div><a href="quantum-field-theory.html">量子場理論</a><br><span style="color:var(--text3);font-size:0.78rem">場の量子化 · Feynman図</span></div>
+      <div class="road-item"><div class="road-num">物理 11</div><a href="particle-physics.html">素粒子物理</a><br><span style="color:var(--text3);font-size:0.78rem">標準模型 · Higgs</span></div>
       <div class="road-item"><div class="road-num">総覧</div><a href="field-map.html">学問領域マップ</a><br><span style="color:var(--text3);font-size:0.78rem">数学↔物理の接続</span></div>
     </div>
   </div>

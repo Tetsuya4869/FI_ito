@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>計算複雑性 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 計算複雑性</div>
+    <h1>計算複雑性</h1>
+    <p class="tagline">Turing機械・O記法・PとNP・NP完全性・PSPACE・P対NP問題。問題の難しさを測る理論。</p>
+    <div class="tags"><span class="tag">Turing機械</span><span class="tag">P と NP</span><span class="tag">NP完全性</span><span class="tag">PSPACE</span><span class="tag">P対NP問題</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#models">計算モデルと計算量</a></li>
+        <li><a href="#p-np">クラス P と NP</a></li>
+        <li><a href="#np-complete">NP完全性</a></li>
+        <li><a href="#problems">代表的なNP完全問題</a></li>
+        <li><a href="#space">空間計算量</a></li>
+        <li><a href="#randomized">乱択・近似</a></li>
+        <li><a href="#p-vs-np">P対NP問題</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>計算可能性と帰着の基礎については <a href="mathematical-logic.html">数理論理</a>（計算可能性・決定問題）を，問題のグラフ的定式化や数え上げについては <a href="combinatorics.html">組合せ論・グラフ理論</a> を参照すると理解が深まる。本ページでは「問題が原理的に解けるか」ではなく「効率的に解けるか」を扱う。</p>
+    </div>
+
+    <h2 id="models">1. 計算モデルと計算量</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Turing機械</div>
+      <p><strong>決定性Turing機械</strong> (DTM) は，無限テープ・読み書きヘッド・有限状態制御からなる抽象機械であり，組 $M = (Q, \Sigma, \Gamma, \delta, q_0, q_{\rm acc}, q_{\rm rej})$ で定義される。遷移関数 $\delta : Q \times \Gamma \to Q \times \Gamma \times \{L, R\}$ が一意に次の動作を定める。</p>
+      <p><strong>非決定性Turing機械</strong> (NTM) では $\delta : Q \times \Gamma \to \mathcal{P}(Q \times \Gamma \times \{L,R\})$ となり，各ステップで複数の選択肢を「同時に」探索できる。Church–Turing のテーゼにより，これらは（効率を無視すれば）あらゆる計算モデルと同等の計算能力をもつ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 時間計算量と空間計算量</div>
+      <p>入力長を $n$ とする。Turing機械 $M$ の<strong>時間計算量</strong> $t(n)$ は，長さ $n$ の任意の入力に対して $M$ が停止するまでに要するステップ数の最大値。<strong>空間計算量</strong> $s(n)$ は，使用するテープセル数の最大値（入力テープを除く作業テープで測る）。</p>
+      <p>計算量クラスはこれらを資源として定義される。たとえば $\mathrm{TIME}(f(n))$ は $O(f(n))$ 時間で判定できる言語の集合，$\mathrm{SPACE}(f(n))$ は $O(f(n))$ 空間で判定できる言語の集合。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 漸近記法</div>
+      <p>関数 $f, g : \mathbb{N} \to \mathbb{R}_{\ge 0}$ について：</p>
+      $$f = O(g) \iff \exists c>0,\, n_0,\ \forall n \ge n_0,\ f(n) \le c\,g(n)$$
+      $$f = \Omega(g) \iff \exists c>0,\, n_0,\ \forall n \ge n_0,\ f(n) \ge c\,g(n)$$
+      $$f = \Theta(g) \iff f = O(g) \ \text{かつ}\ f = \Omega(g)$$
+      <p>$O$ は上界（最悪でもこの程度），$\Omega$ は下界（少なくともこの程度），$\Theta$ はオーダーの一致を表す。定数倍・低次項を無視して<strong>増加率</strong>に着目するのが計算複雑性の基本的視点である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — オーダーの比較</div>
+      <table>
+        <tr><th>記法</th><th>名称</th><th>例</th></tr>
+        <tr><td>$O(1)$</td><td>定数時間</td><td>配列要素へのアクセス</td></tr>
+        <tr><td>$O(\log n)$</td><td>対数時間</td><td>二分探索</td></tr>
+        <tr><td>$O(n)$</td><td>線形時間</td><td>線形探索</td></tr>
+        <tr><td>$O(n\log n)$</td><td>準線形時間</td><td>マージソート</td></tr>
+        <tr><td>$O(n^2)$, $O(n^3)$</td><td>多項式時間</td><td>行列積（素朴）</td></tr>
+        <tr><td>$O(2^n)$, $O(n!)$</td><td>指数時間</td><td>全探索・順列列挙</td></tr>
+      </table>
+      <p>$n$ が大きくなると多項式時間と指数時間の差は決定的になる。これが「効率的＝多項式時間」という慣習の根拠である。</p>
+    </div>
+
+    <h2 id="p-np">2. クラス P と NP</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 決定問題と言語</div>
+      <p><strong>決定問題</strong>とは，入力に対して「はい／いいえ」を答える問題である。形式的には文字列の集合（<strong>言語</strong>）$L \subseteq \Sigma^*$ への所属判定 $x \in L?$ として定式化される。複雑性理論はおもにこの決定問題を対象とする。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — クラス P</div>
+      <p>クラス $\mathrm{P}$ は，ある多項式 $p(n)$ について $O(p(n))$ 時間の決定性Turing機械で判定できる言語の集合：</p>
+      $$\mathrm{P} = \bigcup_{k \ge 1} \mathrm{TIME}(n^k)$$
+      <p>$\mathrm{P}$ は「効率的に<strong>解ける</strong>問題」の数学的定式化とみなされる（Cobham–Edmonds のテーゼ）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — クラス NP（検証可能性）</div>
+      <p>言語 $L$ が $\mathrm{NP}$ に属するとは，多項式時間の検証アルゴリズム $V$ と多項式 $p$ が存在し，</p>
+      $$x \in L \iff \exists\, w,\ |w| \le p(|x|),\ V(x, w) = 1$$
+      <p>が成り立つことをいう。$w$ は<strong>証拠</strong>（certificate, witness）と呼ばれ，「はい」の場合に解の正しさを多項式時間で<strong>検証</strong>できることを意味する。同値な定義として「非決定性Turing機械で多項式時間判定できる言語」がある（NTM が証拠を一斉に推測すると考えればよい）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — P と NP の包含関係</div>
+      <p>$\mathrm{P} \subseteq \mathrm{NP}$ が成り立つ。実際，多項式時間で解ける問題は証拠を読まずに直接判定できるため，空の証拠 $w = \varepsilon$ で検証可能である。逆向きの包含 $\mathrm{NP} \subseteq \mathrm{P}$ が成り立つか否かが未解決の P対NP問題である（第7節）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — クラス coNP</div>
+      <p>$\mathrm{coNP}$ は補問題が $\mathrm{NP}$ に属する言語の集合：$L \in \mathrm{coNP} \iff \overline{L} \in \mathrm{NP}$。すなわち「いいえ」の場合に多項式時間で検証可能な証拠をもつ。$\mathrm{P} \subseteq \mathrm{NP} \cap \mathrm{coNP}$ は分かっているが，$\mathrm{NP} = \mathrm{coNP}$ かどうかも未解決である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 「解く」と「検証する」の非対称性</div>
+      <p>数独を自力で<strong>解く</strong>のは難しいが，完成した盤面が正しいか<strong>検証する</strong>のは容易である。NP はまさにこの「検証は速いが探索は難しいかもしれない」問題の集合であり，P対NP問題はこの直観的な非対称性が本質的かどうかを問うている。</p>
+    </div>
+
+    <h2 id="np-complete">3. NP完全性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 多項式時間多対一帰着</div>
+      <p>言語 $A$ から $B$ への<strong>多項式時間帰着</strong> $A \le_p B$ とは，多項式時間で計算可能な関数 $f$ が存在し，</p>
+      $$x \in A \iff f(x) \in B$$
+      <p>が成り立つことをいう。$A \le_p B$ かつ $B \in \mathrm{P}$ ならば $A \in \mathrm{P}$ となる（帰着は難しさを保存する）。帰着は推移的でもある：$A \le_p B$ かつ $B \le_p C$ ならば $A \le_p C$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — NP困難・NP完全</div>
+      <p>言語 $B$ が <strong>NP困難</strong> (NP-hard) であるとは，すべての $A \in \mathrm{NP}$ について $A \le_p B$ が成り立つこと。$B$ が <strong>NP完全</strong> (NP-complete) であるとは，</p>
+      $$B \in \mathrm{NP} \quad \text{かつ} \quad B \ \text{が NP困難}$$
+      <p>であること。NP完全問題は NP の中で「最も難しい」問題群であり，そのどれか一つでも多項式時間で解ければ $\mathrm{P} = \mathrm{NP}$ が従う。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cook–Levin の定理</div>
+      <p><strong>充足可能性問題 SAT は NP完全である。</strong></p>
+      <p>すなわち，任意の $\mathrm{NP}$ 言語 $L$ について，Turing機械の計算過程をブール論理式で符号化することにより $L \le_p \mathrm{SAT}$ が示せる。これにより「最初の NP完全問題」が確立され，以後は SAT からの帰着を連鎖させることで他の問題の NP完全性が証明される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 NP完全性の証明の型</div>
+      <p>ある問題 $B$ を NP完全と示すには，(1) $B \in \mathrm{NP}$（証拠が多項式時間検証可能）を示し，(2) 既知の NP完全問題 $C$ から $C \le_p B$ を構成する，の2段階で行う。Cook–Levin が出発点を与え，あとは帰着の連鎖で広がっていく。</p>
+    </div>
+
+    <h2 id="problems">4. 代表的なNP完全問題</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — SAT と 3-SAT</div>
+      <p><strong>SAT</strong>（充足可能性問題）: ブール変数からなる論理式 $\varphi$ が，変数への真理値割り当てによって真にできるか判定する問題。</p>
+      <p><strong>3-SAT</strong>: $\varphi$ が連言標準形 (CNF) で各節がちょうど 3 個のリテラルからなる場合。例：$(x_1 \lor \lnot x_2 \lor x_3) \land (\lnot x_1 \lor x_2 \lor x_4)$。3-SAT も NP完全である（SAT から帰着）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 帰着の連鎖と代表的問題</div>
+      <table>
+        <tr><th>問題</th><th>内容</th><th>典型的な帰着元</th></tr>
+        <tr><td>3-SAT</td><td>各節3リテラルのCNFの充足</td><td>SAT</td></tr>
+        <tr><td>クリーク (CLIQUE)</td><td>グラフに大きさ $k$ の完全部分グラフがあるか</td><td>3-SAT</td></tr>
+        <tr><td>頂点被覆 (Vertex Cover)</td><td>全辺を覆う $k$ 個以下の頂点があるか</td><td>クリーク</td></tr>
+        <tr><td>ハミルトン閉路</td><td>全頂点を1度ずつ通る閉路があるか</td><td>頂点被覆</td></tr>
+        <tr><td>巡回セールスマン (TSP)</td><td>総距離 $\le B$ の巡回路があるか</td><td>ハミルトン閉路</td></tr>
+        <tr><td>部分和 (Subset Sum)</td><td>部分集合の和が目標値 $t$ になるか</td><td>3-SAT</td></tr>
+      </table>
+      <p>これらはすべて $\le_p$ で互いに結ばれており，どれか一つが $\mathrm{P}$ に属せば全部が $\mathrm{P}$ に属する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — クリークと頂点被覆の双対</div>
+      <p>$n$ 頂点のグラフ $G$ について，$S$ が $G$ のクリーク $\iff$ $V \setminus S$ が補グラフ $\overline{G}$ の頂点被覆 $\iff$ $S$ が $\overline{G}$ の独立集合。したがって「大きさ $k$ のクリーク」「大きさ $n-k$ の頂点被覆」「大きさ $k$ の独立集合」は互いに多項式時間で言い換えられ，三者は同時に NP完全となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 最適化版と決定版</div>
+      <p>TSP の「最短巡回路を求めよ」という最適化問題と「総距離 $\le B$ の巡回路があるか」という決定問題は，二分探索で互いに多項式時間帰着できる。複雑性理論では扱いやすさのため決定問題版を標準とする。</p>
+    </div>
+
+    <h2 id="space">5. 空間計算量</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — PSPACE, L, NL</div>
+      <p>空間を資源とする主要クラス：</p>
+      $$\mathrm{PSPACE} = \bigcup_{k\ge1} \mathrm{SPACE}(n^k), \quad \mathrm{L} = \mathrm{SPACE}(\log n), \quad \mathrm{NL} = \mathrm{NSPACE}(\log n)$$
+      <p>$\mathrm{L}$（対数空間）は入力上のポインタ数本ぶんの作業領域のみを使うクラス，$\mathrm{NL}$ はその非決定性版。$\mathrm{PSPACE}$ は多項式空間で判定できる言語の集合。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 主要クラスの包含関係</div>
+      $$\mathrm{L} \subseteq \mathrm{NL} \subseteq \mathrm{P} \subseteq \mathrm{NP} \subseteq \mathrm{PSPACE} \subseteq \mathrm{EXP}$$
+      <p>これらのうち真の包含が証明されているのは $\mathrm{L} \subsetneq \mathrm{PSPACE}$ や $\mathrm{P} \subsetneq \mathrm{EXP}$（時間階層定理・空間階層定理より）のみで，隣接する多くの包含が等号か真の包含か未解決である。なお時間 $t(n)$ で動く機械は高々 $t(n)$ セルしか使えないため $\mathrm{TIME}(f) \subseteq \mathrm{SPACE}(f)$ が成り立つ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Savitch の定理</div>
+      <p>任意の $f(n) \ge \log n$ について</p>
+      $$\mathrm{NSPACE}(f(n)) \subseteq \mathrm{SPACE}\bigl(f(n)^2\bigr)$$
+      <p>が成り立つ。非決定性の空間は，高々二乗のオーバーヘッドで決定性に変換できる。系として $\mathrm{PSPACE} = \mathrm{NPSPACE}$，すなわち空間に関しては非決定性が（多項式の範囲で）力を加えない。証明は到達可能性問題を再帰的に分割統治する手法による。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — PSPACE完全</div>
+      <p>$B$ が <strong>PSPACE完全</strong> であるとは，$B \in \mathrm{PSPACE}$ かつ任意の $A \in \mathrm{PSPACE}$ について $A \le_p B$ であること。代表例は<strong>量化ブール論理式</strong> TQBF（$\exists x_1 \forall x_2 \exists x_3 \cdots \varphi$ の真偽判定）であり，多くの二人ゲーム（一般化された碁・チェッカーなど）の必勝判定が PSPACE完全になる。</p>
+    </div>
+
+    <h2 id="randomized">6. 乱択・近似</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — クラス BPP（乱択計算）</div>
+      <p>乱数を使える多項式時間Turing機械を考える。言語 $L$ が <strong>BPP</strong>（有界誤差確率多項式時間）に属するとは，多項式時間乱択機械 $M$ が存在し，</p>
+      $$x \in L \Rightarrow \Pr[M(x)=1] \ge \tfrac{2}{3}, \qquad x \notin L \Rightarrow \Pr[M(x)=1] \le \tfrac{1}{3}$$
+      <p>を満たすこと。誤り確率 $\tfrac13$ は，独立試行の多数決により $2^{-n}$ まで指数的に下げられる（増幅）。$\mathrm{P} \subseteq \mathrm{BPP} \subseteq \mathrm{PSPACE}$ が知られており，多くの専門家は $\mathrm{P} = \mathrm{BPP}$ を予想している（脱乱択化）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 乱択アルゴリズム</div>
+      <p>素数判定 Miller–Rabin は乱数を用いて高速に「合成数である」証拠を探す（決定性多項式時間の AKS 判定が後に発見された）。クイックソートのピボット乱択や，最小カットを求める Karger のアルゴリズムなど，乱択は実用上きわめて強力である。乱数は<strong>計算能力そのもの</strong>を増やすというより，平均的・期待的に高速化や単純化をもたらす。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 近似アルゴリズムと近似比</div>
+      <p>NP困難な最適化問題に対し，最適解 $\mathrm{OPT}$ の代わりに保証付きの近似解を多項式時間で求める。最小化問題で，アルゴリズムの出力コスト $\mathrm{ALG}$ が常に</p>
+      $$\mathrm{ALG} \le \rho \cdot \mathrm{OPT} \quad (\rho \ge 1)$$
+      <p>を満たすとき，<strong>近似比</strong> $\rho$ の近似アルゴリズムという。例：頂点被覆には貪欲な辺選択で $\rho = 2$，距離が三角不等式を満たす TSP には Christofides 法で $\rho = 3/2$ の近似がある。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — PCP定理と近似困難性</div>
+      <p><strong>PCP定理</strong>（確率的検証可能証明）は，すべての $\mathrm{NP}$ 言語が，定数個のビットだけをランダムに読む検証者によって（多項式長の証明を用い）チェックできることを主張する：$\mathrm{NP} = \mathrm{PCP}(O(\log n),\, O(1))$。この定理から多くの問題で「ある近似比より良い近似は $\mathrm{P} = \mathrm{NP}$ でない限り不可能」という<strong>近似困難性</strong>の下界が導かれ，近似可能性の理論に革命をもたらした。</p>
+    </div>
+
+    <h2 id="p-vs-np">7. P対NP問題</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — P対NP問題</div>
+      <p>$\mathrm{P} = \mathrm{NP}$ か $\mathrm{P} \ne \mathrm{NP}$ か，という問い。$\mathrm{P} \subseteq \mathrm{NP}$ は自明なので，本質は「検証が速い問題はすべて発見も速いか」である。クレイ数学研究所の<strong>ミレニアム懸賞問題</strong>の一つであり，解決には 100 万ドルの賞金がかけられている。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — NP完全問題と P対NP の同値</div>
+      <p>任意の一つの NP完全問題（たとえば SAT）が多項式時間で解けることと $\mathrm{P} = \mathrm{NP}$ は同値である。逆に，ある一つの NP完全問題に超多項式時間の下界が示されれば $\mathrm{P} \ne \mathrm{NP}$ が従う。すなわち，無数の問題の運命が一点に集約されている。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 暗号への影響（一方向性関数）</div>
+      <p>現代暗号の安全性は「計算するのは易しいが逆算は難しい」<strong>一方向性関数</strong>の存在に依存している。素因数分解や離散対数の困難性がその代表である（→ <a href="number-theory.html">数論</a>）。もし $\mathrm{P} = \mathrm{NP}$ なら，多くの暗号方式の前提が崩れ，公開鍵暗号の安全性が根本から脅かされる。一方向性関数の存在は $\mathrm{P} \ne \mathrm{NP}$ よりも強い仮定だが，両者は密接に関連する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 現在の見解と障壁</div>
+      <p>大多数の研究者は $\mathrm{P} \ne \mathrm{NP}$ を予想している。しかし証明は容易でなく，相対化（オラクル）・自然な証明 (natural proofs)・代数化という三つの<strong>障壁</strong>が，既存の証明技法では到達できないことを示してきた。下界を示す新しい技法の開発が課題である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>計算困難性は応用へと広がる。一方向性関数と公開鍵暗号の数学的基盤は <a href="number-theory.html">数論</a>（素因数分解・離散対数）で学べる。また，学習問題の計算複雑性や最適化の困難性は <a href="machine-learning.html">機械学習の数理</a> でより具体的に現れる。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$f(n) = 3n^3 + 100n^2 + 7$ について $f(n) = \Theta(n^3)$ を，定義に基づき定数 $c_1, c_2, n_0$ を明示して証明せよ。</li>
+        <li>$\mathrm{P} \subseteq \mathrm{NP} \cap \mathrm{coNP}$ を示せ。また $\mathrm{NP} = \mathrm{coNP}$ ならば任意の NP完全問題が coNP に属することを述べよ。</li>
+        <li>独立集合問題が NP完全であることを，クリーク問題からの多項式時間帰着を構成して示せ（補グラフを用いよ）。</li>
+        <li>Savitch の定理を用いて $\mathrm{NL} \subseteq \mathrm{SPACE}((\log n)^2)$ を導け。さらに $\mathrm{PSPACE} = \mathrm{NPSPACE}$ が従うことを説明せよ。</li>
+        <li>誤り確率 $\tfrac13$ の BPP アルゴリズムを $k$ 回独立に実行し多数決をとると，誤り確率が $k$ について指数的に減少することを Chernoff 限界（または直接の評価）で示せ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

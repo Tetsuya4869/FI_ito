@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>素粒子物理 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 素粒子物理</div>
+    <h1>素粒子物理</h1>
+    <p class="tagline">標準模型・ゲージ対称性・電弱統一・QCD・Higgs機構・ニュートリノ振動。物質の最も基本的な構成要素。</p>
+    <div class="tags"><span class="tag">標準模型</span><span class="tag">ゲージ対称性</span><span class="tag">電弱統一</span><span class="tag">量子色力学</span><span class="tag">Higgs機構</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="quantum-field-theory.html">量子場理論</a>（場の量子化・ゲージ理論・Feynman 図）を中心的前提とする。また標準模型のゲージ群 $SU(3)\times SU(2)\times U(1)$ の構造を理解するには <a href="representation-theory.html">表現論</a>（Lie 群・Lie 代数とその表現）の知識があると見通しが良い。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#standard-model">標準模型の概観</a></li>
+        <li><a href="#symmetry">対称性と保存則</a></li>
+        <li><a href="#electroweak">電弱相互作用</a></li>
+        <li><a href="#qcd">量子色力学 QCD</a></li>
+        <li><a href="#higgs">Higgs 機構</a></li>
+        <li><a href="#neutrino">ニュートリノ</a></li>
+        <li><a href="#beyond">標準模型を超えて</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="standard-model">1. 標準模型の概観</h2>
+    <div class="box note">
+      <div class="box-title">💡 標準模型とは</div>
+      <p>標準模型（Standard Model, SM）は，既知の素粒子と，重力を除く 3 つの基本相互作用——強い相互作用・弱い相互作用・電磁相互作用——を統一的に記述する場の理論である。すべての物質粒子（フェルミオン）と力を媒介する粒子（ゲージボソン），そして質量の起源を担う Higgs ボソンからなる。1970 年代に確立され，以後ほぼすべての加速器実験を高精度で説明し続けている。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — フェルミオン: クォークとレプトン</div>
+      <p>物質を構成するスピン $1/2$ のフェルミオンは，<strong>クォーク 6 種</strong>と<strong>レプトン 6 種</strong>に分かれ，それぞれ 3 つの<strong>世代</strong>に整理される:</p>
+      $$
+      \text{クォーク}:\;
+      \begin{pmatrix} u \\ d \end{pmatrix},\;
+      \begin{pmatrix} c \\ s \end{pmatrix},\;
+      \begin{pmatrix} t \\ b \end{pmatrix}
+      \qquad
+      \text{レプトン}:\;
+      \begin{pmatrix} \nu_e \\ e \end{pmatrix},\;
+      \begin{pmatrix} \nu_\mu \\ \mu \end{pmatrix},\;
+      \begin{pmatrix} \nu_\tau \\ \tau \end{pmatrix}
+      $$
+      <p>クォークはアップ型（$u,c,t$，電荷 $+\tfrac23$）とダウン型（$d,s,b$，電荷 $-\tfrac13$）を持ち，色荷をもつため強い相互作用に参加する。レプトンは荷電レプトン（$e,\mu,\tau$，電荷 $-1$）と中性のニュートリノ（$\nu_e,\nu_\mu,\nu_\tau$）からなる。各粒子には反粒子が存在する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ゲージボソンと相互作用</div>
+      <p>力は<strong>ゲージボソン</strong>（スピン 1）の交換によって媒介される:</p>
+      <ul>
+        <li><strong>光子</strong> $\gamma$ ——電磁相互作用を媒介。質量 0，電荷 0。</li>
+        <li><strong>$W^\pm,\,Z^0$ ボソン</strong>——弱い相互作用を媒介。質量はそれぞれ約 $80.4$ GeV，$91.2$ GeV。</li>
+        <li><strong>グルーオン</strong> $g$ ——強い相互作用を媒介。8 種，質量 0，色荷をもつ。</li>
+      </ul>
+      <p>これに加え，質量の起源を担うスピン 0 の<strong>Higgs ボソン</strong> $H$（質量約 $125$ GeV）が存在する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 標準模型のゲージ群</div>
+      <p>標準模型は次の非可換ゲージ群に基づく Yang-Mills 理論である:</p>
+      $$SU(3)_C \times SU(2)_L \times U(1)_Y$$
+      <p>$SU(3)_C$ は色（color）を扱う量子色力学，$SU(2)_L \times U(1)_Y$ は弱アイソスピンと超電荷（hypercharge）を扱う電弱理論に対応する。電弱対称性は Higgs 機構によって自発的に破れ，低エネルギーでは電磁相互作用 $U(1)_{\mathrm{EM}}$ が残る。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 標準模型に含まれないもの</div>
+      <p>標準模型は重力を含まない。また，ニュートリノ質量・暗黒物質・宇宙の物質反物質非対称性などは標準模型だけでは説明できず，これらは「標準模型を超える物理」（第 7 節）への手がかりとなっている。</p>
+    </div>
+
+    <h2 id="symmetry">2. 対称性と保存則</h2>
+    <div class="box note">
+      <div class="box-title">💡 対称性が物理を決める</div>
+      <p>素粒子物理学では，理論の構造は<strong>対称性</strong>によって大きく規定される。連続対称性は保存則を，局所（ゲージ）対称性は相互作用そのものを生み出す。離散対称性 $C,P,T$ は相互作用の性質を分類する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Noether の定理</div>
+      <p>作用が連続的な大域対称変換のもとで不変ならば，対応する<strong>保存カレント</strong>と保存量が存在する:</p>
+      $$\partial_\mu j^\mu = 0 \quad\Longrightarrow\quad Q = \int d^3x\, j^0 = \text{一定}$$
+      <p>例えば，位相変換 $\psi\to e^{i\alpha}\psi$ の不変性は電荷の保存を与える。時間並進の不変性はエネルギー保存，空間並進の不変性は運動量保存，回転の不変性は角運動量保存を与える。Noether の定理は対称性と保存則を結びつける基本原理である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ゲージ対称性</div>
+      <p>時空各点で独立にとれる内部対称変換（局所変換）のもとで作用が不変であることを<strong>ゲージ対称性</strong>という。不変性を保つには通常の微分を共変微分 $D_\mu = \partial_\mu - ig\,T^a A_\mu^a$ に置き換える必要があり，ここでゲージ場 $A_\mu^a$ と相互作用の形が必然的に導かれる（$T^a$ は群の生成子）。標準模型の 3 つの相互作用はすべてゲージ対称性から生じる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — CPT 対称性</div>
+      <p>3 つの離散変換を考える: 電荷共役 $C$（粒子↔反粒子），パリティ $P$（空間反転 $\mathbf{x}\to-\mathbf{x}$），時間反転 $T$（$t\to-t$）。局所的でLorentz 不変・エルミートな場の理論は，これらの積 <strong>$CPT$ を必ず保存する</strong>（CPT 定理）。一方，弱い相互作用は $P$ を最大限破り，$CP$ もわずかに破る。$CPT$ 保存と $CP$ の破れより，$T$ も破れていることが従う。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — フレーバー数・バリオン数・レプトン数</div>
+      <p>標準模型には，ゲージ対称性に直接由来しない<strong>大域的（近似的）保存量</strong>がある:</p>
+      <ul>
+        <li><strong>バリオン数</strong> $B$ ——各クォークに $+\tfrac13$，反クォークに $-\tfrac13$。陽子（$uud$）は $B=1$。</li>
+        <li><strong>レプトン数</strong> $L$ ——各レプトンに $+1$，反レプトンに $-1$。</li>
+        <li><strong>フレーバー</strong>（クォークの種類）——強・電磁相互作用では保存するが，弱い相互作用では世代をまたぐ遷移（例: $s\to u$）が起こり破れる。</li>
+      </ul>
+      <p>$B$ と $L$ は摂動論の範囲では保存するが，非摂動効果や大統一理論では破れうる。組合せ $B-L$ はより保存性が高いと考えられている。</p>
+    </div>
+
+    <h2 id="electroweak">3. 電弱相互作用</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 電弱統一とゲージ群 $SU(2)_L\times U(1)_Y$</div>
+      <p>Glashow-Weinberg-Salam 理論は，電磁相互作用と弱い相互作用を単一のゲージ群 $SU(2)_L\times U(1)_Y$ のもとで統一する。$SU(2)_L$ は<strong>弱アイソスピン</strong>（生成子 $T^a$，ゲージ場 $W^a_\mu$，$a=1,2,3$）に，$U(1)_Y$ は<strong>超電荷</strong> $Y$（ゲージ場 $B_\mu$）に対応する。電荷は次の関係（Gell-Mann–Nishijima 公式）で与えられる:</p>
+      $$Q = T^3 + \frac{Y}{2}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 物理的ゲージボソンと Weinberg 角</div>
+      <p>対称性が破れると，もとのゲージ場の線形結合として物理的ボソンが現れる。荷電ボソンは</p>
+      $$W^\pm_\mu = \frac{1}{\sqrt2}\left(W^1_\mu \mp i W^2_\mu\right)$$
+      <p>中性ボソンは混合角（Weinberg 角）$\theta_W$ による回転で与えられる:</p>
+      $$
+      \begin{pmatrix} Z_\mu \\ A_\mu \end{pmatrix}
+      =
+      \begin{pmatrix} \cos\theta_W & -\sin\theta_W \\ \sin\theta_W & \cos\theta_W \end{pmatrix}
+      \begin{pmatrix} W^3_\mu \\ B_\mu \end{pmatrix}
+      $$
+      <p>$A_\mu$ は質量 0 の光子（電磁相互作用），$Z_\mu$ は質量をもつ中性弱ボソンである。質量の関係 $M_W = M_Z\cos\theta_W$ が成り立つ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ パリティ非保存と V−A 構造</div>
+      <p>$SU(2)_L$ という記号の添字 $L$ が示す通り，弱い相互作用は<strong>左巻き</strong>フェルミオンのみに作用する。左巻き成分は $SU(2)$ の二重項を，右巻き成分は一重項を組む:</p>
+      $$
+      \begin{pmatrix} \nu_e \\ e \end{pmatrix}_L,\quad
+      \begin{pmatrix} u \\ d \end{pmatrix}_L
+      \quad\text{(二重項)}\;;\qquad
+      e_R,\; u_R,\; d_R \quad\text{(一重項)}
+      $$
+      <p>このため弱い相互作用は<strong>パリティ $P$ を最大限に破る</strong>（1956 年に Lee–Yang が予言，1957 年に Wu の実験で確認）。荷電カレントは左巻きのみを含む「V−A 型」 $j^\mu \propto \bar\psi\gamma^\mu(1-\gamma^5)\psi$ をとる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — ベータ崩壊</div>
+      <p>原子核のベータ崩壊 $n \to p + e^- + \bar\nu_e$ は，クォークレベルでは $d \to u + W^-$（続いて $W^- \to e^- + \bar\nu_e$）として起こる弱い相互作用過程である。媒介する $W$ ボソンが非常に重い（$\sim 80$ GeV）ため，低エネルギーでは Fermi の有効 4 点相互作用（結合定数 $G_F \propto g^2/M_W^2$）として近似でき，これが弱い相互作用が「弱い」理由——本質的に弱いのではなく，媒介粒子が重いため——を説明する。</p>
+    </div>
+
+    <h2 id="qcd">4. 量子色力学 QCD</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — $SU(3)_c$ とカラー荷</div>
+      <p>強い相互作用は，ゲージ群 $SU(3)_c$ に基づく非可換ゲージ理論<strong>量子色力学（QCD）</strong>で記述される。各クォークは<strong>カラー荷</strong>（色: 赤・緑・青の 3 状態）をもち，$SU(3)$ の基本表現（3 次元）に属する:</p>
+      $$q = \begin{pmatrix} q_r \\ q_g \\ q_b \end{pmatrix},\qquad q \to U q,\;\; U\in SU(3)$$
+      <p>QCD の Lagrangian は</p>
+      $$\mathcal{L}_{\mathrm{QCD}} = \bar q\,(i\gamma^\mu D_\mu - m)\,q - \frac14 G^a_{\mu\nu}G^{a\,\mu\nu}$$
+      <p>で与えられる（$D_\mu = \partial_\mu - i g_s T^a A^a_\mu$，$G^a_{\mu\nu}$ はグルーオン場の強さ）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — グルーオンと自己相互作用</div>
+      <p>強い相互作用を媒介するゲージボソンが<strong>グルーオン</strong>である。$SU(3)$ の生成子は 8 個（$T^a$，$a=1,\dots,8$）あるため，グルーオンも<strong>8 種</strong>存在し，それぞれカラーと反カラーの組合せ（随伴表現）をもつ。光子と異なり，グルーオン自身がカラー荷をもつため<strong>グルーオン同士が相互作用する</strong>:</p>
+      $$G^a_{\mu\nu} = \partial_\mu A^a_\nu - \partial_\nu A^a_\mu + g_s f^{abc} A^b_\mu A^c_\nu$$
+      <p>最後の非線形項（構造定数 $f^{abc}$ を含む）が 3 点・4 点のグルーオン自己相互作用を与え，QCD の特異な性質の源となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 漸近的自由性</div>
+      <p>QCD の結合定数 $g_s$（または $\alpha_s = g_s^2/4\pi$）はエネルギースケール $\mu$ とともに走る。ベータ関数は負:</p>
+      $$\mu\frac{d g_s}{d\mu} = \beta(g_s) < 0$$
+      <p>このため<strong>高エネルギー（短距離）では結合が弱くなり</strong>，クォークはほぼ自由粒子のように振る舞う。これが<strong>漸近的自由性</strong>であり，Gross・Wilczek・Politzer により 1973 年に発見された（2004 年ノーベル賞）。グルーオンの自己相互作用がこの符号を生む鍵である。高エネルギー散乱で摂動論的 QCD 計算が可能なのはこのおかげである。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ クォーク閉じ込め</div>
+      <p>漸近的自由性の裏返しとして，<strong>低エネルギー（長距離）では結合が強くなる</strong>。クォーク間の距離を離すほどポテンシャルエネルギーが増大し（線形ポテンシャル $V(r)\sim \sigma r$），単独のクォークを取り出すことはできない——これが<strong>クォーク閉じ込め</strong>である。観測される粒子はすべてカラー一重項（無色）であり，クォーク 3 個からなるバリオン（陽子・中性子）やクォーク・反クォーク対の中間子として束縛される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 強結合領域と格子 QCD</div>
+      <p>低エネルギーでは結合が強く摂動論が使えないため，閉じ込めやハドロン質量の第一原理計算には時空を格子に離散化する<strong>格子 QCD</strong>（数値計算）が用いられる。</p>
+    </div>
+
+    <h2 id="higgs">5. Higgs 機構</h2>
+    <div class="box note">
+      <div class="box-title">💡 質量項の困難</div>
+      <p>ゲージ不変性はゲージボソンの素朴な質量項 $\tfrac12 M^2 A_\mu A^\mu$ を禁じる。同様に，左巻きと右巻きが異なる表現に属するため，フェルミオンの素朴な質量項 $m\bar\psi\psi = m(\bar\psi_L\psi_R + \bar\psi_R\psi_L)$ もゲージ不変でない。しかし $W,Z$ ボソンもフェルミオンも実際には質量をもつ。この矛盾を解決するのが Higgs 機構である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 自発的対称性の破れ</div>
+      <p>理論の Lagrangian が対称性をもつのに，基底状態（真空）がその対称性をもたない場合を<strong>自発的対称性の破れ</strong>という。$SU(2)_L\times U(1)_Y$ 二重項の複素スカラー場 $\Phi$ に，メキシカンハット型ポテンシャルを与える:</p>
+      $$V(\Phi) = -\mu^2\,\Phi^\dagger\Phi + \lambda\,(\Phi^\dagger\Phi)^2,\qquad \mu^2>0,\;\lambda>0$$
+      <p>最小値は $\Phi^\dagger\Phi = \mu^2/2\lambda \equiv v^2/2 \ne 0$ で実現され，真空が有限の<strong>真空期待値</strong> $\langle\Phi\rangle = \tfrac{1}{\sqrt2}\binom{0}{v}$（$v\approx 246$ GeV）をもつ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ ゲージボソンの質量生成</div>
+      <p>$\Phi$ の共変微分の運動項 $|D_\mu\Phi|^2$ に真空期待値を代入すると，ゲージ場の二次の項——すなわち質量項——が生じる:</p>
+      $$M_W = \frac12 g\,v,\qquad M_Z = \frac12\sqrt{g^2+g'^2}\;v$$
+      <p>ここで $g,g'$ はそれぞれ $SU(2)_L,U(1)_Y$ の結合定数。一方，破れずに残るゲージ場の組合せ（光子 $A_\mu$）は質量 0 のままである。破れた対称性の Nambu-Goldstone ボソンが $W^\pm,Z$ の縦波成分として「食われる」ことでボソンが質量を得る，と言い換えられる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ フェルミオンの質量生成（湯川結合）</div>
+      <p>フェルミオンは Higgs 場との<strong>湯川結合</strong>を通じて質量を得る:</p>
+      $$\mathcal{L}_{\text{Yukawa}} = -y_f\,\bar\psi_L\,\Phi\,\psi_R + \text{h.c.} \;\xrightarrow{\;\langle\Phi\rangle\;}\; -\frac{y_f v}{\sqrt2}\,\bar\psi\psi$$
+      <p>すなわちフェルミオンの質量は $m_f = y_f v/\sqrt2$ で与えられ，湯川結合 $y_f$ が大きい粒子ほど重い。トップクォークが最も重い（$y_t\approx 1$）のはこのためである。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Higgs 粒子の発見（2012）</div>
+      <p>真空期待値からのゆらぎ（残った物理的自由度）が<strong>Higgs ボソン</strong> $H$ である。その質量は $m_H = \sqrt{2\lambda}\,v$ で与えられ，理論では予言できないパラメータであった。2012 年，CERN の LHC における ATLAS・CMS 実験が質量約 $125$ GeV の Higgs ボソンを発見し，標準模型の最後のピースが埋まった。$H\to\gamma\gamma$ や $H\to ZZ^*\to 4\ell$ などの崩壊チャンネルが観測された。2013 年に Englert・Higgs にノーベル賞が授与された。</p>
+    </div>
+
+    <h2 id="neutrino">6. ニュートリノ</h2>
+    <div class="box note">
+      <div class="box-title">💡 ニュートリノの特異性</div>
+      <p>ニュートリノは電荷 0・色荷 0 で，弱い相互作用と重力のみに反応するため検出が極めて難しい。標準模型では当初質量 0 とされていたが，<strong>ニュートリノ振動</strong>の発見により，ニュートリノが微小ながら質量をもつことが明らかになった。これは標準模型では説明しきれない最初の確固たる実験事実である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ニュートリノ振動</div>
+      <p>弱い相互作用で生成・検出されるフレーバー固有状態 $|\nu_e\rangle,|\nu_\mu\rangle,|\nu_\tau\rangle$ は，質量固有状態 $|\nu_1\rangle,|\nu_2\rangle,|\nu_3\rangle$ の重ね合わせである。各質量固有状態は異なる位相で時間発展するため，伝播中にフレーバーが周期的に変化する——これが<strong>ニュートリノ振動</strong>である。2 フレーバー近似での遷移確率は</p>
+      $$P(\nu_\alpha\to\nu_\beta) = \sin^2 2\theta\,\sin^2\!\left(\frac{\Delta m^2\, L}{4E}\right)$$
+      <p>振動が起こること自体が，質量差 $\Delta m^2 = m_i^2 - m_j^2 \ne 0$，すなわちニュートリノが質量をもつことの証拠である。1998 年（大気ニュートリノ，Super-Kamiokande）・2001 年（太陽ニュートリノ，SNO）に確立され，2015 年にノーベル賞が授与された。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — PMNS 行列と世代混合</div>
+      <p>フレーバー固有状態と質量固有状態を結ぶユニタリ行列が<strong>PMNS 行列</strong>（Pontecorvo–Maki–Nakagawa–Sakata 行列）である:</p>
+      $$
+      \begin{pmatrix} \nu_e \\ \nu_\mu \\ \nu_\tau \end{pmatrix}
+      =
+      \begin{pmatrix}
+      U_{e1} & U_{e2} & U_{e3} \\
+      U_{\mu 1} & U_{\mu 2} & U_{\mu 3} \\
+      U_{\tau 1} & U_{\tau 2} & U_{\tau 3}
+      \end{pmatrix}
+      \begin{pmatrix} \nu_1 \\ \nu_2 \\ \nu_3 \end{pmatrix}
+      $$
+      <p>この行列は 3 つの混合角 $\theta_{12},\theta_{23},\theta_{13}$ と CP 位相 $\delta$ でパラメータ化される。レプトンセクターの世代混合を表し，クォークセクターの CKM 行列に対応する。レプトンの混合角はクォークより大きいことが特徴である。$\delta\ne 0$ ならばレプトンセクターでも $CP$ が破れる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 質量の起源は未解明</div>
+      <p>ニュートリノが Dirac 粒子（粒子と反粒子が別）か Majorana 粒子（粒子＝反粒子）かはまだ分かっていない。Majorana ならばシーソー機構によって他フェルミオンに比べ極端に小さい質量が自然に説明されうる。これを検証する鍵がニュートリノを伴わない二重ベータ崩壊の探索である。</p>
+    </div>
+
+    <h2 id="beyond">7. 標準模型を超えて</h2>
+    <div class="box note">
+      <div class="box-title">💡 標準模型は完成形ではない</div>
+      <p>標準模型は驚異的な成功を収めたが，多くの未解決問題を残している。これらを解決すべく，標準模型を包含するより根源的な理論（Beyond the Standard Model, BSM）が探求されている。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 階層性問題</div>
+      <p>Higgs 質量はループ補正によって理論のカットオフスケール $\Lambda$（例えば Planck スケール $\sim 10^{19}$ GeV）まで二次的に発散する:</p>
+      $$\delta m_H^2 \sim \frac{\Lambda^2}{16\pi^2}$$
+      <p>観測される $m_H\approx 125$ GeV を得るには，巨大な裸の質量と量子補正の間で 30 桁以上の精密な相殺（微調整）が必要となる。なぜ電弱スケールがこれほど小さいのか，という不自然さが<strong>階層性問題</strong>である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 超対称性（SUSY）</div>
+      <p><strong>超対称性</strong>は，ボソンとフェルミオンを互いに移す対称性であり，各標準模型粒子にスピンが $1/2$ 異なる「超対称パートナー」（スクォーク・スレプトン・ゲージーノなど）を予言する。フェルミオンとボソンのループ補正が逆符号で相殺するため，階層性問題を自然に緩和する。最も軽い超対称粒子は安定で暗黒物質の有力候補となるが，LHC では未だ発見されていない。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 大統一理論（GUT）</div>
+      <p>3 つのゲージ結合 $g_3,g_2,g_1$ は走る結合定数として高エネルギーで収束する傾向にあり，$\sim 10^{16}$ GeV 付近で単一の大きなゲージ群——例えば $SU(5)$ や $SO(10)$——に統一されると考えられる。これが<strong>大統一理論（GUT）</strong>である。GUT はクォークとレプトンを同じ多重項に置き，電荷の量子化を説明し，バリオン数の破れ（陽子崩壊 $p\to e^+\pi^0$）を予言する。陽子崩壊は実験で探索されているが未観測で，下限が GUT モデルを制約している。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 暗黒物質と他の未解決問題</div>
+      <p>宇宙論的観測（銀河回転曲線・重力レンズ・宇宙背景放射）は，標準模型の粒子では説明できない<strong>暗黒物質</strong>が宇宙のエネルギーの約 27% を占めることを示す。標準模型はその候補を含まない。主な未解決問題:</p>
+      <ul>
+        <li><strong>暗黒物質・暗黒エネルギー</strong>——宇宙の大部分の正体が不明。</li>
+        <li><strong>物質反物質非対称性</strong>——なぜ宇宙は物質優勢か（バリオン数生成）。</li>
+        <li><strong>重力の量子化</strong>——標準模型は重力を含まない。</li>
+        <li><strong>ニュートリノ質量の起源</strong>と Majorana 性。</li>
+        <li><strong>強い CP 問題</strong>（軸性子 $a$ の存在の可能性）。</li>
+        <li><strong>世代数と質量パターン</strong>——なぜ 3 世代で，質量はこれほど階層的か。</li>
+      </ul>
+      <p>これらは現代素粒子物理学のフロンティアであり，宇宙論と密接に関わる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>素粒子物理は初期宇宙の進化と深く結びついている。ビッグバン・元素合成・暗黒物質などの宇宙論的側面は <a href="cosmology.html">宇宙論</a>を参照。物理と数学の各分野の関係を俯瞰するには <a href="field-map.html">学問領域マップ</a>が役立つ。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>標準模型のゲージ群 $SU(3)_C\times SU(2)_L\times U(1)_Y$ について，各因子に対応する相互作用とゲージボソンの種類・個数を答えよ。$SU(N)$ ゲージ場の本数（生成子の数）が $N^2-1$ であることを用いてグルーオンが 8 種であることを確認せよ。</li>
+        <li>Gell-Mann–Nishijima 公式 $Q = T^3 + Y/2$ を用いて，左巻きクォーク二重項 $(u,d)_L$（$T^3 = \pm\tfrac12$）が正しい電荷 $+\tfrac23,-\tfrac13$ を与えるための超電荷 $Y$ を求めよ。</li>
+        <li>$W^3_\mu$ と $B_\mu$ の混合 $A_\mu = \sin\theta_W\,W^3_\mu + \cos\theta_W\,B_\mu$，$Z_\mu = \cos\theta_W\,W^3_\mu - \sin\theta_W\,B_\mu$ を用い，$M_W = M_Z\cos\theta_W$ の関係を Higgs 機構による質量 $M_W = \tfrac12 g v$，$M_Z = \tfrac12\sqrt{g^2+g'^2}\,v$ と $\tan\theta_W = g'/g$ から導け。</li>
+        <li>2 フレーバーのニュートリノ振動確率 $P = \sin^2 2\theta\,\sin^2(\Delta m^2 L/4E)$ について，振動が起こる（$P\ne 0$）ための必要条件を $\theta$ と $\Delta m^2$ の観点から述べよ。また第一振動極大を与える距離 $L$ をエネルギー $E$ と $\Delta m^2$ で表せ。</li>
+        <li>湯川結合による質量 $m_f = y_f v/\sqrt2$（$v\approx 246$ GeV）を用いて，トップクォーク質量 $m_t\approx 173$ GeV を与える湯川結合 $y_t$ を求めよ。電子（$m_e\approx 0.511$ MeV）の $y_e$ と比較し，質量階層の大きさを論ぜよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

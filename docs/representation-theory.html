@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>表現論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 表現論</div>
+    <h1>表現論</h1>
+    <p class="tagline">群の線形表現・既約分解・Schur の補題・指標理論・Lie 群の表現。対称性を線形代数で捉える。</p>
+    <div class="tags"><span class="tag">線形表現</span><span class="tag">既約表現</span><span class="tag">Schurの補題</span><span class="tag">指標理論</span><span class="tag">Lie群の表現</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#rep">表現の定義</a></li>
+        <li><a href="#irreducible">既約表現と完全可約性</a></li>
+        <li><a href="#schur">Schur の補題</a></li>
+        <li><a href="#character">指標理論</a></li>
+        <li><a href="#finite">有限群の表現</a></li>
+        <li><a href="#lie">Lie 群・Lie 代数の表現</a></li>
+        <li><a href="#physics">物理への応用</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは群・準同型・体上のベクトル空間の基礎を仮定する。群構造については <a href="abstract-algebra.html">抽象代数学</a> を，線形写像・固有空間・テンソル積などについては <a href="linear-algebra.html">線形代数</a> を先に参照すると理解が深まる。</p>
+    </div>
+
+    <h2 id="rep">1. 表現の定義</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 群の線形表現</div>
+      <p>体 $K$（多くは $\mathbb{C}$）上の有限次元ベクトル空間 $V$ に対し，群 $G$ の<strong>線形表現</strong>とは群準同型</p>
+      $$\rho : G \longrightarrow GL(V)$$
+      <p>のことである。すなわち各 $g \in G$ に可逆線形変換 $\rho(g)$ を対応させ，$\rho(gh) = \rho(g)\rho(h)$，$\rho(e) = \mathrm{id}_V$ を満たす。$V$ を<strong>表現空間</strong>，$\dim V$ を表現の<strong>次数</strong>（degree, dimension）という。基底を取れば $\rho(g)$ は $n\times n$ 行列で表され，$\rho : G \to GL_n(K)$ となる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 忠実表現・自明表現</div>
+      <p>$\rho$ が単射のとき<strong>忠実</strong>（faithful）であるという。このとき $G \cong \rho(G) \subseteq GL(V)$ となり，群が行列群として実現される。逆に，すべての $g$ を恒等変換 $1$ に送る $1$ 次元表現を<strong>自明表現</strong>という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 置換表現</div>
+      <p>$G$ が有限集合 $X = \{x_1,\ldots,x_n\}$ に作用するとき，$V = K^n$ を基底 $\{e_{x}\}_{x\in X}$ で張り，$\rho(g)e_x = e_{g\cdot x}$ と定めると<strong>置換表現</strong>が得られる。各 $\rho(g)$ は置換行列（各行・各列にちょうど一つの $1$）。$X = G$（左乗法作用）の場合を特に<strong>正則表現</strong>と呼び，次数は $|G|$ である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 巡回群 $\mathbb{Z}/n$ の表現</div>
+      <p>生成元 $c$（位数 $n$）の複素 $1$ 次元表現は，$1$ の $n$ 乗根 $\omega = e^{2\pi i k/n}$ を用いて</p>
+      $$\rho_k(c) = \omega^k = e^{2\pi i k/n}, \quad k = 0,1,\ldots,n-1$$
+      <p>で与えられる。$k=0$ が自明表現。可換群なのですべての既約表現が $1$ 次元になる（後述）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 対称群 $S_3$ の置換表現</div>
+      <p>$S_3$ を $\{1,2,3\}$ への作用で $3$ 次置換表現とみなす。例えば互換 $(1\,2)$ は</p>
+      $$\rho\big((1\,2)\big) = \begin{pmatrix}0&1&0\\1&0&0\\0&0&1\end{pmatrix}$$
+      <p>この $3$ 次元表現は自明表現（$e_1+e_2+e_3$ の張る $1$ 次元）と $2$ 次元の<strong>標準表現</strong>に分解される（次節）。</p>
+    </div>
+
+    <h2 id="irreducible">2. 既約表現と完全可約性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 不変部分空間・部分表現</div>
+      <p>表現 $(\rho, V)$ の部分空間 $W \subseteq V$ が<strong>不変</strong>（$G$-不変）であるとは，すべての $g\in G$ に対し $\rho(g)W \subseteq W$ が成り立つことをいう。このとき $\rho$ を $W$ に制限したものは $W$ 上の表現となり，<strong>部分表現</strong>と呼ばれる。$\{0\}$ と $V$ は常に不変部分空間（自明な不変部分空間）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 既約表現</div>
+      <p>$V \neq \{0\}$ の表現が<strong>既約</strong>（irreducible）であるとは，自明な不変部分空間 $\{0\}, V$ 以外に不変部分空間を持たないことをいう。既約でない表現を<strong>可約</strong>という。既約表現は表現論における「素粒子」であり，あらゆる表現の基本構成要素となる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 表現の直和</div>
+      <p>表現 $(\rho_1, V_1)$, $(\rho_2, V_2)$ に対し，$V_1\oplus V_2$ 上の表現を $(\rho_1\oplus\rho_2)(g) = \rho_1(g)\oplus\rho_2(g)$ で定める。行列ではブロック対角</p>
+      $$(\rho_1\oplus\rho_2)(g) = \begin{pmatrix}\rho_1(g) & 0\\ 0 & \rho_2(g)\end{pmatrix}$$
+      <p>となる。表現が既約表現の直和に分解されるとき<strong>完全可約</strong>（completely reducible）という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Maschke の定理</div>
+      <p>$G$ を有限群とし，体 $K$ の標数が $|G|$ を割らない（特に $K=\mathbb{C}$ や標数 $0$ の体）とする。このとき $G$ の任意の有限次元表現は完全可約である。すなわち既約表現の直和に分解される。</p>
+      <p><strong>証明の要点：</strong> 不変部分空間 $W$ に対し，任意の射影 $\pi_0 : V\to W$ から平均化</p>
+      $$\pi = \frac{1}{|G|}\sum_{g\in G}\rho(g)\,\pi_0\,\rho(g)^{-1}$$
+      <p>を作ると，$\pi$ は $G$-同変な射影となり，$\ker\pi$ が $W$ の不変な補空間を与える（$V = W\oplus\ker\pi$）。これを繰り返せば既約分解が得られる。平均で $\tfrac{1}{|G|}$ を用いるため，標数が $|G|$ を割らない条件が本質的。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 内積による言い換え</div>
+      <p>$\mathbb{C}$ 上では，任意の内積を $\langle u,v\rangle_G = \tfrac{1}{|G|}\sum_g \langle\rho(g)u,\rho(g)v\rangle$ で平均化すると $G$-不変内積が得られ，各 $\rho(g)$ をユニタリにできる（<strong>ユニタリ化可能性</strong>）。不変部分空間の直交補空間も不変なので，完全可約性が直ちに従う。</p>
+    </div>
+
+    <h2 id="schur">3. Schur の補題</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 絡作用素（インタートワイナー）</div>
+      <p>表現 $(\rho, V)$, $(\sigma, W)$ の間の線形写像 $T : V\to W$ が<strong>$G$-同変</strong>（絡作用素）であるとは，すべての $g$ で $T\rho(g) = \sigma(g)T$ を満たすことをいう。同変な可逆写像が存在するとき二つの表現は<strong>同値（同型）</strong>。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Schur の補題</div>
+      <p>$(\rho, V)$, $(\sigma, W)$ を既約表現とし，$T : V\to W$ を絡作用素とする。</p>
+      <ol>
+        <li>$\rho$ と $\sigma$ が同値でなければ $T = 0$。</li>
+        <li>$V = W$，$\rho = \sigma$（同じ既約表現）で $K = \mathbb{C}$（代数閉体）のとき，$T = \lambda\,\mathrm{id}_V$（あるスカラー $\lambda\in\mathbb{C}$）。</li>
+      </ol>
+      <p><strong>証明：</strong> $\ker T$ と $\mathrm{im}\,T$ はともに不変部分空間。既約性より $\ker T \in \{0,V\}$，$\mathrm{im}\,T\in\{0,W\}$。よって $T=0$ か同型かのいずれか（(1)）。(2) では $\mathbb{C}$ 上で $T$ が固有値 $\lambda$ を持ち，$T-\lambda\,\mathrm{id}$ も絡作用素かつ可逆でないので $T-\lambda\,\mathrm{id}=0$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 系 — 可換群の複素既約表現は $1$ 次元</div>
+      <p>$G$ が可換群で $(\rho, V)$ が $\mathbb{C}$ 上の既約表現とする。任意の $h\in G$ に対し $\rho(h)$ はすべての $\rho(g)$ と可換なので絡作用素であり，Schur の補題より $\rho(h) = \lambda_h\,\mathrm{id}_V$ がスカラー。すると任意の部分空間が不変となり，既約性から $\dim V = 1$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 物理での威力</div>
+      <p>「ハミルトニアン $H$ が対称群 $G$ と可換なら，$H$ は各既約表現の空間を保つ」「既約表現空間内では $H$ はスカラー（縮退エネルギー）」という主張は本質的に Schur の補題である。縮退度＝既約表現の次元という量子力学の基本事実につながる。</p>
+    </div>
+
+    <h2 id="character">4. 指標理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 指標</div>
+      <p>表現 $(\rho, V)$ の<strong>指標</strong>（character）は，各 $g\in G$ に対する $\rho(g)$ のトレースで定義される関数</p>
+      $$\chi_\rho(g) = \mathrm{tr}\,\rho(g).$$
+      <p>$\chi_\rho(e) = \dim V$（次数）。同値な表現は同じ指標を持ち，指標は表現を（同値を除いて）完全に決定する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 類関数</div>
+      <p>トレースの巡回性 $\mathrm{tr}(AB)=\mathrm{tr}(BA)$ より $\chi_\rho(hgh^{-1}) = \chi_\rho(g)$。すなわち指標は共役類上で一定の<strong>類関数</strong>（class function）である。$G$ 上の複素類関数全体は内積</p>
+      $$\langle \phi, \psi\rangle = \frac{1}{|G|}\sum_{g\in G}\overline{\phi(g)}\,\psi(g)$$
+      <p>をもつ Hermite 内積空間をなす。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 指標の第一直交関係</div>
+      <p>有限群 $G$ の既約表現の指標 $\chi_i, \chi_j$ について</p>
+      $$\langle \chi_i, \chi_j\rangle = \frac{1}{|G|}\sum_{g\in G}\overline{\chi_i(g)}\,\chi_j(g) = \delta_{ij}.$$
+      <p>すなわち既約指標は類関数の空間で正規直交系をなす。これは Schur の補題を絡作用素の平均に適用して得られる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 指標を用いた既約判定と分解</div>
+      <p>表現 $\rho$ が与えられたとき，$\langle\chi_\rho,\chi_\rho\rangle = 1$ なら $\rho$ は既約。一般に $\rho = \bigoplus_i m_i\,\rho_i$（既約分解）の重複度は</p>
+      $$m_i = \langle \chi_\rho, \chi_i\rangle, \qquad \langle\chi_\rho,\chi_\rho\rangle = \sum_i m_i^2.$$
+      <p>$S_3$ の $3$ 次置換表現では $\langle\chi,\chi\rangle = 2$ となり，自明表現と標準表現が重複度 $1$ ずつで現れることが分かる。</p>
+    </div>
+
+    <h2 id="finite">5. 有限群の表現</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 既約表現の個数</div>
+      <p>有限群 $G$ の（同値を除く）複素既約表現の個数は，$G$ の<strong>共役類の数</strong>に等しい。これは既約指標が類関数空間の正規直交基底をなすこと（直交関係＋完全性）から従う。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 正則表現の分解と次数の和公式</div>
+      <p>正則表現 $\rho_{\mathrm{reg}}$（次数 $|G|$）は各既約表現 $\rho_i$（次数 $d_i$）をその次数だけ含む：</p>
+      $$\rho_{\mathrm{reg}} \cong \bigoplus_i d_i\,\rho_i.$$
+      <p>次元を比較すると，既約表現の次数 $d_i$ について</p>
+      $$|G| = \sum_i d_i^2.$$
+      <p>この公式は既約表現の次数を強く制限する（例：位数 $6$ の非可換群 $S_3$ では $6 = 1^2+1^2+2^2$）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $S_3$ の指標表</div>
+      <p>$S_3$ には $3$ つの共役類がある：単位元 $\{e\}$（$1$ 個），互換 $\{(12),(13),(23)\}$（$3$ 個），$3$-巡回 $\{(123),(132)\}$（$2$ 個）。よって既約表現は $3$ つ：自明表現 $\mathbf{1}$，符号表現 $\mathrm{sgn}$，$2$ 次元標準表現 $V$。</p>
+      <table>
+        <tr><th></th><th>$e$ ($\times1$)</th><th>$(12)$ ($\times3$)</th><th>$(123)$ ($\times2$)</th></tr>
+        <tr><td>$\chi_{\mathbf{1}}$（自明）</td><td>$1$</td><td>$1$</td><td>$1$</td></tr>
+        <tr><td>$\chi_{\mathrm{sgn}}$（符号）</td><td>$1$</td><td>$-1$</td><td>$1$</td></tr>
+        <tr><td>$\chi_{V}$（標準）</td><td>$2$</td><td>$0$</td><td>$-1$</td></tr>
+      </table>
+      <p>各行は正規直交：例えば $\langle\chi_V,\chi_V\rangle = \tfrac{1}{6}(1\cdot 2^2 + 3\cdot 0^2 + 2\cdot(-1)^2) = \tfrac{1}{6}(4+0+2) = 1$ で既約が確認できる。次数の和は $1^2+1^2+2^2 = 6 = |S_3|$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 指標表の使い方</div>
+      <p>指標表が分かれば，任意の表現の既約分解は内積計算だけで機械的に求まる。物理ではテンソル積表現（合成系）の既約分解（Clebsch–Gordan 分解）を指標の積から導くのに用いる。</p>
+    </div>
+
+    <h2 id="lie">6. Lie 群・Lie 代数の表現</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Lie 群とその Lie 代数</div>
+      <p>連続パラメータをもつ群（微分可能多様体かつ群演算が滑らか）を<strong>Lie 群</strong>という。単位元での接空間に交換子 $[X,Y]=XY-YX$ を入れたものが<strong>Lie 代数</strong> $\mathfrak{g}$。Lie 群の表現は $\rho(e^{tX}) = e^{t\,d\rho(X)}$ により Lie 代数の表現 $d\rho:\mathfrak{g}\to\mathfrak{gl}(V)$ を誘導し，$d\rho([X,Y]) = [d\rho(X), d\rho(Y)]$ を満たす。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — $SU(2)$ と $\mathfrak{su}(2)$</div>
+      <p>$SU(2) = \{U\in GL_2(\mathbb{C}) : U^\dagger U = I,\ \det U = 1\}$。その Lie 代数 $\mathfrak{su}(2)$ は反 Hermite なトレース $0$ 行列からなり，物理では生成子 $J_a = \tfrac{1}{2}\sigma_a$（$\sigma_a$ は Pauli 行列）を用いて</p>
+      $$[J_a, J_b] = i\,\varepsilon_{abc}\,J_c$$
+      <p>という角運動量代数の交換関係を満たす（複素化 $\mathfrak{su}(2)_\mathbb{C} \cong \mathfrak{sl}_2(\mathbb{C})$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最高ウェイトによる既約表現の分類</div>
+      <p>$\mathfrak{su}(2)$ の昇降演算子 $J_\pm = J_1 \pm iJ_2$ と $J_3$ は</p>
+      $$[J_3, J_\pm] = \pm J_\pm, \qquad [J_+, J_-] = 2J_3$$
+      <p>を満たす。各有限次元既約表現は<strong>最高ウェイト</strong> $j \in \{0, \tfrac12, 1, \tfrac32,\ldots\}$ で一意に分類され，次元は $2j+1$。基底 $|j,m\rangle$（$m=-j,\ldots,j$）上で</p>
+      $$J_3|j,m\rangle = m|j,m\rangle, \quad J_\pm|j,m\rangle = \sqrt{j(j+1)-m(m\pm1)}\,|j,m\pm1\rangle.$$
+      <p>Casimir 元 $J^2 = J_1^2+J_2^2+J_3^2$ は Schur の補題により各既約空間でスカラー $j(j+1)$ をとる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 スピン・角運動量との対応</div>
+      <p>整数 $j$ は軌道角運動量（$SO(3)$ の表現），半整数 $j$ はスピン（$SU(2)$ の真の表現で $SO(3)$ の二重被覆を必要とする）に対応する。$j=\tfrac12$ がスピノル（電子），$j=1$ がベクトル。二つの角運動量の合成 $j_1\otimes j_2 = (j_1+j_2)\oplus\cdots\oplus|j_1-j_2|$ が Clebsch–Gordan 分解である。</p>
+    </div>
+
+    <h2 id="physics">7. 物理への応用</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 対称性と選択則</div>
+      <p>系の対称群 $G$ のもとで状態は既約表現で分類される。遷移行列要素 $\langle\psi_f|\,O\,|\psi_i\rangle$ は，$\psi_f^*\otimes O\otimes\psi_i$ の既約分解に自明表現が含まれるときのみ非零となりうる（<strong>選択則</strong>）。これは Schur の補題と Wigner–Eckart の定理の帰結であり，許される/禁止される遷移を群論だけで判定できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 素粒子の分類</div>
+      <p>強い相互作用のフレーバー対称性 $SU(3)$ では，ハドロンが既約表現に並ぶ。クォーク $3$（基本表現）とその反 $\bar 3$ から，メソンは $3\otimes\bar 3 = 8\oplus 1$（八重項＋一重項），バリオンは $3\otimes 3\otimes 3 = 10\oplus 8\oplus 8\oplus 1$ と分解され，「エイトフォールド・ウェイ」の八重項・十重項を再現する。標準模型のゲージ群 $SU(3)\times SU(2)\times U(1)$ の表現が粒子の量子数を定める。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 結晶点群と分光・縮退</div>
+      <p>結晶中の原子・分子は離散的な<strong>点群</strong>（$C_{nv}, T_d, O_h$ など $32$ 種）の対称性をもつ。自由原子の角運動量多重項は結晶場により点群の既約表現へ分裂し（結晶場分裂），分裂後の縮退度＝点群既約表現の次元となる。指標表を用いて分裂パターン，赤外・Raman 活性モード，許容遷移を系統的に決定できる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>表現論は物理の言語そのものである。角運動量・スピン・対称性の具体的応用は <a href="quantum-mechanics.html">量子力学</a> へ，$SU(3)$ 分類・標準模型のゲージ表現は <a href="particle-physics.html">素粒子物理</a> へ進むとよい。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>巡回群 $\mathbb{Z}/4$ の複素既約表現をすべて求め，次数の和公式 $\sum d_i^2 = 4$ を確認せよ。</li>
+        <li>Maschke の定理の証明における平均化射影 $\pi$ が，実際に $G$-同変な射影（$\pi^2=\pi$，$\pi\rho(g)=\rho(g)\pi$）であることを示せ。</li>
+        <li>$S_3$ の $3$ 次置換表現の指標を計算し，第一直交関係を用いて自明表現と標準表現に分解せよ。</li>
+        <li>Schur の補題を用いて，可換群の複素既約表現がすべて $1$ 次元であることを証明せよ。</li>
+        <li>$\mathfrak{su}(2)$ のスピン $j=\tfrac12$ と $j=1$ の合成 $\tfrac12\otimes 1$ を Clebsch–Gordan 分解し，現れる既約表現とその次元を求めよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

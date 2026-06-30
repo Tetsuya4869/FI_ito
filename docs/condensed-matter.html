@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>物性物理 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 物性物理</div>
+    <h1>物性物理</h1>
+    <p class="tagline">結晶と逆格子・バンド理論・フォノン・自由電子・半導体・磁性・超伝導。多体電子系のマクロな物理。</p>
+    <div class="tags"><span class="tag">逆格子</span><span class="tag">バンド理論</span><span class="tag">フォノン</span><span class="tag">Fermi面</span><span class="tag">半導体</span><span class="tag">超伝導</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>このページは多体電子系を量子的・統計的に扱います。波動関数・演算子・周期ポテンシャル中の固有値問題は <a href="quantum-mechanics.html">量子力学</a>，Fermi-Dirac 分布・状態密度・比熱は <a href="statistical-mechanics.html">統計力学</a> を前提とします。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#crystal">結晶構造と逆格子</a></li>
+        <li><a href="#band">バンド理論</a></li>
+        <li><a href="#phonon">格子振動とフォノン</a></li>
+        <li><a href="#electron">自由電子論</a></li>
+        <li><a href="#semiconductor">半導体</a></li>
+        <li><a href="#magnetism">磁性</a></li>
+        <li><a href="#superconductivity">超伝導</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="crystal">1. 結晶構造と逆格子</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Bravais 格子と単位胞</div>
+      <p>結晶は基本並進ベクトル $\mathbf{a}_1,\mathbf{a}_2,\mathbf{a}_3$ により生成される格子点の周期的配列で記述される。Bravais 格子点は</p>
+      $$\mathbf{R} = n_1\mathbf{a}_1 + n_2\mathbf{a}_2 + n_3\mathbf{a}_3, \quad n_i \in \mathbb{Z}$$
+      <p>単位胞（unit cell）は並進によって空間全体を隙間なく充填する最小領域。原子配置は Bravais 格子と基本構造（basis）の組で与えられる。Wigner-Seitz 胞は格子点に最も近い領域として定義される原始単位胞。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 逆格子</div>
+      <p>実空間の Bravais 格子に対し，逆格子基本ベクトル $\mathbf{b}_i$ を次式で定義する:</p>
+      $$\mathbf{b}_1 = 2\pi\frac{\mathbf{a}_2\times\mathbf{a}_3}{\mathbf{a}_1\cdot(\mathbf{a}_2\times\mathbf{a}_3)}, \quad \mathbf{b}_i\cdot\mathbf{a}_j = 2\pi\delta_{ij}$$
+      <p>逆格子ベクトル $\mathbf{G} = m_1\mathbf{b}_1 + m_2\mathbf{b}_2 + m_3\mathbf{b}_3$（$m_i\in\mathbb{Z}$）は，あらゆる Bravais 格子点 $\mathbf{R}$ に対し $e^{i\mathbf{G}\cdot\mathbf{R}} = 1$ を満たす。すなわち格子周期をもつ関数の Fourier 成分が乗る格子。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Brillouin ゾーンと Bragg の回折条件</div>
+      <p>第一 Brillouin ゾーンは逆格子における Wigner-Seitz 胞であり，独立な波数ベクトル $\mathbf{k}$ の領域を与える。X 線・電子回折における強め合いの条件（Laue 条件）は，散乱波数変化 $\Delta\mathbf{k} = \mathbf{k}' - \mathbf{k}$ が逆格子ベクトルに一致すること:</p>
+      $$\Delta\mathbf{k} = \mathbf{G}$$
+      <p>これは面間隔 $d$ の格子面に対する Bragg の式と等価である:</p>
+      $$2d\sin\theta = n\lambda$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 面心立方（fcc）と体心立方（bcc）</div>
+      <p>fcc 格子の逆格子は bcc 格子，bcc 格子の逆格子は fcc 格子となる（互いに双対）。fcc の第一 Brillouin ゾーンは切頂八面体の形をとり，対称点 $\Gamma$（中心），$X$，$L$，$K$ などがバンド計算で重要な役割を果たす。</p>
+    </div>
+
+    <h2 id="band">2. バンド理論</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Bloch の定理</div>
+      <p>周期ポテンシャル $V(\mathbf{r}+\mathbf{R}) = V(\mathbf{r})$ 中の電子の固有状態は，平面波と格子周期関数の積で書ける:</p>
+      $$\psi_{n\mathbf{k}}(\mathbf{r}) = e^{i\mathbf{k}\cdot\mathbf{r}}\,u_{n\mathbf{k}}(\mathbf{r}), \quad u_{n\mathbf{k}}(\mathbf{r}+\mathbf{R}) = u_{n\mathbf{k}}(\mathbf{r})$$
+      <p>$n$ はバンド指数，$\mathbf{k}$ は第一 Brillouin ゾーン内の結晶運動量。並進演算子と Hamiltonian が可換であることから導かれる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — エネルギーバンドとバンドギャップ</div>
+      <p>各バンド指数 $n$ に対し，$\mathbf{k}$ の関数としての分散関係 $E_n(\mathbf{k})$ が許容エネルギー帯（バンド）を作る。隣接バンド間の，電子状態が存在しないエネルギー領域をバンドギャップ $E_g$ と呼ぶ。</p>
+      <p>ほぼ自由な電子近似では，Brillouin ゾーン境界（$\mathbf{k} = \mathbf{G}/2$）で Bragg 反射により縮退が解け，ギャップが開く。その大きさは周期ポテンシャルの Fourier 成分 $|V_\mathbf{G}|$ に比例する: $E_g \approx 2|V_\mathbf{G}|$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 金属・絶縁体・半導体の区別</div>
+      <p>各バンドは単位胞あたり $2$ 個（スピン込み）の電子を収容する。最高占有バンド（価電子帯）と最低空バンド（伝導帯）の充填状況で分類される:</p>
+      <ul>
+        <li><b>金属</b>: バンドが部分的に充填され，Fermi 準位がバンド内部にある。有限の状態密度をもち電気を流す。</li>
+        <li><b>絶縁体</b>: 価電子帯が完全充填，ギャップ $E_g$ が大きい（数 eV 以上）。</li>
+        <li><b>半導体</b>: 同じく完全充填だがギャップが小さく（$\sim 1$ eV），熱励起やドーピングでキャリアが生じる。</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 強束縛近似</div>
+      <p>原子軌道が弱く重なる極限では，バンドは原子準位を中心に幅 $\sim$ 飛び移り積分 $t$ で広がる。1 次元では $E(k) = \varepsilon_0 - 2t\cos(ka)$ となり，バンド幅は $4t$。ほぼ自由電子近似（弱い周期ポテンシャル）とは反対の出発点から同じバンド像に到達する。</p>
+    </div>
+
+    <h2 id="phonon">3. 格子振動とフォノン</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 格子振動と分散関係</div>
+      <p>原子は平衡位置のまわりで微小振動する。1 次元単原子鎖（質量 $m$，バネ定数 $K$，格子定数 $a$）の運動方程式から，振動モードの分散関係が得られる:</p>
+      $$\omega(k) = 2\sqrt{\frac{K}{m}}\left|\sin\frac{ka}{2}\right|$$
+      <p>2 原子鎖では音響モード（acoustic, $\omega\to 0$ as $k\to 0$）と光学モード（optical, 有限振動数）に分裂する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — フォノン（量子化された格子振動）</div>
+      <p>各基準振動は調和振動子として量子化され，エネルギー量子 $\hbar\omega(k)$ をもつ準粒子フォノンとして扱われる。モード $(\mathbf{k},s)$ の占有数 $n$ のエネルギーは</p>
+      $$E_{\mathbf{k}s} = \hbar\omega_s(\mathbf{k})\left(n_{\mathbf{k}s} + \tfrac{1}{2}\right)$$
+      <p>フォノンは Bose 粒子であり，平衡では Bose-Einstein 分布 $\bar{n} = 1/(e^{\hbar\omega/k_BT}-1)$ に従う。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 固体比熱と Debye 模型</div>
+      <p>高温では Dulong-Petit の法則 $C \to 3Nk_B$ が成り立つ。Debye 模型は音響フォノンを線形分散 $\omega = v_s k$ で近似し，最大振動数を Debye 振動数 $\omega_D$（Debye 温度 $\Theta_D = \hbar\omega_D/k_B$）で切る:</p>
+      $$C_V = 9Nk_B\left(\frac{T}{\Theta_D}\right)^3\int_0^{\Theta_D/T}\frac{x^4 e^x}{(e^x-1)^2}\,dx$$
+      <p>低温極限 $T\ll\Theta_D$ では有名な $T^3$ 則が現れる:</p>
+      $$C_V \propto T^3$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 電子比熱との対比</div>
+      <p>金属の低温比熱は $C = \gamma T + \beta T^3$ の形をとる。線形項 $\gamma T$ は電子（Fermi 統計），$T^3$ 項はフォノン（Debye）由来。$C/T$ を $T^2$ に対してプロットすると切片から $\gamma$，傾きから $\Theta_D$ が読み取れる。</p>
+    </div>
+
+    <h2 id="electron">4. 自由電子論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Drude 模型と Sommerfeld 模型</div>
+      <p>Drude 模型は伝導電子を古典気体とみなし，緩和時間 $\tau$ で散乱されるとして電気伝導度を導く:</p>
+      $$\sigma = \frac{ne^2\tau}{m}$$
+      <p>Sommerfeld 模型はこれを量子化し，電子を Pauli 原理に従う Fermi 気体として扱う。これにより電子比熱が古典予測より大幅に小さい（$\propto T$）ことなどが説明される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Fermi-Dirac 分布と Fermi エネルギー</div>
+      <p>電子は Fermi 粒子であり，エネルギー $\varepsilon$ の状態の占有確率は</p>
+      $$f(\varepsilon) = \frac{1}{e^{(\varepsilon-\mu)/k_BT}+1}$$
+      <p>絶対零度では $\mu = E_F$（Fermi エネルギー）以下がすべて占有される。3 次元自由電子では電子密度 $n$ と</p>
+      $$E_F = \frac{\hbar^2}{2m}(3\pi^2 n)^{2/3}, \quad k_F = (3\pi^2 n)^{1/3}$$
+      <p>波数空間で占有された球の表面が Fermi 面である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 電子比熱と電気伝導</div>
+      <p>Fermi 面近傍の幅 $\sim k_BT$ の電子のみが熱励起されるため，電子比熱は温度に比例する:</p>
+      $$C_{el} = \frac{\pi^2}{3}g(E_F)k_B^2\,T = \gamma T$$
+      <p>ここで $g(E_F)$ は Fermi 準位での状態密度。電気伝導はキャリア密度・電荷・移動度 $\mu_e = e\tau/m$ を用いて $\sigma = ne\mu_e$ と書ける。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 典型金属の Fermi 量</div>
+      <p>銅では $n \approx 8.5\times10^{28}\,\text{m}^{-3}$ から $E_F \approx 7$ eV，Fermi 温度 $T_F = E_F/k_B \approx 8\times10^4$ K となる。室温 $T\ll T_F$ ゆえ電子気体は強く縮退しており，古典的 Maxwell-Boltzmann 描像は使えない。</p>
+    </div>
+
+    <h2 id="semiconductor">5. 半導体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 真性半導体と電子・正孔</div>
+      <p>不純物のない真性半導体では，熱励起により価電子帯から伝導帯へ電子が上がり，価電子帯に正孔（hole）が残る。正孔は正電荷 $+e$ をもつ準粒子として振る舞う。真性キャリア密度は</p>
+      $$n_i \propto T^{3/2}\,e^{-E_g/(2k_BT)}$$
+      <p>質量作用の法則 $np = n_i^2$ が成り立つ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 不純物半導体とドーピング</div>
+      <p>少量の不純物添加（ドーピング）でキャリア型を制御する:</p>
+      <ul>
+        <li><b>n 型</b>: ドナー（例 Si 中の P）を加えると伝導帯直下に準位ができ，電子が多数キャリアとなる。</li>
+        <li><b>p 型</b>: アクセプタ（例 Si 中の B）を加えると価電子帯直上に準位ができ，正孔が多数キャリアとなる。</li>
+      </ul>
+      <p>ドーピングにより Fermi 準位は n 型で伝導帯側へ，p 型で価電子帯側へ移動する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ pn 接合とダイオード</div>
+      <p>n 型と p 型を接合すると，キャリアの拡散により空乏層と内蔵電位 $V_{bi}$ が生じる。順方向バイアスで障壁が下がり電流が流れ，逆方向では流れにくい（整流作用）。電流-電圧特性は Shockley のダイオード方程式で与えられる:</p>
+      $$I = I_0\left(e^{eV/(k_BT)} - 1\right)$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 有効質量</div>
+      <p>結晶中の電子・正孔はバンドの曲率で決まる有効質量 $m^* = \hbar^2/(d^2E/dk^2)$ をもち，外場に対してあたかも自由粒子のように運動する。これによりバンド構造の複雑さをひとつの有効パラメータに繰り込める。</p>
+    </div>
+
+    <h2 id="magnetism">6. 磁性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 常磁性・強磁性・反強磁性</div>
+      <p>物質の磁気的応答は局在スピン（磁気モーメント）の配列で分類される:</p>
+      <ul>
+        <li><b>常磁性</b>: 独立なスピンが磁場に弱く整列。磁化率は Curie 則 $\chi = C/T$ に従う。</li>
+        <li><b>強磁性</b>: 隣接スピンが平行に揃い，外場なしで自発磁化をもつ。Curie 温度 $T_C$ 以上で常磁性へ転移。</li>
+        <li><b>反強磁性</b>: 隣接スピンが反平行に揃い正味の磁化は消える。Néel 温度 $T_N$ で転移。</li>
+      </ul>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 交換相互作用と Heisenberg 模型</div>
+      <p>スピン整列の起源は静磁気的相互作用ではなく，Pauli 原理と Coulomb 相互作用に由来する量子力学的な交換相互作用である。局在スピン系は Heisenberg 模型で記述される:</p>
+      $$\hat H = -\sum_{\langle i,j\rangle} J_{ij}\,\hat{\mathbf{S}}_i\cdot\hat{\mathbf{S}}_j$$
+      <p>交換積分 $J>0$ で強磁性的（平行が安定），$J<0$ で反強磁性的（反平行が安定）となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 平均場近似と磁区</div>
+      <p>平均場（Weiss）近似では各スピンが他スピンの作る分子場 $\lambda M$ を感じるとし，自発磁化と Curie-Weiss 則を導く:</p>
+      $$\chi = \frac{C}{T - T_C}$$
+      <p>強磁性体は実際にはエネルギーを下げるため磁化方向の異なる磁区（domain）に分かれ，その境界を磁壁という。外部磁場下での磁壁移動・回転が磁化過程とヒステリシスを生む。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — スピン波（マグノン）</div>
+      <p>強磁性基底状態のまわりの素励起はスピン波であり，量子化されてマグノンと呼ばれる準粒子になる。低温の自発磁化の減少は Bloch の $T^{3/2}$ 則 $M(T) = M(0)(1 - aT^{3/2})$ に従い，マグノン励起の寄与を反映する。</p>
+    </div>
+
+    <h2 id="superconductivity">7. 超伝導</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 超伝導と Meissner 効果</div>
+      <p>臨界温度 $T_c$ 以下で電気抵抗が完全に消失する現象を超伝導という。さらに超伝導体は内部から磁束を完全に排除する完全反磁性を示す（Meissner 効果）。これは単なる完全導体（$\rho=0$）では説明できず，超伝導が熱力学的な新しい相であることを示す。磁場は表面から London 侵入長 $\lambda_L$ の深さで指数関数的に減衰する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Cooper 対</div>
+      <p>Fermi 面近傍の 2 電子は，フォノンを媒介とする引力により束縛状態を作る。これを Cooper 対という。引力がいくら弱くても Fermi 海が存在すれば対は必ず形成され（Cooper 不安定性），運動量 $(\mathbf{k}\uparrow, -\mathbf{k}\downarrow)$ の対を組む。Cooper 対は Bose 的に振る舞い，多数が同一の巨視的量子状態に凝縮する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ BCS 理論の概観</div>
+      <p>Bardeen-Cooper-Schrieffer 理論はフォノン媒介引力から超伝導基底状態を導き，励起にエネルギーギャップ $\Delta$ が開くことを示す。弱結合での主要な関係式は</p>
+      $$2\Delta(0) \approx 3.52\,k_BT_c, \qquad k_BT_c \approx 1.13\,\hbar\omega_D\,e^{-1/(g(E_F)V)}$$
+      <p>$V$ は引力相互作用の強さ，$g(E_F)$ は Fermi 準位での状態密度。同位体効果 $T_c \propto M^{-1/2}$ はフォノン機構の決定的証拠となった。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 第 1 種・第 2 種超伝導体</div>
+      <p>コヒーレンス長 $\xi$ と侵入長 $\lambda_L$ の比 $\kappa = \lambda_L/\xi$ で分類される。$\kappa < 1/\sqrt{2}$ の第 1 種は臨界磁場 $H_c$ で一気に常伝導へ転移する。$\kappa > 1/\sqrt{2}$ の第 2 種は $H_{c1}$ から $H_{c2}$ の間で磁束量子 $\Phi_0 = h/(2e)$ を渦糸（量子化磁束）として取り込む混合状態をとり，高磁場まで超伝導を保つ。電荷 $2e$ は Cooper 対を反映している。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>2 次元正方格子（格子定数 $a$）について逆格子基本ベクトルを求め，第一 Brillouin ゾーンを図示せよ。</li>
+        <li>1 次元強束縛バンド $E(k) = \varepsilon_0 - 2t\cos(ka)$ の群速度 $v_g = \hbar^{-1}dE/dk$ と有効質量 $m^*$ を計算し，バンド端での符号を論ぜよ。</li>
+        <li>Debye 模型を用い，低温極限で比熱が $C_V\propto T^3$ となることを積分の上限を $\infty$ とおいて示せ。</li>
+        <li>3 次元自由電子気体の状態密度 $g(\varepsilon)\propto\sqrt{\varepsilon}$ を導き，電子密度 $n$ から $E_F$ を表す式 $E_F = (\hbar^2/2m)(3\pi^2 n)^{2/3}$ を確かめよ。</li>
+        <li>真性半導体について質量作用の法則 $np = n_i^2$ を仮定し，$n_i$ が $\exp[-E_g/(2k_BT)]$ に比例することを説明せよ。</li>
+        <li>BCS の関係 $2\Delta(0)\approx 3.52\,k_BT_c$ を用い，$T_c = 9.3$ K（Nb）のエネルギーギャップ $\Delta(0)$ を eV 単位で見積もれ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>多体電子系をより基礎づける場の量子論は <a href="quantum-field-theory.html">量子場理論</a> へ（フォノン・準粒子・凝縮の統一的記述）。強磁性・超伝導といった相転移の普遍的な扱いは <a href="statistical-mechanics.html">統計力学</a>（相転移と臨界現象）へ進むとよい。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
