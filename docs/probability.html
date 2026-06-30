@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>確率論 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">解析系</div><nav>
+    <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+    <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+    <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+    <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">代数・幾何系</div><nav>
+    <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+    <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">確率・統計系</div><nav>
+    <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+    <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+    <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+  </nav></div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 確率論</div>
+    <h1>確率論</h1>
+    <p class="tagline">Kolmogorov の公理から確率変数・特性関数・大数の法則・中心極限定理まで。測度論を基盤とした厳密な確率の理論。</p>
+    <div class="tags"><span class="tag">確率空間</span><span class="tag">確率変数</span><span class="tag">特性関数</span><span class="tag">CLT</span><span class="tag">条件付き期待値</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#prob-space">確率空間</a></li>
+        <li><a href="#rv">確率変数と分布</a></li>
+        <li><a href="#expectation">期待値・分散・モーメント</a></li>
+        <li><a href="#distributions">主要な確率分布</a></li>
+        <li><a href="#cf">特性関数</a></li>
+        <li><a href="#lln">大数の法則</a></li>
+        <li><a href="#clt">中心極限定理</a></li>
+        <li><a href="#conditional">条件付き確率と条件付き期待値</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="prob-space">1. 確率空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 確率空間 (Kolmogorov, 1933)</div>
+      <p>三つ組 $(\Omega, \mathcal{F}, P)$ を<strong>確率空間</strong>という：</p>
+      <ul>
+        <li>$\Omega$: 標本空間（全試行結果の集合）</li>
+        <li>$\mathcal{F}$: $\Omega$ 上のσ加法族（事象の族）</li>
+        <li>$P: \mathcal{F} \to [0,1]$: 確率測度（$P(\Omega)=1$）</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 確率の基本性質</div>
+      <ul>
+        <li>$P(A^c) = 1 - P(A)$</li>
+        <li>$P(A \cup B) = P(A) + P(B) - P(A \cap B)$（加法公式）</li>
+        <li>$A_n \nearrow A \implies P(A_n) \nearrow P(A)$（確率の連続性）</li>
+        <li>Boole の不等式: $P\!\left(\bigcup_n A_n\right) \le \sum_n P(A_n)$</li>
+      </ul>
+    </div>
+
+    <h2 id="rv">2. 確率変数と分布</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 確率変数</div>
+      <p>可測写像 $X: (\Omega, \mathcal{F}) \to (\mathbb{R}, \mathcal{B}(\mathbb{R}))$ を<strong>確率変数</strong>という。</p>
+      <p><strong>分布関数</strong>: $F_X(x) = P(X \le x)$。単調増加，右連続，$F(-\infty)=0$，$F(\infty)=1$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 独立性</div>
+      <p>事象 $A_1, \ldots, A_n$ が<strong>独立</strong>とは，任意の部分集合 $\{i_1,\ldots,i_k\}$ に対して</p>
+      $$P(A_{i_1} \cap \cdots \cap A_{i_k}) = P(A_{i_1})\cdots P(A_{i_k})$$
+      <p>確率変数 $X_1,\ldots,X_n$ が独立とは，生成するσ加法族が独立であること。</p>
+    </div>
+
+    <h2 id="expectation">3. 期待値・分散・モーメント</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義</div>
+      $$E[X] = \int_\Omega X\,dP = \int_{-\infty}^\infty x\,dF_X(x)$$
+      $$\mathrm{Var}(X) = E[(X-E[X])^2] = E[X^2] - (E[X])^2$$
+      $$\mathrm{Cov}(X,Y) = E[(X-EX)(Y-EY)]$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Jensen の不等式</div>
+      <p>$\varphi$ が凸関数で $E[|\varphi(X)|] &lt; \infty$ ならば，$\varphi(E[X]) \le E[\varphi(X)]$。</p>
+      <p>例: $E[X]^2 \le E[X^2]$，$e^{E[X]} \le E[e^X]$</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Chebyshev の不等式</div>
+      $$P(|X - \mu| \ge \varepsilon) \le \frac{\sigma^2}{\varepsilon^2} \quad (\mu = E[X],\; \sigma^2 = \mathrm{Var}(X))$$
+    </div>
+
+    <h2 id="distributions">4. 主要な確率分布</h2>
+    <table>
+      <tr><th>分布</th><th>パラメータ</th><th>$E[X]$</th><th>$\mathrm{Var}(X)$</th><th>特性関数 $E[e^{itX}]$</th></tr>
+      <tr><td>$\mathrm{Bernoulli}(p)$</td><td>$p \in [0,1]$</td><td>$p$</td><td>$p(1-p)$</td><td>$1-p+pe^{it}$</td></tr>
+      <tr><td>$\mathrm{Binomial}(n,p)$</td><td>$n,p$</td><td>$np$</td><td>$np(1-p)$</td><td>$(1-p+pe^{it})^n$</td></tr>
+      <tr><td>$\mathrm{Poisson}(\lambda)$</td><td>$\lambda>0$</td><td>$\lambda$</td><td>$\lambda$</td><td>$e^{\lambda(e^{it}-1)}$</td></tr>
+      <tr><td>$\mathcal{N}(\mu,\sigma^2)$</td><td>$\mu,\sigma^2$</td><td>$\mu$</td><td>$\sigma^2$</td><td>$e^{i\mu t - \sigma^2 t^2/2}$</td></tr>
+      <tr><td>$\mathrm{Exp}(\lambda)$</td><td>$\lambda>0$</td><td>$1/\lambda$</td><td>$1/\lambda^2$</td><td>$(1-it/\lambda)^{-1}$</td></tr>
+      <tr><td>$\chi^2(k)$</td><td>$k \in \mathbb{N}$</td><td>$k$</td><td>$2k$</td><td>$(1-2it)^{-k/2}$</td></tr>
+    </table>
+
+    <h2 id="cf">5. 特性関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 特性関数</div>
+      $$\varphi_X(t) = E[e^{itX}] = \int_{-\infty}^\infty e^{itx}\,dF_X(x), \quad t \in \mathbb{R}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 主な性質</div>
+      <ul>
+        <li>$|\varphi_X(t)| \le 1$，$\varphi_X(0) = 1$</li>
+        <li>$X$ と $Y$ が独立 $\implies$ $\varphi_{X+Y}(t) = \varphi_X(t)\varphi_Y(t)$</li>
+        <li><strong>一対一対応</strong>: $\varphi_X = \varphi_Y \iff F_X = F_Y$（分布を一意に定める）</li>
+        <li>モーメント: $E[X^n] = \dfrac{\varphi_X^{(n)}(0)}{i^n}$（$n$ 次モーメントが存在する場合）</li>
+      </ul>
+    </div>
+
+    <h2 id="lln">6. 大数の法則</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 強大数の法則 (SLLN)</div>
+      <p>i.i.d.（独立同分布）確率変数列 $X_1, X_2, \ldots$ で $E[|X_1|] &lt; \infty$ ならば，</p>
+      $$\frac{X_1 + \cdots + X_n}{n} \xrightarrow{a.s.} E[X_1] \quad (n \to \infty)$$
+      <p>「概率1で」（almost surely）収束する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 弱大数の法則 vs. 強大数の法則</div>
+      <p>弱大数の法則は「確率収束」，強大数は「概率1での収束」（より強い命題）。前者から後者は一般には導けない。</p>
+    </div>
+
+    <h2 id="clt">7. 中心極限定理 (CLT)</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 中心極限定理 (Lindeberg-Lévy)</div>
+      <p>i.i.d. 確率変数列 $\{X_n\}$，$E[X_1] = \mu$，$\mathrm{Var}(X_1) = \sigma^2 &lt; \infty$ とするとき，</p>
+      $$\frac{\sum_{k=1}^n X_k - n\mu}{\sigma\sqrt{n}} \xrightarrow{d} \mathcal{N}(0,1) \quad (n \to \infty)$$
+      <p>（$\xrightarrow{d}$ は分布収束）</p>
+    </div>
+    <div class="box proof">
+      <div class="box-title">証明のアイデア（特性関数を使う）</div>
+      <p>$Z_n = \dfrac{\sum X_k - n\mu}{\sigma\sqrt{n}}$ の特性関数を計算する。$Y_k = (X_k-\mu)/\sigma$ とおくと，</p>
+      $$\varphi_{Z_n}(t) = \varphi_Y(t/\sqrt{n})^n = \left(1 - \frac{t^2}{2n} + O(n^{-3/2})\right)^n \to e^{-t^2/2}$$
+      <p>$e^{-t^2/2}$ は $\mathcal{N}(0,1)$ の特性関数。Lévy の連続性定理により分布収束が従う。</p>
+    </div>
+
+    <h2 id="conditional">8. 条件付き確率と条件付き期待値</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 条件付き確率</div>
+      <p>$P(B) > 0$ のとき，$P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}$。</p>
+      <p><strong>Bayes の定理</strong>: $P(A_i \mid B) = \dfrac{P(B \mid A_i)P(A_i)}{\sum_j P(B \mid A_j)P(A_j)}$</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 条件付き期待値 $E[X \mid \mathcal{G}]$</div>
+      <p>σ加法族 $\mathcal{G} \subset \mathcal{F}$ に対して，$E[X \mid \mathcal{G}]$ は次を満たす $\mathcal{G}$-可測関数：</p>
+      $$\int_G E[X \mid \mathcal{G}]\,dP = \int_G X\,dP \quad \forall G \in \mathcal{G}$$
+      <p>（Radon-Nikodym 定理で存在と一意性が保証される。）</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 条件付き期待値の性質</div>
+      <ul>
+        <li>$E[E[X \mid \mathcal{G}]] = E[X]$（tower property）</li>
+        <li>$\mathcal{H} \subset \mathcal{G}$ ならば $E[E[X \mid \mathcal{G}] \mid \mathcal{H}] = E[X \mid \mathcal{H}]$（smooth property）</li>
+        <li>$X$ が $\mathcal{G}$-可測 $\implies$ $E[XY \mid \mathcal{G}] = X \cdot E[Y \mid \mathcal{G}]$（taking out known）</li>
+        <li>$X$ が $\mathcal{G}$ と独立 $\implies$ $E[X \mid \mathcal{G}] = E[X]$</li>
+      </ul>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>コインを $n$ 回投げるとき，表の回数 $S_n$ が $\mathcal{N}(n/2, n/4)$ に近似されることを CLT で示せ。</li>
+        <li>$X \sim \mathrm{Exp}(\lambda)$ の無記憶性 $P(X > s+t \mid X > s) = P(X > t)$ を証明せよ。</li>
+        <li>$X,Y$ が独立標準正規のとき $E[X \mid X+Y=c]$ を計算せよ。</li>
+        <li>Markov の不等式 $P(X \ge a) \le E[X]/a$（$X \ge 0$，$a > 0$）を証明し，これから Chebyshev の不等式を導け。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

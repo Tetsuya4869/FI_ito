@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>微分幾何学 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 微分幾何学</div>
+    <h1>微分幾何学</h1>
+    <p class="tagline">多様体・接束・曲率・測地線。一般相対性理論から機械学習の幾何学まで，現代数学と物理の共通言語。</p>
+    <div class="tags"><span class="tag">多様体</span><span class="tag">微分形式</span><span class="tag">Riemann計量</span><span class="tag">曲率</span><span class="tag">Gauss-Bonnet</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#manifold">滑らかな多様体</a></li>
+        <li><a href="#tangent">接空間と余接空間</a></li>
+        <li><a href="#forms">微分形式と外微分</a></li>
+        <li><a href="#stokes">Stokes の定理</a></li>
+        <li><a href="#riemannian">Riemann 計量と測地線</a></li>
+        <li><a href="#curvature">曲率テンソル</a></li>
+        <li><a href="#gauss-bonnet">Gauss-Bonnet 定理</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="manifold">1. 滑らかな多様体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 滑らかな多様体</div>
+      <p>位相空間 $M$ が<strong>$n$ 次元滑らかな多様体</strong>とは：</p>
+      <ul>
+        <li>Hausdorff かつ第二可算</li>
+        <li><strong>アトラス</strong>: 座標近傍系 $\{(U_\alpha, \varphi_\alpha)\}$（$\varphi_\alpha: U_\alpha \to \mathbb{R}^n$ 同相）</li>
+        <li><strong>適合条件</strong>: 遷移写像 $\varphi_\beta \circ \varphi_\alpha^{-1}: \varphi_\alpha(U_\alpha \cap U_\beta) \to \varphi_\beta(U_\alpha \cap U_\beta)$ が $C^\infty$</li>
+      </ul>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 多様体の例</div>
+      <ul>
+        <li>$\mathbb{R}^n$（自明）</li>
+        <li>$S^n = \{x \in \mathbb{R}^{n+1} \mid |x|=1\}$: $n$ 次元球面（$n \ge 1$）</li>
+        <li>$T^n = (\mathbb{R}/\mathbb{Z})^n$: $n$ 次元トーラス</li>
+        <li>$GL_n(\mathbb{R})$: $n^2$ 次元 Lie 群</li>
+        <li>リーマン面（$n=2$ の複素多様体）</li>
+      </ul>
+    </div>
+
+    <h2 id="tangent">2. 接空間と余接空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 接ベクトル（導分として）</div>
+      <p>$p \in M$ での<strong>接ベクトル</strong> $v$ とは，$C^\infty(M)$ 上の線形写像 $v: C^\infty(M) \to \mathbb{R}$ で積の微分則（Leibniz則）</p>
+      $$v(fg) = v(f)g(p) + f(p)v(g)$$
+      <p>を満たすもの（点 $p$ での微分作用素）。$T_pM$ で接空間を表し，$\dim T_pM = n$。</p>
+      <p>座標 $(x^1,\ldots,x^n)$ のもとで基底: $\partial/\partial x^1|_p, \ldots, \partial/\partial x^n|_p$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 余接空間・微分</div>
+      <p>余接空間 $T_p^*M = (T_pM)^*$（双対空間）。$f \in C^\infty(M)$ の<strong>微分</strong> $(df)_p \in T_p^*M$:</p>
+      $$(df)_p(v) = v(f)$$
+      <p>座標での基底: $dx^1|_p, \ldots, dx^n|_p$（$dx^i(\partial/\partial x^j) = \delta^i_j$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ベクトル場と微分写像</div>
+      <p><strong>ベクトル場</strong> $X$: 各点 $p$ に $X_p \in T_pM$ を対応させる $C^\infty$ 写像。$[X,Y](f) = X(Yf) - Y(Xf)$ を<strong>Lie ブラケット</strong>という。</p>
+      <p>$F: M \to N$ の<strong>微分写像</strong> $dF_p: T_pM \to T_{F(p)}N$: $(dF_p(v))(g) = v(g \circ F)$。</p>
+    </div>
+
+    <h2 id="forms">3. 微分形式と外微分</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — $k$-形式</div>
+      <p><strong>$k$-形式</strong> $\omega$ は各点で $k$ 個の接ベクトルを受け取る交代多重線形形式。</p>
+      <p>局所座標で: $\omega = \sum_{i_1 &lt; \cdots &lt; i_k} \omega_{i_1\cdots i_k}\, dx^{i_1} \wedge \cdots \wedge dx^{i_k}$</p>
+      <p>外積 $\wedge$: $dx^i \wedge dx^j = -dx^j \wedge dx^i$（交代性）</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 外微分</div>
+      <p><strong>外微分</strong> $d: \Omega^k(M) \to \Omega^{k+1}(M)$:</p>
+      <ul>
+        <li>$f \in C^\infty(M)$ に対して $df = \sum_i \frac{\partial f}{\partial x^i} dx^i$（通常の微分）</li>
+        <li>$d \circ d = 0$（$d^2 = 0$）</li>
+        <li>$d(\omega \wedge \eta) = (d\omega) \wedge \eta + (-1)^k \omega \wedge d\eta$（$\omega$ が $k$-形式）</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 de Rham コホモロジー</div>
+      <p>$d$-閉形式（$d\omega=0$）を $d$-完全形式（$\omega = d\eta$）で割った商 $H^k_{dR}(M)$ が<strong>de Rham コホモロジー群</strong>。多様体のトポロジーを反映する。</p>
+      <p>de Rham の定理: $H^k_{dR}(M) \cong H^k_{\rm sing}(M;\mathbb{R})$（特異コホモロジーと同型）。</p>
+    </div>
+
+    <h2 id="stokes">4. Stokes の定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Stokes の定理（一般化）</div>
+      <p>$M$ が向き付き $n$ 次元多様体，$\omega$ が $(n-1)$-形式（コンパクト台）のとき，</p>
+      $$\int_M d\omega = \int_{\partial M} \omega$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 古典積分定理との統一</div>
+      <ul>
+        <li><strong>Green の定理</strong>: $\iint_D \left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)dA = \oint_{\partial D} P\,dx + Q\,dy$</li>
+        <li><strong>Gauss の発散定理</strong>: $\iiint_V \nabla \cdot \mathbf{F}\,dV = \oiint_{\partial V} \mathbf{F} \cdot d\mathbf{S}$</li>
+        <li><strong>Stokes の定理（古典）</strong>: $\iint_\Sigma (\nabla \times \mathbf{F}) \cdot d\mathbf{S} = \oint_{\partial\Sigma} \mathbf{F} \cdot d\mathbf{r}$</li>
+      </ul>
+      <p>これらはすべて $\int_M d\omega = \int_{\partial M}\omega$ の特殊ケース。</p>
+    </div>
+
+    <h2 id="riemannian">5. Riemann 計量と測地線</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Riemann 計量</div>
+      <p>$M$ の各点に対して接空間上の正定値対称双線形形式 $g_p: T_pM \times T_pM \to \mathbb{R}$ を滑らかに割り当てたものを<strong>Riemann 計量</strong>という。</p>
+      <p>局所座標で: $g = g_{ij}\,dx^i \otimes dx^j$，$g_{ij} = g(\partial/\partial x^i, \partial/\partial x^j)$（対称正定値行列）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 測地線</div>
+      <p><strong>測地線</strong>は「最短路」を一般化した曲線：自己平行な曲線（加速度ベクトルが経路に沿って $0$）。</p>
+      <p>局所座標での測地線方程式:</p>
+      $$\frac{d^2 x^k}{dt^2} + \Gamma^k_{ij}\frac{dx^i}{dt}\frac{dx^j}{dt} = 0$$
+      <p>ここで $\Gamma^k_{ij} = \frac{1}{2}g^{kl}\left(\frac{\partial g_{lj}}{\partial x^i} + \frac{\partial g_{il}}{\partial x^j} - \frac{\partial g_{ij}}{\partial x^l}\right)$ は<strong>Christoffel 記号</strong>。</p>
+    </div>
+
+    <h2 id="curvature">6. 曲率テンソル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Riemann 曲率テンソル</div>
+      <p>共変微分 $\nabla$（Levi-Civita 接続）に対して，<strong>Riemann 曲率テンソル</strong> $R$ を</p>
+      $$R(X,Y)Z = \nabla_X\nabla_Y Z - \nabla_Y\nabla_X Z - \nabla_{[X,Y]}Z$$
+      <p>で定義する。局所成分: $R^l{}_{kij}$（4階テンソル）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 断面曲率・Ricci 曲率・スカラー曲率</div>
+      <ul>
+        <li><strong>断面曲率</strong> $K(X,Y) = g(R(X,Y)Y,X)/(g(X,X)g(Y,Y)-g(X,Y)^2)$</li>
+        <li><strong>Ricci 曲率</strong> $\mathrm{Ric}(X,Y) = \mathrm{tr}(Z \mapsto R(Z,X)Y)$（縮約）</li>
+        <li><strong>スカラー曲率</strong> $R = g^{ij}\mathrm{Ric}_{ij}$（さらなる縮約）</li>
+      </ul>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例</div>
+      <ul>
+        <li>$\mathbb{R}^n$（平坦）: $K = 0$</li>
+        <li>$S^n$（曲率半径 $r$）: $K = 1/r^2$（定値正曲率）</li>
+        <li>双曲空間 $\mathbb{H}^n$: $K = -1$（定値負曲率）</li>
+        <li>一般相対論: Ricci 曲率 $= $ エネルギー運動量テンソル（Einstein 方程式）</li>
+      </ul>
+    </div>
+
+    <h2 id="gauss-bonnet">7. Gauss-Bonnet 定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Gauss-Bonnet（曲面版）</div>
+      <p>コンパクト向き付き曲面 $M$ に対して，</p>
+      $$\int_M K\,dA + \int_{\partial M} \kappa_g\,ds = 2\pi\chi(M)$$
+      <p>$K$: Gauss 曲率，$\kappa_g$: 測地的曲率，$\chi(M) = V - E + F$: <strong>Euler 標数</strong>。</p>
+      <p>境界なし（$\partial M = \emptyset$）のとき: $\int_M K\,dA = 2\pi\chi(M)$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 具体例</div>
+      <ul>
+        <li>$S^2$（半径 $r$）: $K = 1/r^2$，$\chi = 2$ → $\int K\,dA = 4\pi = 2\pi \cdot 2$ ✓</li>
+        <li>トーラス $T^2$: $\chi = 0$ → $\int K\,dA = 0$（正負が打ち消し合う）✓</li>
+        <li>種数 $g$ の閉曲面: $\chi = 2-2g$</li>
+      </ul>
+      <p><strong>位相不変量</strong>: $\chi(M)$ は計量の取り方によらず，多様体の位相構造のみに依存する！</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$S^2$ のアトラスを2枚の座標近傍（北・南半球）で構成し，遷移写像を計算せよ。</li>
+        <li>$f(x,y) = x^2 + y^2$ の $df$ を求め，$T^*(M)$ の元として明示せよ。</li>
+        <li>$\mathbb{R}^2$ の標準計量 $g = dx^2 + dy^2$ の測地線方程式を解き，直線になることを確認せよ。</li>
+        <li>トーラス $T^2 = S^1 \times S^1$ の $H^k_{dR}(T^2)$ を求めよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

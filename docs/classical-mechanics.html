@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>古典力学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 古典力学</div>
+    <h1>古典力学</h1>
+    <p class="tagline">最小作用の原理から出発し，Lagrange・Hamilton 形式，Noether の定理，剛体・振動まで。</p>
+    <div class="tags"><span class="tag">Lagrange力学</span><span class="tag">Hamilton形式</span><span class="tag">Noether定理</span><span class="tag">変分法</span><span class="tag">保存則</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#action">最小作用の原理</a></li>
+        <li><a href="#lagrangian">Lagrange 力学</a></li>
+        <li><a href="#hamiltonian">Hamiltonian 力学</a></li>
+        <li><a href="#noether">Noether の定理</a></li>
+        <li><a href="#rigid">剛体力学</a></li>
+        <li><a href="#central">中心力問題</a></li>
+        <li><a href="#oscillations">振動と正規モード</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="action">1. 最小作用の原理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 作用汎関数</div>
+      <p>一般化座標 $q = (q_1,\ldots,q_n)$ に対して，<strong>Lagrangian</strong> $L(q,\dot q, t)$ を定義する。<strong>作用汎関数</strong>は</p>
+      $$S[q] = \int_{t_1}^{t_2} L(q(t),\dot q(t),t)\,dt$$
+      <p>通常 $L = T - V$（$T$: 運動エネルギー，$V$: ポテンシャルエネルギー）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 最小作用の原理（Hamilton の原理）</div>
+      <p>端点 $q(t_1), q(t_2)$ を固定した経路のうち，作用 $S[q]$ を停留させる経路が物理的な運動を与える：$\delta S = 0$。</p>
+    </div>
+
+    <h2 id="lagrangian">2. Lagrange 力学</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Euler-Lagrange 方程式</div>
+      <p>$\delta S = 0$ の変分条件は，各 $k$ に対して</p>
+      $$\frac{d}{dt}\frac{\partial L}{\partial \dot q_k} - \frac{\partial L}{\partial q_k} = 0 \quad (k = 1,\ldots,n)$$
+      <p>これが $n$ 個の運動方程式を与える。Newton の第二法則 $F = ma$ はデカルト座標での特別な場合。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 単振り子</div>
+      <p>長さ $l$，質量 $m$ の単振り子。一般化座標 $q = \theta$（振れ角）。</p>
+      $$T = \frac{1}{2}ml^2\dot\theta^2, \quad V = -mgl\cos\theta$$
+      $$L = T - V = \frac{1}{2}ml^2\dot\theta^2 + mgl\cos\theta$$
+      <p>Euler-Lagrange 方程式: $ml^2\ddot\theta + mgl\sin\theta = 0 \;\Rightarrow\; \ddot\theta + \frac{g}{l}\sin\theta = 0$。</p>
+      <p>小振幅近似 $\sin\theta \approx \theta$: $\ddot\theta + \omega_0^2\theta = 0$，$\omega_0 = \sqrt{g/l}$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 拘束力が自動消去される利点</div>
+      <p>Lagrange 形式では拘束条件を一般化座標に吸収するため，拘束力（糸の張力・法線反力など）は方程式に現れない。Newton 形式では拘束力も未知数として扱う必要がある。</p>
+    </div>
+
+    <h2 id="hamiltonian">3. Hamiltonian 力学</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 正準運動量と Hamiltonian</div>
+      <p><strong>正準運動量</strong>: $p_k = \dfrac{\partial L}{\partial \dot q_k}$。</p>
+      <p><strong>Hamiltonian</strong> (Legendre 変換): $H(q, p, t) = \displaystyle\sum_k p_k \dot q_k - L$。</p>
+      <p>$L = T - V$ かつ $T$ が $\dot q$ の二次形式のとき，$H = T + V$（全エネルギー）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 正準方程式（Hamilton の運動方程式）</div>
+      $$\dot q_k = \frac{\partial H}{\partial p_k}, \quad \dot p_k = -\frac{\partial H}{\partial q_k} \quad (k=1,\ldots,n)$$
+      <p>$2n$ 個の一階 ODE。Euler-Lagrange の $n$ 個の二階 ODE と等価。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Poisson 括弧</div>
+      $$\{f, g\} = \sum_k \left(\frac{\partial f}{\partial q_k}\frac{\partial g}{\partial p_k} - \frac{\partial f}{\partial p_k}\frac{\partial g}{\partial q_k}\right)$$
+      <p>正準方程式は $\dot f = \{f, H\} + \partial_t f$。保存量 $C$ iff $\{C, H\} = 0$（かつ $\partial_t C = 0$）。</p>
+      <p>基本 Poisson 括弧: $\{q_i, p_j\} = \delta_{ij}$，$\{q_i,q_j\}=\{p_i,p_j\}=0$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Liouville の定理</div>
+      <p>位相空間 $(q,p)$ 上の流れは体積を保存する（非圧縮性）。統計力学でのアンサンブル不変性の基礎。</p>
+    </div>
+
+    <h2 id="noether">4. Noether の定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Noether（連続対称性と保存量の対応）</div>
+      <p>作用 $S$ が連続変換 $q \mapsto q + \varepsilon \eta(q, t)$ のもとで不変（$\delta S = 0$）ならば，</p>
+      $$J = \sum_k \frac{\partial L}{\partial \dot q_k} \eta_k$$
+      <p>が運動の定数（保存量）となる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 対称性と保存量の対応</div>
+      <table>
+        <tr><th>対称性</th><th>変換</th><th>保存量</th></tr>
+        <tr><td>時間並進 $t \to t + \varepsilon$</td><td>$L$ が $t$ に依存しない</td><td>エネルギー $H$</td></tr>
+        <tr><td>空間並進 $x \to x + \varepsilon$</td><td>$L$ が位置に依存しない</td><td>運動量 $p$</td></tr>
+        <tr><td>回転 $\theta \to \theta + \varepsilon$</td><td>$L$ が回転角に依存しない</td><td>角運動量 $L_z$</td></tr>
+        <tr><td>位相変換 $\psi \to e^{i\varepsilon}\psi$</td><td>$U(1)$ 対称性</td><td>電荷（QM）</td></tr>
+      </table>
+    </div>
+
+    <h2 id="rigid">5. 剛体力学</h2>
+    <div class="box def">
+      <div class="box-title">📖 慣性テンソル</div>
+      <p>剛体の慣性テンソル $I_{ij} = \int \rho(\mathbf{r})\bigl(\delta_{ij}r^2 - r_i r_j\bigr)\,dV$。</p>
+      <p>主軸座標では $I$ は対角行列。角運動量 $\mathbf{L} = I\boldsymbol{\omega}$（主軸では各成分独立）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Euler の方程式（剛体回転）</div>
+      <p>主軸系での回転方程式（外力矩なし）:</p>
+      $$I_1\dot\omega_1 = (I_2 - I_3)\omega_2\omega_3$$
+      $$I_2\dot\omega_2 = (I_3 - I_1)\omega_3\omega_1$$
+      $$I_3\dot\omega_3 = (I_1 - I_2)\omega_1\omega_2$$
+    </div>
+
+    <h2 id="central">6. 中心力問題</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 有効ポテンシャルと Kepler 則</div>
+      <p>質量 $\mu$（換算質量）の粒子が $V(r)$ 中で運動。角運動量 $l = \mu r^2 \dot\phi$ が保存。有効ポテンシャル:</p>
+      $$V_{\rm eff}(r) = V(r) + \frac{l^2}{2\mu r^2}$$
+      <p>重力 $V = -k/r$ の場合，軌道は楕円（$E<0$），放物線（$E=0$），双曲線（$E>0$）。</p>
+      <p>Kepler 第3則: $T^2 \propto a^3$（半長軸 $a$）。</p>
+    </div>
+
+    <h2 id="oscillations">7. 振動と正規モード</h2>
+    <div class="box def">
+      <div class="box-title">📖 連成振動・正規座標</div>
+      <p>$n$ 自由度の微小振動: $M\ddot q + Kq = 0$（$M$: 質量行列，$K$: 剛性行列）。</p>
+      <p>固有値問題 $K\mathbf{u} = \omega^2 M\mathbf{u}$ を解くことで正規モード（固有振動数 $\omega_k$，固有ベクトル $\mathbf{u}_k$）が得られる。</p>
+      <p>正規座標 $\xi_k$ では方程式が分離: $\ddot\xi_k + \omega_k^2\xi_k = 0$。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>二重振り子の Lagrangian を求め，小振幅での正規モードを計算せよ。</li>
+        <li>$H = p^2/(2m) + m\omega^2 q^2/2$ から正準方程式を導き，解を求めよ。</li>
+        <li>平面極座標での質点運動に Noether の定理を適用し，角運動量の保存を示せ。</li>
+        <li>一様球の慣性テンソルを計算し，Euler 方程式の自由歳差運動を解析せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

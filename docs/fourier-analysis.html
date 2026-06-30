@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フーリエ解析 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / フーリエ解析</div>
+    <h1>フーリエ解析</h1>
+    <p class="tagline">周期関数の三角級数展開から，$L^2$ 理論，超関数，ウェーブレットまで。信号処理・PDE・量子力学の数学的基礎。</p>
+    <div class="tags"><span class="tag">フーリエ級数</span><span class="tag">Parseval</span><span class="tag">超関数</span><span class="tag">FFT</span><span class="tag">ウェーブレット</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#fs">フーリエ級数</a></li>
+        <li><a href="#convergence">収束定理</a></li>
+        <li><a href="#gibbs">Gibbs 現象</a></li>
+        <li><a href="#l2">$L^2$ フーリエ理論と Parseval</a></li>
+        <li><a href="#ft">フーリエ変換</a></li>
+        <li><a href="#distribution">超関数とフーリエ変換</a></li>
+        <li><a href="#wavelet">ウェーブレット解析</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="fs">1. フーリエ級数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — フーリエ係数・フーリエ級数</div>
+      <p>$f \in L^1([-\pi,\pi])$ の<strong>フーリエ係数</strong>:</p>
+      $$\hat f(n) = c_n = \frac{1}{2\pi}\int_{-\pi}^\pi f(x)e^{-inx}\,dx, \quad n \in \mathbb{Z}$$
+      <p><strong>フーリエ級数</strong>（形式的に）:</p>
+      $$f(x) \sim \sum_{n=-\infty}^\infty c_n e^{inx} = \frac{a_0}{2} + \sum_{n=1}^\infty (a_n\cos nx + b_n\sin nx)$$
+      <p>実数形係数: $a_n = \frac{1}{\pi}\int_{-\pi}^\pi f(x)\cos nx\,dx$，$b_n = \frac{1}{\pi}\int_{-\pi}^\pi f(x)\sin nx\,dx$</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 矩形波と鋸歯波</div>
+      <p><strong>矩形波</strong>: $f(x) = \text{sgn}(x)$（$x \in [-\pi,\pi]$）の展開:</p>
+      $$f(x) \sim \frac{4}{\pi}\left(\sin x + \frac{\sin 3x}{3} + \frac{\sin 5x}{5} + \cdots\right) = \frac{4}{\pi}\sum_{k=0}^\infty \frac{\sin(2k+1)x}{2k+1}$$
+      <p><strong>鋸歯波</strong>: $f(x) = x$（$x \in (-\pi,\pi)$）の展開:</p>
+      $$x \sim 2\sum_{n=1}^\infty \frac{(-1)^{n+1}}{n}\sin nx$$
+    </div>
+
+    <h2 id="convergence">2. 収束定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Dirichlet 核と各点収束</div>
+      <p>部分和 $S_N f(x) = \sum_{|n| \le N} c_n e^{inx}$ は Dirichlet 核との畳み込み:</p>
+      $$S_N f(x) = \frac{1}{2\pi}\int_{-\pi}^\pi f(y) D_N(x-y)\,dy, \quad D_N(t) = \frac{\sin((N+1/2)t)}{\sin(t/2)}$$
+      <p>$f$ が $x$ で微分可能なら $S_N f(x) \to f(x)$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Fejér の定理（Cesàro 平均）</div>
+      <p>$f \in C([-\pi,\pi])$（周期的連続）のとき，フーリエ部分和の Cesàro 平均 $\sigma_N f = \frac{1}{N}\sum_{k=0}^{N-1}S_k f$ は $f$ に一様収束する。</p>
+      <p>系（Weierstrass 近似）: 連続関数は三角多項式で一様近似できる。</p>
+    </div>
+
+    <h2 id="gibbs">3. Gibbs 現象</h2>
+    <div class="box note">
+      <div class="box-title">💡 Gibbs 現象</div>
+      <p>不連続点をもつ関数のフーリエ部分和は，不連続点付近で約 $\pm 9\%$ のオーバーシュートを生じる。$N \to \infty$ でもこのオーバーシュートの<strong>大きさは変わらない</strong>（ただし幅は $\to 0$）。</p>
+      <p>矩形波の不連続点 $x=0$ 付近でオーバーシュートが $\frac{2}{\pi}\int_0^\pi \frac{\sin t}{t}\,dt - 1 \approx 0.0895 \approx 9\%$。</p>
+    </div>
+
+    <h2 id="l2">4. $L^2$ フーリエ理論と Parseval の定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Parseval の等式（$L^2$ 版）</div>
+      <p>$\{e^{inx}/\sqrt{2\pi}\}_{n \in \mathbb{Z}}$ は $L^2([-\pi,\pi])$ の完全正規直交系（CONS）。$f \in L^2$ に対して，</p>
+      $$\|f\|_{L^2}^2 = 2\pi \sum_{n=-\infty}^\infty |c_n|^2, \quad f = \sum_{n=-\infty}^\infty c_n e^{inx} \text{ in } L^2$$
+      <p>（$L^2$ 収束，各点収束とは異なる）</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 Parseval から $\zeta(2) = \pi^2/6$</div>
+      <p>$f(x) = x$ に Parseval を適用: $c_n = \frac{(-1)^{n+1}}{in}$（$n \ne 0$），$c_0 = 0$。</p>
+      $$\|f\|^2 = \int_{-\pi}^\pi x^2\,dx = \frac{2\pi^3}{3} = 2\pi\sum_{n \ne 0}\frac{1}{n^2} = 4\pi\sum_{n=1}^\infty\frac{1}{n^2}$$
+      $$\implies \sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6}$$
+    </div>
+
+    <h2 id="ft">5. フーリエ変換</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — フーリエ変換（$L^1$ と $L^2$）</div>
+      <p>$f \in L^1(\mathbb{R})$:</p>
+      $$\hat f(\xi) = \mathcal{F}[f](\xi) = \int_{-\infty}^\infty f(x)e^{-i\xi x}\,dx$$
+      <p>$L^2$ への拡張（Plancherel）: $\mathcal{F}$ は $L^2(\mathbb{R})$ 上のユニタリ作用素（$L^1 \cap L^2$ 上で定義後，$L^2$ に等長拡張）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Plancherel の等式</div>
+      $$\|\hat f\|_{L^2} = (2\pi)^{1/2}\|f\|_{L^2} \quad (f \in L^2)$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 主要な変換ペア</div>
+      <table>
+        <tr><th>$f(x)$</th><th>$\hat f(\xi)$</th></tr>
+        <tr><td>$e^{-x^2/2}$</td><td>$\sqrt{2\pi}\,e^{-\xi^2/2}$（Gauss 関数は自己双対）</td></tr>
+        <tr><td>$e^{-a|x|}$（$a&gt;0$）</td><td>$\frac{2a}{a^2+\xi^2}$（Cauchy 型）</td></tr>
+        <tr><td>$\mathbf{1}_{[-1,1]}(x)$</td><td>$\frac{2\sin\xi}{\xi}$（sinc 関数）</td></tr>
+        <tr><td>$e^{-ax^2}$（$a&gt;0$）</td><td>$\sqrt{\pi/a}\,e^{-\xi^2/(4a)}$</td></tr>
+      </table>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 高速フーリエ変換 (FFT)</div>
+      <p>離散フーリエ変換 (DFT): $\hat f_k = \sum_{j=0}^{N-1} f_j e^{-2\pi ijk/N}$。直接計算は $O(N^2)$，Cooley-Tukey FFT は $O(N\log N)$。信号処理・音声・画像圧縮・PDE の数値解法に必須。</p>
+    </div>
+
+    <h2 id="distribution">6. 超関数とフーリエ変換</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 超関数（Schwartz の意味で）</div>
+      <p>急減少函数空間 $\mathcal{S}(\mathbb{R}) = \{f \in C^\infty \mid \sup_x |x^\alpha \partial^\beta f| &lt; \infty\}$ の連続線形汎関数を<strong>緩増加超関数</strong>（$\mathcal{S}'$）という。</p>
+      <p><strong>Dirac の $\delta$ 関数</strong>: $\langle \delta, \varphi\rangle = \varphi(0)$，$\hat\delta = 1$，$\hat 1 = 2\pi\delta$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 超関数としての微分・フーリエ変換</div>
+      <p>$T \in \mathcal{S}'$ に対して，$\langle T', \varphi\rangle = -\langle T, \varphi'\rangle$（任意回微分可能！）</p>
+      <p>$\widehat{T'}(\xi) = i\xi \hat T(\xi)$（通常の微分のフーリエ規則がそのまま成立）。</p>
+    </div>
+
+    <h2 id="wavelet">7. ウェーブレット解析</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — マザーウェーブレットと連続ウェーブレット変換</div>
+      <p>$\psi \in L^2(\mathbb{R})$（アドミッシビリティ条件: $\int |\hat\psi(\xi)|^2/|\xi|\,d\xi &lt; \infty$）を<strong>マザーウェーブレット</strong>という。</p>
+      <p>スケール $a \ne 0$，シフト $b$ のウェーブレット: $\psi_{a,b}(x) = \frac{1}{\sqrt{|a|}}\psi\!\left(\frac{x-b}{a}\right)$</p>
+      <p><strong>連続ウェーブレット変換</strong>: $W_\psi f(a,b) = \langle f, \psi_{a,b}\rangle = \int f(x)\overline{\psi_{a,b}(x)}\,dx$</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 フーリエ vs. ウェーブレット</div>
+      <p>フーリエ変換: 時間と周波数を完全に分離。フーリエ係数は時間局在情報を失う。</p>
+      <p>ウェーブレット: 時間と周波数を同時に局在化（不確定性原理のトレードオフはあるが）。非定常信号・画像圧縮（JPEG2000）・地震波解析に有用。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 多重解像度解析 (MRA)</div>
+      <p>入れ子の閉部分空間 $\cdots \subset V_{-1} \subset V_0 \subset V_1 \subset \cdots \subset L^2$ で，$V_j$ の直交補空間 $W_j$（ウェーブレット空間）が</p>
+      $$L^2(\mathbb{R}) = \bigoplus_{j \in \mathbb{Z}} W_j$$
+      <p>有名な例: Haar ウェーブレット，Daubechies ウェーブレット（コンパクト台・滑らか）。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$f(x) = |\sin x|$ のフーリエ係数を求め，$a_0$ を計算せよ。</li>
+        <li>Parseval の等式から $\sum_{n=1}^\infty 1/(2n-1)^2 = \pi^2/8$ を導け。</li>
+        <li>$\mathcal{F}[e^{-|x|}](\xi) = \frac{2}{1+\xi^2}$ を計算し，これを使って $\int_{-\infty}^\infty \frac{dx}{1+x^2} = \pi$ を導け。</li>
+        <li>$\hat\delta = 1$ から $\frac{1}{2\pi}\int_{-\infty}^\infty e^{i\xi x}\,d\xi = \delta(x)$ を（超関数の意味で）説明せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

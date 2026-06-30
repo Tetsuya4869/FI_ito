@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>確率微分方程式 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html"><div class="logo-icon">∑</div><div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div></a></div>
+  <div class="sidebar-section"><nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">解析系</div><nav>
+    <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+    <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
+    <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
+    <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">代数・幾何系</div><nav>
+    <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
+    <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
+  </nav></div>
+  <div class="sidebar-section"><div class="sidebar-label">確率・統計系</div><nav>
+    <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
+    <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
+    <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+  </nav></div>
+</aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 確率微分方程式</div>
+    <h1>確率微分方程式 (SDE)</h1>
+    <p class="tagline">ブラウン運動から伊藤積分，伊藤の公式，Girsanov 変換まで。確率解析の核心と金融数学への応用。</p>
+    <div class="tags"><span class="tag">ブラウン運動</span><span class="tag">マルチンゲール</span><span class="tag">伊藤積分</span><span class="tag">伊藤の公式</span><span class="tag">Girsanov</span><span class="tag">BS公式</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#brownian">ブラウン運動</a></li>
+        <li><a href="#filtration">フィルトレーションとマルチンゲール</a></li>
+        <li><a href="#ito-integral">伊藤積分</a></li>
+        <li><a href="#ito-formula">伊藤の公式</a></li>
+        <li><a href="#sde">確率微分方程式</a></li>
+        <li><a href="#girsanov">Girsanov の定理</a></li>
+        <li><a href="#finance">金融数学への応用</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="brownian">1. ブラウン運動</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ブラウン運動（Wiener 過程）</div>
+      <p>確率過程 $W = \{W_t\}_{t \ge 0}$ が<strong>（標準）ブラウン運動</strong>であるとは：</p>
+      <ol>
+        <li>$W_0 = 0$ (a.s.)</li>
+        <li><strong>独立増分</strong>: $0 \le s &lt; t$，$W_t - W_s$ は $\mathcal{F}_s$ と独立</li>
+        <li><strong>正規増分</strong>: $W_t - W_s \sim \mathcal{N}(0, t-s)$</li>
+        <li><strong>連続経路</strong>: $t \mapsto W_t(\omega)$ は a.s. 連続</li>
+      </ol>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ ブラウン運動の性質</div>
+      <ul>
+        <li>$W_t$ は $\mathcal{F}_t$-マルチンゲール</li>
+        <li>$W_t^2 - t$ はマルチンゲール（二次変分 $[W]_t = t$）</li>
+        <li><strong>非有界変動</strong>: 経路は至るところ微分不可能で，全変動は a.s. 無限大</li>
+        <li><strong>二次変分</strong>: $\sum_i (W_{t_{i+1}} - W_{t_i})^2 \to t$ (in $L^2$)</li>
+        <li><strong>スケーリング</strong>: $\tilde W_t = cW_{t/c^2}$ もブラウン運動</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 $dW_t$ の計算規則</div>
+      $$dW_t \cdot dW_t = dt, \quad dW_t \cdot dt = 0, \quad dt \cdot dt = 0$$
+    </div>
+
+    <h2 id="filtration">2. フィルトレーションとマルチンゲール</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — フィルトレーション・適合過程</div>
+      <p>増大するσ加法族族 $\mathbb{F} = \{\mathcal{F}_t\}_{t \ge 0}$（$s \le t \implies \mathcal{F}_s \subset \mathcal{F}_t$）を<strong>フィルトレーション</strong>という。$X_t$ が各 $t$ で $\mathcal{F}_t$-可測のとき<strong>適合過程</strong>という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — マルチンゲール</div>
+      <p>適合過程 $M_t$ が<strong>マルチンゲール</strong>であるとは，$E[|M_t|] &lt; \infty$ かつ</p>
+      $$E[M_t \mid \mathcal{F}_s] = M_s \quad \forall s \le t$$
+      <p>$\ge$ なら<strong>劣マルチンゲール</strong>，$\le$ なら<strong>優マルチンゲール</strong>。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 マルチンゲールの例</div>
+      <ul>
+        <li>$W_t$（ブラウン運動）</li>
+        <li>$W_t^2 - t$</li>
+        <li>$M_t = \exp(\sigma W_t - \frac{\sigma^2}{2}t)$（指数マルチンゲール）</li>
+        <li>$E[X \mid \mathcal{F}_t]$（任意の可積分 $X$ に対して）</li>
+      </ul>
+    </div>
+
+    <h2 id="ito-integral">3. 伊藤積分</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 伊藤積分の構成</div>
+      <p><strong>Step 1 — 単純過程</strong>: $\phi_t = \sum_k \xi_k \mathbf{1}_{(t_k,t_{k+1}]}$（$\xi_k$ は $\mathcal{F}_{t_k}$-可測）に対して，</p>
+      $$\int_0^T \phi_t\,dW_t = \sum_k \xi_k (W_{t_{k+1}} - W_{t_k})$$
+      <p><strong>Step 2 — 一般の予測可能過程</strong>: $E[\int_0^T \phi_t^2\,dt] &lt; \infty$ を満たす過程を $L^2$ の単純過程で近似して定義する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 伊藤等長性 (Itô Isometry)</div>
+      $$E\!\left[\left(\int_0^T \phi_t\,dW_t\right)^2\right] = E\!\left[\int_0^T \phi_t^2\,dt\right]$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ マルチンゲール性</div>
+      <p>$\phi \in L^2$（適切な条件のもと）なら $M_t = \int_0^t \phi_s\,dW_s$ はマルチンゲール。したがって $E[M_t] = 0$。</p>
+    </div>
+    <div class="box warn">
+      <div class="box-title">⚠️ Itô 積分 vs. Stratonovich 積分</div>
+      <p>伊藤積分は<strong>左端点</strong>で評価（非先読み）。Stratonovich 積分は<strong>中点</strong>で評価し，通常の連鎖律が成り立つが，マルチンゲール性は失われる。変換式:</p>
+      $$\int_0^T f(W_t)\,\circ\,dW_t = \int_0^T f(W_t)\,dW_t + \frac{1}{2}\int_0^T f'(W_t)\,dt$$
+    </div>
+
+    <h2 id="ito-formula">4. 伊藤の公式</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 伊藤の公式（1次元）</div>
+      <p>$X_t$ が Itô 過程 $dX_t = \mu_t\,dt + \sigma_t\,dW_t$ で，$f \in C^{1,2}([0,\infty) \times \mathbb{R})$ ならば，</p>
+      $$df(t, X_t) = \frac{\partial f}{\partial t}\,dt + \frac{\partial f}{\partial x}\,dX_t + \frac{1}{2}\frac{\partial^2 f}{\partial x^2}\,d\langle X \rangle_t$$
+      <p>展開形（$d\langle X \rangle_t = \sigma_t^2\,dt$ に注意）：</p>
+      $$df(t,X_t) = \left(\frac{\partial f}{\partial t} + \mu_t\frac{\partial f}{\partial x} + \frac{1}{2}\sigma_t^2\frac{\partial^2 f}{\partial x^2}\right)dt + \sigma_t\frac{\partial f}{\partial x}\,dW_t$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 二次変分による直観</div>
+      <p>テイラー展開 $df \approx f_t\,dt + f_x\,dX + \frac{1}{2}f_{xx}(dX)^2$ において，$(dX)^2 = \sigma_t^2\,dt + O(dt^{3/2})$ となるため，通常の微積分に比べて $\frac{1}{2}\sigma_t^2 f_{xx}\,dt$ の項（<strong>伊藤修正項</strong>）が加わる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 1 — $f(x) = x^2$，$X_t = W_t$</div>
+      $$d(W_t^2) = 2W_t\,dW_t + dt$$
+      $$\therefore \int_0^t W_s\,dW_s = \frac{W_t^2 - t}{2}$$
+      <p>通常の微積分なら $\int_0^t W_s\,dW_s = W_t^2/2$。差の $-t/2$ が伊藤修正項。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 2 — 幾何ブラウン運動 (GBM)</div>
+      <p>$dS_t = \mu S_t\,dt + \sigma S_t\,dW_t$ に $f(x) = \ln x$ を適用すると，</p>
+      $$d(\ln S_t) = \frac{1}{S_t}dS_t - \frac{1}{2S_t^2}(dS_t)^2 = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW_t$$
+      $$\therefore \quad S_t = S_0 \exp\!\left[\left(\mu - \frac{\sigma^2}{2}\right)t + \sigma W_t\right]$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 積の公式（伊藤の積公式）</div>
+      <p>$X_t, Y_t$ が Itô 過程のとき，</p>
+      $$d(X_t Y_t) = X_t\,dY_t + Y_t\,dX_t + d\langle X, Y\rangle_t$$
+    </div>
+
+    <h2 id="sde">5. 確率微分方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — SDE</div>
+      $$dX_t = b(t, X_t)\,dt + \sigma(t, X_t)\,dW_t, \quad X_0 = x_0$$
+      <p>$b$（ドリフト係数），$\sigma$（拡散係数）は与えられた関数。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 存在一意性（Lipschitz 条件）</div>
+      <p>$b, \sigma$ が $x$ について Lipschitz 連続かつ線形増大条件 $|b(t,x)|+|\sigma(t,x)| \le C(1+|x|)$ を満たせば，強解が a.s. 一意に存在する。</p>
+    </div>
+    <table>
+      <tr><th>モデル</th><th>SDE</th><th>解析解</th></tr>
+      <tr><td>GBM（株価）</td><td>$dS = \mu S\,dt + \sigma S\,dW$</td><td>$S_0 e^{(\mu-\sigma^2/2)t + \sigma W_t}$</td></tr>
+      <tr><td>Ornstein-Uhlenbeck</td><td>$dX = \theta(\mu-X)\,dt + \sigma\,dW$</td><td>$\mu + (X_0-\mu)e^{-\theta t} + \sigma\int_0^t e^{-\theta(t-s)}dW_s$</td></tr>
+      <tr><td>CIR（金利）</td><td>$dr = \kappa(\theta-r)\,dt + \sigma\sqrt{r}\,dW$</td><td>非中心 $\chi^2$ 分布</td></tr>
+    </table>
+
+    <h2 id="girsanov">6. Girsanov の定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Girsanov</div>
+      <p>$\theta_t$ が適合過程で Novikov 条件 $E\!\left[e^{\frac{1}{2}\int_0^T \theta_t^2\,dt}\right] &lt; \infty$ を満たすとする。Radon-Nikodym 導関数</p>
+      $$\frac{dQ}{dP} = \exp\!\left(-\int_0^T \theta_t\,dW_t - \frac{1}{2}\int_0^T \theta_t^2\,dt\right) \equiv \mathcal{E}(\theta)_T$$
+      <p>で定義される確率測度 $Q$ のもとで，</p>
+      $$\tilde W_t = W_t + \int_0^t \theta_s\,ds$$
+      <p>は $Q$-ブラウン運動になる。</p>
+    </div>
+
+    <h2 id="finance">7. 金融数学への応用</h2>
+    <div class="box example">
+      <div class="box-title">📝 ブラック・ショールズ公式の導出</div>
+      <p><strong>設定</strong>: $dS_t = \mu S_t\,dt + \sigma S_t\,dW_t^P$（リアル測度 $P$）</p>
+      <p><strong>Step 1 — リスク中立測度 $Q$ へ変換</strong>: Girsanov で $\theta_t = (\mu-r)/\sigma$（市場価格のリスク），$dW_t^Q = dW_t^P + \theta_t\,dt$</p>
+      $$dS_t = r S_t\,dt + \sigma S_t\,dW_t^Q$$
+      <p><strong>Step 2 — オプション価格</strong>: 裁定なし価格は $Q$ のもとでの割引き期待値</p>
+      $$C_0 = e^{-rT} E^Q[\max(S_T - K, 0)]$$
+      <p><strong>Step 3 — 計算</strong>: $S_T = S_0 e^{(r-\sigma^2/2)T + \sigma W_T^Q}$，$W_T^Q \sim \mathcal{N}(0,T)$ を利用すると，</p>
+      $$\boxed{C_0 = S_0 N(d_1) - K e^{-rT} N(d_2)}$$
+      $$d_1 = \frac{\ln(S_0/K) + (r+\sigma^2/2)T}{\sigma\sqrt{T}}, \quad d_2 = d_1 - \sigma\sqrt{T}$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 ブラック・ショールズ PDE</div>
+      <p>$V(t, S)$ にデルタヘッジ $\Pi = V - \Delta S$（$\Delta = \partial V/\partial S$）を適用すると，</p>
+      $$\frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} - rV = 0$$
+      <p>境界条件: コール $V(T,S) = (S-K)^+$，プット $V(T,S) = (K-S)^+$</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>伊藤の公式を使って $\int_0^t W_s^2\,dW_s$ を $W_t$ と $\int_0^t W_s\,ds$ で表せ。</li>
+        <li>$X_t = e^t \sin(W_t)$ の SDE を求めよ。</li>
+        <li>Ornstein-Uhlenbeck 過程 $dX_t = -\theta X_t\,dt + \sigma\,dW_t$ の解析解を $Y_t = e^{\theta t}X_t$ を使って導け。</li>
+        <li>プット-コール・パリティ $C - P = S_0 - Ke^{-rT}$ を導け。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高等数学・物理 学習サイト</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>高等数学・物理 学習サイト</h1>
+    <p class="sub">解析学から代数・幾何・確率・応用数学，さらに古典力学・量子力学・相対論まで体系的に学ぶ。</p>
+    <div class="stats-bar" style="margin-top:28px;padding:0">
+      <div class="stat"><div class="num">23</div><div class="lbl">分野</div></div>
+      <div class="stat"><div class="num">150+</div><div class="lbl">定理・定義</div></div>
+      <div class="stat"><div class="num">80+</div><div class="lbl">練習問題</div></div>
+      <div class="stat"><div class="num">KaTeX</div><div class="lbl">数式レンダリング</div></div>
+    </div>
+    <div class="cta" style="margin-top:28px">
+      <a href="stochastic.html" class="btn btn-primary">伊藤の公式を学ぶ →</a>
+      <a href="analysis.html" class="btn btn-secondary">解析学から始める</a>
+    </div>
+    <p style="margin-top:20px;font-size:0.83rem;color:var(--text3)">
+      例: $e^{i\pi}+1=0$，$\;\displaystyle\int_{-\infty}^\infty e^{-x^2}dx=\sqrt{\pi}$，$\;\hat{f}(\xi)=\int f(x)e^{-i\xi x}dx$
+    </p>
+  </div>
+
+  <!-- 解析系 -->
+  <div class="grid-section">
+    <h2>🔬 解析系</h2>
+    <div class="card-grid">
+      <a href="analysis.html" class="card">
+        <div class="card-icon">ε</div>
+        <h3>解析学</h3>
+        <p>ε-δ論法，中間値定理，平均値定理，リーマン積分，テイラー展開，級数の収束判定。</p>
+        <div class="card-tags"><span>極限</span><span>連続性</span><span>微分積分</span><span>級数</span></div>
+      </a>
+      <a href="complex-analysis.html" class="card">
+        <div class="card-icon">ℂ</div>
+        <h3>複素解析</h3>
+        <p>正則関数，Cauchy-Riemann方程式，Cauchy積分定理，留数定理，等角写像。</p>
+        <div class="card-tags"><span>正則関数</span><span>Cauchy</span><span>留数</span><span>等角写像</span></div>
+      </a>
+      <a href="fourier-analysis.html" class="card">
+        <div class="card-icon">∿</div>
+        <h3>フーリエ解析</h3>
+        <p>フーリエ級数，Parseval の等式，フーリエ変換，超関数，ウェーブレット解析。</p>
+        <div class="card-tags"><span>フーリエ級数</span><span>Parseval</span><span>超関数</span><span>FFT</span></div>
+      </a>
+      <a href="pde.html" class="card">
+        <div class="card-icon">∂</div>
+        <h3>偏微分方程式</h3>
+        <p>熱方程式・波動方程式・ラプラス方程式の解法，最大値原理，弱解・Sobolev空間。</p>
+        <div class="card-tags"><span>熱方程式</span><span>波動</span><span>フーリエ変換</span><span>弱解</span></div>
+      </a>
+      <a href="functional-analysis.html" class="card">
+        <div class="card-icon">ℋ</div>
+        <h3>関数解析</h3>
+        <p>バナッハ空間，ヒルベルト空間，有界線形作用素，Hahn-Banach，スペクトル理論。</p>
+        <div class="card-tags"><span>バナッハ</span><span>ヒルベルト</span><span>作用素</span><span>スペクトル</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 代数系 -->
+  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <h2>🔷 代数系</h2>
+    <div class="card-grid">
+      <a href="linear-algebra.html" class="card">
+        <div class="card-icon">⊞</div>
+        <h3>線形代数</h3>
+        <p>ベクトル空間，固有値・固有ベクトル，Jordan標準形，内積空間，特異値分解。</p>
+        <div class="card-tags"><span>固有値</span><span>行列式</span><span>SVD</span><span>Jordan</span></div>
+      </a>
+      <a href="abstract-algebra.html" class="card">
+        <div class="card-icon">∘</div>
+        <h3>抽象代数学</h3>
+        <p>群・環・体の公理的理論。Lagrange定理，Sylow定理，ガロア理論，Abel の不可解性定理。</p>
+        <div class="card-tags"><span>群論</span><span>Sylow</span><span>ガロア</span><span>環・体</span></div>
+      </a>
+      <a href="number-theory.html" class="card">
+        <div class="card-icon">ℤ</div>
+        <h3>数論</h3>
+        <p>素数定理，合同式，二次互換法則，Riemann ゼータ関数，楕円曲線，暗号への応用。</p>
+        <div class="card-tags"><span>素数定理</span><span>ゼータ関数</span><span>楕円曲線</span><span>暗号</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 幾何・位相 -->
+  <div class="grid-section">
+    <h2>🌐 幾何・位相</h2>
+    <div class="card-grid">
+      <a href="topology.html" class="card">
+        <div class="card-icon">⊙</div>
+        <h3>位相空間論</h3>
+        <p>開集合・コンパクト性・連結性，完備距離空間，Baire のカテゴリー定理，不動点定理。</p>
+        <div class="card-tags"><span>コンパクト</span><span>連続写像</span><span>不動点</span><span>Baire</span></div>
+      </a>
+      <a href="differential-geometry.html" class="card">
+        <div class="card-icon">∇</div>
+        <h3>微分幾何学</h3>
+        <p>滑らかな多様体，接束，微分形式，Stokes の定理，Riemann 計量，Gauss-Bonnet。</p>
+        <div class="card-tags"><span>多様体</span><span>微分形式</span><span>曲率</span><span>Gauss-Bonnet</span></div>
+      </a>
+      <a href="algebraic-topology.html" class="card">
+        <div class="card-icon">π</div>
+        <h3>代数的位相幾何</h3>
+        <p>基本群，Seifert-van Kampen，被覆空間，単体ホモロジー，Euler 標数，CW 複体。</p>
+        <div class="card-tags"><span>基本群</span><span>ホモロジー</span><span>Euler標数</span><span>CW複体</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 確率・統計 -->
+  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <h2>🎲 確率・統計</h2>
+    <div class="card-grid">
+      <a href="measure-theory.html" class="card">
+        <div class="card-icon">μ</div>
+        <h3>測度論</h3>
+        <p>σ加法族，ルベーグ測度，可測関数，単調収束定理，優収束定理，Radon-Nikodym定理。</p>
+        <div class="card-tags"><span>ルベーグ積分</span><span>σ加法族</span><span>収束定理</span></div>
+      </a>
+      <a href="probability.html" class="card">
+        <div class="card-icon">𝑃</div>
+        <h3>確率論</h3>
+        <p>確率空間，確率変数と分布，特性関数，大数の法則，中心極限定理，条件付き期待値。</p>
+        <div class="card-tags"><span>CLT</span><span>大数の法則</span><span>条件付き期待値</span></div>
+      </a>
+      <a href="stochastic.html" class="card">
+        <div class="card-icon">W</div>
+        <h3>確率微分方程式</h3>
+        <p>ブラウン運動，マルチンゲール，<strong>伊藤の公式</strong>，SDE の解法，Girsanov，ブラック・ショールズ。</p>
+        <div class="card-tags"><span>伊藤の公式</span><span>SDE</span><span>Girsanov</span><span>BS公式</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 応用数学 -->
+  <div class="grid-section">
+    <h2>⚙️ 応用数学</h2>
+    <div class="card-grid">
+      <a href="dynamical-systems.html" class="card">
+        <div class="card-icon">↻</div>
+        <h3>力学系</h3>
+        <p>ODE の定性理論，位相平面，Lyapunov 安定性，安定多様体，分岐理論，カオス・Lorenz 系。</p>
+        <div class="card-tags"><span>安定性</span><span>分岐</span><span>カオス</span><span>Lorenz</span></div>
+      </a>
+      <a href="optimization.html" class="card">
+        <div class="card-icon">▽</div>
+        <h3>最適化・変分法</h3>
+        <p>凸解析，KKT 条件，Lagrange 双対，Fenchel 共役，Euler-Lagrange 方程式，劣微分。</p>
+        <div class="card-tags"><span>凸最適化</span><span>KKT</span><span>変分法</span><span>双対性</span></div>
+      </a>
+      <a href="numerical-analysis.html" class="card">
+        <div class="card-icon">≈</div>
+        <h3>数値解析</h3>
+        <p>浮動小数点誤差，補間，数値積分，LU分解・共役勾配法，Runge-Kutta，Newton 法，安定性。</p>
+        <div class="card-tags"><span>補間</span><span>数値積分</span><span>Runge-Kutta</span><span>Newton法</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 物理系 -->
+  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <h2>⚛️ 物理系</h2>
+    <div class="card-grid">
+      <a href="classical-mechanics.html" class="card">
+        <div class="card-icon">⚙</div>
+        <h3>古典力学</h3>
+        <p>最小作用の原理，Lagrange・Hamilton 形式，Noether の定理，剛体・中心力・正規モード。</p>
+        <div class="card-tags"><span>Lagrange</span><span>Hamilton</span><span>Noether</span><span>変分法</span></div>
+      </a>
+      <a href="electromagnetism.html" class="card">
+        <div class="card-icon">⚡</div>
+        <h3>電磁気学</h3>
+        <p>Maxwell 方程式，電磁ポテンシャル，ゲージ変換，電磁波，多重極展開，相対論的定式化。</p>
+        <div class="card-tags"><span>Maxwell</span><span>ゲージ</span><span>電磁波</span><span>4-ベクトル</span></div>
+      </a>
+      <a href="quantum-mechanics.html" class="card">
+        <div class="card-icon">ψ</div>
+        <h3>量子力学</h3>
+        <p>Schrödinger 方程式，Hilbert 空間・演算子形式，不確定性原理，調和振動子，水素原子，摂動論。</p>
+        <div class="card-tags"><span>Schrödinger</span><span>演算子</span><span>不確定性</span><span>スピン</span></div>
+      </a>
+      <a href="statistical-mechanics.html" class="card">
+        <div class="card-icon">S</div>
+        <h3>統計力学</h3>
+        <p>統計アンサンブル，分配関数，Boltzmann・Fermi-Dirac・Bose-Einstein 分布，相転移・Ising モデル。</p>
+        <div class="card-tags"><span>分配関数</span><span>アンサンブル</span><span>Ising</span><span>相転移</span></div>
+      </a>
+      <a href="relativity.html" class="card">
+        <div class="card-icon">c</div>
+        <h3>相対性理論</h3>
+        <p>Lorentz 変換・時空図，$E=mc^2$，一般相対論，Einstein 方程式，Schwarzschild 解，重力波。</p>
+        <div class="card-tags"><span>Lorentz</span><span>時空</span><span>Einstein方程式</span><span>重力波</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 概要 -->
+  <div class="grid-section">
+    <h2>🗺️ 領域概要</h2>
+    <div class="card-grid">
+      <a href="field-map.html" class="card">
+        <div class="card-icon">⬡</div>
+        <h3>学問領域マップ</h3>
+        <p>数学と物理学の接続関係を俯瞰する。線形代数→量子力学，微分幾何→相対論，変分法→古典力学など。</p>
+        <div class="card-tags"><span>数学↔物理</span><span>関係図</span><span>ロードマップ</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 学習ロードマップ -->
+  <div class="roadmap">
+    <h2>📍 推奨学習ロードマップ</h2>
+    <div class="road-grid">
+      <div class="road-item"><div class="road-num">STEP 1</div><a href="analysis.html">解析学</a><br><span style="color:var(--text3);font-size:0.78rem">ε-δ · MVT · 積分</span></div>
+      <div class="road-item"><div class="road-num">STEP 2</div><a href="linear-algebra.html">線形代数</a><br><span style="color:var(--text3);font-size:0.78rem">固有値 · SVD</span></div>
+      <div class="road-item"><div class="road-num">STEP 3</div><a href="topology.html">位相空間論</a><br><span style="color:var(--text3);font-size:0.78rem">コンパクト · 完備性</span></div>
+      <div class="road-item"><div class="road-num">STEP 4</div><a href="measure-theory.html">測度論</a><br><span style="color:var(--text3);font-size:0.78rem">ルベーグ積分 · 収束定理</span></div>
+      <div class="road-item"><div class="road-num">STEP 5</div><a href="functional-analysis.html">関数解析</a><br><span style="color:var(--text3);font-size:0.78rem">Banach · Hilbert</span></div>
+      <div class="road-item"><div class="road-num">STEP 6</div><a href="probability.html">確率論</a><br><span style="color:var(--text3);font-size:0.78rem">CLT · 条件付き期待値</span></div>
+      <div class="road-item"><div class="road-num">STEP 7</div><a href="stochastic.html">確率微分方程式</a><br><span style="color:var(--text3);font-size:0.78rem">伊藤の公式 · SDE</span></div>
+      <div class="road-item"><div class="road-num">並行学習 A</div><a href="complex-analysis.html">複素解析</a><br><span style="color:var(--text3);font-size:0.78rem">Cauchy · 留数定理</span></div>
+      <div class="road-item"><div class="road-num">並行学習 B</div><a href="abstract-algebra.html">抽象代数学</a><br><span style="color:var(--text3);font-size:0.78rem">群 · ガロア理論</span></div>
+      <div class="road-item"><div class="road-num">並行学習 C</div><a href="fourier-analysis.html">フーリエ解析</a><br><span style="color:var(--text3);font-size:0.78rem">PDE との橋渡し</span></div>
+      <div class="road-item"><div class="road-num">発展 1</div><a href="pde.html">偏微分方程式</a><br><span style="color:var(--text3);font-size:0.78rem">熱 · 波動 · Laplace</span></div>
+      <div class="road-item"><div class="road-num">発展 2</div><a href="differential-geometry.html">微分幾何学</a><br><span style="color:var(--text3);font-size:0.78rem">多様体 · 曲率</span></div>
+      <div class="road-item"><div class="road-num">発展 3</div><a href="algebraic-topology.html">代数的位相幾何</a><br><span style="color:var(--text3);font-size:0.78rem">ホモロジー · 基本群</span></div>
+      <div class="road-item"><div class="road-num">発展 4</div><a href="number-theory.html">数論</a><br><span style="color:var(--text3);font-size:0.78rem">ゼータ · 楕円曲線</span></div>
+      <div class="road-item"><div class="road-num">応用 1</div><a href="dynamical-systems.html">力学系</a><br><span style="color:var(--text3);font-size:0.78rem">安定性 · カオス</span></div>
+      <div class="road-item"><div class="road-num">応用 2</div><a href="optimization.html">最適化</a><br><span style="color:var(--text3);font-size:0.78rem">KKT · 変分法</span></div>
+      <div class="road-item"><div class="road-num">応用 3</div><a href="numerical-analysis.html">数値解析</a><br><span style="color:var(--text3);font-size:0.78rem">誤差 · RK4 · Newton</span></div>
+      <div class="road-item"><div class="road-num">物理 1</div><a href="classical-mechanics.html">古典力学</a><br><span style="color:var(--text3);font-size:0.78rem">Lagrange · Noether</span></div>
+      <div class="road-item"><div class="road-num">物理 2</div><a href="electromagnetism.html">電磁気学</a><br><span style="color:var(--text3);font-size:0.78rem">Maxwell · 電磁波</span></div>
+      <div class="road-item"><div class="road-num">物理 3</div><a href="quantum-mechanics.html">量子力学</a><br><span style="color:var(--text3);font-size:0.78rem">Schrödinger · 演算子</span></div>
+      <div class="road-item"><div class="road-num">物理 4</div><a href="statistical-mechanics.html">統計力学</a><br><span style="color:var(--text3);font-size:0.78rem">分配関数 · 相転移</span></div>
+      <div class="road-item"><div class="road-num">物理 5</div><a href="relativity.html">相対性理論</a><br><span style="color:var(--text3);font-size:0.78rem">Lorentz · Einstein方程式</span></div>
+      <div class="road-item"><div class="road-num">総覧</div><a href="field-map.html">学問領域マップ</a><br><span style="color:var(--text3);font-size:0.78rem">数学↔物理の接続</span></div>
+    </div>
+  </div>
+
+  <footer style="text-align:center;padding:32px;border-top:1px solid var(--border);color:var(--text3);font-size:0.82rem">
+    高等数学学習サイト · <a href="https://github.com/Tetsuya4869/FI_ito" style="color:var(--text2)">GitHub</a>
+  </footer>
+
+</div>
+</body>
+</html>

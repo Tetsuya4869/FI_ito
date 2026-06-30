@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>電磁気学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 電磁気学</div>
+    <h1>電磁気学</h1>
+    <p class="tagline">Maxwell 方程式を中心に，電磁場・ポテンシャル・ゲージ変換・電磁波・相対論的定式化まで。</p>
+    <div class="tags"><span class="tag">Maxwell方程式</span><span class="tag">ゲージ理論</span><span class="tag">電磁波</span><span class="tag">4-ベクトル</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#maxwell">Maxwell 方程式</a></li>
+        <li><a href="#potentials">電磁ポテンシャルとゲージ変換</a></li>
+        <li><a href="#waves">電磁波の伝播</a></li>
+        <li><a href="#boundary">境界値問題と多重極展開</a></li>
+        <li><a href="#relativistic">相対論的定式化</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="maxwell">1. Maxwell 方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 Maxwell 方程式（微分形）</div>
+      <p>電場 $\mathbf{E}$，磁束密度 $\mathbf{B}$，電荷密度 $\rho$，電流密度 $\mathbf{J}$，真空誘電率 $\varepsilon_0$，真空透磁率 $\mu_0$ として:</p>
+      $$\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \quad \text{(Gauss の法則)}$$
+      $$\nabla \cdot \mathbf{B} = 0 \quad \text{(磁気単極子の不存在)}$$
+      $$\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} \quad \text{(Faraday の法則)}$$
+      $$\nabla \times \mathbf{B} = \mu_0 \mathbf{J} + \mu_0\varepsilon_0 \frac{\partial \mathbf{E}}{\partial t} \quad \text{(Ampère-Maxwell の法則)}$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Maxwell 方程式（積分形）</div>
+      $$\oint_S \mathbf{E}\cdot d\mathbf{A} = \frac{Q_{\rm enc}}{\varepsilon_0}$$
+      $$\oint_S \mathbf{B}\cdot d\mathbf{A} = 0$$
+      $$\oint_C \mathbf{E}\cdot d\boldsymbol{\ell} = -\frac{d}{dt}\int_S \mathbf{B}\cdot d\mathbf{A}$$
+      $$\oint_C \mathbf{B}\cdot d\boldsymbol{\ell} = \mu_0 I_{\rm enc} + \mu_0\varepsilon_0 \frac{d}{dt}\int_S \mathbf{E}\cdot d\mathbf{A}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 電荷保存則（連続の方程式）</div>
+      <p>Maxwell 方程式から自動的に導かれる:</p>
+      $$\frac{\partial \rho}{\partial t} + \nabla \cdot \mathbf{J} = 0$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Lorentz 力</div>
+      $$\mathbf{F} = q(\mathbf{E} + \mathbf{v}\times\mathbf{B})$$
+      <p>Maxwell 方程式と組み合わせることで，電磁気学の完全な記述が得られる。</p>
+    </div>
+
+    <h2 id="potentials">2. 電磁ポテンシャルとゲージ変換</h2>
+    <div class="box def">
+      <div class="box-title">📖 スカラーポテンシャルとベクトルポテンシャル</div>
+      <p>$\nabla\cdot\mathbf{B}=0$ より $\mathbf{B} = \nabla\times\mathbf{A}$（ベクトルポテンシャル $\mathbf{A}$）。</p>
+      <p>これを Faraday の法則に代入すると $\mathbf{E} = -\nabla\phi - \partial_t\mathbf{A}$（スカラーポテンシャル $\phi$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 ゲージ変換</div>
+      <p>任意の関数 $\Lambda(\mathbf{r},t)$ に対して</p>
+      $$\mathbf{A} \to \mathbf{A} + \nabla\Lambda, \quad \phi \to \phi - \frac{\partial\Lambda}{\partial t}$$
+      <p>は物理量 $\mathbf{E}, \mathbf{B}$ を変えない（ゲージ不変性）。</p>
+      <p><strong>Coulomb ゲージ</strong>: $\nabla\cdot\mathbf{A} = 0$（静電気・非相対論的量子力学で有用）。</p>
+      <p><strong>Lorenz ゲージ</strong>: $\nabla\cdot\mathbf{A} + \mu_0\varepsilon_0\partial_t\phi = 0$（相対論的共変性を持つ）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Lorenz ゲージでの波動方程式</div>
+      <p>Lorenz ゲージ下で Maxwell 方程式は波動方程式に帰着する:</p>
+      $$\Box \mathbf{A} = \mu_0 \mathbf{J}, \quad \Box \phi = \frac{\rho}{\varepsilon_0}$$
+      <p>ただし $\Box = \nabla^2 - \mu_0\varepsilon_0\partial_t^2$（d'Alembertian）。</p>
+    </div>
+
+    <h2 id="waves">3. 電磁波の伝播</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 真空中の電磁波</div>
+      <p>真空（$\rho=0, \mathbf{J}=0$）でのMaxwell方程式から:</p>
+      $$\nabla^2\mathbf{E} = \mu_0\varepsilon_0 \frac{\partial^2\mathbf{E}}{\partial t^2}, \quad \nabla^2\mathbf{B} = \mu_0\varepsilon_0 \frac{\partial^2\mathbf{B}}{\partial t^2}$$
+      <p>光速: $c = 1/\sqrt{\mu_0\varepsilon_0} \approx 3\times10^8\,\text{m/s}$。</p>
+      <p>平面波解: $\mathbf{E} = \mathbf{E}_0 e^{i(\mathbf{k}\cdot\mathbf{r} - \omega t)}$，$\mathbf{B} = \frac{1}{c}\hat k\times\mathbf{E}$。</p>
+      <p>$\mathbf{E}\perp\mathbf{B}\perp\hat k$（横波），$|\mathbf{B}| = |\mathbf{E}|/c$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 エネルギーと Poynting ベクトル</div>
+      <p>電磁場のエネルギー密度:</p>
+      $$u = \frac{1}{2}\left(\varepsilon_0 E^2 + \frac{1}{\mu_0}B^2\right)$$
+      <p><strong>Poynting ベクトル</strong>（エネルギー流束）:</p>
+      $$\mathbf{S} = \frac{1}{\mu_0}\mathbf{E}\times\mathbf{B}$$
+      <p>エネルギー保存（Poynting の定理）: $\partial_t u + \nabla\cdot\mathbf{S} = -\mathbf{J}\cdot\mathbf{E}$。</p>
+    </div>
+
+    <h2 id="boundary">4. 境界値問題と多重極展開</h2>
+    <div class="box def">
+      <div class="box-title">📖 境界条件</div>
+      <p>誘電体・導体界面での境界条件（法線成分 $n$，接線成分 $t$）:</p>
+      $$\varepsilon_1 E_{1n} - \varepsilon_2 E_{2n} = \sigma_f, \quad E_{1t} = E_{2t}$$
+      $$B_{1n} = B_{2n}, \quad \frac{1}{\mu_1}B_{1t} - \frac{1}{\mu_2}B_{2t} = K_f$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 多重極展開</div>
+      <p>原点から遠い点 $\mathbf{r}$ でのポテンシャル ($r' \ll r$):</p>
+      $$\phi(\mathbf{r}) = \frac{1}{4\pi\varepsilon_0}\left[\frac{Q}{r} + \frac{\mathbf{p}\cdot\hat r}{r^2} + \frac{1}{2}\sum_{ij}Q_{ij}\frac{\hat r_i \hat r_j}{r^3} + \cdots\right]$$
+      <p>$Q = \int\rho\,dV$（全電荷），$\mathbf{p} = \int\mathbf{r}'\rho\,dV$（双極子モーメント），$Q_{ij} = \int(3r'_ir'_j - r'^2\delta_{ij})\rho\,dV$（四極子）。</p>
+    </div>
+
+    <h2 id="relativistic">5. 相対論的定式化</h2>
+    <div class="box def">
+      <div class="box-title">📖 4-ポテンシャルと電磁場テンソル</div>
+      <p>4-ポテンシャル: $A^\mu = (\phi/c, \mathbf{A})$。</p>
+      <p>電磁場テンソル: $F^{\mu\nu} = \partial^\mu A^\nu - \partial^\nu A^\mu$。成分:</p>
+      $$F^{\mu\nu} = \begin{pmatrix} 0 & -E_x/c & -E_y/c & -E_z/c \\ E_x/c & 0 & -B_z & B_y \\ E_y/c & B_z & 0 & -B_x \\ E_z/c & -B_y & B_x & 0 \end{pmatrix}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Maxwell 方程式の共変形</div>
+      <p>Maxwell 方程式は 2 本の共変方程式に凝縮される:</p>
+      $$\partial_\mu F^{\mu\nu} = \mu_0 J^\nu \quad \text{(Gauss・Ampère)}$$
+      $$\partial_{[\mu}F_{\nu\rho]} = 0 \quad \text{(Faraday・磁気単極子なし)}$$
+      <p>4-電流 $J^\nu = (c\rho, \mathbf{J})$。Lorentz 変換で $\mathbf{E}$ と $\mathbf{B}$ が混合する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 電磁場の Lagrangian</div>
+      $$\mathcal{L} = -\frac{1}{4\mu_0}F_{\mu\nu}F^{\mu\nu} - J^\mu A_\mu$$
+      <p>この作用 $S = \int\mathcal{L}\,d^4x$ を変分すると Maxwell 方程式が得られる。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>無限長直線電流 $I$ から距離 $r$ の磁場を Ampère の法則で求めよ。</li>
+        <li>Coulomb ゲージ下で静電場を求める境界値問題（球導体の一様外場中）を解け。</li>
+        <li>$z$ 方向に伝播する平面電磁波の偏光状態（直線・円・楕円偏光）を記述せよ。</li>
+        <li>電荷 $q$ の粒子が一様電磁場 $(\mathbf{E}, \mathbf{B})$ 中で運動する方程式を共変形で書け。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

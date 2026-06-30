@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>代数的位相幾何 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 代数的位相幾何</div>
+    <h1>代数的位相幾何</h1>
+    <p class="tagline">位相空間に群・環などの代数的不変量を対応させる。穴の数，ループの同値類，ホモロジーで空間のトポロジーを識別する。</p>
+    <div class="tags"><span class="tag">基本群</span><span class="tag">ホモトピー</span><span class="tag">ホモロジー</span><span class="tag">Euler標数</span><span class="tag">被覆空間</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#homotopy">ホモトピーと基本群</a></li>
+        <li><a href="#svk">Seifert-van Kampen の定理</a></li>
+        <li><a href="#covering">被覆空間</a></li>
+        <li><a href="#simplicial">単体複体とホモロジー</a></li>
+        <li><a href="#euler">Euler 標数</a></li>
+        <li><a href="#cw">CW 複体</a></li>
+        <li><a href="#applications">応用と計算例</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="homotopy">1. ホモトピーと基本群</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ホモトピー</div>
+      <p>連続写像 $f, g: X \to Y$ が<strong>ホモトープ</strong>（$f \simeq g$）とは，連続写像 $H: X \times [0,1] \to Y$ で $H(x,0) = f(x)$，$H(x,1) = g(x)$ が存在すること。$H$ を<strong>ホモトピー</strong>という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 基点付きループと基本群</div>
+      <p>基点 $x_0 \in X$ でのループ: $\gamma: [0,1] \to X$，$\gamma(0) = \gamma(1) = x_0$（基点固定ホモトープの同値類）。</p>
+      <p><strong>基本群</strong>（第一ホモトピー群）:</p>
+      $$\pi_1(X, x_0) = \{\text{基点 } x_0 \text{ でのループの同値類}\}$$
+      <p>積: $[\gamma][\delta] = [\gamma \cdot \delta]$（$\gamma$ のあと $\delta$）。群演算は well-defined。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 基本群の例</div>
+      <table>
+        <tr><th>空間</th><th>基本群</th></tr>
+        <tr><td>$\mathbb{R}^n$，凸集合</td><td>$\{1\}$（自明群）</td></tr>
+        <tr><td>$S^1$（円）</td><td>$\mathbb{Z}$（巻き数）</td></tr>
+        <tr><td>$S^n$（$n \ge 2$）</td><td>$\{1\}$</td></tr>
+        <tr><td>$T^2 = S^1 \times S^1$（トーラス）</td><td>$\mathbb{Z}^2$</td></tr>
+        <tr><td>$\mathbb{R}^2 \setminus \{0\}$</td><td>$\mathbb{Z}$</td></tr>
+        <tr><td>$\mathbb{R}^3 \setminus (\text{円})$</td><td>$\mathbb{Z}$</td></tr>
+        <tr><td>射影平面 $\mathbb{RP}^2$</td><td>$\mathbb{Z}/2\mathbb{Z}$</td></tr>
+        <tr><td>Klein 瓶</td><td>$\langle a,b \mid abab^{-1}=1\rangle$</td></tr>
+      </table>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 単連結</div>
+      <p>$X$ が<strong>単連結</strong>とは，弧状連結かつ $\pi_1(X) = \{1\}$（すべてのループが収縮可能）。</p>
+    </div>
+
+    <h2 id="svk">2. Seifert-van Kampen の定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Seifert-van Kampen</div>
+      <p>$X = U \cup V$（$U, V, U\cap V$ が弧状連結な開集合，$x_0 \in U\cap V$）のとき，</p>
+      $$\pi_1(X, x_0) \cong \pi_1(U, x_0) *_{\pi_1(U\cap V, x_0)} \pi_1(V, x_0)$$
+      <p>（$\pi_1(U\cap V)$ で amalgamated free product）</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $\pi_1(S^1) = \mathbb{Z}$ の計算</div>
+      <p>$S^1$ を上弧 $U$ と下弧 $V$（各々 $\simeq$ 開区間）に分ける。$U \cap V = $ 2点（弧状連結でないので少し工夫）。より詳しくは少しオーバーラップするように取ると: $\pi_1(U) = \pi_1(V) = 1$，$U \cap V \simeq S^0 \times [0,1]$。van Kampen から $\pi_1(S^1) \cong \mathbb{Z}$。</p>
+    </div>
+
+    <h2 id="covering">3. 被覆空間</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 被覆空間</div>
+      <p>連続全射 $p: \tilde X \to X$ が<strong>被覆写像</strong>: 各 $x \in X$ に開近傍 $U$ が存在し，$p^{-1}(U) = \bigsqcup_\alpha V_\alpha$（$V_\alpha$ は互いに素な開集合）で各 $p|_{V_\alpha}: V_\alpha \to U$ が同相。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 被覆空間と基本群の対応</div>
+      <p>$X$ の被覆空間の同型類 $\leftrightarrow$ $\pi_1(X, x_0)$ の共役類の部分群（局所単連結な場合）。</p>
+      <ul>
+        <li><strong>普遍被覆</strong> $\tilde X$: $\pi_1(\tilde X) = 1$，$\pi_1(X) = \mathrm{Deck}(\tilde X / X)$（デック変換群）</li>
+        <li>$S^1$ の普遍被覆: $\mathbb{R}$（$p: \mathbb{R} \to S^1$，$p(t) = e^{2\pi it}$），$\mathrm{Deck} \cong \mathbb{Z}$</li>
+      </ul>
+    </div>
+
+    <h2 id="simplicial">4. 単体複体とホモロジー</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 単体複体</div>
+      <p>$k$-単体 $\sigma = [v_0, v_1, \ldots, v_k]$（$\mathbb{R}^n$ 内の $k+1$ 個の一般位置の点の凸包）。<strong>単体複体</strong> $K$: 単体の有限集合で，面が含まれ，交差が面になるもの。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 単体ホモロジー</div>
+      <p>$k$-鎖群 $C_k(K; \mathbb{Z}) = $ $k$-単体の $\mathbb{Z}$-自由加群。境界作用素 $\partial_k: C_k \to C_{k-1}$:</p>
+      $$\partial_k [v_0,\ldots,v_k] = \sum_{i=0}^k (-1)^i [v_0,\ldots,\hat v_i,\ldots,v_k]$$
+      <p>$\partial_{k-1} \circ \partial_k = 0$（境界の境界 $= 0$）。</p>
+      <p><strong>$k$-次ホモロジー群</strong>: $H_k(K) = \ker\partial_k / \mathrm{Im}\,\partial_{k+1}$（$k$-サイクル / $k$-境界）</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 ホモロジー群の計算例</div>
+      <table>
+        <tr><th>空間</th><th>$H_0$</th><th>$H_1$</th><th>$H_2$</th><th>$H_n$（$n \ge 3$）</th></tr>
+        <tr><td>1点</td><td>$\mathbb{Z}$</td><td>$0$</td><td>$0$</td><td>$0$</td></tr>
+        <tr><td>$S^1$</td><td>$\mathbb{Z}$</td><td>$\mathbb{Z}$</td><td>$0$</td><td>$0$</td></tr>
+        <tr><td>$S^2$</td><td>$\mathbb{Z}$</td><td>$0$</td><td>$\mathbb{Z}$</td><td>$0$</td></tr>
+        <tr><td>$T^2$（トーラス）</td><td>$\mathbb{Z}$</td><td>$\mathbb{Z}^2$</td><td>$\mathbb{Z}$</td><td>$0$</td></tr>
+        <tr><td>$\mathbb{RP}^2$</td><td>$\mathbb{Z}$</td><td>$\mathbb{Z}/2$</td><td>$0$</td><td>$0$</td></tr>
+        <tr><td>$S^n$（$n \ge 1$）</td><td>$\mathbb{Z}$</td><td>$0$</td><td>$\cdots$</td><td>$\mathbb{Z}$（$k=n$ のみ）</td></tr>
+      </table>
+    </div>
+
+    <h2 id="euler">5. Euler 標数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Euler 標数</div>
+      <p>単体複体 $K$ の<strong>Euler 標数</strong>（ホモロジーによる定義）:</p>
+      $$\chi(K) = \sum_{k \ge 0} (-1)^k \,\mathrm{rank}\, H_k(K; \mathbb{Z})$$
+      <p>単体による定義: $\chi(K) = \sum_{k} (-1)^k c_k$（$c_k$ は $k$-単体の個数）。</p>
+      <p>$K$ が多面体の場合: $\chi = V - E + F$（頂点数 - 辺数 + 面数）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Euler の多面体定理</div>
+      <p>凸多面体では $V - E + F = 2$。</p>
+      <p>閉曲面（種数 $g$）: $\chi = 2 - 2g$。$g=0$（球）: $\chi=2$，$g=1$（トーラス）: $\chi=0$，$g=2$（二重トーラス）: $\chi=-2$。</p>
+    </div>
+
+    <h2 id="cw">6. CW 複体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — CW 複体</div>
+      <p>$X$ を $n$-骨格 $X^0 \subset X^1 \subset \cdots$ の列として構成。$X^n$ は $X^{n-1}$ に $n$-セル（$n$-円板）を貼り付けて得る。多くの空間（多様体・代数多様体など）は CW 複体として実現できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 CW 構造の例</div>
+      <ul>
+        <li>$S^n$: 0-セル 1個 + $n$-セル 1個</li>
+        <li>$\mathbb{CP}^n$: 各次元に 1個ずつのセル（$0, 2, 4, \ldots, 2n$）</li>
+        <li>$T^2$: 0-セル 1，1-セル 2，2-セル 1（$\chi = 1 - 2 + 1 = 0$ ✓）</li>
+      </ul>
+    </div>
+
+    <h2 id="applications">7. 応用と計算例</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Brouwer の不動点定理（ホモロジーによる証明）</div>
+      <p>連続写像 $f: D^n \to D^n$ は不動点をもつ。証明: 不動点がないと仮定すると $f$ から $D^n \to S^{n-1}$ への引き込みが構成でき，$H_{n-1}(D^n) = 0$ と $H_{n-1}(S^{n-1}) = \mathbb{Z}$ の矛盾。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Borsuk-Ulam</div>
+      <p>任意の連続写像 $f: S^n \to \mathbb{R}^n$ に対して，$f(x) = f(-x)$ となる $x \in S^n$ が存在する（「地球上には気温と気圧が対蹠点と同じ点が存在する」）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Hairy Ball（毛球定理）</div>
+      <p>$S^{2n}$ 上には零点のない連続接ベクトル場は存在しない（「球面を覆う毛は必ず寝癖がつく」）。証明: Euler 標数 $\chi(S^{2n}) = 2 \ne 0$。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>van Kampen の定理を使って $\pi_1(T^2) = \mathbb{Z}^2$ を示せ（$T^2 = U \cup V$，$U \cap V \simeq S^1$）。</li>
+        <li>正四面体（頂点 4，辺 6，面 4）の Euler 標数を計算し，球面と同相であることを確認せよ。</li>
+        <li>$H_k(\mathbb{RP}^2; \mathbb{Z})$ を境界作用素の行列を明示的に計算して求めよ。</li>
+        <li>$f: S^1 \to S^1$，$f(e^{i\theta}) = e^{2i\theta}$（2倍写像）の引き戻し $f^*: H^1(S^1) \to H^1(S^1)$ を求めよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

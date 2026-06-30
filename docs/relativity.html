@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>相対性理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 相対性理論</div>
+    <h1>相対性理論</h1>
+    <p class="tagline">特殊相対論の時空構造から，一般相対論の曲がった時空・Einstein 方程式・重力波まで。</p>
+    <div class="tags"><span class="tag">Lorentz変換</span><span class="tag">時空図</span><span class="tag">一般相対論</span><span class="tag">Einstein方程式</span><span class="tag">重力波</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#special">特殊相対論</a></li>
+        <li><a href="#4vector">4-ベクトルと相対論的力学</a></li>
+        <li><a href="#gr-basics">一般相対論の基礎</a></li>
+        <li><a href="#einstein-eq">Einstein 方程式</a></li>
+        <li><a href="#solutions">Schwarzschild 解と重力波</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="special">1. 特殊相対論</h2>
+    <div class="box def">
+      <div class="box-title">📖 特殊相対性原理と光速不変</div>
+      <p><strong>Einstein の 2 公準</strong>:</p>
+      <ol>
+        <li>物理法則はすべての慣性系で同一の形をもつ（相対性原理）。</li>
+        <li>真空中の光速 $c$ はすべての慣性系で同じ（光速不変）。</li>
+      </ol>
+      <p>これらから Galilei 変換は棄却され，Lorentz 変換が導かれる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Lorentz 変換</div>
+      <p>系 $S$ に対して速度 $v$（$x$ 方向）で動く系 $S'$ への変換 ($\beta = v/c$，$\gamma = 1/\sqrt{1-\beta^2}$):</p>
+      $$ct' = \gamma(ct - \beta x), \quad x' = \gamma(x - \beta ct)$$
+      $$y' = y, \quad z' = z$$
+      <p>逆変換: $\beta\to-\beta$。$\gamma \ge 1$，$v\to c$ で $\gamma\to\infty$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 時空間隔と因果律</div>
+      <p>Minkowski 計量: $ds^2 = -c^2dt^2 + dx^2 + dy^2 + dz^2 = \eta_{\mu\nu}dx^\mu dx^\nu$。</p>
+      <p>時空間隔はすべての慣性系で不変。</p>
+      <table>
+        <tr><th>$ds^2$</th><th>種類</th><th>因果性</th></tr>
+        <tr><td>$< 0$</td><td>時間的 (timelike)</td><td>因果的に接続可能</td></tr>
+        <tr><td>$= 0$</td><td>光的 (null / lightlike)</td><td>光信号で接続</td></tr>
+        <tr><td>$> 0$</td><td>空間的 (spacelike)</td><td>因果的に分離</td></tr>
+      </table>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 時間の遅れ・長さの収縮</div>
+      <p><strong>時間の遅れ</strong>: $S'$ で静止した時計の固有時間 $\Delta\tau$，$S$ からみると $\Delta t = \gamma\Delta\tau > \Delta\tau$。</p>
+      <p><strong>長さの収縮</strong>: $S'$ で固有長さ $L_0$ の棒，$S$ からみると $L = L_0/\gamma < L_0$（運動方向のみ）。</p>
+      <p><strong>速度の合成</strong>: $u' = (u - v)/(1 - uv/c^2)$（$u = c$ なら $u' = c$）。</p>
+    </div>
+
+    <h2 id="4vector">2. 4-ベクトルと相対論的力学</h2>
+    <div class="box def">
+      <div class="box-title">📖 4-ベクトルの共変性</div>
+      <p>4-位置: $x^\mu = (ct, x, y, z)$。4-速度: $u^\mu = dx^\mu/d\tau = \gamma(c, \mathbf{v})$。</p>
+      <p>4-運動量: $p^\mu = mu^\mu = (\gamma mc, \gamma m\mathbf{v}) = (E/c, \mathbf{p})$。</p>
+      <p>不変量: $p_\mu p^\mu = -(mc)^2 \Rightarrow E^2 = (pc)^2 + (mc^2)^2$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ $E = mc^2$ と相対論的運動方程式</div>
+      <p>静止エネルギー: $E_0 = mc^2$。全エネルギー: $E = \gamma mc^2$。</p>
+      <p>相対論的運動方程式: $dp^\mu/d\tau = f^\mu$（4-力 $f^\mu$）。</p>
+      <p>Lorentz 力の共変形: $f^\mu = qF^{\mu\nu}u_\nu$。</p>
+    </div>
+
+    <h2 id="gr-basics">3. 一般相対論の基礎</h2>
+    <div class="box def">
+      <div class="box-title">📖 等価原理と一般共変性</div>
+      <p><strong>弱い等価原理</strong>: 慣性質量 $=$ 重力質量。重力と加速度系は局所的に区別できない。</p>
+      <p><strong>強い等価原理</strong>: 局所慣性系では特殊相対論の物理法則が成立する。</p>
+      <p><strong>一般共変性</strong>: 物理法則は任意の座標変換のもとで同じ形（テンソル方程式）で書ける。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 計量テンソルと共変微分</div>
+      <p>時空の計量: $ds^2 = g_{\mu\nu}dx^\mu dx^\nu$。$g_{\mu\nu}$（対称テンソル）が重力場を記述。</p>
+      <p>Christoffel 記号（接続係数）:</p>
+      $$\Gamma^\lambda_{\mu\nu} = \frac{1}{2}g^{\lambda\sigma}(\partial_\mu g_{\nu\sigma} + \partial_\nu g_{\mu\sigma} - \partial_\sigma g_{\mu\nu})$$
+      <p>測地線方程式（自由落下）: $\dfrac{d^2x^\lambda}{d\tau^2} + \Gamma^\lambda_{\mu\nu}\dfrac{dx^\mu}{d\tau}\dfrac{dx^\nu}{d\tau} = 0$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Riemann 曲率テンソル</div>
+      $$R^\rho{}_{\sigma\mu\nu} = \partial_\mu\Gamma^\rho_{\nu\sigma} - \partial_\nu\Gamma^\rho_{\mu\sigma} + \Gamma^\rho_{\mu\lambda}\Gamma^\lambda_{\nu\sigma} - \Gamma^\rho_{\nu\lambda}\Gamma^\lambda_{\mu\sigma}$$
+      <p>Ricci テンソル: $R_{\mu\nu} = R^\lambda{}_{\mu\lambda\nu}$。Ricci スカラー: $R = g^{\mu\nu}R_{\mu\nu}$。</p>
+      <p>Einstein テンソル: $G_{\mu\nu} = R_{\mu\nu} - \frac{1}{2}g_{\mu\nu}R$（$\nabla^\mu G_{\mu\nu}=0$ が自動的に成立）。</p>
+    </div>
+
+    <h2 id="einstein-eq">4. Einstein 方程式</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Einstein 方程式</div>
+      $$G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu}$$
+      <p>$G$: 重力定数，$\Lambda$: 宇宙定数，$T_{\mu\nu}$: エネルギー運動量テンソル。</p>
+      <p>弱重力場・低速極限で Newton 重力 $\nabla^2\phi = 4\pi G\rho$ に帰着する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Einstein-Hilbert 作用</div>
+      $$S = \frac{c^4}{16\pi G}\int (R - 2\Lambda)\sqrt{-g}\,d^4x + S_{\rm matter}$$
+      <p>$g = \det(g_{\mu\nu})$。$g_{\mu\nu}$ で変分すると Einstein 方程式が得られる。</p>
+    </div>
+
+    <h2 id="solutions">5. Schwarzschild 解と重力波</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Schwarzschild 解（球対称真空解）</div>
+      $$ds^2 = -\left(1 - \frac{r_s}{r}\right)c^2 dt^2 + \left(1 - \frac{r_s}{r}\right)^{-1}dr^2 + r^2 d\Omega^2$$
+      <p>Schwarzschild 半径: $r_s = 2GM/c^2$（ブラックホールの事象の地平面）。</p>
+      <p>太陽: $r_s \approx 3\,\text{km}$，地球: $r_s \approx 9\,\text{mm}$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 一般相対論の観測的検証</div>
+      <table>
+        <tr><th>現象</th><th>予測</th><th>観測</th></tr>
+        <tr><td>水星の近日点移動</td><td>$43''$/世紀</td><td>一致</td></tr>
+        <tr><td>光の重力偏折（太陽）</td><td>$1.75''$</td><td>一致（日食観測）</td></tr>
+        <tr><td>重力赤方偏移</td><td>$\Delta\nu/\nu = gh/c^2$</td><td>Pound-Rebka 実験で確認</td></tr>
+        <tr><td>重力波</td><td>時空の波動</td><td>LIGO（2015年）</td></tr>
+        <tr><td>ブラックホール影</td><td>光子球</td><td>EHT（M87*, 2019）</td></tr>
+      </table>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 重力波</div>
+      <p>弱重力場の線形化 $g_{\mu\nu} = \eta_{\mu\nu} + h_{\mu\nu}$（$|h|\ll 1$）。Lorenz ゲージで:</p>
+      $$\Box\bar h_{\mu\nu} = -\frac{16\pi G}{c^4}T_{\mu\nu}$$
+      <p>真空解（TT ゲージ）は横波（2 自由度: $+$ 偏光，$\times$ 偏光）。伝播速度 $= c$。</p>
+      <p>連星ブラックホール合体からの重力波パワー: $P = -\dfrac{32G^4}{5c^5}\dfrac{m_1^2 m_2^2(m_1+m_2)}{r^5}$（四重極放射）。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>地上で 1 年経過する間，速度 $0.9c$ で移動する宇宙船内では何年経つか（双子のパラドックス）？</li>
+        <li>$E^2 = (pc)^2 + (mc^2)^2$ を用いて，静止した電子と光子の衝突（Compton 散乱）の波長変化を導け。</li>
+        <li>Schwarzschild 計量で，光が $r_s$ に近づくにつれ時間のかかり方がどう変化するか説明せよ。</li>
+        <li>2 つの質量 $m$ が距離 $r$ で円軌道をとる連星系の重力波放射パワーを見積もれ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

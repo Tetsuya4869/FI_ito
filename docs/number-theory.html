@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数論 | 高等数学</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 数論</div>
+    <h1>数論</h1>
+    <p class="tagline">整数の深い性質—素数の分布，合同式，二次互換法則，Riemann ゼータ関数。暗号理論・楕円曲線まで広がる。</p>
+    <div class="tags"><span class="tag">素数定理</span><span class="tag">合同式</span><span class="tag">ゼータ関数</span><span class="tag">二次互換法則</span><span class="tag">楕円曲線</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#divisibility">整除性と Euclid 互除法</a></li>
+        <li><a href="#congruence">合同式と中国剰余定理</a></li>
+        <li><a href="#primitive-root">原始根と離散対数</a></li>
+        <li><a href="#quadratic">二次剰余と二次互換法則</a></li>
+        <li><a href="#prime">素数定理と Riemann ゼータ関数</a></li>
+        <li><a href="#algebraic">代数的整数論の入門</a></li>
+        <li><a href="#elliptic">楕円曲線</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="divisibility">1. 整除性と Euclid 互除法</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Euclid 互除法</div>
+      <p>整数 $a, b$（$b \ne 0$）に対して，$a = qb + r$（$0 \le r &lt; |b|$）と書ける（除法定理）。繰り返すことで $\gcd(a,b)$ が求まる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Bezout の等式</div>
+      <p>$\exists x, y \in \mathbb{Z},\; ax + by = \gcd(a,b)$。特に $\gcd(a,b) = 1$ のとき $ax + by = 1$ が解をもつ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 算術の基本定理（素因数分解の一意性）</div>
+      <p>$n \ge 2$ の整数は素数の積として（順序を除いて）一意に表せる: $n = p_1^{e_1} \cdots p_k^{e_k}$。</p>
+    </div>
+
+    <h2 id="congruence">2. 合同式と中国剰余定理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 合同式</div>
+      <p>$a \equiv b \pmod{m}$（$m \mid a-b$）。これは $\mathbb{Z}$ 上の同値関係で，剰余環 $\mathbb{Z}/m\mathbb{Z}$ を与える。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 中国剰余定理 (CRT)</div>
+      <p>$m_1, \ldots, m_k$ が互いに素のとき，</p>
+      $$\mathbb{Z}/m_1\cdots m_k\mathbb{Z} \cong \mathbb{Z}/m_1\mathbb{Z} \times \cdots \times \mathbb{Z}/m_k\mathbb{Z}$$
+      <p>任意の $a_1, \ldots, a_k$ に対して，$x \equiv a_i \pmod{m_i}$（$i = 1,\ldots,k$）を同時に満たす解 $x$ が $\pmod{m_1\cdots m_k}$ で一意に存在する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Euler の定理・Fermat の小定理</div>
+      <p>$\gcd(a,m) = 1$ のとき $a^{\varphi(m)} \equiv 1 \pmod{m}$（Euler）。</p>
+      <p>$p$ 素数，$p \nmid a$ のとき $a^{p-1} \equiv 1 \pmod{p}$（Fermat の小定理）。</p>
+      <p>Euler の $\varphi$ 関数: $\varphi(p^k) = p^{k-1}(p-1)$，$\varphi(mn) = \varphi(m)\varphi(n)$（$\gcd(m,n)=1$）。</p>
+    </div>
+
+    <h2 id="primitive-root">3. 原始根と離散対数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 原始根</div>
+      <p>$g \in (\mathbb{Z}/m\mathbb{Z})^\times$ が<strong>原始根</strong>とは，$g$ の位数が $\varphi(m)$ に等しいこと（群の生成元）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 原始根の存在</div>
+      <p>原始根が存在するのは $m = 1, 2, 4, p^k, 2p^k$（$p$ 奇素数）に限る。特に $(\mathbb{Z}/p\mathbb{Z})^\times$ は原始根を生成元にもつ巡回群。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 暗号への応用</div>
+      <p><strong>離散対数問題</strong>: $g^x \equiv h \pmod{p}$ を解く（$x$ を求める）のは，大きな $p$ では計算困難。Diffie-Hellman 鍵共有・ElGamal 暗号の安全性の根拠。</p>
+    </div>
+
+    <h2 id="quadratic">4. 二次剰余と二次互換法則</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Legendre 記号</div>
+      <p>奇素数 $p$，$\gcd(a,p)=1$ のとき，</p>
+      $$\left(\frac{a}{p}\right) = \begin{cases} 1 & a \text{ が } p \text{ を法とする平方剰余} \\ -1 & \text{非平方剰余} \end{cases}$$
+      <p>Euler の判定法: $\left(\frac{a}{p}\right) \equiv a^{(p-1)/2} \pmod{p}$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Gauss の二次互換法則</div>
+      <p>相異なる奇素数 $p, q$ に対して，</p>
+      $$\left(\frac{p}{q}\right)\left(\frac{q}{p}\right) = (-1)^{\frac{p-1}{2}\cdot\frac{q-1}{2}}$$
+      <p>補足法則: $\left(\frac{-1}{p}\right) = (-1)^{(p-1)/2}$，$\left(\frac{2}{p}\right) = (-1)^{(p^2-1)/8}$</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $\left(\frac{3}{11}\right)$</div>
+      <p>二次互換: $\left(\frac{3}{11}\right)\left(\frac{11}{3}\right) = (-1)^{1 \cdot 5} = -1$。$11 \equiv 2 \pmod{3}$ なので $\left(\frac{11}{3}\right) = \left(\frac{2}{3}\right) = (-1)^{(9-1)/8} = -1$。よって $\left(\frac{3}{11}\right) = 1$（3 は 11 を法として平方剰余）。確認: $5^2 = 25 \equiv 3 \pmod{11}$ ✓</p>
+    </div>
+
+    <h2 id="prime">5. 素数定理と Riemann ゼータ関数</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 素数定理 (PNT)</div>
+      <p>$\pi(x) = \#\{p \le x \mid p \text{ 素数}\}$ とすると，</p>
+      $$\pi(x) \sim \frac{x}{\ln x} \quad (x \to \infty)$$
+      <p>より精密に $\pi(x) \sim \mathrm{Li}(x) = \int_2^x \frac{dt}{\ln t}$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Riemann ゼータ関数</div>
+      $$\zeta(s) = \sum_{n=1}^\infty \frac{1}{n^s} = \prod_p \frac{1}{1-p^{-s}} \quad (\mathrm{Re}(s) > 1)$$
+      <p>Euler 積（素数に関する積）が成立し，$\zeta$ 関数と素数分布が深く関連する。解析接続により全複素平面に拡張できる（$s=1$ が極）。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Riemann 予想</div>
+      <p>$\zeta(s) = 0$（自明でない零点）はすべて $\mathrm{Re}(s) = 1/2$ 上にある。</p>
+      <p>ミレニアム懸賞問題の一つ。素数分布の誤差項の精密な評価と深く結びついている。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — $\zeta(2k)$ の閉形式（Euler）</div>
+      $$\zeta(2) = \frac{\pi^2}{6},\quad \zeta(4) = \frac{\pi^4}{90},\quad \zeta(2k) = \frac{(-1)^{k+1}(2\pi)^{2k}B_{2k}}{2(2k)!}$$
+      <p>$B_{2k}$ は Bernoulli 数。$\zeta(3) = $ Apéry 定数（無理数と証明されたが閉形式未解明）。</p>
+    </div>
+
+    <h2 id="algebraic">6. 代数的整数論の入門</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 代数的整数・数体</div>
+      <p>$\alpha \in \mathbb{C}$ がモニック整係数多項式の根のとき<strong>代数的整数</strong>という。代数的整数の集合 $\mathcal{O}_K$（$K$ は数体）は環をなす（整数環）。</p>
+      <p>例: $\mathbb{Z}[i] = \{a+bi \mid a,b \in \mathbb{Z}\}$（Gauss 整数，$K = \mathbb{Q}(i)$の整数環）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 一意因数分解の失敗と類数</div>
+      <p>$\mathbb{Z}[\sqrt{-5}]$ では $6 = 2 \cdot 3 = (1+\sqrt{-5})(1-\sqrt{-5})$ と二通りに分解され，一意性が失われる（これらはどれも既約元）。</p>
+      <p><strong>類数</strong> $h_K$: 単項イデアル域からのずれを測る。$h_K = 1 \iff \mathcal{O}_K$ は UFD。</p>
+    </div>
+
+    <h2 id="elliptic">7. 楕円曲線</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 楕円曲線</div>
+      <p>体 $K$ 上の<strong>楕円曲線</strong>は（Weierstrass 形式）:</p>
+      $$E: y^2 = x^3 + ax + b, \quad \Delta = -16(4a^3 + 27b^2) \ne 0$$
+      <p>無限遠点 $\mathcal{O}$ を加えた $E(K) = \{(x,y) \in K^2 \mid y^2 = x^3+ax+b\} \cup \{\mathcal{O}\}$ は<strong>Abel 群</strong>をなす（加法の幾何的定義: 3点の和が $\mathcal{O}$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Mordell（有限生成性）</div>
+      <p>$E(\mathbb{Q})$ は有限生成 Abel 群: $E(\mathbb{Q}) \cong \mathbb{Z}^r \oplus E(\mathbb{Q})_{\rm tors}$（$r$: rank，$E(\mathbb{Q})_{\rm tors}$: 有限部分群）。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 楕円曲線暗号 (ECC)</div>
+      <p>有限体 $\mathbb{F}_p$ 上の楕円曲線の離散対数問題は RSA よりも短い鍵長で同等の安全性。TLS・Bitcoin など現代暗号の中心。</p>
+      <p>Wiles によるフェルマーの最終定理の証明（1995）も楕円曲線と保型形式の深い関係（谷山-志村予想）を使う。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>Euclid 互除法で $\gcd(1071, 462)$ と Bezout 係数を求めよ。</li>
+        <li>CRT を使って $x \equiv 2 \pmod{3}$，$x \equiv 3 \pmod{5}$，$x \equiv 2 \pmod{7}$ を解け。</li>
+        <li>$\left(\frac{7}{13}\right)$ を二次互換法則で計算せよ。</li>
+        <li>$\zeta(2) = \pi^2/6$ を証明せよ（ヒント: フーリエ級数 $\sum n^{-2} = \int_0^1 \pi^2 x(1-x) dx$ など複数の方法がある）。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
