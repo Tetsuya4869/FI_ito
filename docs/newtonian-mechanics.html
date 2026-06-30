@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ニュートン力学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / ニュートン力学</div>
+    <h1>ニュートン力学の基礎</h1>
+    <p class="tagline">運動の3法則・力・エネルギー・運動量・円運動。物理のすべての出発点。古典力学への助走。</p>
+    <div class="tags"><span class="tag">入門</span><span class="tag">運動の法則</span><span class="tag">エネルギー</span><span class="tag">運動量</span><span class="tag">万有引力</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#kinematics">運動の記述</a></li>
+        <li><a href="#laws">運動の3法則</a></li>
+        <li><a href="#forces">いろいろな力</a></li>
+        <li><a href="#energy">仕事とエネルギー</a></li>
+        <li><a href="#momentum">運動量と力積</a></li>
+        <li><a href="#circular">円運動と万有引力</a></li>
+        <li><a href="#next">次のステップ</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p><a href="calculus-basics.html">微分積分の基礎</a>（速度＝位置の微分）と <a href="vectors-matrices.html">ベクトル</a>。この先は <a href="classical-mechanics.html">古典力学</a> へ。</p>
+    </div>
+
+    <h2 id="kinematics">1. 運動の記述</h2>
+    <div class="box def">
+      <div class="box-title">📖 位置・速度・加速度</div>
+      <p>位置 $\mathbf{r}(t)$ を時間で微分すると速度、もう一度微分すると加速度:</p>
+      $$\mathbf{v} = \frac{d\mathbf{r}}{dt}, \qquad \mathbf{a} = \frac{d\mathbf{v}}{dt} = \frac{d^2\mathbf{r}}{dt^2}$$
+      <p>等加速度直線運動: $v = v_0 + at$、$x = x_0 + v_0 t + \frac12 at^2$。</p>
+    </div>
+
+    <h2 id="laws">2. 運動の3法則</h2>
+    <div class="box thm">
+      <div class="box-title">✓ ニュートンの運動の3法則</div>
+      <ol>
+        <li><strong>慣性の法則</strong>: 力が働かなければ物体は静止または等速直線運動を続ける。</li>
+        <li><strong>運動方程式</strong>: $\mathbf{F} = m\mathbf{a}$（力＝質量×加速度）。</li>
+        <li><strong>作用・反作用</strong>: $A$ が $B$ に力 $\mathbf{F}$ を及ぼすと、$B$ は $A$ に $-\mathbf{F}$ を及ぼす。</li>
+      </ol>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 自由落下</div>
+      <p>重力のみ。$F=mg$ より $a=g\approx 9.8\,\text{m/s}^2$。$t$ 秒後の速度 $v=gt$、落下距離 $x=\frac12 gt^2$。</p>
+    </div>
+
+    <h2 id="forces">3. いろいろな力</h2>
+    <div class="box def">
+      <div class="box-title">📖 代表的な力</div>
+      <table>
+        <tr><th>力</th><th>式</th><th>備考</th></tr>
+        <tr><td>重力</td><td>$F=mg$</td><td>鉛直下向き</td></tr>
+        <tr><td>ばねの力</td><td>$F=-kx$</td><td>フックの法則、復元力</td></tr>
+        <tr><td>摩擦力</td><td>$F=\mu N$</td><td>$N$: 垂直抗力</td></tr>
+        <tr><td>万有引力</td><td>$F=G\dfrac{m_1 m_2}{r^2}$</td><td>引力</td></tr>
+      </table>
+    </div>
+
+    <h2 id="energy">4. 仕事とエネルギー</h2>
+    <div class="box def">
+      <div class="box-title">📖 仕事・運動エネルギー・位置エネルギー</div>
+      <p><strong>仕事</strong>: $W = \mathbf{F}\cdot\mathbf{d} = Fd\cos\theta$。</p>
+      <p><strong>運動エネルギー</strong>: $K = \frac12 mv^2$。<strong>仕事＝運動エネルギーの変化</strong>（仕事とエネルギーの定理）。</p>
+      <p><strong>位置エネルギー</strong>: 重力 $U=mgh$、ばね $U=\frac12 kx^2$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 力学的エネルギー保存則</div>
+      <p>保存力のみが働くとき、運動エネルギーと位置エネルギーの和は一定:</p>
+      $$E = K + U = \frac12 mv^2 + U = \text{一定}$$
+    </div>
+
+    <h2 id="momentum">5. 運動量と力積</h2>
+    <div class="box def">
+      <div class="box-title">📖 運動量・力積</div>
+      <p><strong>運動量</strong>: $\mathbf{p}=m\mathbf{v}$。運動方程式は $\mathbf{F}=\dfrac{d\mathbf{p}}{dt}$ とも書ける。</p>
+      <p><strong>力積</strong>: $\displaystyle\int \mathbf{F}\,dt = \Delta\mathbf{p}$（力積＝運動量の変化）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 運動量保存則</div>
+      <p>外力が働かない系では全運動量が保存。衝突問題の基本道具。</p>
+      $$m_1\mathbf{v}_1 + m_2\mathbf{v}_2 = m_1\mathbf{v}_1' + m_2\mathbf{v}_2'$$
+    </div>
+
+    <h2 id="circular">6. 円運動と万有引力</h2>
+    <div class="box def">
+      <div class="box-title">📖 等速円運動</div>
+      <p>半径 $r$、速さ $v$ の円運動には中心向きの加速度（向心加速度）が必要:</p>
+      $$a = \frac{v^2}{r} = r\omega^2, \quad F = \frac{mv^2}{r}$$
+      <p>$\omega=v/r$ は角速度。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 惑星の軌道</div>
+      <p>万有引力が向心力になる: $\dfrac{GMm}{r^2}=\dfrac{mv^2}{r}$。これを解くと軌道速度 $v=\sqrt{GM/r}$。ケプラーの法則の出発点。</p>
+    </div>
+
+    <h2 id="next">7. 次のステップ</h2>
+    <div class="box note">
+      <div class="box-title">💡 ここから先へ</div>
+      <p>同じ運動を「最小作用の原理」やエネルギー（ラグランジアン・ハミルトニアン）で捉え直すのが <a href="classical-mechanics.html">古典力学</a>。電磁気の力は <a href="electromagnetism.html">電磁気学</a>、高速・強重力では <a href="relativity.html">相対性理論</a>、ミクロな世界は <a href="quantum-mechanics.html">量子力学</a> へ。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>初速 $20\,\text{m/s}$ で真上に投げた物体の最高到達点と滞空時間を求めよ（$g=9.8$）。</li>
+        <li>質量 $2\,\text{kg}$ の物体に $10\,\text{N}$ の力。加速度は？</li>
+        <li>高さ $5\,\text{m}$ から静かに落とした物体の地面での速さをエネルギー保存で求めよ。</li>
+        <li>静止していた $1\,\text{kg}$ の物体に $3\,\text{kg}$ の物体（$4\,\text{m/s}$）が完全非弾性衝突。衝突後の速度は？</li>
+        <li>半径 $0.5\,\text{m}$、速さ $2\,\text{m/s}$ で円運動する $1\,\text{kg}$ の物体に必要な向心力は？</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

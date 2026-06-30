@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ベクトルと行列 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / ベクトルと行列</div>
+    <h1>ベクトルと行列の基礎</h1>
+    <p class="tagline">ベクトルの演算・内積・行列・連立方程式・行列式・固有値の入口。線形代数と物理の準備。</p>
+    <div class="tags"><span class="tag">入門</span><span class="tag">ベクトル</span><span class="tag">行列</span><span class="tag">内積</span><span class="tag">固有値</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#vector">ベクトル</a></li>
+        <li><a href="#dot">内積と外積</a></li>
+        <li><a href="#matrix">行列と演算</a></li>
+        <li><a href="#linear-eq">連立一次方程式</a></li>
+        <li><a href="#det">行列式と逆行列</a></li>
+        <li><a href="#eigen">固有値・固有ベクトル</a></li>
+        <li><a href="#next">次のステップ</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>中学・高校の連立方程式と座標。このページを終えたら <a href="linear-algebra.html">線形代数</a> へ進めます。</p>
+    </div>
+
+    <h2 id="vector">1. ベクトル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ベクトル</div>
+      <p>「大きさと向き」をもつ量。成分で書くと $\mathbf{a} = (a_1, a_2, a_3)$。位置・速度・力など物理量の多くがベクトル。</p>
+      <p><strong>和</strong>: $\mathbf{a}+\mathbf{b} = (a_1+b_1,\,a_2+b_2,\,a_3+b_3)$、<strong>スカラー倍</strong>: $c\mathbf{a}=(ca_1,ca_2,ca_3)$。</p>
+      <p><strong>大きさ（ノルム）</strong>: $|\mathbf{a}| = \sqrt{a_1^2+a_2^2+a_3^2}$。</p>
+    </div>
+
+    <h2 id="dot">2. 内積と外積</h2>
+    <div class="box def">
+      <div class="box-title">📖 内積（ドット積）</div>
+      $$\mathbf{a}\cdot\mathbf{b} = a_1b_1 + a_2b_2 + a_3b_3 = |\mathbf{a}||\mathbf{b}|\cos\theta$$
+      <p>$\theta$ は2ベクトルのなす角。$\mathbf{a}\cdot\mathbf{b}=0$ なら直交。物理では「仕事 $W=\mathbf{F}\cdot\mathbf{d}$」。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 外積（クロス積、3次元）</div>
+      $$\mathbf{a}\times\mathbf{b} = (a_2b_3-a_3b_2,\; a_3b_1-a_1b_3,\; a_1b_2-a_2b_1)$$
+      <p>結果は両者に垂直なベクトル。大きさ $|\mathbf{a}\times\mathbf{b}|=|\mathbf{a}||\mathbf{b}|\sin\theta$（平行四辺形の面積）。物理では「トルク $\boldsymbol\tau=\mathbf{r}\times\mathbf{F}$」。</p>
+    </div>
+
+    <h2 id="matrix">3. 行列と演算</h2>
+    <div class="box def">
+      <div class="box-title">📖 行列</div>
+      <p>数を長方形に並べたもの。$2\times2$ 行列の例: $A = \begin{pmatrix}a&b\\c&d\end{pmatrix}$。</p>
+      <p><strong>積</strong>（行 × 列）:</p>
+      $$\begin{pmatrix}a&b\\c&d\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix} = \begin{pmatrix}ax+by\\cx+dy\end{pmatrix}$$
+      <p>行列は「ベクトルを別のベクトルに移す変換（回転・拡大・せん断）」と考えると直感的。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 回転行列</div>
+      <p>角 $\theta$ の回転: $R(\theta)=\begin{pmatrix}\cos\theta & -\sin\theta\\ \sin\theta & \cos\theta\end{pmatrix}$。ベクトルに掛けると反時計回りに回る。</p>
+    </div>
+
+    <h2 id="linear-eq">4. 連立一次方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 行列で表す</div>
+      <p>連立方程式 $\begin{cases}2x+y=5\\x-y=1\end{cases}$ は $A\mathbf{x}=\mathbf{b}$ の形:</p>
+      $$\begin{pmatrix}2&1\\1&-1\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix}=\begin{pmatrix}5\\1\end{pmatrix}$$
+      <p>掃き出し法（Gauss の消去法）で解く。解は $x=2,\,y=1$。</p>
+    </div>
+
+    <h2 id="det">5. 行列式と逆行列</h2>
+    <div class="box def">
+      <div class="box-title">📖 行列式（$2\times2$）</div>
+      $$\det\begin{pmatrix}a&b\\c&d\end{pmatrix} = ad - bc$$
+      <p>$\det A \ne 0$ なら逆行列が存在し、$A\mathbf{x}=\mathbf{b}$ は一意解 $\mathbf{x}=A^{-1}\mathbf{b}$ をもつ。</p>
+      <p>$2\times2$ の逆行列: $A^{-1}=\dfrac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}$。</p>
+    </div>
+
+    <h2 id="eigen">6. 固有値・固有ベクトル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義</div>
+      <p>行列 $A$ に対し、向きを変えず大きさだけ $\lambda$ 倍になるベクトル $\mathbf{v}\ne\mathbf{0}$:</p>
+      $$A\mathbf{v} = \lambda\mathbf{v}$$
+      <p>$\lambda$ を固有値、$\mathbf{v}$ を固有ベクトルという。<strong>固有方程式</strong> $\det(A-\lambda I)=0$ を解いて求める。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例</div>
+      <p>$A=\begin{pmatrix}2&0\\0&3\end{pmatrix}$ の固有値は $\lambda=2,3$、固有ベクトルは $(1,0),(0,1)$。</p>
+      <p>固有値は量子力学（観測値）・力学系（安定性）・主成分分析など、いたる所に現れる。</p>
+    </div>
+
+    <h2 id="next">7. 次のステップ</h2>
+    <div class="box note">
+      <div class="box-title">💡 ここから先へ</div>
+      <p>抽象的なベクトル空間・基底・対角化・特異値分解などは <a href="linear-algebra.html">線形代数</a> へ。ベクトル場の微分（grad・div・rot）は <a href="electromagnetism.html">電磁気学</a> で使います。固有値は <a href="quantum-mechanics.html">量子力学</a> の核心です。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$\mathbf{a}=(1,2,2)$、$\mathbf{b}=(2,0,-1)$ の内積・外積・なす角を求めよ。</li>
+        <li>$\begin{pmatrix}1&2\\3&4\end{pmatrix}\begin{pmatrix}1\\1\end{pmatrix}$ を計算せよ。</li>
+        <li>$\begin{cases}x+2y=4\\3x+y=7\end{cases}$ を逆行列を使って解け。</li>
+        <li>$A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ の固有値・固有ベクトルを求めよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
