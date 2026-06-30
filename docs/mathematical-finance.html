@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数理ファイナンス | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 数理ファイナンス</div>
+    <h1>数理ファイナンス</h1>
+    <p class="tagline">無裁定・二項モデル・伊藤の公式・Black-Scholes・リスク中立評価・VaR。確率解析で金融を解く。</p>
+    <div class="tags"><span class="tag">無裁定原理</span><span class="tag">二項モデル</span><span class="tag">伊藤の公式</span><span class="tag">Black-Scholes</span><span class="tag">リスク中立評価</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#arbitrage">金融市場と無裁定原理</a></li>
+        <li><a href="#binomial">二項モデル</a></li>
+        <li><a href="#ito">ブラウン運動と伊藤の公式</a></li>
+        <li><a href="#black-scholes">Black-Scholes モデル</a></li>
+        <li><a href="#risk-neutral">リスク中立評価</a></li>
+        <li><a href="#rates">金利モデルと債券</a></li>
+        <li><a href="#risk">リスク管理と数値計算</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは確率解析を全面的に用いる。<a href="stochastic.html">確率微分方程式（伊藤の公式）</a>，<a href="probability.html">確率論</a>（測度・条件付き期待値・マルチンゲール），<a href="pde.html">偏微分方程式</a>（拡散方程式）に習熟していることを前提とする。</p>
+    </div>
+
+    <h2 id="arbitrage">1. 金融市場と無裁定原理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 資産・ポートフォリオ</div>
+      <p><strong>資産（asset）</strong>とは将来キャッシュフローを生む権利の総称で，価格過程 $S_t$ をもつ確率過程としてモデル化する。安全資産（無リスク資産）$B_t$ は連続複利で
+      $$dB_t = r B_t\,dt \quad\Rightarrow\quad B_t = B_0 e^{rt}$$
+      と成長する（$r$: 無リスク金利）。</p>
+      <p>$n$ 種の資産 $S^1,\ldots,S^n$ に対し保有量 $\phi = (\phi^1,\ldots,\phi^n)$ を定めたものを<strong>ポートフォリオ</strong>といい，その価値は
+      $$V_t = \sum_{i=1}^n \phi^i_t\, S^i_t.$$
+      時刻によって保有量を組み替える<strong>取引戦略</strong> $\phi_t$ が，外部からの資金注入・引出を伴わないとき<strong>自己資金充足（self-financing）</strong>といい，$dV_t = \sum_i \phi^i_t\,dS^i_t$ を満たす。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 裁定機会（アービトラージ）</div>
+      <p>自己資金充足な戦略 $\phi$ で，初期費用ゼロながら確実に損をせず正の利益を生む状態，すなわち
+      $$V_0 = 0,\quad \mathbb{P}(V_T \ge 0) = 1,\quad \mathbb{P}(V_T > 0) > 0$$
+      を満たすものを<strong>裁定機会</strong>という。「ノーリスクで儲かる」取引である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 無裁定原理（No-Arbitrage Principle）</div>
+      <p>効率的な市場には裁定機会が存在しない。もし存在すれば，瞬時に多数の参加者が同じ取引を行い価格が調整され，機会は消滅する。これがデリバティブ価格付けの根本公理である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 一物一価の法則（Law of One Price）</div>
+      <p>無裁定市場では，同一の将来キャッシュフローを持つ二つのポートフォリオは現時点で同一価格をもつ。もし価格が異なれば，安い方を買い高い方を売ることで裁定が成立する。デリバティブを原資産で<strong>複製</strong>できれば，その複製ポートフォリオの価格がデリバティブの公正価格となる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — フォワード価格</div>
+      <p>配当のない株式 $S_0$ を満期 $T$ に受け渡すフォワード契約の公正な受渡価格 $F$。今 $S_0$ で株を買い，$S_0$ を金利 $r$ で借りる戦略は満期に株 1 株と負債 $S_0 e^{rT}$ を生む。一物一価より
+      $$F = S_0 e^{rT}.$$
+      これより高ければ売り建て＋現物買いで，安ければ逆で裁定が取れる。</p>
+    </div>
+
+    <h2 id="binomial">2. 二項モデル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 1 期間二項モデル</div>
+      <p>1 期間で株価が $S_0$ から上昇 $S_0 u$（確率 $p$）または下落 $S_0 d$（確率 $1-p$）になるとする（$0 < d < 1+r < u$，$r$: 1 期間金利）。条件 $d < 1+r < u$ がなければ裁定が生じる。デリバティブの満期ペイオフを $f_u, f_d$ とする。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 複製ポートフォリオによる価格付け</div>
+      <p>株 $\Delta$ 株と現金 $B$ でデリバティブを複製する：
+      $$\Delta S_0 u + B(1+r) = f_u,\qquad \Delta S_0 d + B(1+r) = f_d.$$
+      これを解くと $\Delta = \dfrac{f_u - f_d}{S_0(u-d)}$。一物一価より無裁定価格は
+      $$f_0 = \Delta S_0 + B = \frac{1}{1+r}\bigl[q\,f_u + (1-q)\,f_d\bigr].$$
+      </p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — リスク中立確率</div>
+      <p>上式に現れる
+      $$q = \frac{(1+r) - d}{u - d}$$
+      を<strong>リスク中立確率</strong>という。$d < 1+r < u$ より $0 < q < 1$ で確率として正当。実確率 $p$ には依存しない点が本質的で，価格は投資家のリスク選好に依らない。リスク中立測度 $\mathbb{Q}$ の下で割引株価はマルチンゲール：
+      $$S_0 = \frac{1}{1+r}\bigl[q\,S_0u + (1-q)\,S_0d\bigr] = \mathbb{E}^{\mathbb{Q}}\!\left[\frac{S_1}{1+r}\right].$$
+      </p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 多期間二項モデル（CRR モデル）</div>
+      <p>$N$ 期間に拡張すると，満期で $u^j d^{N-j}$ となるノードが二項分布に従い，デリバティブ価格は
+      $$f_0 = \frac{1}{(1+r)^N}\sum_{j=0}^{N}\binom{N}{j} q^j (1-q)^{N-j}\, f\!\left(S_0 u^j d^{N-j}\right).$$
+      これを<strong>Cox-Ross-Rubinstein（CRR）モデル</strong>という。$N\to\infty$，$u = e^{\sigma\sqrt{\Delta t}}$，$d = e^{-\sigma\sqrt{\Delta t}}$ の極限で Black-Scholes 公式に収束する。後退帰納法により各ノードで価格を計算でき，アメリカンオプション（早期行使）にも対応できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — ヨーロピアンコール（1 期間）</div>
+      <p>$S_0=100$，$u=1.2$，$d=0.8$，$r=0.05$，行使価格 $K=100$。ペイオフ $f_u=\max(120-100,0)=20$，$f_d=0$。リスク中立確率
+      $$q = \frac{1.05 - 0.8}{1.2 - 0.8} = 0.625.$$
+      価格 $f_0 = \dfrac{0.625\cdot 20 + 0.375\cdot 0}{1.05} \approx 11.90$。</p>
+    </div>
+
+    <h2 id="ito">3. ブラウン運動と伊藤の公式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ブラウン運動（Wiener 過程）</div>
+      <p>$W_t$ が<strong>標準ブラウン運動</strong>であるとは，$W_0=0$，連続な経路をもち，独立増分 $W_t - W_s \sim N(0, t-s)$（$s<t$）を満たすこと。形式的に $dW_t \sim N(0, dt)$，$(dW_t)^2 = dt$。微分不可能だが二次変動が有限であり，これが伊藤解析の核心となる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 幾何ブラウン運動</div>
+      <p>株価モデルの基本は<strong>幾何ブラウン運動（GBM）</strong>：
+      $$dS_t = \mu S_t\,dt + \sigma S_t\,dW_t$$
+      ここで $\mu$ は期待収益率（ドリフト），$\sigma$ はボラティリティ。価格が常に正に保たれ，対数収益率が正規分布に従う点で実データと整合的。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 伊藤の公式</div>
+      <p>$dX_t = a_t\,dt + b_t\,dW_t$ に従う伊藤過程と $C^{1,2}$ 級関数 $f(t,x)$ に対し，
+      $$df(t,X_t) = \left(\frac{\partial f}{\partial t} + a_t\frac{\partial f}{\partial x} + \frac{1}{2}b_t^2\frac{\partial^2 f}{\partial x^2}\right)dt + b_t\frac{\partial f}{\partial x}\,dW_t.$$
+      通常の連鎖律に二次項 $\frac{1}{2}b_t^2 f_{xx}\,dt$ が加わる点が決定的に重要。計算規則は $(dt)^2 = 0$，$dt\,dW_t = 0$，$(dW_t)^2 = dt$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — GBM の明示解</div>
+      <p>$f = \ln S$ に伊藤の公式を適用。$f_S = 1/S$，$f_{SS} = -1/S^2$ より
+      $$d(\ln S_t) = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma\,dW_t.$$
+      積分して
+      $$S_t = S_0\exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma W_t\right].$$
+      ドリフトに $-\frac{1}{2}\sigma^2$ という伊藤補正項が現れることに注意。$\ln S_t$ は正規分布，$S_t$ は対数正規分布に従う。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 確率積分（伊藤積分）</div>
+      <p>$\int_0^T H_t\,dW_t$ は左端点（前進）和の $L^2$ 極限として定義される。重要な性質は<strong>マルチンゲール性</strong> $\mathbb{E}\!\left[\int_0^T H_t\,dW_t\right]=0$ と<strong>伊藤等長性</strong>
+      $$\mathbb{E}\!\left[\left(\int_0^T H_t\,dW_t\right)^2\right] = \mathbb{E}\!\left[\int_0^T H_t^2\,dt\right].$$
+      </p>
+    </div>
+
+    <h2 id="black-scholes">4. Black-Scholes モデル</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Black-Scholes 偏微分方程式の導出</div>
+      <p>原資産 $dS = \mu S\,dt + \sigma S\,dW$ に書かれたデリバティブ価格 $V(t,S)$ を考える。デリバティブ 1 単位ショートと株 $\Delta = \partial V/\partial S$ ロングのポートフォリオ $\Pi = -V + \Delta S$ を組む。伊藤の公式より
+      $$d\Pi = -\left(\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2}\right)dt.$$
+      $dW$ 項が消えて<strong>瞬間的に無リスク</strong>になる（デルタヘッジ）。無裁定より $d\Pi = r\Pi\,dt$ でなければならず，整理して
+      $$\boxed{\;\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0\;}$$
+      が得られる。ドリフト $\mu$ が消えるのが本質である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Black-Scholes 公式（ヨーロピアンコール）</div>
+      <p>満期 $T$，行使価格 $K$ のヨーロピアンコール（境界条件 $V(T,S)=\max(S-K,0)$）の解は
+      $$C(t,S) = S\,\Phi(d_1) - K e^{-r(T-t)}\Phi(d_2),$$
+      $$d_1 = \frac{\ln(S/K) + (r + \tfrac{1}{2}\sigma^2)(T-t)}{\sigma\sqrt{T-t}},\quad d_2 = d_1 - \sigma\sqrt{T-t}.$$
+      ここで $\Phi$ は標準正規分布の累積分布関数。プットは put-call パリティ $C - P = S - Ke^{-r(T-t)}$ から求まる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Greeks（感応度）</div>
+      <p>価格のパラメータ感応度を<strong>Greeks</strong>と呼ぶ。コールについて：</p>
+      <table>
+        <tr><th>Greek</th><th>定義</th><th>コールの値</th></tr>
+        <tr><td>デルタ $\Delta$</td><td>$\partial C/\partial S$</td><td>$\Phi(d_1)$</td></tr>
+        <tr><td>ガンマ $\Gamma$</td><td>$\partial^2 C/\partial S^2$</td><td>$\dfrac{\varphi(d_1)}{S\sigma\sqrt{T-t}}$</td></tr>
+        <tr><td>ベガ $\mathcal{V}$</td><td>$\partial C/\partial \sigma$</td><td>$S\varphi(d_1)\sqrt{T-t}$</td></tr>
+      </table>
+      <p>$\varphi$ は標準正規密度。$\Delta$ はヘッジに必要な株数，$\Gamma$ は $\Delta$ の変化率（ヘッジの組み替え頻度），$\mathcal{V}$ はボラティリティ変動への感応度を表す。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 BS-PDE は拡散方程式</div>
+      <p>変数変換 $S = Ke^x$，$t = T - \tau/(\tfrac{1}{2}\sigma^2)$ により BS-PDE は標準的な熱方程式 $u_\tau = u_{xx}$ に帰着する。<a href="pde.html">偏微分方程式</a>のグリーン関数（熱核）で解け，これが正規分布の $\Phi$ が現れる理由である。</p>
+    </div>
+
+    <h2 id="risk-neutral">5. リスク中立評価</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 同値マルチンゲール測度</div>
+      <p>実測度 $\mathbb{P}$ と同じ零集合をもつ（同値な）測度 $\mathbb{Q}$ であって，割引資産価格 $\tilde S_t = S_t/B_t$ が $\mathbb{Q}$-マルチンゲールとなるものを<strong>同値マルチンゲール測度（リスク中立測度）</strong>という。資産価格付けの第一基本定理：<em>無裁定 $\iff$ 同値マルチンゲール測度が存在する</em>。第二基本定理：<em>市場が完備 $\iff$ それが一意</em>。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Girsanov の定理</div>
+      <p>測度変換 $\dfrac{d\mathbb{Q}}{d\mathbb{P}} = \exp\!\left(-\int_0^T\theta_t\,dW_t - \tfrac{1}{2}\int_0^T\theta_t^2\,dt\right)$ により，$\mathbb{P}$ 上のブラウン運動 $W_t$ は
+      $$\tilde W_t = W_t + \int_0^t \theta_s\,ds$$
+      が $\mathbb{Q}$ 上のブラウン運動となる。市場価格リスク $\theta = (\mu - r)/\sigma$ をとると，$\mathbb{Q}$ の下で株価のドリフトが $\mu$ から $r$ に変わる：
+      $$dS_t = rS_t\,dt + \sigma S_t\,d\tilde W_t.$$
+      これがリスク中立化（ドリフトの $r$ への置換）の数学的正当化である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — リスク中立価格公式と Feynman-Kac 表現</div>
+      <p>デリバティブの無裁定価格は，リスク中立測度の下での割引期待ペイオフ：
+      $$V_t = \mathbb{E}^{\mathbb{Q}}\!\left[e^{-r(T-t)}\, \Phi(S_T)\,\middle|\,\mathcal{F}_t\right].$$
+      <strong>Feynman-Kac の定理</strong>は，この期待値表現が BS-PDE
+      $$\frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} - rV = 0,\quad V(T,S)=\Phi(S)$$
+      の解と一致することを保証する。確率論的表現（期待値）と解析的表現（PDE）の橋渡しである。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 期待値による BS 公式の再導出</div>
+      <p>$\mathbb{Q}$ の下で $S_T = S_0\exp[(r-\tfrac{1}{2}\sigma^2)T + \sigma\tilde W_T]$ は対数正規。コール価格
+      $$C = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}[\max(S_T - K, 0)]$$
+      の積分を実行すると $S_0\Phi(d_1) - Ke^{-rT}\Phi(d_2)$ が再現され，PDE 解と一致する。</p>
+    </div>
+
+    <h2 id="rates">6. 金利モデルと債券</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 金利の期間構造と割引債</div>
+      <p>満期 $T$ に額面 1 を払う<strong>割引債（ゼロクーポン債）</strong>の現在価格を $P(t,T)$ とする。瞬間短期金利（スポットレート）$r_t$ を用いると，リスク中立測度の下で
+      $$P(t,T) = \mathbb{E}^{\mathbb{Q}}\!\left[\exp\!\left(-\int_t^T r_s\,ds\right)\,\middle|\,\mathcal{F}_t\right].$$
+      満期ごとの利回り $y(t,T) = -\frac{\ln P(t,T)}{T-t}$ の集合を<strong>イールドカーブ（期間構造）</strong>という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Vasicek モデルと CIR モデル</div>
+      <p>短期金利を確率微分方程式でモデル化する。<strong>Vasicek モデル</strong>（平均回帰の Ornstein-Uhlenbeck 過程）：
+      $$dr_t = a(b - r_t)\,dt + \sigma\,dW_t.$$
+      $b$ は長期平均，$a$ は回帰速度。金利が負になりうる欠点があるが解析的に扱いやすい。<strong>CIR（Cox-Ingersoll-Ross）モデル</strong>：
+      $$dr_t = a(b - r_t)\,dt + \sigma\sqrt{r_t}\,dW_t.$$
+      拡散項の $\sqrt{r_t}$ により $2ab \ge \sigma^2$（Feller 条件）の下で金利が非負に保たれる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — アフィン期間構造と債券価格</div>
+      <p>Vasicek・CIR はともに<strong>アフィン期間構造モデル</strong>に属し，債券価格が指数アフィン形
+      $$P(t,T) = A(t,T)\,e^{-B(t,T)\,r_t}$$
+      で書ける。$A, B$ は満期までの時間に依存する確定的関数で，Feynman-Kac から導かれる債券価格 PDE に代入すると常微分方程式（Riccati 型）に帰着し閉形式で解ける。Vasicek では
+      $$B(t,T) = \frac{1 - e^{-a(T-t)}}{a}.$$
+      </p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 平均回帰の意味</div>
+      <p>$a(b-r_t)\,dt$ の項は，金利が長期平均 $b$ より高ければ下向き，低ければ上向きの力を生む。株価の GBM が指数成長するのと対照的に，金利は経済的に妥当な範囲に引き戻される。これが金利モデルに OU 型過程が使われる理由である。</p>
+    </div>
+
+    <h2 id="risk">7. リスク管理と数値計算</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — VaR（バリュー・アット・リスク）</div>
+      <p>保有期間中の損失 $L$ に対し，信頼水準 $\alpha$（例 99%）の<strong>VaR</strong>は損失分布の上側分位点：
+      $$\mathrm{VaR}_\alpha = \inf\{\ell : \mathbb{P}(L \le \ell) \ge \alpha\}.$$
+      「$\alpha$ の確率でこれを超える損失は出ない」という閾値を表す。正規分布近似では $\mathrm{VaR}_\alpha = \mu_L + \sigma_L\,\Phi^{-1}(\alpha)$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 期待ショートフォール（ES / CVaR）</div>
+      <p>VaR は閾値超過時の損失の大きさを無視し，劣加法性（分散投資効果）を満たさない欠点がある。<strong>期待ショートフォール</strong>は VaR を超えた場合の条件付き期待損失：
+      $$\mathrm{ES}_\alpha = \mathbb{E}[L \mid L \ge \mathrm{VaR}_\alpha] = \frac{1}{1-\alpha}\int_\alpha^1 \mathrm{VaR}_u\,du.$$
+      ES は<strong>コヒーレントなリスク尺度</strong>（単調性・並進不変性・正斉次性・劣加法性を満たす）であり，バーゼル規制でも採用されている。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ デルタヘッジと動的ヘッジ</div>
+      <p>オプションの売り手は $\Delta = \partial V/\partial S$ 株を保有することで原資産価格変動を相殺する。$\Gamma$ が大きいほど $S$ の変化で $\Delta$ が動くため，連続的に組み替える（動的ヘッジ）必要がある。理論的には連続ヘッジでリスクを完全に消去できるが，離散ヘッジ・取引コスト・ボラティリティ変動が残余リスクを生む。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ モンテカルロ法による評価</div>
+      <p>解析解のない複雑なペイオフ $\Phi(S_T)$ に対し，リスク中立測度の下で価格 $V = e^{-rT}\mathbb{E}^{\mathbb{Q}}[\Phi(S_T)]$ を乱数で推定する。GBM の経路を
+      $$S_T^{(i)} = S_0\exp\!\left[(r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z_i\right],\quad Z_i \sim N(0,1)$$
+      で生成し，
+      $$\hat V = e^{-rT}\frac{1}{M}\sum_{i=1}^{M}\Phi\!\bigl(S_T^{(i)}\bigr).$$
+      誤差は $O(1/\sqrt{M})$ で減衰する。経路依存型（アジアン・バリアオプション）には離散時間刻みでオイラー・丸山法により全経路を生成する。分散減少法（対照変量・重点サンプリング）や擬似乱数（準モンテカルロ）で精度を高められる。<a href="numerical-analysis.html">数値解析</a>の手法と密接に関わる。</p>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>本ページの確率解析的基礎を深めるには<a href="stochastic.html">確率微分方程式</a>（伊藤積分・SDE の解法・数値解法）へ，モンテカルロ法や PDE の数値解（有限差分による BS-PDE 求解）を学ぶには<a href="numerical-analysis.html">数値解析</a>へ進むとよい。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>1 期間二項モデルで $S_0=50$，$u=1.1$，$d=0.9$，$r=0.02$，$K=50$ のヨーロピアンプットの無裁定価格とリスク中立確率 $q$ を求めよ。</li>
+        <li>幾何ブラウン運動 $dS = \mu S\,dt + \sigma S\,dW$ に対し，$f = S^n$（$n$ は定数）に伊藤の公式を適用し，$d(S^n)$ と $\mathbb{E}[S_t^n]$ を求めよ。</li>
+        <li>Black-Scholes 公式から，コールのデルタ $\partial C/\partial S = \Phi(d_1)$ を導出せよ（$S\varphi(d_1) = Ke^{-r(T-t)}\varphi(d_2)$ の関係を用いよ）。</li>
+        <li>put-call パリティ $C - P = S - Ke^{-r(T-t)}$ を無裁定論法（複製ポートフォリオ）により証明せよ。</li>
+        <li>正規分布に従う損失 $L \sim N(\mu_L, \sigma_L^2)$ について，信頼水準 $\alpha$ の VaR と期待ショートフォール ES を $\Phi$ と $\varphi$ を用いて表せ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

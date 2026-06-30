@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>量子計算 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 量子計算</div>
+    <h1>量子計算</h1>
+    <p class="tagline">量子ビット・量子ゲート・Grover探索・Shorアルゴリズム・BQP・量子誤り訂正。量子力学で計算する。</p>
+    <div class="tags"><span class="tag">量子ビット</span><span class="tag">量子ゲート</span><span class="tag">Grover探索</span><span class="tag">Shorアルゴリズム</span><span class="tag">BQP</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#circuit">量子ビットと量子ゲート</a></li>
+        <li><a href="#superposition">重ね合わせと量子並列性</a></li>
+        <li><a href="#basic">基本アルゴリズム</a></li>
+        <li><a href="#grover">Grover の探索</a></li>
+        <li><a href="#shor">Shor の素因数分解</a></li>
+        <li><a href="#bqp">計算量クラス BQP</a></li>
+        <li><a href="#hardware">デコヒーレンスと誤り訂正</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>量子計算は量子力学の状態・測定の枠組みと線形代数のユニタリ変換の上に成り立つ。本ページは <a href="quantum-mechanics.html">量子力学</a> の状態ベクトル・観測量・測定，<a href="linear-algebra.html">線形代数</a> のベクトル空間・ユニタリ行列・テンソル積，<a href="computational-complexity.html">計算複雑性</a> の計算量クラスを前提とする。</p>
+    </div>
+
+    <h2 id="circuit">1. 量子ビットと量子ゲート</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 量子ビット（qubit）</div>
+      <p>1 量子ビットの状態は 2 次元複素 Hilbert 空間 $\mathbb{C}^2$ の規格化されたベクトルである:</p>
+      $$|\psi\rangle = \alpha|0\rangle + \beta|1\rangle, \quad \alpha,\beta\in\mathbb{C}, \quad |\alpha|^2 + |\beta|^2 = 1$$
+      <p>計算基底 $|0\rangle = \begin{pmatrix}1\\0\end{pmatrix}$，$|1\rangle = \begin{pmatrix}0\\1\end{pmatrix}$。測定すると確率 $|\alpha|^2$ で $0$，確率 $|\beta|^2$ で $1$ が得られる。$n$ 量子ビット系の状態空間は $(\mathbb{C}^2)^{\otimes n} = \mathbb{C}^{2^n}$ であり，次元は指数的に増大する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Bloch 球</div>
+      <p>全体位相の自由度を除くと，1 量子ビットの純粋状態は 2 つの実パラメータで表せる:</p>
+      $$|\psi\rangle = \cos\frac{\theta}{2}|0\rangle + e^{i\phi}\sin\frac{\theta}{2}|1\rangle, \quad 0\le\theta\le\pi,\ 0\le\phi<2\pi$$
+      <p>$(\theta,\phi)$ を単位球面上の点 $\hat n = (\sin\theta\cos\phi,\sin\theta\sin\phi,\cos\theta)$ に対応させたものが Bloch 球。$|0\rangle$ は北極，$|1\rangle$ は南極，$(|0\rangle\pm|1\rangle)/\sqrt2$ は赤道上にある。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 量子ゲート（ユニタリ演算）</div>
+      <p>量子ゲートは状態ベクトルに作用するユニタリ行列 $U$（$U^\dagger U = UU^\dagger = I$）である。代表的な 1 量子ビットゲート:</p>
+      $$H = \frac{1}{\sqrt2}\begin{pmatrix}1&1\\1&-1\end{pmatrix}, \quad X = \begin{pmatrix}0&1\\1&0\end{pmatrix}, \quad Y = \begin{pmatrix}0&-i\\i&0\end{pmatrix}, \quad Z = \begin{pmatrix}1&0\\0&-1\end{pmatrix}$$
+      <p>Hadamard ゲート $H$ は重ね合わせを生成し $H|0\rangle = (|0\rangle+|1\rangle)/\sqrt2$，$H|1\rangle = (|0\rangle-|1\rangle)/\sqrt2$。$X,Y,Z$ は Pauli 行列で，$X$ はビット反転 $X|0\rangle=|1\rangle$，$Z$ は位相反転 $Z|1\rangle=-|1\rangle$ を行う。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 2 量子ビットゲート（CNOT）</div>
+      <p>制御 NOT ゲート（CNOT）は制御ビットが $|1\rangle$ のとき標的ビットを反転する:</p>
+      $$\mathrm{CNOT} = \begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix}, \quad |c\rangle|t\rangle \mapsto |c\rangle|t\oplus c\rangle$$
+      <p>$H$ と CNOT を組み合わせるとエンタングルした Bell 状態が作れる: $\mathrm{CNOT}\,(H\otimes I)|00\rangle = (|00\rangle+|11\rangle)/\sqrt2$。$\{H, T, \mathrm{CNOT}\}$（$T=\mathrm{diag}(1,e^{i\pi/4})$）は万能ゲートセットで，任意のユニタリを任意精度で近似できる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ユニタリ性と可逆性</div>
+      <p>測定を除く全ての量子操作はユニタリであり，したがって可逆（$U^{-1}=U^\dagger$）である。これは内積を保存し（$\langle U\phi|U\psi\rangle = \langle\phi|\psi\rangle$），確率の総和 $\sum|\text{振幅}|^2 = 1$ を保つことを保証する。古典の非可逆論理ゲート（AND, OR）と異なり，量子計算は本質的に可逆計算である。</p>
+    </div>
+
+    <h2 id="superposition">2. 重ね合わせと量子並列性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 重ね合わせと量子並列性</div>
+      <p>$n$ 量子ビットに $H^{\otimes n}$ を作用させると，$2^n$ 個の基底状態の一様な重ね合わせが得られる:</p>
+      $$H^{\otimes n}|0\rangle^{\otimes n} = \frac{1}{\sqrt{2^n}}\sum_{x=0}^{2^n-1}|x\rangle$$
+      <p>関数 $f$ をユニタリ $U_f:|x\rangle|y\rangle \mapsto |x\rangle|y\oplus f(x)\rangle$ で実装し，重ね合わせ入力に作用させると</p>
+      $$U_f\left(\frac{1}{\sqrt{2^n}}\sum_x|x\rangle\right)|0\rangle = \frac{1}{\sqrt{2^n}}\sum_x|x\rangle|f(x)\rangle$$
+      <p>1 回の評価で全ての $x$ に対する $f(x)$ が「同時に」計算される。これが量子並列性である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 並列性だけでは速くならない</div>
+      <p>重ね合わせには $2^n$ 個の $f(x)$ が含まれるが，測定では 1 つの $x$ と $f(x)$ しか取り出せず，どれが得られるかは確率的である。量子計算の高速化には，欲しい答えに対応する振幅を干渉で増幅し，不要な振幅を打ち消す巧妙な設計が不可欠である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 干渉と測定による収縮</div>
+      <p>振幅は複素数なので，異なる経路の寄与が同位相なら強め合い（建設的干渉），逆位相なら打ち消し合う（破壊的干渉）。例えば $H Z H|0\rangle = |1\rangle$ では，$|0\rangle$ への経路が破壊的干渉で消える。測定は状態 $\sum_x c_x|x\rangle$ を確率 $|c_x|^2$ で $|x\rangle$ に収縮させ，全体位相は観測できない。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 単一量子ビットの干渉</div>
+      <p>$|0\rangle$ に $H$ を作用させると $(|0\rangle+|1\rangle)/\sqrt2$。続けてもう一度 $H$ を作用させると</p>
+      $$H\cdot\frac{|0\rangle+|1\rangle}{\sqrt2} = \frac{1}{2}\big((|0\rangle+|1\rangle)+(|0\rangle-|1\rangle)\big) = |0\rangle$$
+      <p>$|1\rangle$ の振幅が破壊的干渉で完全に打ち消され，確実に $|0\rangle$ が得られる。これは古典的なコイン投げ 2 回（ランダムウォーク）とは決定的に異なる。</p>
+    </div>
+
+    <h2 id="basic">3. 基本アルゴリズム</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Deutsch アルゴリズム</div>
+      <p>1 ビット関数 $f:\{0,1\}\to\{0,1\}$ が定数（$f(0)=f(1)$）か均衡（$f(0)\ne f(1)$）かを，古典では 2 回の評価が必要だが，量子では 1 回で判定できる。位相キックバックを用いた回路 $H\,U_f\,H|0\rangle$ の測定結果が $|0\rangle$ なら定数，$|1\rangle$ なら均衡。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 位相キックバック</div>
+      <p>標的ビットを $|-\rangle = (|0\rangle-|1\rangle)/\sqrt2$ に用意すると，$U_f$ は位相を制御ビットに移す:</p>
+      $$U_f|x\rangle|-\rangle = (-1)^{f(x)}|x\rangle|-\rangle$$
+      <p>これにより $f$ の値が振幅の符号として埋め込まれ，Hadamard 変換による干渉で大域的性質（定数か均衡か）が読み取れる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Deutsch-Jozsa アルゴリズム</div>
+      <p>$f:\{0,1\}^n\to\{0,1\}$ が「定数」か「均衡（ちょうど半数が $0$，半数が $1$）」のいずれかと約束されているとき，量子では 1 回の $U_f$ 評価で確定的に判別できる。回路 $H^{\otimes n}U_f H^{\otimes n}|0\rangle^{\otimes n}$ を測定し，全ビットが $0$ なら定数，そうでなければ均衡。古典決定的アルゴリズムは最悪 $2^{n-1}+1$ 回を要する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Bernstein-Vazirani アルゴリズム</div>
+      <p>隠れ文字列 $a\in\{0,1\}^n$ について $f(x) = a\cdot x \bmod 2$ が与えられたとき，量子では 1 回の評価で $a$ 全体を決定できる。$H^{\otimes n}U_f H^{\otimes n}|0\rangle^{\otimes n}$ を測定すると結果はちょうど $|a\rangle$ になる。古典では各ビットを 1 つずつ調べるため $n$ 回を要し，線形の分離が示される。</p>
+    </div>
+
+    <h2 id="grover">4. Grover の探索</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 非構造化探索とオラクル</div>
+      <p>$N=2^n$ 個の要素の中から条件 $f(x)=1$ を満たす解 $x^\*$ を探す問題。解を判定するオラクル $O_f|x\rangle = (-1)^{f(x)}|x\rangle$（解の振幅の符号を反転）が与えられる。古典では平均 $N/2$ 回，最悪 $N$ 回の問い合わせが必要。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Grover の振幅増幅</div>
+      <p>一様重ね合わせ $|s\rangle = \frac{1}{\sqrt N}\sum_x|x\rangle$ から出発し，Grover 反復 $G = D\cdot O_f$ を繰り返す。ここで $D = 2|s\rangle\langle s| - I$ は平均値まわりの反転（拡散演算子）。各反復は状態を解の方向へ角度 $2\theta$（$\sin\theta = 1/\sqrt N$）だけ回転させる。約</p>
+      $$k \approx \frac{\pi}{4}\sqrt{N}$$
+      <p>回の反復で解の振幅がほぼ $1$ になり，測定で高確率に解が得られる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 幾何学的描像</div>
+      <p>状態を「解の重ね合わせ」と「非解の重ね合わせ」が張る 2 次元平面で考える。$O_f$ は解軸についての鏡映，$D$ は初期状態 $|s\rangle$ についての鏡映。2 つの鏡映の合成は回転であり，各 $G$ で解軸へ角 $2\theta$ ずつ近づく。$\sqrt N$ 回でほぼ $90^\circ$ 回転して解に到達する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最適性（二次加速の限界）</div>
+      <p>Grover は非構造化探索で $O(\sqrt N)$ の問い合わせを達成し，これは量子計算でも最適である。任意の量子探索アルゴリズムは $\Omega(\sqrt N)$ 回の問い合わせを必要とする（BBBV 下界）。したがって非構造化探索における量子の加速は二次（多項式）にとどまり，指数的高速化は得られない。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 反復しすぎは逆効果</div>
+      <p>Grover 反復は回転なので，最適回数を超えて続けると解から遠ざかり成功確率が下がる。反復回数 $k\approx\frac{\pi}{4}\sqrt N$ を正しく選ぶことが重要。解の個数 $M$ が既知なら $k\approx\frac{\pi}{4}\sqrt{N/M}$ とする。</p>
+    </div>
+
+    <h2 id="shor">5. Shor の素因数分解</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 量子 Fourier 変換（QFT）</div>
+      <p>QFT は基底状態を離散 Fourier 係数の重ね合わせに写すユニタリ:</p>
+      $$\mathrm{QFT}|x\rangle = \frac{1}{\sqrt{N}}\sum_{y=0}^{N-1} e^{2\pi i xy/N}|y\rangle$$
+      <p>$N=2^n$ のとき，QFT は Hadamard と制御位相ゲートを用いて $O(n^2)$ ゲートで実装できる。古典 FFT の $O(n2^n)$ に対し指数的に効率的で，周期構造の検出に用いられる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 位数発見</div>
+      <p>$\gcd(a,N)=1$ のとき $a^r\equiv 1\pmod N$ を満たす最小の位数 $r$ を求める問題は，関数 $f(x)=a^x\bmod N$ の周期 $r$ を見つけることに帰着する。重ね合わせに $f$ を評価して QFT を作用させると，測定結果から連分数展開で $r$ が高確率に得られる。位数発見は多項式時間 $O((\log N)^3)$ で解ける。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Shor のアルゴリズム</div>
+      <p>合成数 $N$ の素因数分解は位数発見に帰着する。ランダムに $a$ を選び位数 $r$ を求めると，$r$ が偶数かつ $a^{r/2}\not\equiv -1\pmod N$ のとき</p>
+      $$\gcd(a^{r/2}\pm 1,\ N)$$
+      <p>が $N$ の非自明な因数を与える（高確率で成功し，失敗時は $a$ を選び直す）。全体として多項式時間 $O((\log N)^3)$ で素因数分解が可能。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $N=15$ の因数分解</div>
+      <p>$a=7$ を選ぶと $7^1=7,\,7^2=49\equiv4,\,7^3\equiv13,\,7^4\equiv1\pmod{15}$ より位数 $r=4$。$r$ は偶数で $7^2=49\equiv4\not\equiv-1$。よって $\gcd(7^2-1,15)=\gcd(48,15)=3$，$\gcd(7^2+1,15)=\gcd(50,15)=5$ となり $15=3\times5$ が得られる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 暗号への影響</div>
+      <p>RSA 暗号は大きな合成数の素因数分解の困難性に，Diffie-Hellman や楕円曲線暗号は離散対数問題の困難性に依拠する。Shor のアルゴリズム（およびその離散対数版）はこれらを多項式時間で破る。十分大規模な誤り耐性量子計算機が実現すれば現行公開鍵暗号は破綻するため，耐量子計算機暗号（格子暗号など）への移行が進められている。詳しくは <a href="cryptography.html">暗号理論</a> を参照。</p>
+    </div>
+
+    <h2 id="bqp">6. 計算量クラス BQP</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — BQP（Bounded-error Quantum Polynomial time）</div>
+      <p>BQP は，多項式サイズの量子回路の一様な族によって，誤り確率が一定値（例えば $1/3$）以下で判定できる決定問題のクラスである。形式的には，入力長 $n$ の各問題について多項式時間で構成可能な量子回路 $Q_n$ が存在し，</p>
+      $$x\in L \Rightarrow \Pr[Q\text{ が受理}]\ge \tfrac23, \qquad x\notin L \Rightarrow \Pr[Q\text{ が受理}]\le \tfrac13$$
+      <p>を満たす。古典の確率的多項式時間クラス BPP の量子版に相当する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 既知の包含関係</div>
+      <p>次の包含が成り立つ（多くは真の包含か未解決）:</p>
+      $$\mathrm{P}\subseteq\mathrm{BPP}\subseteq\mathrm{BQP}\subseteq\mathrm{PSPACE}$$
+      <p>Shor により素因数分解（NP かつ co-NP に属するが NP 完全とは考えられていない問題）は BQP に入る。一方で $\mathrm{BQP}$ と $\mathrm{NP}$ の関係は未解明で，$\mathrm{NP}\subseteq\mathrm{BQP}$ は信じられていない（Grover の二次加速では NP 完全問題を多項式時間にはできない）。詳細は <a href="computational-complexity.html">計算複雑性</a> を参照。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 量子超越性（quantum supremacy/advantage）</div>
+      <p>量子計算機が，古典計算機では現実的時間で解けない（特定の）計算課題を実行できることを量子超越性という。ランダム量子回路サンプリングやボソンサンプリングが実証例として用いられた。ただしこれらは実用的問題とは限らず，実用上有用な加速を指して量子優位性（quantum advantage）と呼び分けることもある。</p>
+    </div>
+
+    <h2 id="hardware">7. デコヒーレンスと誤り訂正</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — デコヒーレンス</div>
+      <p>量子ビットは環境と相互作用すると位相の干渉性を失う。これがデコヒーレンスで，重ね合わせ状態が古典的混合状態へと崩壊する。代表的な時間尺度は緩和時間 $T_1$（エネルギー散逸，振幅減衰）と位相緩和時間 $T_2$（位相情報の喪失）。$T_2 \le 2T_1$ が成り立ち，計算はこれらの時間内に完了せねばならない。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 量子誤り訂正</div>
+      <p>クローン不可能定理により量子状態は複製できないが，複数の物理量子ビットに情報を冗長に符号化し，状態を壊さずに誤りの「種類」だけをシンドローム測定で取り出して訂正できる。例えば Shor 符号は 1 論理量子ビットを 9 物理量子ビットに符号化し，任意の 1 量子ビット誤り（ビット反転・位相反転）を訂正する。表面符号は格子状配置で高い誤り閾値をもつ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 閾値定理（フォールトトレラント計算）</div>
+      <p>各物理ゲートの誤り率が一定の閾値 $p_{\text{th}}$ より小さければ，誤り訂正を階層的に施すことで，許容できるオーバーヘッドの増加のみで任意精度の計算が可能になる。これにより，ノイズのある素子から信頼できる大規模量子計算（フォールトトレラント量子計算）が原理的に構築できることが保証される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 NISQ 時代</div>
+      <p>現在は数十〜数百量子ビット規模で誤り訂正を完全には行えない NISQ（Noisy Intermediate-Scale Quantum）時代にある。誤りが蓄積する前に短い回路で有用な計算を引き出すべく，変分量子固有値ソルバ（VQE）や量子近似最適化（QAOA）などのハイブリッドアルゴリズムが研究されている。完全な誤り耐性量子計算の実現には，さらに多数の物理量子ビットと閾値以下の誤り率が必要である。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$|+\rangle = (|0\rangle+|1\rangle)/\sqrt2$ に $Z$ ゲートを作用させた状態を求め，さらに $H$ を作用させた結果を計算せよ。</li>
+        <li>CNOT と $H$ を用いて 4 つの Bell 状態 $|\Phi^\pm\rangle, |\Psi^\pm\rangle$ をそれぞれ生成する回路を示せ。</li>
+        <li>Grover 探索で $N=2^{10}$ の中から 1 つの解を見つけるのに必要な最適反復回数 $k\approx\frac{\pi}{4}\sqrt N$ を概算し，古典の平均問い合わせ回数と比較せよ。</li>
+        <li>$N=21$ を Shor のアルゴリズムで分解する。$a=2$ の位数 $r$ を $2^x\bmod 21$ を計算して求め，$\gcd(2^{r/2}\pm1,21)$ から因数を導け。</li>
+        <li>Deutsch アルゴリズムで標的ビットを $|-\rangle$ に用意する理由を，位相キックバック $U_f|x\rangle|-\rangle=(-1)^{f(x)}|x\rangle|-\rangle$ を示しながら説明せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>量子計算の理論的基盤を踏まえたら，量子状態に情報を載せ伝送・保護する <a href="quantum-information.html">量子情報</a>（エンタングルメント・量子テレポーテーション・量子鍵配送）へ進むとよい。Shor のアルゴリズムが暗号に与える影響を深く理解するには <a href="cryptography.html">暗号理論</a> も参照されたい。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

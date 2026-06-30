@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>暗号理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 暗号理論</div>
+    <h1>暗号理論</h1>
+    <p class="tagline">ワンタイムパッド・RSA・離散対数・ハッシュ・ゼロ知識証明・耐量子暗号。安全性を数学で保証する。</p>
+    <div class="tags"><span class="tag">公開鍵暗号</span><span class="tag">RSA</span><span class="tag">離散対数</span><span class="tag">ゼロ知識証明</span><span class="tag">ポスト量子暗号</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは整数論の合同・素数・Euler 関数と，計算量クラスの基礎を用いる。先に <a href="number-theory.html">数論</a> と <a href="computational-complexity.html">計算複雑性</a> に目を通しておくと理解が深まる。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#classical">古典暗号と完全秘匿</a></li>
+        <li><a href="#security">計算量的安全性</a></li>
+        <li><a href="#rsa">公開鍵暗号 RSA</a></li>
+        <li><a href="#dlog">離散対数</a></li>
+        <li><a href="#hash">ハッシュとデジタル署名</a></li>
+        <li><a href="#zkp">ゼロ知識証明</a></li>
+        <li><a href="#post-quantum">ポスト量子暗号</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="classical">1. 古典暗号と完全秘匿</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 暗号系（共通鍵暗号）</div>
+      <p>平文空間 $\mathcal{M}$，暗号文空間 $\mathcal{C}$，鍵空間 $\mathcal{K}$ に対し，暗号化関数 $E: \mathcal{K}\times\mathcal{M}\to\mathcal{C}$ と復号関数 $D: \mathcal{K}\times\mathcal{C}\to\mathcal{M}$ の組を<strong>暗号系</strong>という。正当性として，任意の鍵 $k$ と平文 $m$ に対し</p>
+      $$D_k(E_k(m)) = m$$
+      <p>を満たす。<strong>共通鍵暗号</strong>では送信者と受信者が同じ秘密鍵 $k$ を共有する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — シーザー暗号と換字暗号</div>
+      <p><strong>シーザー暗号</strong>は各文字を $k$ 文字ずらす。文字を $0$–$25$ に対応させると</p>
+      $$E_k(m) = (m + k) \bmod 26, \qquad D_k(c) = (c - k) \bmod 26$$
+      <p>鍵は $26$ 通りしかなく全数探索で破れる。一般化した<strong>単一換字暗号</strong>は $26!$ 通りの置換を鍵とするが，頻度分析（言語中の文字出現頻度の偏り）により容易に解読される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Kerckhoffs の原理</div>
+      <p>「暗号の安全性は鍵の秘密のみに依存すべきで，アルゴリズム自体は公開されていても安全であるべき」。秘密にすべきは鍵だけであり，方式を秘匿することに頼る「隠蔽によるセキュリティ」は脆弱とされる。Shannon の格言「敵は方式を知る」も同じ思想を表す。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 完全秘匿性（Shannon）</div>
+      <p>暗号系が<strong>完全秘匿（perfect secrecy）</strong>であるとは，暗号文が平文について一切の情報を漏らさないこと，すなわち平文の事前分布によらず任意の $m\in\mathcal{M}$，$c\in\mathcal{C}$ に対して</p>
+      $$\Pr[M = m \mid C = c] = \Pr[M = m]$$
+      <p>が成り立つことをいう。等価的に，すべての $m, m'$ と $c$ について $\Pr[E_K(m)=c] = \Pr[E_K(m')=c]$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ワンタイムパッドの完全秘匿性</div>
+      <p>平文・鍵・暗号文を $n$ ビット列とし，鍵 $k$ を一様ランダムに選び一度だけ使う。<strong>ワンタイムパッド（OTP）</strong>を</p>
+      $$E_k(m) = m \oplus k, \qquad D_k(c) = c \oplus k$$
+      <p>で定めると，この暗号系は完全秘匿である。実際，任意の $c$ に対し $\Pr[C=c\mid M=m] = \Pr[K = m\oplus c] = 2^{-n}$ となり $m$ に依存しない。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 完全秘匿の代償</div>
+      <p>Shannon は，完全秘匿には $|\mathcal{K}| \ge |\mathcal{M}|$，すなわち鍵長が平文長以上でなければならないことを証明した。OTP は鍵を平文と同じ長さだけ安全に共有し，かつ使い回さない必要があり，実用上は非常に重い。鍵の使い回しは致命的で，$c_1\oplus c_2 = m_1\oplus m_2$ から情報が漏れる。これが計算量的安全性へ向かう動機となる。</p>
+    </div>
+
+    <h2 id="security">2. 計算量的安全性</h2>
+    <div class="box note">
+      <div class="box-title">💡 完全秘匿から計算量的安全性へ</div>
+      <p>OTP の制約を回避するため，現代暗号は「情報理論的に破れない」ではなく「現実的な計算資源では破れない」という<strong>計算量的安全性</strong>を採用する。攻撃者を確率的多項式時間（PPT）アルゴリズムに制限し，破る確率を無視できるほど小さく抑える。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 一方向性関数</div>
+      <p>関数 $f:\{0,1\}^*\to\{0,1\}^*$ が<strong>一方向性関数</strong>であるとは，</p>
+      <ul>
+        <li><strong>計算容易性</strong>: $f(x)$ は多項式時間で計算できる。</li>
+        <li><strong>反転困難性</strong>: 任意の PPT アルゴリズム $A$ に対し，$x$ を一様に選んだとき
+        $$\Pr_{x}\bigl[f(A(f(x))) = f(x)\bigr] \le \mathrm{negl}(n)$$
+        が成り立つ（$\mathrm{negl}$ は無視できる関数，すなわち任意の多項式 $p$ について十分大きい $n$ で $1/p(n)$ より小さい）。</li>
+      </ul>
+      <p>一方向性関数の存在は $\mathsf{P}\ne\mathsf{NP}$ より強い未解決仮定だが，現代暗号の基盤である。素因数分解や離散対数は候補とされる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 識別不可能性（IND-CPA）</div>
+      <p>暗号の標準的な安全性は<strong>識別不可能性</strong>で定式化される。次のゲームを考える。攻撃者 $A$ が二つの平文 $m_0, m_1$（同じ長さ）を選び，チャレンジャーがランダムビット $b\in\{0,1\}$ を選んで $c = E_k(m_b)$ を返す。$A$ は $b$ を推測する。暗号方式が<strong>選択平文攻撃に対し識別不可能（IND-CPA）</strong>であるとは，任意の PPT 攻撃者の優位性が</p>
+      $$\mathrm{Adv}(A) = \left|\Pr[A \text{が } b \text{を正答}] - \tfrac{1}{2}\right| \le \mathrm{negl}(n)$$
+      <p>を満たすことをいう。すなわち暗号文を見ても，どちらの平文かをコイン投げ以上に当てられない。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 確率的暗号化の必要性</div>
+      <p>決定的暗号（同じ平文が常に同じ暗号文になる）は IND-CPA を満たせない。攻撃者が $E_k(m_0)$ と $E_k(m_1)$ を比較できてしまうからだ。安全な暗号は乱数を含む確率的暗号化を行う。これは完全秘匿の「$c$ が $m$ から独立」という直観を計算量の世界で再現したものである。</p>
+    </div>
+
+    <h2 id="rsa">3. 公開鍵暗号 RSA</h2>
+    <div class="box note">
+      <div class="box-title">💡 公開鍵暗号の発想</div>
+      <p>共通鍵暗号は事前の鍵共有を要する。<strong>公開鍵暗号</strong>では各人が公開鍵（暗号化用，誰でも入手可）と秘密鍵（復号用，本人のみ）の対を持つ。Diffie・Hellman（1976）と Rivest・Shamir・Adleman（1977，RSA）が嚆矢である。安全性は一方向性に「落とし戸」が付いた関数に依拠する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Euler の定理</div>
+      <p>$\gcd(a, n) = 1$ ならば</p>
+      $$a^{\phi(n)} \equiv 1 \pmod n$$
+      <p>ここで $\phi(n)$ は Euler のトーシェント関数（$n$ 以下で $n$ と互いに素な整数の個数）。$n=p$ が素数のとき $\phi(p)=p-1$ で，これは Fermat の小定理 $a^{p-1}\equiv 1 \pmod p$ に帰着する。$n=pq$（相異なる素数）なら $\phi(n)=(p-1)(q-1)$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — RSA 鍵生成・暗号化・復号</div>
+      <p><strong>鍵生成</strong>:</p>
+      <ul>
+        <li>大きな相異なる素数 $p, q$ を選び $n = pq$ とする。$\phi(n) = (p-1)(q-1)$。</li>
+        <li>$\gcd(e, \phi(n)) = 1$ を満たす公開指数 $e$ を選ぶ（例 $e = 65537$）。</li>
+        <li>$d \equiv e^{-1} \pmod{\phi(n)}$，すなわち $ed \equiv 1 \pmod{\phi(n)}$ を拡張 Euclid 互除法で求める。</li>
+        <li>公開鍵 $(n, e)$，秘密鍵 $(n, d)$。$p, q, \phi(n)$ は秘匿する。</li>
+      </ul>
+      <p><strong>暗号化</strong>: 平文 $m \in \mathbb{Z}_n$ に対し $c \equiv m^e \pmod n$。</p>
+      <p><strong>復号</strong>: $m \equiv c^d \pmod n$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — RSA 復号の正当性</div>
+      <p>$ed \equiv 1 \pmod{\phi(n)}$ より $ed = 1 + k\phi(n)$。$\gcd(m,n)=1$ なら Euler の定理から</p>
+      $$c^d \equiv m^{ed} = m^{1 + k\phi(n)} = m\cdot\bigl(m^{\phi(n)}\bigr)^k \equiv m \cdot 1^k = m \pmod n$$
+      <p>$\gcd(m,n)\ne 1$ の場合も中国剰余定理を $p, q$ 各々に適用して $m^{ed}\equiv m \pmod p$，$\pmod q$ が示され，合わせて $\pmod n$ で成立する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 小さな数での RSA</div>
+      <p>$p=61,\ q=53$，$n = 3233$，$\phi(n) = 60\cdot 52 = 3120$。$e = 17$（$\gcd(17,3120)=1$）。拡張 Euclid で $d \equiv 17^{-1} \equiv 2753 \pmod{3120}$（$17\cdot 2753 = 46801 = 15\cdot 3120 + 1$）。</p>
+      <p>平文 $m = 65$ の暗号化: $c \equiv 65^{17} \equiv 2790 \pmod{3233}$。</p>
+      <p>復号: $2790^{2753} \equiv 65 \pmod{3233}$。確かに元に戻る。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 素因数分解の困難性が安全性の根拠</div>
+      <p>攻撃者は公開鍵 $(n,e)$ を知るが，$d$ を得るには $\phi(n)=(p-1)(q-1)$ が必要で，これには $n$ の素因数分解 $n=pq$ が要る。$n$ が十分大きい（例 $2048$ ビット）と古典計算機では現実的時間で分解できない。RSA を破ることは素因数分解と密接に関係する（厳密には RSA 問題は分解より易しい可能性も残るが，最良の攻撃は分解経由である）。実用では平文を直接べき乗せず OAEP 等のパディングを施し IND-CCA 安全性を得る。</p>
+    </div>
+
+    <h2 id="dlog">4. 離散対数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 離散対数問題（DLP）</div>
+      <p>位数 $q$ の巡回群 $G = \langle g\rangle$（例 $\mathbb{Z}_p^*$）において，$h = g^x$ が与えられたとき指数 $x$ を求める問題を<strong>離散対数問題</strong>という。</p>
+      $$x = \log_g h \quad (G \text{上})$$
+      <p>べき乗 $g^x$ は繰り返し二乗法で高速に計算できるが，逆に $x$ を求めるのは大きな群では計算困難と信じられている。これが多くの公開鍵方式の一方向性関数を与える。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Diffie-Hellman 鍵交換</div>
+      <p>公開パラメータとして素数 $p$ と原始根 $g$ を固定する。Alice は秘密 $a$ を選び $A = g^a \bmod p$ を送る。Bob は秘密 $b$ を選び $B = g^b \bmod p$ を送る。両者は共通鍵</p>
+      $$K = B^a = (g^b)^a = g^{ab} = (g^a)^b = A^b \pmod p$$
+      <p>を独立に計算できる。盗聴者は $A, B$ を見るが，$g^{ab}$ を求めるには<strong>計算 Diffie-Hellman 問題（CDH）</strong>を解く必要があり，これは DLP と密接に関係する困難問題である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ElGamal 暗号</div>
+      <p>秘密鍵 $x$，公開鍵 $y = g^x \bmod p$。平文 $m\in\mathbb{Z}_p^*$ の暗号化は，毎回ランダムな $r$ を選び</p>
+      $$c = (c_1, c_2) = \bigl(g^r,\ m\cdot y^r\bigr) \pmod p$$
+      <p>復号は $m = c_2 \cdot c_1^{-x} = m\cdot y^r \cdot g^{-rx} = m\cdot g^{rx-rx} \pmod p$。乱数 $r$ により確率的暗号化となり IND-CPA を満たす（判定 DH 仮定のもと）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 楕円曲線暗号（ECC）</div>
+      <p>有限体 $\mathbb{F}_p$ 上の楕円曲線 $y^2 = x^3 + ax + b$ の有理点と無限遠点 $\mathcal{O}$ は，弦・接線による加法で<strong>アーベル群</strong>をなす。点 $P$ のスカラー倍 $Q = kP$（$P$ を $k$ 回加える）に対し $k$ を求める<strong>楕円曲線離散対数問題（ECDLP）</strong>は，同等の安全性に対して $\mathbb{Z}_p^*$ より小さい鍵長で済む。例えば $256$ ビット ECC は $3072$ ビット RSA に匹敵するとされ，省資源環境で広く使われる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 群の選択が効率と安全を決める</div>
+      <p>DLP・CDH の困難性は群の構造に依存する。$\mathbb{Z}_p^*$ では指数計算法（index calculus）が亜指数時間で動くため大きな $p$ が必要だが，一般の楕円曲線では既知の最良攻撃が群位数の平方根程度（Pollard の $\rho$ 法）にとどまり，より短い鍵で安全になる。</p>
+    </div>
+
+    <h2 id="hash">5. ハッシュとデジタル署名</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 暗号学的ハッシュ関数</div>
+      <p>任意長の入力を固定長 $n$ ビットに写す関数 $H:\{0,1\}^*\to\{0,1\}^n$ で，次の性質を持つもの。</p>
+      <ul>
+        <li><strong>原像計算困難性（一方向性）</strong>: $y$ が与えられたとき $H(x)=y$ なる $x$ を求めるのが困難。</li>
+        <li><strong>第二原像計算困難性</strong>: $x$ が与えられたとき $H(x')=H(x)$ なる $x'\ne x$ を求めるのが困難。</li>
+        <li><strong>衝突耐性</strong>: $H(x) = H(x')$ なる相異なる $x, x'$ の対を求めるのが困難。</li>
+      </ul>
+      <p>SHA-256，SHA-3 などが代表例。衝突耐性は第二原像計算困難性より強い。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 誕生日攻撃と出力長</div>
+      <p>出力が $n$ ビットでも，衝突は誕生日のパラドックスにより約 $2^{n/2}$ 回の試行で見つかる。したがって $128$ ビットの衝突耐性を確保するには $n = 256$ ビット出力が必要。原像計算困難性は $2^n$ なので非対称な点に注意。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — デジタル署名</div>
+      <p>署名者は秘密鍵 $sk$ で署名 $\sigma = \mathrm{Sign}_{sk}(m)$ を生成し，検証者は公開鍵 $pk$ で $\mathrm{Verify}_{pk}(m,\sigma)\in\{\text{真},\text{偽}\}$ を判定する。要件は</p>
+      <ul>
+        <li><strong>正当性</strong>: 正規の署名は常に検証を通る。</li>
+        <li><strong>偽造不可能性（EUF-CMA）</strong>: 秘密鍵を知らない者は，たとえ多数の署名例を見ても新たな有効な $(m,\sigma)$ を作れない。</li>
+      </ul>
+      <p>署名は<strong>認証</strong>（送信者の本人性）と<strong>否認防止</strong>，および完全性を同時に提供する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — RSA 署名</div>
+      <p>RSA を「逆向き」に使う。メッセージ $m$ のハッシュ $h = H(m)$ に対し，秘密鍵で署名</p>
+      $$\sigma \equiv h^d \pmod n$$
+      <p>検証者は公開鍵で $\sigma^e \bmod n$ を計算し，$H(m)$ と一致するか確かめる。$\sigma^e \equiv h^{de}\equiv h \pmod n$。ハッシュを噛ませることで任意長メッセージに対応し，かつ素朴な乗法性に起因する偽造を防ぐ。</p>
+    </div>
+
+    <h2 id="zkp">6. ゼロ知識証明</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 対話型証明系</div>
+      <p>言語 $L$ に対する<strong>対話型証明系</strong>とは，無限の計算能力を持つ証明者 $P$ と多項式時間の検証者 $V$ が，入力 $x$ について複数ラウンドのメッセージ交換を行い，最後に $V$ が受理／拒否を出すプロトコルである。$P$ は「$x\in L$」を $V$ に納得させようとする。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 完全性・健全性・ゼロ知識性</div>
+      <ul>
+        <li><strong>完全性</strong>: $x\in L$ なら正直な $P$ は $V$ を高確率（$\ge 1-\mathrm{negl}$）で受理させられる。</li>
+        <li><strong>健全性</strong>: $x\notin L$ なら，どんな（不正な）証明者でも $V$ を受理させる確率は無視できるほど小さい。</li>
+        <li><strong>ゼロ知識性</strong>: 検証者は「$x\in L$」という事実以外，何の知識も得ない。形式的には，検証者の見るやり取り（ビュー）を，$P$ なしに多項式時間で生成できる<strong>シミュレータ</strong>が存在し，その出力が実際のビューと識別不可能であること。</li>
+      </ul>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — グラフ同型のゼロ知識証明</div>
+      <p>$P$ は二つのグラフ $G_0, G_1$ が同型であること（秘密の置換 $\pi$ で $G_1 = \pi(G_0)$）を，$\pi$ を明かさず示したい。各ラウンドで $P$ はランダムな置換でグラフ $H$ を作り送る。$V$ はビット $b$ を選ぶ。$P$ は $H$ と $G_b$ の同型写像を返す。$P$ が真に同型を知っていれば常に答えられる（完全性）。知らなければどちらか一方しか答えられず，$1/2$ の確率でしか騙せない（健全性，$k$ ラウンドで $2^{-k}$）。$V$ が得るのはランダム同型のみで秘密 $\pi$ は漏れない（ゼロ知識性）。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 応用 — 認証とブロックチェーン</div>
+      <p>ゼロ知識証明はパスワードや秘密鍵そのものを送らずに「知っていること」を証明する認証に使える。さらに非対話化した<strong>zk-SNARK / zk-STARK</strong> は，計算の正しさを小さな証明で検証可能にし，ブロックチェーンのスケーリング（rollup）やプライバシー保護取引（取引の有効性を金額や送信者を隠して証明）に応用されている。</p>
+    </div>
+
+    <h2 id="post-quantum">7. ポスト量子暗号</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Shor のアルゴリズム</div>
+      <p>誤り耐性量子計算機が実現すれば，<strong>Shor のアルゴリズム</strong>により整数の素因数分解と離散対数が多項式時間で解ける。これは量子 Fourier 変換を用いて周期発見問題に帰着させることで実現される。</p>
+      $$\text{素因数分解・DLP・ECDLP} \;\xrightarrow{\text{Shor}}\; \text{量子多項式時間}$$
+      <p>結果として RSA・Diffie-Hellman・ElGamal・ECC はすべて量子計算機の前で安全性を失う。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 「今盗んで後で解読」という脅威</div>
+      <p>大規模量子計算機はまだ存在しないが，攻撃者が現在の暗号通信を記録しておき，将来 Shor で復号する「harvest now, decrypt later」が懸念される。長期機密のため，量子計算機の実用化を待たず<strong>耐量子暗号（PQC）</strong>への移行が進められている。NIST は標準化を行い，格子ベースの方式が中心に選定された。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 格子暗号</div>
+      <p>$n$ 個の一次独立なベクトル $\mathbf{b}_1,\ldots,\mathbf{b}_n$ の整数係数結合がなす<strong>格子</strong> $\Lambda = \{\sum_i z_i\mathbf{b}_i : z_i\in\mathbb{Z}\}$ を考える。最短ベクトル問題（SVP）や，特に</p>
+      <p><strong>LWE（Learning With Errors）問題</strong>: 秘密ベクトル $\mathbf{s}$ に対し，ランダムな $\mathbf{a}_i$ と小さな誤差 $e_i$ から作った</p>
+      $$b_i = \langle \mathbf{a}_i, \mathbf{s}\rangle + e_i \pmod q$$
+      <p>の多数の標本から $\mathbf{s}$ を復元する問題は，格子の最悪時困難性に帰着でき，量子計算機でも効率的に解く方法が知られていない。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 耐量子暗号の方式群</div>
+      <p>PQC の主要な系統には，格子ベース（Kyber=ML-KEM の鍵カプセル化，Dilithium=ML-DSA の署名），ハッシュベース署名（SPHINCS+，ハッシュの一方向性のみに依拠），符号ベース（McEliece，誤り訂正符号の復号困難性），多変数多項式ベースなどがある。いずれも素因数分解・離散対数に依存しない困難問題を基盤とし，Shor の影響を受けない。一方，対称鍵暗号やハッシュは Grover のアルゴリズムで安全性が平方根だけ低下するため，鍵長・出力長を倍にすれば対処できる。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>ワンタイムパッドで同じ鍵を二つの平文 $m_1, m_2$ に使い，暗号文 $c_1, c_2$ を得た。$c_1\oplus c_2$ から何が分かるか示し，なぜ鍵の使い回しが危険かを論ぜよ。</li>
+        <li>$p=11,\ q=13$ とする。$n,\ \phi(n)$ を求め，公開指数 $e=7$ に対する秘密指数 $d$ を拡張 Euclid 互除法で計算せよ。さらに $m=9$ を暗号化・復号して正当性を確かめよ。</li>
+        <li>素数 $p=23$，原始根 $g=5$ で Diffie-Hellman を行う。Alice の秘密 $a=6$，Bob の秘密 $b=15$ のとき，$A,\ B$ と共有鍵 $K$ を求めよ。</li>
+        <li>暗号学的ハッシュの出力が $256$ ビットのとき，誕生日攻撃で衝突を見つける期待計算量はおよそいくらか。原像を見つける計算量と比較せよ。</li>
+        <li>グラフ同型のゼロ知識証明を $k$ ラウンド実行したとき，同型を知らない不正な証明者が検証者を騙せる確率を求めよ。また，このプロトコルが「ゼロ知識」である理由をシミュレータの観点から説明せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>Shor のアルゴリズムや量子 Fourier 変換の仕組みは <a href="quantum-computing.html">量子計算</a> で，完全秘匿やエントロピーによる秘匿性の測定は <a href="information-theory.html">情報理論</a> で深く扱う。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

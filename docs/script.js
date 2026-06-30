@@ -32,6 +32,7 @@ const SIDEBAR_HTML = `
       <a href="fourier-analysis.html"><span class="nav-icon">∿</span>フーリエ解析</a>
       <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
       <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
+      <a href="operator-algebras.html"><span class="nav-icon">★</span>作用素環論</a>
     </nav>
   </div>
   <div class="sidebar-section">
@@ -42,6 +43,7 @@ const SIDEBAR_HTML = `
       <a href="representation-theory.html"><span class="nav-icon">ρ</span>表現論</a>
       <a href="number-theory.html"><span class="nav-icon">ℤ</span>数論</a>
       <a href="category-theory.html"><span class="nav-icon">⟶</span>圏論</a>
+      <a href="homological-algebra.html"><span class="nav-icon">∂ₙ</span>ホモロジー代数</a>
     </nav>
   </div>
   <div class="sidebar-section">
@@ -56,6 +58,8 @@ const SIDEBAR_HTML = `
     <nav>
       <a href="mathematical-logic.html"><span class="nav-icon">⊢</span>数理論理</a>
       <a href="computational-complexity.html"><span class="nav-icon">P</span>計算複雑性</a>
+      <a href="cryptography.html"><span class="nav-icon">🔐</span>暗号理論</a>
+      <a href="quantum-computing.html"><span class="nav-icon">⊗</span>量子計算</a>
     </nav>
   </div>
   <div class="sidebar-section">
@@ -73,6 +77,7 @@ const SIDEBAR_HTML = `
       <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
       <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
       <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+      <a href="mathematical-finance.html"><span class="nav-icon">¥</span>数理ファイナンス</a>
     </nav>
   </div>
   <div class="sidebar-section">
@@ -80,6 +85,7 @@ const SIDEBAR_HTML = `
     <nav>
       <a href="dynamical-systems.html"><span class="nav-icon">↻</span>力学系</a>
       <a href="optimization.html"><span class="nav-icon">▽</span>最適化・変分法</a>
+      <a href="optimal-transport.html"><span class="nav-icon">⇆</span>最適輸送</a>
       <a href="control-theory.html"><span class="nav-icon">⟳</span>制御理論</a>
       <a href="machine-learning.html"><span class="nav-icon">⊛</span>機械学習の数理</a>
       <a href="numerical-analysis.html"><span class="nav-icon">≈</span>数値解析</a>
@@ -89,14 +95,17 @@ const SIDEBAR_HTML = `
     <div class="sidebar-label">物理系</div>
     <nav>
       <a href="classical-mechanics.html"><span class="nav-icon">⚙</span>古典力学</a>
+      <a href="continuum-mechanics.html"><span class="nav-icon">⊟</span>連続体力学</a>
       <a href="electromagnetism.html"><span class="nav-icon">⚡</span>電磁気学</a>
       <a href="thermodynamics.html"><span class="nav-icon">T</span>熱力学</a>
       <a href="fluid-dynamics.html"><span class="nav-icon">≋</span>流体力学</a>
+      <a href="plasma-physics.html"><span class="nav-icon">⚛̇</span>プラズマ物理</a>
       <a href="statistical-mechanics.html"><span class="nav-icon">S</span>統計力学</a>
       <a href="relativity.html"><span class="nav-icon">c</span>相対性理論</a>
       <a href="cosmology.html"><span class="nav-icon">Λ</span>宇宙論</a>
       <a href="condensed-matter.html"><span class="nav-icon">⬢</span>物性物理</a>
       <a href="quantum-mechanics.html"><span class="nav-icon">ψ</span>量子力学</a>
+      <a href="quantum-information.html"><span class="nav-icon">⟩</span>量子情報</a>
       <a href="quantum-field-theory.html"><span class="nav-icon">φ</span>量子場理論</a>
       <a href="particle-physics.html"><span class="nav-icon">⚛</span>素粒子物理</a>
     </nav>
