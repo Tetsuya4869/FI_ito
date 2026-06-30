@@ -49,6 +49,30 @@
       $$\mathbf{v} = \frac{d\mathbf{r}}{dt}, \qquad \mathbf{a} = \frac{d\mathbf{v}}{dt} = \frac{d^2\mathbf{r}}{dt^2}$$
       <p>等加速度直線運動: $v = v_0 + at$、$x = x_0 + v_0 t + \frac12 at^2$。</p>
     </div>
+    <figure class="diagram">
+      <svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="放物運動">
+        <!-- 地面・横軸 -->
+        <line x1="40" y1="200" x2="400" y2="200" stroke="#6e7681" stroke-width="1.5"/>
+        <!-- 軌道（放物線） -->
+        <path d="M 50 200 Q 220 -10 390 200" stroke="#2f81f7" fill="none" stroke-width="2"/>
+        <!-- 最高点 -->
+        <line x1="220" y1="95" x2="220" y2="200" stroke="#6e7681" stroke-width="1" stroke-dasharray="4 3"/>
+        <circle cx="220" cy="95" r="3.5" fill="#2f81f7"/>
+        <text x="228" y="92" fill="#e6edf3" font-size="13">最高点</text>
+        <!-- 初速ベクトル v0 -->
+        <line x1="50" y1="200" x2="120" y2="140" stroke="#3fb950" stroke-width="2"/>
+        <polygon points="120,140 108,142 114,151" fill="#3fb950"/>
+        <text x="92" y="158" fill="#e6edf3" font-size="13">v₀</text>
+        <!-- 仰角 θ -->
+        <path d="M 90 200 A 40 40 0 0 0 78 178" stroke="#3fb950" fill="none" stroke-width="1.2"/>
+        <text x="78" y="194" fill="#e6edf3" font-size="13">θ</text>
+        <!-- 重力 g の矢印 -->
+        <line x1="300" y1="80" x2="300" y2="140" stroke="#ff7b72" stroke-width="2"/>
+        <polygon points="300,148 294,136 306,136" fill="#ff7b72"/>
+        <text x="308" y="120" fill="#e6edf3" font-size="13">g</text>
+      </svg>
+      <figcaption>投射体の軌道。初速 $v_0$、仰角 $\theta$ の放物運動。鉛直方向に重力 $g$ が働く。</figcaption>
+    </figure>
 
     <h2 id="laws">2. 運動の3法則</h2>
     <div class="box thm">
@@ -128,6 +152,18 @@
         <li>半径 $0.5\,\text{m}$、速さ $2\,\text{m/s}$ で円運動する $1\,\text{kg}$ の物体に必要な向心力は？</li>
       </ol>
     </div>
+    <details class="solution">
+      <summary>解答例を見る</summary>
+      <div class="sol-body">
+        <ol>
+          <li>鉛直投げ上げ。最高点では速度が $0$。$v = v_0 - gt = 0$ より上昇時間 $t_{\text{up}} = \dfrac{v_0}{g} = \dfrac{20}{9.8} \approx 2.04\,\text{s}$。最高到達点 $h = \dfrac{v_0^2}{2g} = \dfrac{20^2}{2\times 9.8} = \dfrac{400}{19.6} \approx 20.4\,\text{m}$。滞空時間は往復で $T = 2t_{\text{up}} = \dfrac{2v_0}{g} = \dfrac{40}{9.8} \approx 4.08\,\text{s}$。</li>
+          <li>運動方程式 $F = ma$ より $a = \dfrac{F}{m} = \dfrac{10\,\text{N}}{2\,\text{kg}} = 5\,\text{m/s}^2$。</li>
+          <li>エネルギー保存 $mgh = \dfrac12 mv^2$ より $v = \sqrt{2gh} = \sqrt{2 \times 9.8 \times 5} = \sqrt{98} \approx 9.9\,\text{m/s}$。</li>
+          <li>完全非弾性衝突では衝突後に一体となる。運動量保存 $m_1 v_1 + m_2 v_2 = (m_1 + m_2)v'$。静止物体 $1\,\text{kg}$ に $3\,\text{kg}$（$4\,\text{m/s}$）が衝突: $3\times 4 + 1\times 0 = (3+1)v'$ より $v' = \dfrac{12}{4} = 3\,\text{m/s}$。</li>
+          <li>向心力 $F = \dfrac{mv^2}{r} = \dfrac{1 \times 2^2}{0.5} = \dfrac{4}{0.5} = 8\,\text{N}$。</li>
+        </ol>
+      </div>
+    </details>
   </div>
 </div>
 </body>

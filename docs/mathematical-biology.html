@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数理生物学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 数理生物学</div>
+    <h1>数理生物学</h1>
+    <p class="tagline">ロジスティック・Lotka-Volterra・SIR・Turingパターン・レプリケーター方程式。生命現象を微分方程式で。</p>
+    <div class="tags"><span class="tag">個体群動態</span><span class="tag">感染症数理</span><span class="tag">反応拡散系</span><span class="tag">集団遺伝学</span><span class="tag">進化動態</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#population">個体群動態</a></li>
+        <li><a href="#interactions">種間相互作用</a></li>
+        <li><a href="#epidemics">感染症数理</a></li>
+        <li><a href="#reaction-diffusion">反応拡散系とパターン</a></li>
+        <li><a href="#excitable">興奮系と神経</a></li>
+        <li><a href="#genetics">集団遺伝学</a></li>
+        <li><a href="#evolution">進化動態</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="ordinary-differential-equations.html">常微分方程式</a> と <a href="dynamical-systems.html">力学系</a>（平衡点・線形安定性・相平面）の基礎を仮定する。これらを未習の場合は先に目を通すと理解が進む。</p>
+    </div>
+
+    <h2 id="population">1. 個体群動態</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — マルサスの指数増殖</div>
+      <p>個体数 $N(t)$ が一定の純増殖率 $r$（出生率 − 死亡率）で増えるとき，</p>
+      $$\frac{dN}{dt} = rN \quad\Longrightarrow\quad N(t) = N_0 e^{rt}$$
+      <p>$r>0$ なら指数的に発散，$r<0$ なら絶滅。資源無制限という非現実的な仮定に基づく。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ロジスティック方程式と収容力</div>
+      <p>資源の制限を密度依存項で取り込むと，<strong>収容力</strong> $K$ をもつロジスティック方程式</p>
+      $$\frac{dN}{dt} = rN\left(1 - \frac{N}{K}\right)$$
+      <p>解は $N(t) = \dfrac{K N_0 e^{rt}}{K + N_0(e^{rt}-1)}$（S字型曲線）。平衡点 $N^*=0$（不安定）と $N^*=K$（安定）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 平衡と安定性の判定</div>
+      <p>$f(N)=rN(1-N/K)$ とおくと $f'(N) = r(1 - 2N/K)$。$f'(0)=r>0$ より原点は不安定，$f'(K)=-r<0$ より $N=K$ は漸近安定。任意の正の初期値から個体数は $K$ へ単調に収束する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 アリー効果</div>
+      <p>低密度で増殖率が下がる現象（配偶者探索の困難など）を表すには $\dfrac{dN}{dt} = rN\left(\dfrac{N}{A}-1\right)\left(1-\dfrac{N}{K}\right)$ のように閾値 $A$ を導入する。$N<A$ では絶滅へ向かう。</p>
+    </div>
+
+    <h2 id="interactions">2. 種間相互作用</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Lotka-Volterra 捕食者-被食者モデル</div>
+      <p>被食者 $x$，捕食者 $y$ について</p>
+      $$\frac{dx}{dt} = \alpha x - \beta xy, \qquad \frac{dy}{dt} = \delta xy - \gamma y$$
+      <p>$\alpha$: 被食者の増殖率，$\gamma$: 捕食者の死亡率，$\beta,\delta$: 相互作用係数。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 周期軌道と保存量</div>
+      <p>内部平衡点 $(x^*,y^*) = (\gamma/\delta,\ \alpha/\beta)$ のまわりで，系は保存量</p>
+      $$H(x,y) = \delta x - \gamma\ln x + \beta y - \alpha\ln y$$
+      <p>をもち，閉じた周期軌道を描く（中立安定な中心）。被食者と捕食者の個体数は位相をずらして振動する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 競争モデルと共存条件</div>
+      <p>2種競争の Lotka-Volterra 系</p>
+      $$\frac{dN_1}{dt} = r_1 N_1\!\left(1-\frac{N_1+a_{12}N_2}{K_1}\right),\quad \frac{dN_2}{dt} = r_2 N_2\!\left(1-\frac{N_2+a_{21}N_1}{K_2}\right)$$
+      <p>共存平衡が安定となる条件は $a_{12}a_{21}<1$（種間競争が種内競争より弱い）。逆に $a_{12}a_{21}>1$ では初期条件依存で一方が排除される（競争排除）。</p>
+    </div>
+
+    <h2 id="epidemics">3. 感染症数理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — SIR モデル</div>
+      <p>総人口を感受性 $S$・感染 $I$・回復 $R$ に分け，感染率 $\beta$，回復率 $\gamma$ とすると</p>
+      $$\frac{dS}{dt} = -\beta SI,\quad \frac{dI}{dt} = \beta SI - \gamma I,\quad \frac{dR}{dt} = \gamma I$$
+      <p>$S+I+R = N$（一定）。$1/\gamma$ は平均感染期間。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 基本再生産数と流行の閾値</div>
+      <p>1人の感染者が全感受性集団 $S_0$ 中で生み出す二次感染者数</p>
+      $$R_0 = \frac{\beta S_0}{\gamma}$$
+      <p>流行開始時 $\dfrac{dI}{dt} = (\beta S_0 - \gamma)I$ より，$R_0>1$ で流行（$I$ 増大），$R_0<1$ で終息。$R_0=1$ が閾値。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 集団免疫の閾値</div>
+      <p>割合 $p$ の人がワクチン等で免疫をもつと有効再生産数は $R_{\rm eff}=R_0(1-p)$。流行を防ぐ条件 $R_{\rm eff}<1$ より</p>
+      $$p > p_c = 1 - \frac{1}{R_0}$$
+      <p>例: $R_0=4$ なら $p_c=0.75$。集団の75%以上が免疫をもてば流行は起こらない。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 最終規模方程式</div>
+      <p>SIR では流行終了時に感受性のまま残る割合 $s_\infty$ が $\ln s_\infty = R_0(s_\infty - 1)$ を満たす。$R_0$ が大きいほど多くが感染を経験する。</p>
+    </div>
+
+    <h2 id="reaction-diffusion">4. 反応拡散系とパターン</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 拡散方程式と反応拡散系</div>
+      <p>濃度 $u(\mathbf{x},t)$ の拡散は $\partial_t u = D\nabla^2 u$。局所反応 $f(u)$ を加えた一般の反応拡散系は</p>
+      $$\frac{\partial \mathbf{u}}{\partial t} = \mathbf{D}\,\nabla^2 \mathbf{u} + \mathbf{f}(\mathbf{u})$$
+      <p>$\mathbf{D}$ は拡散係数の対角行列。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Fisher-KPP 方程式と進行波</div>
+      <p>単一種の拡散ロジスティック</p>
+      $$\frac{\partial u}{\partial t} = D\frac{\partial^2 u}{\partial x^2} + ru(1-u)$$
+      <p>は速度 $c \ge c_{\min} = 2\sqrt{rD}$ の進行波解 $u(x-ct)$ をもつ。生物の侵入・拡がりの最小速度を与える。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Turing パターン形成</div>
+      <p>活性化因子 $u$・抑制因子 $v$ の2成分系で，拡散がないときは安定な一様平衡が，拡散により不安定化してパターンが生じる（拡散誘導不安定性）。条件は抑制因子の方が速く拡散すること $D_v \gg D_u$。波数 $k$ の摂動の成長率が正となる帯域があり，動物の体表模様などを説明する。</p>
+    </div>
+
+    <h2 id="excitable">5. 興奮系と神経</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — FitzHugh-Nagumo モデル</div>
+      <p>神経興奮の最小モデル。膜電位様の変数 $v$ と回復変数 $w$ について</p>
+      $$\dot v = v - \frac{v^3}{3} - w + I, \qquad \dot w = \varepsilon(v + a - bw)$$
+      <p>$\varepsilon\ll 1$ で時間スケールが分離する（速い $v$，遅い $w$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 興奮性と閾値挙動</div>
+      <p>$I$ が小さいとき唯一の安定平衡をもつが，閾値を超える刺激には大きな偏位（スパイク）で応答してから平衡へ戻る。これが<strong>興奮性</strong>である。$I$ を増すと Hopf 分岐により平衡が不安定化し，周期的なスパイク列（リミットサイクル）が生じる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 興奮系の進行波</div>
+      <p>空間結合を加えた $\partial_t v = D\,\partial_x^2 v + v - v^3/3 - w + I$ では，活動電位が一定速度で軸索を伝わる進行パルスが現れる。前方の静止部を興奮させながら，後方は回復（不応期）するため，パルスは安定に伝播する。</p>
+    </div>
+
+    <h2 id="genetics">6. 集団遺伝学</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Hardy-Weinberg 平衡</div>
+      <p>対立遺伝子 $A,a$ の頻度を $p,q$（$p+q=1$）とする。ランダム交配・無選択・無突然変異・大集団のもとで遺伝子型頻度は</p>
+      $$AA:Aa:aa = p^2 : 2pq : q^2$$
+      <p>に達し，以後世代を通じて遺伝子頻度 $p,q$ は不変に保たれる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 選択と突然変異による頻度変化</div>
+      <p>遺伝子型 $AA,Aa,aa$ の適応度を $w_{AA},w_{Aa},w_{aa}$ とすると，1世代後の $A$ 頻度は</p>
+      $$p' = \frac{p^2 w_{AA} + pq\,w_{Aa}}{\bar w},\quad \bar w = p^2 w_{AA} + 2pq\,w_{Aa} + q^2 w_{aa}$$
+      <p>連続近似では $\dfrac{dp}{dt} \approx p(1-p)\dfrac{1}{2}\dfrac{\partial \ln \bar w}{\partial p}$。突然変異率 $\mu\,(A\!\to\!a)$ を加えると平衡頻度が $1$ からずれる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 選択・突然変異平衡</div>
+      <p>劣性有害対立遺伝子（$aa$ の適応度低下 $s$）が突然変異率 $\mu$ で供給されるとき，平衡頻度は $\hat q \approx \sqrt{\mu/s}$。例: $\mu=10^{-6},\ s=0.01$ なら $\hat q \approx 0.01$。稀な遺伝病が集団中に維持される機構を説明する。</p>
+    </div>
+
+    <h2 id="evolution">7. 進化動態</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — レプリケーター方程式</div>
+      <p>戦略 $i$ の頻度 $x_i$，利得行列 $A$ とする。戦略 $i$ の適応度 $f_i=(Ax)_i$，平均適応度 $\bar f = x^\top A x$ として</p>
+      $$\dot x_i = x_i\bigl(f_i - \bar f\,\bigr), \qquad \sum_i x_i = 1$$
+      <p>平均より高い利得をもつ戦略が頻度を増す。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 進化的に安定な戦略 (ESS)</div>
+      <p>戦略 $x^*$ が ESS であるとは，任意の変異戦略 $y\ne x^*$ に対して</p>
+      $$x^{*\top} A y > y^\top A y \quad\text{（侵入を許さない）}$$
+      <p>が成り立つこと。ESS はレプリケーター動学の漸近安定平衡を与え，ナッシュ均衡の精緻化となっている。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — タカ・ハトゲームと適応度地形</div>
+      <p>資源価値 $V$，争いの損失 $C\,(>V)$ のタカ・ハトゲームでは，混合 ESS でタカの頻度が $x^*=V/C$ となる。<strong>適応度地形</strong>では，集団は平均適応度 $\bar f$ を局所的に増す方向へ動くが，頻度依存選択のもとでは必ずしも全体最適へ到達しない。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>本ページの動学的視点をさらに深めるには <a href="dynamical-systems.html">力学系</a>（分岐・カオス・安定性解析）へ。神経モデルを掘り下げるなら <a href="computational-neuroscience.html">計算神経科学</a> が次の一歩となる。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>ロジスティック方程式 $\dot N = rN(1-N/K)$ を変数分離で解き，初期値 $N_0$ から $K$ への収束を確かめよ。また平衡点 $0,K$ の安定性を線形化で判定せよ。</li>
+        <li>Lotka-Volterra 捕食者-被食者系の内部平衡点を求め，そこでのヤコビ行列の固有値が純虚数となること（中心）を示せ。</li>
+        <li>SIR モデルで $R_0=3$ のとき集団免疫の閾値 $p_c$ を求めよ。また最終規模方程式 $\ln s_\infty = R_0(s_\infty-1)$ を数値的に解け。</li>
+        <li>Fisher-KPP 方程式 $u_t = Du_{xx}+ru(1-u)$ に進行波 $u=U(x-ct)$ を代入し，$U\ge 0$ となる進行波が存在する最小速度 $c_{\min}=2\sqrt{rD}$ を導け。</li>
+        <li>タカ・ハトゲーム（$V=2,\ C=4$）の利得行列を書き，混合 ESS のタカ頻度 $x^*=V/C$ を求め，レプリケーター方程式でその漸近安定性を確認せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -68,7 +68,9 @@ const SIDEBAR_HTML = `
       <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
       <a href="differential-geometry.html"><span class="nav-icon">∇</span>微分幾何学</a>
       <a href="algebraic-topology.html"><span class="nav-icon">π</span>代数的位相幾何</a>
+      <a href="differential-topology.html"><span class="nav-icon">⌣</span>微分位相幾何</a>
       <a href="algebraic-geometry.html"><span class="nav-icon">𝕍</span>代数幾何</a>
+      <a href="knot-theory.html"><span class="nav-icon">∞</span>結び目理論</a>
     </nav>
   </div>
   <div class="sidebar-section">
@@ -77,6 +79,8 @@ const SIDEBAR_HTML = `
       <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
       <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
       <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+      <a href="mathematical-statistics.html"><span class="nav-icon">x̄</span>数理統計学</a>
+      <a href="information-geometry.html"><span class="nav-icon">𝑔</span>情報幾何</a>
       <a href="mathematical-finance.html"><span class="nav-icon">¥</span>数理ファイナンス</a>
     </nav>
   </div>
@@ -88,6 +92,9 @@ const SIDEBAR_HTML = `
       <a href="optimal-transport.html"><span class="nav-icon">⇆</span>最適輸送</a>
       <a href="control-theory.html"><span class="nav-icon">⟳</span>制御理論</a>
       <a href="machine-learning.html"><span class="nav-icon">⊛</span>機械学習の数理</a>
+      <a href="game-theory.html"><span class="nav-icon">♟</span>ゲーム理論</a>
+      <a href="mathematical-biology.html"><span class="nav-icon">🧬</span>数理生物学</a>
+      <a href="computational-neuroscience.html"><span class="nav-icon">🧠</span>計算神経科学</a>
       <a href="numerical-analysis.html"><span class="nav-icon">≈</span>数値解析</a>
     </nav>
   </div>
@@ -104,6 +111,7 @@ const SIDEBAR_HTML = `
       <a href="relativity.html"><span class="nav-icon">c</span>相対性理論</a>
       <a href="cosmology.html"><span class="nav-icon">Λ</span>宇宙論</a>
       <a href="condensed-matter.html"><span class="nav-icon">⬢</span>物性物理</a>
+      <a href="topological-matter.html"><span class="nav-icon">⬡̃</span>トポロジカル物質</a>
       <a href="quantum-mechanics.html"><span class="nav-icon">ψ</span>量子力学</a>
       <a href="quantum-information.html"><span class="nav-icon">⟩</span>量子情報</a>
       <a href="quantum-field-theory.html"><span class="nav-icon">φ</span>量子場理論</a>

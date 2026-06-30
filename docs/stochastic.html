@@ -66,6 +66,18 @@
         <li><strong>連続経路</strong>: $t \mapsto W_t(\omega)$ は a.s. 連続</li>
       </ol>
     </div>
+    <figure class="diagram"><svg viewBox="0 0 440 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ブラウン運動の標本路">
+      <line x1="50" y1="120" x2="420" y2="120" stroke="#6e7681" stroke-width="1.5" fill="none"/>
+      <line x1="50" y1="20" x2="50" y2="220" stroke="#6e7681" stroke-width="1.5" fill="none"/>
+      <polygon points="420,120 412,116 412,124" fill="#6e7681"/>
+      <polygon points="50,20 46,28 54,28" fill="#6e7681"/>
+      <text x="424" y="124" fill="#e6edf3" font-size="13">t</text>
+      <text x="38" y="24" fill="#e6edf3" font-size="13">W</text>
+      <text x="42" y="135" fill="#e6edf3" font-size="13">0</text>
+      <polyline fill="none" stroke="#2f81f7" stroke-width="1.5" points="50,120 68,108 86,128 104,98 122,112 140,82 158,104 176,70 194,92 212,64 230,88 248,52 266,78 284,46 302,72 320,40 338,66 356,34 374,58 392,30 410,50"/>
+      <polyline fill="none" stroke="#f0883e" stroke-width="1.5" points="50,120 68,132 86,118 104,140 122,122 140,150 158,128 176,158 194,138 212,168 230,144 248,176 266,154 284,184 302,160 320,178 338,158 356,190 374,166 392,196 410,172"/>
+      <polyline fill="none" stroke="#bc8cff" stroke-width="1.5" points="50,120 68,114 86,124 104,110 122,128 140,116 158,134 176,108 194,126 212,118 230,138 248,122 266,142 284,112 302,132 320,124 338,146 356,130 374,150 392,134 410,156"/>
+    </svg><figcaption>ブラウン運動 $W_t$ の標本路。連続だが至る所微分不可能。</figcaption></figure>
     <div class="box thm">
       <div class="box-title">✓ ブラウン運動の性質</div>
       <ul>
@@ -207,6 +219,33 @@
         <li>プット-コール・パリティ $C - P = S_0 - Ke^{-rT}$ を導け。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li><strong>$\int_0^t W_s^2\,dW_s$ の表示.</strong> $f(x)=x^3$ に伊藤の公式（$X_t=W_t$，$\mu=0$, $\sigma=1$）を適用する：
+        $$d(W_t^3) = 3W_t^2\,dW_t + \tfrac{1}{2}\cdot 6W_t\,dt = 3W_t^2\,dW_t + 3W_t\,dt.$$
+        両辺を $0$ から $t$ まで積分して（$W_0=0$）
+        $$W_t^3 = 3\int_0^t W_s^2\,dW_s + 3\int_0^t W_s\,ds.$$
+        よって
+        $$\int_0^t W_s^2\,dW_s = \frac{W_t^3}{3} - \int_0^t W_s\,ds.$$
+      </li>
+      <li><strong>$X_t=e^t\sin(W_t)$ の SDE.</strong> $f(t,x)=e^t\sin x$ とおくと $f_t=e^t\sin x$，$f_x=e^t\cos x$，$f_{xx}=-e^t\sin x$。$X_t=W_t$（$\mu=0,\sigma=1$）に対する伊藤の公式より
+        $$dX_t = \left(f_t + \tfrac12 f_{xx}\right)dt + f_x\,dW_t = \left(e^t\sin W_t - \tfrac12 e^t\sin W_t\right)dt + e^t\cos W_t\,dW_t.$$
+        すなわち
+        $$dX_t = \tfrac{1}{2}e^t\sin(W_t)\,dt + e^t\cos(W_t)\,dW_t = \tfrac{1}{2}X_t\,dt + e^t\cos(W_t)\,dW_t.$$
+      </li>
+      <li><strong>OU 過程 $dX_t=-\theta X_t\,dt+\sigma\,dW_t$ の解.</strong> $Y_t=e^{\theta t}X_t$ とおき積の公式（または $f(t,x)=e^{\theta t}x$ への伊藤の公式）を使う。$f_t=\theta e^{\theta t}x$，$f_x=e^{\theta t}$，$f_{xx}=0$ なので
+        $$dY_t = \theta e^{\theta t}X_t\,dt + e^{\theta t}\,dX_t = \theta e^{\theta t}X_t\,dt + e^{\theta t}(-\theta X_t\,dt + \sigma\,dW_t) = \sigma e^{\theta t}\,dW_t.$$
+        ドリフトが消えるので積分して
+        $$Y_t = Y_0 + \sigma\int_0^t e^{\theta s}\,dW_s,\qquad Y_0=X_0.$$
+        $X_t=e^{-\theta t}Y_t$ に戻すと
+        $$X_t = X_0 e^{-\theta t} + \sigma\int_0^t e^{-\theta(t-s)}\,dW_s.$$
+        （表の OU 解で $\mu=0$ とした形に一致する。）
+      </li>
+      <li><strong>プット-コール・パリティ.</strong> 満期 $T$ で，同一の行使価格 $K$ をもつコールとプットは $\max(S_T-K,0)-\max(K-S_T,0)=S_T-K$ を満たす。リスク中立測度 $Q$ のもとで割引期待値をとると
+        $$C_0 - P_0 = e^{-rT}E^Q[S_T-K] = e^{-rT}E^Q[S_T] - Ke^{-rT}.$$
+        $Q$ のもとで割引株価 $e^{-rt}S_t$ はマルチンゲール（$E^Q[S_T]=S_0 e^{rT}$）なので
+        $$C_0 - P_0 = e^{-rT}\cdot S_0 e^{rT} - Ke^{-rT} = S_0 - Ke^{-rT}.$$
+      </li>
+    </ol></div></details>
   </div>
 </div>
 </body>

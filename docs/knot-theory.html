@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>結び目理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 結び目理論</div>
+    <h1>結び目理論</h1>
+    <p class="tagline">結び目図式・ライデマイスター移動・Jones多項式・結び目群・Seifert曲面。ひもの絡まりの数学。</p>
+    <div class="tags"><span class="tag">結び目図式</span><span class="tag">ライデマイスター移動</span><span class="tag">Jones多項式</span><span class="tag">結び目群</span><span class="tag">Seifert曲面</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#knots">結び目と絡み目</a></li>
+        <li><a href="#reidemeister">ライデマイスター移動</a></li>
+        <li><a href="#invariants">結び目不変量</a></li>
+        <li><a href="#polynomials">多項式不変量</a></li>
+        <li><a href="#knot-group">結び目群</a></li>
+        <li><a href="#genus">Seifert 曲面と種数</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>結び目理論は <a href="topology.html">位相空間論</a> の言葉（同相・ホモトピー・連続写像）を基礎とし，不変量の多くは <a href="algebraic-topology.html">代数的位相幾何</a>（基本群・ホモロジー）を用いて構成される。これらに目を通しておくと理解が深まる。</p>
+    </div>
+
+    <h2 id="knots">1. 結び目と絡み目</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 結び目</div>
+      <p><strong>結び目</strong>とは円周 $S^1$ から3次元空間 $\mathbb{R}^3$（または $S^3$）への滑らかな埋め込み $K: S^1 \hookrightarrow \mathbb{R}^3$ の像である。2つの結び目 $K_1, K_2$ は，一方を切らずに連続変形（<strong>アンビエント・イソトピー</strong>）で他方に移せるとき<strong>同値</strong>とみなす。</p>
+      <p>複数の円周を同時に埋め込んだものを<strong>絡み目</strong>（link）といい，各成分を<strong>成分</strong>（component）と呼ぶ。結び目は成分が1つの絡み目である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 結び目図式</div>
+      <p>結び目を平面 $\mathbb{R}^2$ に射影し，各交差点でどちらのひもが上を通るか（<strong>上下情報</strong>）を切れ目で示した図を<strong>結び目図式</strong>（diagram）という。一般の位置への射影では，交差は二重点のみで，三重点や接点は現れない。</p>
+      <p>図式は結び目を平面上で扱う基本的な道具であり，不変量の多くは図式を通じて定義・計算される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 基本的な結び目</div>
+      <p><strong>自明な結び目</strong>（unknot）$\bigcirc$: 交差のない単純閉曲線。ほどけてただの円になる結び目。</p>
+      <p><strong>三葉結び目</strong>（trefoil）$3_1$: 交差数3の最も単純な非自明結び目。右手型と左手型があり，互いに鏡像だが同値ではない（キラル）。</p>
+      <p><strong>八の字結び目</strong>（figure-eight）$4_1$: 交差数4。自身の鏡像と同値（アンキラル）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Hopf 絡み目</div>
+      <p>2つの円が一度だけ絡んだ最も単純な非自明な絡み目を <strong>Hopf 絡み目</strong>という。2成分・交差数2で，2つの成分は分離できない。絡み数（後述）が $\pm 1$ である。</p>
+    </div>
+
+    <h2 id="reidemeister">2. ライデマイスター移動</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ライデマイスターの定理</div>
+      <p>同じ結び目（または絡み目）の任意の2つの図式は，平面イソトピーと次の<strong>3種類の局所変形</strong>の有限列で互いに移り合う。</p>
+      <ul>
+        <li><strong>R1（ねじれ）</strong>: ひもにできた小さなループ（カール）を加える／除く。</li>
+        <li><strong>R2（重なり）</strong>: 2本のひもの重なりをずらして2交差を加える／除く。</li>
+        <li><strong>R3（三角形）</strong>: 1本のひもを他の交差点をまたいで滑らせる。</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 図式の同値性</div>
+      <p>2つの図式が同じ結び目を表すための必要十分条件は，R1・R2・R3 の有限列で移り合うことである。これにより，3次元での連続変形という扱いにくい問題が，平面図式上の組合せ的操作に翻訳される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 不変量を作る指針</div>
+      <p>図式に量 $Q$ を割り当て，<strong>R1・R2・R3 のすべてで $Q$ が変わらない</strong>ことを示せば，$Q$ は結び目の不変量になる。多項式不変量や三色彩色可能性は，まさにこの方針で構成される。R1 のみで変化する量（例: 巻きつき数 writhe）は<strong>正則イソトピー不変量</strong>であり，フレーム付き結び目の不変量として意味をもつ。</p>
+    </div>
+
+    <h2 id="invariants">3. 結び目不変量</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 三色彩色可能性</div>
+      <p>図式の各<strong>弧</strong>（交差で途切れずに続く部分）に3色 $\{0,1,2\}$ を割り当てる。各交差で，3本の弧（上の弧1本と下の弧2本）が<strong>すべて同色</strong>か<strong>すべて異色</strong>となり，かつ2色以上が使われている彩色が存在するとき，その結び目は<strong>三色彩色可能</strong>であるという。</p>
+      <p>三色彩色可能性はライデマイスター移動で保たれる不変量である。三葉結び目は三色彩色可能だが，自明な結び目は不可能なので，両者は異なると示せる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 交差数</div>
+      <p>結び目 $K$ の<strong>交差数</strong> $c(K)$ は，$K$ のすべての図式における交差点の個数の最小値である。$c(\text{自明}) = 0$，$c(3_1) = 3$，$c(4_1) = 4$。交差数は結び目を分類・命名する基本指標だが，与えられた図式から最小性を判定するのは一般に難しい。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 絡み数</div>
+      <p>2成分の有向絡み目 $L = K_1 \cup K_2$ に対し，各交差に符号 $\varepsilon = \pm 1$ を右手系で割り当て，$K_1$ と $K_2$ の間の交差について和をとった半分を<strong>絡み数</strong>という。</p>
+      $$\mathrm{lk}(K_1, K_2) = \frac{1}{2}\sum_{p \in K_1 \cap K_2} \varepsilon(p)$$
+      <p>絡み数は整数値の不変量で，2成分がどれだけ絡んでいるかを測る。Hopf 絡み目では $\mathrm{lk} = \pm 1$，分離可能な2成分では $0$ である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 交差符号</div>
+      <p>有向図式の交差で，下のひもを上のひもへ反時計回りに回して向きが一致するなら $\varepsilon = +1$（正交差），時計回りなら $\varepsilon = -1$（負交差）。Gauss の積分公式 $\mathrm{lk}(K_1,K_2) = \frac{1}{4\pi}\oint\!\oint \frac{(\mathbf{r}_1-\mathbf{r}_2)\cdot(d\mathbf{r}_1 \times d\mathbf{r}_2)}{|\mathbf{r}_1-\mathbf{r}_2|^3}$ は絡み数を線積分で与える。</p>
+    </div>
+
+    <h2 id="polynomials">4. 多項式不変量</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Jones 多項式とスケイン関係式</div>
+      <p>有向絡み目 $L$ に変数 $t$ の Laurent 多項式 $V_L(t)$ を割り当てる <strong>Jones 多項式</strong>は，次の<strong>スケイン関係式</strong>で帰納的に定まる。</p>
+      $$t^{-1} V_{L_+} - t\, V_{L_-} + (t^{-1/2} - t^{1/2})\, V_{L_0} = 0$$
+      <p>ここで $L_+, L_-, L_0$ は1つの交差だけが異なる（正交差・負交差・交差解消）図式である。規格化は $V_{\bigcirc} = 1$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Jones 多項式は不変量</div>
+      <p>$V_L(t)$ はライデマイスター移動 R1・R2・R3 で不変であり，有向絡み目の同値類の不変量である。三葉結び目では右手型と左手型で異なる値をとり，これらが互いに異なることを示せる（キラリティの検出）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Alexander 多項式</div>
+      <p><strong>Alexander 多項式</strong> $\Delta_L(t)$ は，Jones 多項式より古典的な不変量で，同じくスケイン関係式</p>
+      $$\Delta_{L_+}(t) - \Delta_{L_-}(t) = (t^{1/2} - t^{-1/2})\, \Delta_{L_0}(t)$$
+      <p>を満たす。結び目群（後述）の Alexander 行列の行列式や，無限巡回被覆のホモロジーからも定義され，代数的位相幾何と直結する。ただし鏡像を区別できない弱点がある。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ HOMFLY 多項式</div>
+      <p>Jones と Alexander を共通に含む2変数の多項式不変量が <strong>HOMFLY 多項式</strong> $P_L(a, z)$ である。スケイン関係式は</p>
+      $$a\, P_{L_+} - a^{-1} P_{L_-} = z\, P_{L_0}, \qquad P_{\bigcirc} = 1.$$
+      <p>適当な変数代入で Jones（$a = t^{-1},\, z = t^{1/2} - t^{-1/2}$）と Alexander（$a = 1$）が得られる。さらに一般化として Kauffman 多項式がある。</p>
+    </div>
+
+    <h2 id="knot-group">5. 結び目群</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 結び目群</div>
+      <p>結び目 $K \subset S^3$ に対し，補空間 $S^3 \setminus K$ の<strong>基本群</strong> $\pi_1(S^3 \setminus K)$ を $K$ の<strong>結び目群</strong>という。これはアンビエント・イソトピー不変量であり，補空間の位相情報を群として捉える強力な不変量である。</p>
+      <p>例: 自明な結び目の結び目群は $\mathbb{Z}$。三葉結び目の結び目群は $\langle a, b \mid aba = bab \rangle$（3次ブレイド群と同型）で，非可換である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Wirtinger 表示</div>
+      <p>結び目図式から結び目群の表示が機械的に得られる。各<strong>弧</strong>に生成元 $x_i$（その弧を回るメリディアン）を割り当て，各交差で関係子を作る。上の弧を $x_k$，下の弧の入口・出口を $x_i, x_j$ とすると，正交差では</p>
+      $$x_j = x_k\, x_i\, x_k^{-1}$$
+      <p>という形の関係が得られる（負交差では $x_j = x_k^{-1} x_i x_k$）。これらを集めた群表示を <strong>Wirtinger 表示</strong>という。$n$ 交差の図式から生成元 $n$ 個・関係子 $n$ 個（うち1個は冗長）が得られる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 補空間が結び目を決める</div>
+      <p>Gordon–Luecke の定理により，$S^3$ 内の結び目はその補空間 $S^3 \setminus K$ の同相型で（向きを込めて）完全に決定される。したがって補空間の位相不変量は原理的に結び目の完全不変量を与えるが，結び目群だけでは（鏡像など）一部の区別ができない場合もある。</p>
+    </div>
+
+    <h2 id="genus">6. Seifert 曲面と種数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Seifert 曲面</div>
+      <p>有向結び目 $K$ に対し，$K$ を境界にもつ $\mathbb{R}^3$ 内の<strong>連結・向き付け可能なコンパクト曲面</strong> $\Sigma$（$\partial\Sigma = K$）を <strong>Seifert 曲面</strong>という。任意の有向結び目は Seifert 曲面をもつ。</p>
+      <p>図式から Seifert 曲面を構成する手続きが <strong>Seifert のアルゴリズム</strong>である: 各交差を向きに沿って解消して得られる <strong>Seifert 円</strong>に円板を貼り，元の交差にねじれたバンドを付ける。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 結び目の種数</div>
+      <p>結び目 $K$ の <strong>種数</strong> $g(K)$ は，$K$ の Seifert 曲面の種数の最小値である。$g(\text{自明}) = 0$ であり，逆に $g(K) = 0$ なら $K$ は自明な結び目である。種数は加法的で，連結和に対し $g(K_1 \# K_2) = g(K_1) + g(K_2)$ が成り立つ。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 三葉結び目の種数</div>
+      <p>三葉結び目 $3_1$ の Seifert 曲面はオイラー標数 $\chi = -1$ の曲面（1つの境界をもつトーラスの一部）となり，種数 $g(3_1) = 1$ である。これは自明な結び目（$g=0$）と区別する別の証明を与える。八の字結び目も $g(4_1)=1$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 有向性の必要性</div>
+      <p>Seifert 曲面は向き付け可能曲面なので，結び目に<strong>向き</strong>を与えて初めて Seifert のアルゴリズムが適用できる。曲面の種数 $g$ と境界数 $b=1$，オイラー標数 $\chi$ の間には $\chi = 1 - 2g$ の関係があり，種数の計算は $\chi$ の計算に帰着される。Seifert 行列からは Alexander 多項式や符号数（signature）といった不変量も得られる。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box example">
+      <div class="box-title">📝 例 — DNA とタンパク質の結び目</div>
+      <p>環状 DNA は複製や組換えの過程で結び目や絡み目を作る。<strong>トポイソメラーゼ</strong>はストランドを切断・再結合してこれを解く酵素であり，その作用を絡み数・ねじれ・巻きつき（$Lk = Tw + Wr$）で定量化する。タンパク質の主鎖にも結び目構造が見つかり，折りたたみや安定性との関連が研究されている。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Chern–Simons 理論</div>
+      <p>Witten は3次元の <strong>Chern–Simons ゲージ理論</strong>の経路積分から Wilson ループの期待値として Jones 多項式が得られることを示した。これは結び目不変量を <a href="quantum-field-theory.html">場の量子論</a> と量子群の枠組みで再解釈するもので，トポロジカル場の理論（TQFT）の出発点となった。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 統計力学との関係</div>
+      <p>Jones 多項式は2次元統計力学の <strong>Yang–Baxter 方程式</strong>を満たす $R$ 行列や，可解格子模型（Potts 模型・頂点模型）の分配関数と密接に結びつく。Temperley–Lieb 代数やブレイド群の表現が，これらを横断する共通の代数的構造を与える。</p>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>結び目不変量の代数的・ホモロジー的な構成（Khovanov ホモロジーなど）へ進むには <a href="algebraic-topology.html">代数的位相幾何</a> が，Chern–Simons 理論や TQFT を通じた物理的解釈へ進むには <a href="quantum-field-theory.html">量子場理論</a> が次の道標となる。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>三葉結び目の標準図式を三色彩色し，2色以上を使う彩色が存在することを確かめよ。また自明な結び目には非自明な三色彩色が存在しないことを示せ。</li>
+        <li>ライデマイスター移動 R1・R2・R3 のそれぞれについて，絡み数 $\mathrm{lk}(K_1,K_2)$ が不変であることを交差符号の変化から確かめよ。</li>
+        <li>スケイン関係式と $V_{\bigcirc}=1$ を用いて，Hopf 絡み目の Jones 多項式を計算せよ。</li>
+        <li>三葉結び目の標準図式から Wirtinger 表示を書き下し，得られた表示が $\langle a,b \mid aba = bab\rangle$ と同型であることを確かめよ。</li>
+        <li>三葉結び目に Seifert のアルゴリズムを適用して Seifert 曲面を構成し，オイラー標数から種数が $1$ であることを示せ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

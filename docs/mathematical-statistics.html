@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数理統計学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 数理統計学</div>
+    <h1>数理統計学</h1>
+    <p class="tagline">点推定・最尤法・Cramér-Rao・区間推定・仮説検定・ベイズ。データから母集団を推測する。</p>
+    <div class="tags"><span class="tag">最尤推定</span><span class="tag">Cramér-Rao</span><span class="tag">区間推定</span><span class="tag">仮説検定</span><span class="tag">ベイズ統計</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#framework">統計的推測の枠組み</a></li>
+        <li><a href="#estimation">点推定</a></li>
+        <li><a href="#evaluation">推定量の評価</a></li>
+        <li><a href="#interval">区間推定</a></li>
+        <li><a href="#testing">仮説検定</a></li>
+        <li><a href="#tests">代表的な検定</a></li>
+        <li><a href="#bayes">ベイズ統計と回帰</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは確率分布・期待値・大数の法則・中心極限定理の知識を前提とする。未習の場合は <a href="probability.html">確率論</a> と <a href="probability-basics.html">確率・統計の基礎</a> を先に参照されたい。確率変数の収束概念（概収束・確率収束・分布収束）が随所で現れる。</p>
+    </div>
+
+    <h2 id="framework">1. 統計的推測の枠組み</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 母集団・標本・統計モデル</div>
+      <p>関心の対象全体を<strong>母集団</strong>といい，その性質は未知パラメータ $\theta \in \Theta$ をもつ確率分布 $P_\theta$ で記述される。この $\{P_\theta : \theta \in \Theta\}$ を<strong>統計モデル</strong>という。</p>
+      <p>母集団から無作為に取り出した $X_1,\ldots,X_n$ を<strong>標本</strong>と呼ぶ。多くの場合，互いに独立で同一分布に従う（<strong>i.i.d.</strong>）と仮定する：$X_1,\ldots,X_n \overset{\text{i.i.d.}}{\sim} P_\theta$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 統計量と標本分布</div>
+      <p>標本のみの関数 $T = T(X_1,\ldots,X_n)$（未知パラメータを含まない）を<strong>統計量</strong>という。代表例は標本平均と不偏分散：</p>
+      $$\bar X = \frac{1}{n}\sum_{i=1}^n X_i, \qquad S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar X)^2$$
+      <p>統計量も確率変数であり，その従う分布を<strong>標本分布</strong>と呼ぶ。標本分布の解析が推測統計の核心である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 正規母集団の標本分布</div>
+      <p>$X_1,\ldots,X_n \overset{\text{i.i.d.}}{\sim} N(\mu,\sigma^2)$ のとき，$\bar X$ と $S^2$ は独立で，</p>
+      $$\bar X \sim N\!\left(\mu,\tfrac{\sigma^2}{n}\right), \qquad \frac{(n-1)S^2}{\sigma^2} \sim \chi^2_{n-1}, \qquad \frac{\bar X - \mu}{S/\sqrt{n}} \sim t_{n-1}$$
+      <p>これらが正規母集団に対する区間推定・検定の基礎となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 推定と検定の全体像</div>
+      <p>統計的推測は大きく二つに分かれる。<strong>推定</strong>はパラメータ $\theta$ の値を当てる問題で，1点を答える<em>点推定</em>と範囲で答える<em>区間推定</em>がある。<strong>検定</strong>は「$\theta$ がある値・領域に属するか」という仮説の真偽をデータから判定する問題である。以下，この順に展開する。</p>
+    </div>
+
+    <h2 id="estimation">2. 点推定</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 推定量と不偏性・一致性・有効性</div>
+      <p>$\theta$ を推定するための統計量 $\hat\theta = \hat\theta(X_1,\ldots,X_n)$ を<strong>推定量</strong>という。望ましい性質として：</p>
+      <ul>
+        <li><strong>不偏性</strong>: $\mathbb{E}_\theta[\hat\theta] = \theta$（すべての $\theta$ で偏りがない）。</li>
+        <li><strong>一致性</strong>: $\hat\theta_n \xrightarrow{P} \theta$（$n\to\infty$ で真値に確率収束）。</li>
+        <li><strong>有効性</strong>: 不偏推定量の中で分散が最小（後述の Cramér-Rao 下界を達成）。</li>
+      </ul>
+      <p>例えば $\bar X$ は母平均 $\mu$ の不偏かつ一致推定量である。$S^2$ は $\sigma^2$ の不偏推定量（$n-1$ で割る理由）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 最尤推定（MLE）</div>
+      <p>観測値を固定し，パラメータの関数とみた同時密度を<strong>尤度関数</strong>という：</p>
+      $$L(\theta) = \prod_{i=1}^n f(x_i;\theta), \qquad \ell(\theta) = \log L(\theta) = \sum_{i=1}^n \log f(x_i;\theta)$$
+      <p>尤度（対数尤度）を最大化する $\hat\theta_{\mathrm{MLE}} = \arg\max_\theta \ell(\theta)$ を<strong>最尤推定量</strong>という。多くの場合，<strong>尤度方程式</strong> $\dfrac{\partial \ell}{\partial \theta} = 0$ を解いて求める。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 正規分布の MLE</div>
+      <p>$X_i \overset{\text{i.i.d.}}{\sim} N(\mu,\sigma^2)$ の対数尤度：</p>
+      $$\ell(\mu,\sigma^2) = -\frac{n}{2}\log(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (x_i-\mu)^2$$
+      <p>$\partial\ell/\partial\mu = 0$ より $\hat\mu = \bar x$。$\partial\ell/\partial\sigma^2 = 0$ より</p>
+      $$\hat\sigma^2 = \frac{1}{n}\sum_{i=1}^n (x_i - \bar x)^2$$
+      <p>$\hat\mu$ は不偏だが $\hat\sigma^2$ は $\mathbb{E}[\hat\sigma^2] = \frac{n-1}{n}\sigma^2$ で過小評価する（不偏でない）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — モーメント法</div>
+      <p>理論モーメントと標本モーメントを等置してパラメータを解く方法。$k$ 個のパラメータには $k$ 本の方程式 $\mathbb{E}_\theta[X^j] = \frac{1}{n}\sum_i X_i^j$（$j=1,\ldots,k$）を用いる。</p>
+      <p>例：指数分布 $\mathrm{Exp}(\lambda)$ では $\mathbb{E}[X] = 1/\lambda$ なので $\hat\lambda_{\text{MoM}} = 1/\bar X$。一般にモーメント法は計算が容易だが，MLE より効率が劣ることが多い。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — MLE の漸近正規性</div>
+      <p>正則条件のもとで，MLE は一致性をもち，かつ漸近的に正規分布する：</p>
+      $$\sqrt{n}\,(\hat\theta_{\mathrm{MLE}} - \theta) \xrightarrow{d} N\!\left(0,\; I_1(\theta)^{-1}\right)$$
+      <p>ここで $I_1(\theta)$ は1標本あたりの Fisher 情報量（次節）。漸近分散が下界 $I_1(\theta)^{-1}$ に一致するため，MLE は<strong>漸近有効</strong>である。</p>
+    </div>
+
+    <h2 id="evaluation">3. 推定量の評価</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 平均二乗誤差（MSE）とバイアス・分散分解</div>
+      <p>推定量 $\hat\theta$ の精度を測る指標：</p>
+      $$\mathrm{MSE}(\hat\theta) = \mathbb{E}_\theta\bigl[(\hat\theta - \theta)^2\bigr] = \underbrace{\mathrm{Var}_\theta(\hat\theta)}_{\text{分散}} + \underbrace{\bigl(\mathbb{E}_\theta[\hat\theta] - \theta\bigr)^2}_{\text{バイアス}^2}$$
+      <p>不偏推定量ではバイアス項が消え $\mathrm{MSE} = \mathrm{Var}$ となる。バイアスを許せば分散を下げて MSE を改善できる場合もある（バイアス・分散トレードオフ）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Fisher 情報量</div>
+      <p><strong>スコア関数</strong> $\partial_\theta \log f(X;\theta)$ の分散を<strong>Fisher 情報量</strong>という：</p>
+      $$I(\theta) = \mathbb{E}_\theta\!\left[\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right)^2\right] = -\,\mathbb{E}_\theta\!\left[\frac{\partial^2}{\partial\theta^2}\log f(X;\theta)\right]$$
+      <p>$n$ 個の i.i.d. 標本では $I_n(\theta) = n\,I_1(\theta)$（情報は加法的）。Fisher 情報量はデータが $\theta$ について「どれだけ情報をもつか」の尺度。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cramér-Rao の下界</div>
+      <p>正則条件のもとで，$\theta$ の任意の不偏推定量 $\hat\theta$ の分散は次の下界をもつ：</p>
+      $$\mathrm{Var}_\theta(\hat\theta) \ge \frac{1}{I_n(\theta)} = \frac{1}{n\,I_1(\theta)}$$
+      <p>この下界を達成する不偏推定量を<strong>有効推定量</strong>という。$g(\theta)$ の不偏推定では右辺が $\{g'(\theta)\}^2 / I_n(\theta)$ となる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 正規分布の母平均</div>
+      <p>$N(\mu,\sigma^2)$（$\sigma^2$ 既知）で $\log f = -\frac{(x-\mu)^2}{2\sigma^2} + \text{const}$。よって $\partial_\mu^2 \log f = -1/\sigma^2$ から $I_1(\mu) = 1/\sigma^2$。下界は</p>
+      $$\frac{1}{n I_1(\mu)} = \frac{\sigma^2}{n} = \mathrm{Var}(\bar X)$$
+      <p>標本平均 $\bar X$ は下界を達成しており，$\mu$ の有効推定量である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 十分統計量</div>
+      <p>統計量 $T$ が <strong>$\theta$ に対する十分統計量</strong>であるとは，$T$ を与えたときの標本の条件付き分布が $\theta$ に依存しないこと。直観的には「$T$ はデータ中の $\theta$ に関する情報をすべて含む」。</p>
+      <p><strong>Fisher-Neyman の分解定理</strong>：$T$ が十分 $\iff$ $f(x;\theta) = g(T(x);\theta)\,h(x)$ と分解できる。</p>
+      <p><strong>Rao-Blackwell の定理</strong>：不偏推定量を十分統計量で条件付けると（$\hat\theta^\ast = \mathbb{E}[\hat\theta \mid T]$）分散が減少し，より良い不偏推定量が得られる。</p>
+    </div>
+
+    <h2 id="interval">4. 区間推定</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 信頼区間</div>
+      <p>統計量 $L(X), U(X)$ が定める区間 $[L,U]$ が，信頼係数 $1-\alpha$ の<strong>信頼区間</strong>であるとは，すべての $\theta$ について</p>
+      $$P_\theta\bigl(L(X) \le \theta \le U(X)\bigr) = 1-\alpha$$
+      <p>解釈に注意：ランダムなのは区間 $[L,U]$ であり $\theta$ ではない。「同じ実験を多数繰り返すと，得られる区間の割合 $1-\alpha$ が真値 $\theta$ を含む」という頻度論的意味。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ピボット量</div>
+      <p><strong>ピボット量</strong>とは，データと $\theta$ の両方に依存するが，その<em>分布が $\theta$ に依存しない</em>量 $Q(X,\theta)$ をいう。$Q$ の分布の分位点から $\theta$ について不等式を解くことで信頼区間を構成できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 正規母集団の母平均の信頼区間</div>
+      <p>$N(\mu,\sigma^2)$（$\sigma^2$ 未知）。ピボット量 $T = \dfrac{\bar X - \mu}{S/\sqrt{n}} \sim t_{n-1}$ を用いる。$t_{n-1}$ の上側 $\alpha/2$ 点を $t_{n-1,\alpha/2}$ とすると，$P(-t_{n-1,\alpha/2} \le T \le t_{n-1,\alpha/2}) = 1-\alpha$ より：</p>
+      $$\bar X - t_{n-1,\alpha/2}\frac{S}{\sqrt n} \;\le\; \mu \;\le\; \bar X + t_{n-1,\alpha/2}\frac{S}{\sqrt n}$$
+      <p>$\sigma^2$ 既知なら $t$ 分位点を標準正規 $z_{\alpha/2}$ に置き換える。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 母分散の信頼区間</div>
+      <p>ピボット量 $\dfrac{(n-1)S^2}{\sigma^2} \sim \chi^2_{n-1}$ を用いる。カイ二乗分布の分位点 $\chi^2_{n-1,1-\alpha/2}, \chi^2_{n-1,\alpha/2}$ より：</p>
+      $$\frac{(n-1)S^2}{\chi^2_{n-1,\alpha/2}} \;\le\; \sigma^2 \;\le\; \frac{(n-1)S^2}{\chi^2_{n-1,1-\alpha/2}}$$
+      <p>カイ二乗分布は非対称なので，区間も $S^2$ について非対称になる。</p>
+    </div>
+
+    <h2 id="testing">5. 仮説検定</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 帰無仮説・対立仮説と二種の誤り</div>
+      <p>判定したい命題を <strong>帰無仮説</strong> $H_0$，その否定を <strong>対立仮説</strong> $H_1$ とする。検定はデータから $H_0$ を<em>棄却</em>するか<em>保留</em>するかを決める手続き。二種の誤りがある：</p>
+      <table>
+        <tr><th></th><th>$H_0$ 真</th><th>$H_0$ 偽</th></tr>
+        <tr><td>$H_0$ 棄却</td><td>第1種の誤り（確率 $\alpha$）</td><td>正しい判定（検出力 $1-\beta$）</td></tr>
+        <tr><td>$H_0$ 保留</td><td>正しい判定（$1-\alpha$）</td><td>第2種の誤り（確率 $\beta$）</td></tr>
+      </table>
+      <p><strong>有意水準</strong> $\alpha$ は第1種の誤りの許容上限。<strong>検出力</strong>（power）は $1-\beta$，すなわち偽の $H_0$ を正しく棄却する確率。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 検定統計量と棄却域</div>
+      <p>検定は，検定統計量 $T(X)$ がある<strong>棄却域</strong> $R$ に落ちたとき $H_0$ を棄却する手続きで与えられる。$\alpha = P_{H_0}(T \in R)$ を満たすよう $R$ を定める。検出力関数は $\beta(\theta) = P_\theta(T \in R)$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Neyman-Pearson の補題</div>
+      <p>単純帰無 $H_0:\theta=\theta_0$ 対 単純対立 $H_1:\theta=\theta_1$ の検定において，与えられた水準 $\alpha$ のもとで検出力を最大にする検定は<strong>尤度比検定</strong>である：</p>
+      $$\Lambda(x) = \frac{L(\theta_1)}{L(\theta_0)} = \frac{\prod_i f(x_i;\theta_1)}{\prod_i f(x_i;\theta_0)} > k \;\Rightarrow\; H_0\text{ を棄却}$$
+      <p>閾値 $k$ は $P_{\theta_0}(\Lambda > k) = \alpha$ で定める。これが<strong>最強力検定</strong>を与える。複合仮説では一様最強力検定（UMP）や一般化尤度比検定へ拡張される。</p>
+    </div>
+
+    <h2 id="tests">6. 代表的な検定</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — t 検定</div>
+      <p>正規母集団の母平均に関する検定。$H_0:\mu=\mu_0$ に対し（$\sigma^2$ 未知）検定統計量：</p>
+      $$T = \frac{\bar X - \mu_0}{S/\sqrt n} \underset{H_0}{\sim} t_{n-1}$$
+      <p>$|T| > t_{n-1,\alpha/2}$ なら両側検定で棄却。二標本 t 検定は二群の平均差 $\mu_1-\mu_2$ を検定する（等分散仮定のもとプールした分散を用いる）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — カイ二乗検定</div>
+      <p>適合度・独立性の検定。観測度数 $O_i$ と期待度数 $E_i$ から：</p>
+      $$\chi^2 = \sum_{i} \frac{(O_i - E_i)^2}{E_i} \underset{H_0}{\sim} \chi^2_{\text{df}}$$
+      <p>適合度検定では $\text{df} = (\text{カテゴリ数}) - 1 - (\text{推定パラメータ数})$。$r\times c$ 分割表の独立性検定では $\text{df}=(r-1)(c-1)$。$\chi^2 > \chi^2_{\text{df},\alpha}$ で棄却。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — F 検定</div>
+      <p>二つの正規母集団の分散の比 $\sigma_1^2/\sigma_2^2$ を検定。$H_0:\sigma_1^2=\sigma_2^2$ に対し：</p>
+      $$F = \frac{S_1^2}{S_2^2} \underset{H_0}{\sim} F_{n_1-1,\,n_2-1}$$
+      <p>分散分析（ANOVA）でも，群間変動と群内変動の比として F 統計量が用いられ，複数群の平均の同等性を一括検定する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 p 値の正しい解釈</div>
+      <p><strong>p 値</strong>とは「$H_0$ が真であると仮定したとき，観測された以上に極端な検定統計量が得られる確率」である。$p < \alpha$ なら有意水準 $\alpha$ で棄却。よくある誤解に注意：p 値は「$H_0$ が正しい確率」<em>ではない</em>。また有意（小さな p 値）であることと効果が<em>大きい</em>ことは別問題で，効果量や信頼区間と併せて解釈すべきである。</p>
+    </div>
+
+    <h2 id="bayes">7. ベイズ統計と回帰</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ベイズ推定（事前・事後分布）</div>
+      <p>ベイズ流ではパラメータ $\theta$ 自体を確率変数とみなし，観測前の信念を<strong>事前分布</strong> $\pi(\theta)$ で表す。データ $x$ を得た後の信念は<strong>事後分布</strong>で，Bayes の定理から：</p>
+      $$\pi(\theta \mid x) = \frac{f(x \mid \theta)\,\pi(\theta)}{\int f(x \mid \theta')\,\pi(\theta')\,d\theta'} \;\propto\; \underbrace{L(\theta)}_{\text{尤度}}\,\underbrace{\pi(\theta)}_{\text{事前}}$$
+      <p>事後分布から点推定（事後平均 $\mathbb{E}[\theta\mid x]$ や MAP 推定 $\arg\max_\theta \pi(\theta\mid x)$）や<strong>信用区間</strong>（事後確率 $1-\alpha$ の区間）を得る。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — ベータ・二項共役</div>
+      <p>$X \mid \theta \sim \mathrm{Bin}(n,\theta)$，事前 $\theta \sim \mathrm{Beta}(a,b)$ とすると事後は再びベータ分布：</p>
+      $$\theta \mid x \sim \mathrm{Beta}(a + x,\; b + n - x)$$
+      <p>事前と事後が同族になるこの性質を<strong>共役</strong>という。事後平均は $\dfrac{a+x}{a+b+n}$ で，事前情報（$a,b$）と尤度（$x,n$）の加重平均になっている。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 線形回帰と最小二乗</div>
+      <p>モデル $y_i = \mathbf{x}_i^\top\boldsymbol\beta + \varepsilon_i$（$\varepsilon_i \overset{\text{i.i.d.}}{\sim} N(0,\sigma^2)$）。残差二乗和 $\|\mathbf{y}-X\boldsymbol\beta\|^2$ を最小化する<strong>最小二乗推定量</strong>は，正規方程式 $X^\top X\boldsymbol\beta = X^\top\mathbf{y}$ より</p>
+      $$\hat{\boldsymbol\beta} = (X^\top X)^{-1}X^\top\mathbf{y}$$
+      <p>正規誤差のもとでは最小二乗解は MLE に一致する。<strong>Gauss-Markov の定理</strong>により $\hat{\boldsymbol\beta}$ は最良線形不偏推定量（BLUE）である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 頻度論とベイズの対比</div>
+      <p>頻度論では $\theta$ は固定された未知定数で，確率はデータの反復に由来する。ベイズでは $\theta$ に確率分布を与え，主観的・情報的な不確実性を直接表現する。実用上は MAP 推定が正則化付き最尤（例：Ridge 回帰 = 正規事前のもとでの MAP）に対応するなど，両者は深く関連する。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$X_1,\ldots,X_n \overset{\text{i.i.d.}}{\sim} \mathrm{Exp}(\lambda)$ について，$\lambda$ の最尤推定量を求めよ。さらに Fisher 情報量 $I_n(\lambda)$ と Cramér-Rao 下界を計算し，MLE がそれを（漸近的に）達成するか論ぜよ。</li>
+        <li>$X_i \overset{\text{i.i.d.}}{\sim} N(\mu,\sigma^2)$ で $\sigma^2$ が未知のとき，母平均 $\mu$ の信頼係数 $95\%$ の信頼区間を構成する手順を，用いるピボット量とその分布を明示して説明せよ。</li>
+        <li>単純帰無 $H_0:\theta=\theta_0$ 対 単純対立 $H_1:\theta=\theta_1$ に Neyman-Pearson の補題を適用し，正規分布 $N(\theta,1)$（$\theta_1>\theta_0$）の最強力検定の棄却域を $\bar X$ で表せ。</li>
+        <li>二項モデル $X\mid\theta\sim\mathrm{Bin}(n,\theta)$ に一様事前 $\mathrm{Beta}(1,1)$ を置いたときの事後分布・事後平均・MAP 推定量を求め，最尤推定 $\hat\theta=x/n$ と比較せよ。</li>
+        <li>単回帰 $y_i=\beta_0+\beta_1 x_i+\varepsilon_i$ について正規方程式を立て，$\hat\beta_1 = \dfrac{\sum(x_i-\bar x)(y_i-\bar y)}{\sum(x_i-\bar x)^2}$ および $\hat\beta_0=\bar y-\hat\beta_1\bar x$ を導出せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

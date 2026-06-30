@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>情報幾何 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 情報幾何</div>
+    <h1>情報幾何</h1>
+    <p class="tagline">統計多様体・Fisher計量・双対接続・ダイバージェンス・指数型分布族。確率分布の幾何学。</p>
+    <div class="tags"><span class="tag">統計多様体</span><span class="tag">Fisher計量</span><span class="tag">双対接続</span><span class="tag">ダイバージェンス</span><span class="tag">指数型分布族</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#manifold">統計多様体</a></li>
+        <li><a href="#fisher">Fisher 計量</a></li>
+        <li><a href="#connections">双対接続</a></li>
+        <li><a href="#divergence">ダイバージェンス</a></li>
+        <li><a href="#exponential">指数型分布族</a></li>
+        <li><a href="#projection">射影と最尤推定の幾何</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="differential-geometry.html">微分幾何学</a>（多様体・接続・Riemann 計量）と <a href="mathematical-statistics.html">数理統計学</a>（確率分布・最尤推定・Fisher 情報量）の基礎を前提とする。情報幾何はこの二つを橋渡しし，確率分布の族を幾何学的対象として扱う理論である。</p>
+    </div>
+
+    <h2 id="manifold">1. 統計多様体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 統計多様体</div>
+      <p>パラメータ $\xi = (\xi^1,\ldots,\xi^n)$ で添字付けられた確率分布の族</p>
+      $$\mathcal{M} = \{\, p(x;\xi) \mid \xi \in \Xi \subset \mathbb{R}^n \,\}$$
+      <p>を考える。各分布 $p(x;\xi)$ を点とみなし，写像 $\xi \mapsto p(\cdot;\xi)$ が滑らかで一対一かつ正則であるとき，$\mathcal{M}$ は $n$ 次元の多様体構造をもつ。これを<strong>統計多様体</strong>と呼び，$\xi$ をその局所座標（パラメータ座標）とする。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 正規分布族</div>
+      <p>一次元正規分布の族</p>
+      $$p(x;\mu,\sigma) = \frac{1}{\sqrt{2\pi}\,\sigma}\exp\!\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$$
+      <p>は座標 $\xi = (\mu,\sigma)$（$\sigma>0$）をもつ 2 次元統計多様体をなす。座標領域は上半平面 $\{(\mu,\sigma):\sigma>0\}$ であり，後述の Fisher 計量を入れると双曲幾何（定曲率 $-1/2$）の構造をもつことが知られる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 座標の取り替え</div>
+      <p>同じ分布族でも座標の取り方は一意でない。正規分布族は $(\mu,\sigma)$ のほか $(\mu,\sigma^2)$ や自然パラメータ表示でも記述できる。幾何学的に意味のある量（計量・ダイバージェンス・測地線）は座標変換のもとで不変な仕方で定義されるべきである。</p>
+    </div>
+
+    <h2 id="fisher">2. Fisher 計量</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Fisher 情報行列</div>
+      <p>対数尤度を $\ell(x;\xi) = \log p(x;\xi)$ とする。スコア関数を $\partial_i \ell = \partial \ell/\partial \xi^i$ として，<strong>Fisher 情報行列</strong>を</p>
+      $$g_{ij}(\xi) = \mathbb{E}_{\xi}\!\left[\,\partial_i \ell\,\partial_j \ell\,\right] = \int p(x;\xi)\,\partial_i \ell(x;\xi)\,\partial_j \ell(x;\xi)\,dx$$
+      <p>で定義する。正則条件のもとで $g_{ij} = -\mathbb{E}_\xi[\partial_i\partial_j \ell]$ とも書ける。$g_{ij}$ は対称かつ半正定値で，正則な族では正定値となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Riemann 計量としての Fisher 計量</div>
+      <p>$g_{ij}(\xi)$ は統計多様体 $\mathcal{M}$ 上の Riemann 計量を定める。接ベクトル $X = X^i\partial_i,\ Y = Y^j\partial_j$ に対し</p>
+      $$\langle X, Y\rangle_\xi = g_{ij}(\xi)\,X^i Y^j$$
+      <p>これにより分布間の「近さ」や曲線の「長さ」が幾何学的に測れる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 不変性（Chentsov の定理）</div>
+      <p>Fisher 計量は，十分統計量による変換（マルコフ埋め込み）のもとで不変な唯一の Riemann 計量である（定数倍を除く）。すなわち情報を保つ変換に対して幾何構造が保たれるという意味で，Fisher 計量は統計多様体上の「自然な」計量と言える。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Cramér–Rao 限界との関係</div>
+      <p>不偏推定量 $\hat\xi$ の共分散は $\mathrm{Cov}(\hat\xi) \succeq g(\xi)^{-1}$（Cramér–Rao 不等式）を満たす。Fisher 計量はパラメータ推定の精度の下限を支配しており，計量が大きい（情報量が多い）方向ほど推定が容易になる。</p>
+    </div>
+
+    <h2 id="connections">3. 双対接続</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — α 接続</div>
+      <p>実パラメータ $\alpha \in \mathbb{R}$ に対し，<strong>α 接続</strong> $\nabla^{(\alpha)}$ を接続係数</p>
+      $$\Gamma^{(\alpha)}_{ij,k}(\xi) = \mathbb{E}_\xi\!\left[\left(\partial_i\partial_j \ell + \frac{1-\alpha}{2}\,\partial_i\ell\,\partial_j\ell\right)\partial_k \ell\right]$$
+      <p>で定める。$\alpha=0$ は Levi–Civita 接続（Fisher 計量と両立する計量的接続）に一致する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — e 接続と m 接続</div>
+      <p>$\alpha=1$ の接続 $\nabla^{(1)}$ を<strong>指数型接続（e 接続）</strong>，$\alpha=-1$ の接続 $\nabla^{(-1)}$ を<strong>混合型接続（m 接続）</strong>と呼ぶ。e 接続の平坦な座標は自然パラメータ（対数尤度が線形になる座標），m 接続の平坦な座標は期待値パラメータに対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 双対性と双対平坦性</div>
+      <p>$\nabla^{(\alpha)}$ と $\nabla^{(-\alpha)}$ は Fisher 計量 $g$ に関して互いに<strong>双対</strong>である：任意のベクトル場 $X,Y,Z$ に対し</p>
+      $$X\langle Y, Z\rangle = \langle \nabla^{(\alpha)}_X Y, Z\rangle + \langle Y, \nabla^{(-\alpha)}_X Z\rangle$$
+      <p>特に $(\mathcal{M}, g, \nabla^{(1)}, \nabla^{(-1)})$ で両接続がともに平坦（曲率も捩率も零）であるとき，$\mathcal{M}$ を<strong>双対平坦空間</strong>という。指数型分布族はこの構造をもつ代表例である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 計量的接続との違い</div>
+      <p>双対平坦空間では一般に $\nabla^{(1)}$ も $\nabla^{(-1)}$ も計量と両立しない（$\nabla g \neq 0$）。両者の平均 $\tfrac12(\nabla^{(1)}+\nabla^{(-1)})=\nabla^{(0)}$ が Levi–Civita 接続となる。情報幾何の本質は単一の計量的接続でなく，この双対構造にある。</p>
+    </div>
+
+    <h2 id="divergence">4. ダイバージェンス</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Kullback–Leibler ダイバージェンス</div>
+      <p>二つの分布 $p,q$ に対する <strong>KL ダイバージェンス</strong></p>
+      $$D_{\mathrm{KL}}(p\,\|\,q) = \int p(x)\log\frac{p(x)}{q(x)}\,dx \;\ge\; 0$$
+      <p>は $p=q$ のとき，かつそのときに限り $0$ となる。一般に非対称（$D_{\mathrm{KL}}(p\|q)\neq D_{\mathrm{KL}}(q\|p)$）で距離の公理は満たさないが，分布間の「隔たり」を測る基本量である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Bregman ダイバージェンス</div>
+      <p>狭義凸かつ滑らかな関数 $\psi$ に対し，<strong>Bregman ダイバージェンス</strong>を</p>
+      $$B_\psi(\theta\,\|\,\theta') = \psi(\theta) - \psi(\theta') - \langle \nabla\psi(\theta'),\,\theta - \theta'\rangle$$
+      <p>で定める。これは $\psi$ のグラフと接平面との差であり，常に非負。指数型分布族では，$\psi$ をキュムラント母関数（後述）にとると $B_\psi$ が KL ダイバージェンスに一致する。双対平坦空間上のダイバージェンスは一般に Bregman 型である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 一般化 Pythagoras の定理</div>
+      <p>双対平坦空間上の三点 $P, Q, R$ について，$P$ と $Q$ を結ぶ m 測地線と $Q$ と $R$ を結ぶ e 測地線が $Q$ で直交するならば</p>
+      $$D(P\,\|\,R) = D(P\,\|\,Q) + D(Q\,\|\,R)$$
+      <p>が成り立つ。直角三角形における三平方の定理の，ダイバージェンスによる一般化である。これは後述の情報射影の基礎をなす。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 計量との関係</div>
+      <p>ダイバージェンスは局所的に Fisher 計量を生成する：$\theta' = \theta + d\theta$ の二次の項を展開すると</p>
+      $$D(\theta\,\|\,\theta+d\theta) = \tfrac12\, g_{ij}(\theta)\,d\theta^i d\theta^j + O(\|d\theta\|^3).$$
+      <p>ダイバージェンスは「無限小では計量，有限では曲がりを反映」する大域的な隔たりの尺度である。</p>
+    </div>
+
+    <h2 id="exponential">5. 指数型分布族</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 指数型分布族</div>
+      <p>十分統計量 $T(x) = (T_1(x),\ldots,T_n(x))$ と<strong>自然パラメータ</strong> $\theta=(\theta^1,\ldots,\theta^n)$ を用いて</p>
+      $$p(x;\theta) = \exp\!\bigl(\theta^i T_i(x) - \psi(\theta) + k(x)\bigr)$$
+      <p>と書ける族を<strong>指数型分布族</strong>という。$\psi(\theta) = \log\!\int \exp(\theta^i T_i(x)+k(x))\,dx$ を<strong>キュムラント母関数（対数分配関数）</strong>と呼ぶ。正規分布・指数分布・Poisson 分布・二項分布などが含まれる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 期待値パラメータと Legendre 双対</div>
+      <p><strong>期待値パラメータ</strong>を $\eta_i = \mathbb{E}_\theta[T_i] = \partial_i \psi(\theta)$ で定めると，これは自然パラメータ $\theta$ の Legendre 変換に対応する。双対ポテンシャルを</p>
+      $$\varphi(\eta) = \max_\theta\bigl(\theta^i\eta_i - \psi(\theta)\bigr) = \theta^i\eta_i - \psi(\theta)$$
+      <p>で定義すると，$\theta^i = \partial^i\varphi(\eta)$ が成り立ち，$\psi$ と $\varphi$ は Legendre 双対をなす。さらに $\varphi(\eta)$ は分布の負のエントロピー（の定数差）に等しい。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 正規分布の自然パラメータ表示</div>
+      <p>正規分布 $\mathcal{N}(\mu,\sigma^2)$ は $T(x)=(x,x^2)$ をとると</p>
+      $$\theta^1 = \frac{\mu}{\sigma^2}, \qquad \theta^2 = -\frac{1}{2\sigma^2}$$
+      <p>で指数型に書ける。このとき $\psi(\theta) = -\dfrac{(\theta^1)^2}{4\theta^2} - \dfrac12\log(-2\theta^2)$ となり，期待値パラメータは $\eta_1=\mathbb{E}[x]=\mu,\ \eta_2=\mathbb{E}[x^2]=\mu^2+\sigma^2$ である。$\theta$ 座標は e 平坦，$\eta$ 座標は m 平坦であり，正規分布族は双対平坦空間をなす。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Fisher 計量と Hesse 行列</div>
+      <p>指数型分布族では Fisher 計量がキュムラント母関数の Hesse 行列に一致する：$g_{ij}(\theta) = \partial_i\partial_j\psi(\theta)$。$\psi$ が狭義凸であることが計量の正定値性を保証し，$\theta$ と $\eta$ の双対座標系をつなぐ。これは双対平坦構造の核心である。</p>
+    </div>
+
+    <h2 id="projection">6. 射影と最尤推定の幾何</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 情報射影</div>
+      <p>点 $p$ から部分多様体 $\mathcal{S}\subset\mathcal{M}$ へのダイバージェンス最小化を<strong>情報射影</strong>という。m 測地線に沿って射影する</p>
+      $$p^* = \arg\min_{q\in\mathcal{S}} D_{\mathrm{KL}}(p\,\|\,q) \quad(\text{m 射影})$$
+      <p>と，e 測地線に沿って射影する e 射影がある。$\mathcal{S}$ が一方の接続に関して平坦（自平坦）であれば射影点は一意に定まる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最尤推定の幾何学的意味</div>
+      <p>独立標本 $x_1,\ldots,x_N$ の経験分布を $\hat p$ とする。指数型分布族 $\mathcal{M}$ における最尤推定量 $\hat\theta$ は，経験分布から $\mathcal{M}$ への <strong>m 射影</strong></p>
+      $$\hat\theta = \arg\min_{\theta} D_{\mathrm{KL}}(\hat p\,\|\,p(\cdot;\theta))$$
+      <p>に一致する。これはモーメント整合条件 $\eta_i(\hat\theta) = \frac1N\sum_n T_i(x_n)$（期待値パラメータが標本平均に等しい）と同値であり，最尤法を幾何学的射影として解釈できることを示す。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — em / EM アルゴリズム</div>
+      <p>隠れ変数を含むモデルでは，データ多様体 $\mathcal{D}$ とモデル多様体 $\mathcal{M}$ の間でダイバージェンスを交互に最小化する。情報幾何による <strong>em アルゴリズム</strong>は</p>
+      <ul>
+        <li>e ステップ: $\mathcal{D}$ への e 射影で隠れ変数の分布を更新</li>
+        <li>m ステップ: $\mathcal{M}$ への m 射影でモデルパラメータを更新</li>
+      </ul>
+      <p>を反復する。標準的な <strong>EM アルゴリズム</strong>は，このうち m ステップを尤度の下界（Q 関数）最大化で置き換えたものに相当し，両者は多くの場合一致する。各ステップで KL ダイバージェンスが単調減少するため収束が保証される。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box def">
+      <div class="box-title">📖 自然勾配法（機械学習）</div>
+      <p>パラメータ空間が Fisher 計量をもつとき，通常の勾配 $\nabla L$ ではなく<strong>自然勾配</strong></p>
+      $$\tilde\nabla L = g(\theta)^{-1}\,\nabla L(\theta)$$
+      <p>を用いた更新 $\theta \leftarrow \theta - \epsilon\,\tilde\nabla L$ は，パラメータ表示の取り方に依存しない最急降下方向を与える。Amari の自然勾配法は，ニューラルネットワークの学習や強化学習（自然方策勾配・TRPO 等）で収束を加速する手法として広く用いられる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 統計的推論と神経回路</div>
+      <p><strong>統計的推論</strong>: 仮説検定・モデル選択（AIC など）はダイバージェンスや双対平坦構造を背景にもち，モデルの過剰適合と複雑さのトレードオフを幾何学的に説明する。</p>
+      <p><strong>神経回路</strong>: 発火確率の族を統計多様体とみなすと，スパイク相関の高次構造を α 座標で階層分解できる。シナプス学習則を Fisher 計量上の自然勾配として捉える試みもあり，情報幾何は神経科学とも接点をもつ。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>自然勾配法や双対構造の機械学習への展開は <a href="machine-learning.html">機械学習の数理</a> で，KL ダイバージェンス・エントロピー・符号化との関係は <a href="information-theory.html">情報理論</a> で深められる。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>一次元正規分布族 $\mathcal{N}(\mu,\sigma^2)$ について Fisher 情報行列 $g_{ij}$ を $(\mu,\sigma)$ 座標で計算し，対角行列となることを確かめよ。</li>
+        <li>指数型分布族で $g_{ij}(\theta) = \partial_i\partial_j\psi(\theta)$ が成り立つことを，$\eta_i = \partial_i\psi$ とスコアの定義から導け。</li>
+        <li>キュムラント母関数 $\psi$ を凸関数として，Bregman ダイバージェンス $B_\psi(\theta\|\theta')$ が指数型分布族の KL ダイバージェンス $D_{\mathrm{KL}}(p_{\theta'}\|p_\theta)$ に等しいことを示せ。</li>
+        <li>双対平坦空間で，m 測地線と e 測地線が直交する三点に対し一般化 Pythagoras の定理 $D(P\|R)=D(P\|Q)+D(Q\|R)$ を，ダイバージェンスの双対座標表示を用いて証明せよ。</li>
+        <li>指数型分布族における最尤推定が，期待値パラメータと標本平均の整合条件 $\eta_i(\hat\theta) = \frac1N\sum_n T_i(x_n)$ と同値であることを示せ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

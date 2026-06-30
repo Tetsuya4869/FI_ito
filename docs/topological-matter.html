@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>トポロジカル物質 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / トポロジカル物質</div>
+    <h1>トポロジカル物質</h1>
+    <p class="tagline">Berry位相・量子ホール効果・Chern数・Z2不変量・Majorana。トポロジーが決める物質の相。</p>
+    <div class="tags"><span class="tag">Berry位相</span><span class="tag">Chern数</span><span class="tag">量子ホール効果</span><span class="tag">Z2不変量</span><span class="tag">Majorana</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#intro">トポロジーと物性</a></li>
+        <li><a href="#berry">Berry位相</a></li>
+        <li><a href="#qhe">量子ホール効果</a></li>
+        <li><a href="#ti">トポロジカル絶縁体</a></li>
+        <li><a href="#semimetal">ディラック・ワイル半金属</a></li>
+        <li><a href="#tsc">トポロジカル超伝導</a></li>
+        <li><a href="#classification">対称性による分類</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="condensed-matter.html">物性物理</a>（バンド理論・Bloch 状態），<a href="quantum-mechanics.html">量子力学</a>（断熱定理・スピン），<a href="differential-geometry.html">微分幾何学</a>（接続・曲率・特性類）の知識を前提とする。トポロジカル不変量は微分幾何学のゲージ場・ファイバー束の言葉で自然に表される。</p>
+    </div>
+
+    <h2 id="intro">1. トポロジーと物性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Bloch ハミルトニアンとブリルアンゾーン</div>
+      <p>周期ポテンシャル中の電子は Bloch の定理により $\psi_{n\mathbf{k}}(\mathbf{r}) = e^{i\mathbf{k}\cdot\mathbf{r}}u_{n\mathbf{k}}(\mathbf{r})$ と書ける。周期部分 $u_{n\mathbf{k}}$ は Bloch ハミルトニアン</p>
+      $$H(\mathbf{k})|u_{n\mathbf{k}}\rangle = E_n(\mathbf{k})|u_{n\mathbf{k}}\rangle$$
+      <p>の固有状態となる。波数 $\mathbf{k}$ はブリルアンゾーン（BZ）を動き，BZ は逆格子の周期性によりトーラス $T^d$ をなす。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 トポロジカル不変量の動機</div>
+      <p>絶縁体ではフェルミ準位がバンドギャップ中にあり，占有バンド全体が BZ 上で滑らかな写像 $\mathbf{k}\mapsto |u_{n\mathbf{k}}\rangle$ を与える。ギャップを閉じずに連続変形できる絶縁体どうしは「同じ相」とみなす。この同値類を区別するのがトポロジカル不変量であり，整数 Chern 数や $\mathbb{Z}_2$ 指数などで与えられる。連続変形で値が変わらない（量子化された）ため，不純物や相互作用に対して頑健である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ バルク-境界対応</div>
+      <p>バルクが非自明なトポロジカル不変量をもつ絶縁体の境界（端・表面）には，必ずギャップを横切る無質量な境界状態が現れる。境界では不変量が値を変えねばならず，値が変わるにはギャップが閉じる必要があるためである。境界状態の数（とカイラリティ）はバルク不変量の差で決まる。</p>
+    </div>
+
+    <h2 id="berry">2. Berry位相</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Berry接続とBerry曲率</div>
+      <p>パラメータ $\mathbf{R}$（例えば $\mathbf{k}$）に依存する瞬間固有状態 $|n(\mathbf{R})\rangle$ に対し，Berry 接続と Berry 曲率を定義する:</p>
+      $$\mathbf{A}_n(\mathbf{R}) = i\langle n(\mathbf{R})|\nabla_{\mathbf{R}}|n(\mathbf{R})\rangle, \qquad \boldsymbol{\Omega}_n = \nabla_{\mathbf{R}}\times\mathbf{A}_n$$
+      <p>接続 $\mathbf{A}_n$ はゲージ依存（$|n\rangle\to e^{i\chi}|n\rangle$ で $\mathbf{A}_n\to\mathbf{A}_n-\nabla\chi$）だが，曲率 $\boldsymbol{\Omega}_n$ はゲージ不変な物理量である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 断熱定理とBerry位相</div>
+      <p>系がパラメータ空間中の閉曲線 $C$ を断熱的（十分ゆっくり）に一周すると，状態は力学的位相に加えて幾何学的位相（Berry 位相）を獲得する:</p>
+      $$\gamma_n = \oint_C \mathbf{A}_n\cdot d\mathbf{R} = \iint_S \boldsymbol{\Omega}_n\cdot d\mathbf{S}$$
+      <p>Stokes の定理により Berry 位相は曲面 $S$ 上の曲率フラックスに等しく，ゲージ不変（mod $2\pi$）である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — スピン1/2と磁場</div>
+      <p>磁場 $\mathbf{B}$ 中のスピン $1/2$ は $H = -\mathbf{B}\cdot\boldsymbol{\sigma}$。磁場の向き $\hat{\mathbf{n}}$ をパラメータとすると，下スピン状態の Berry 曲率はモノポール型 $\boldsymbol{\Omega} = -\hat{\mathbf{n}}/2$ となる。$\hat{\mathbf{n}}$ が立体角 $\Omega_{\text{solid}}$ を囲む閉曲線を描くと Berry 位相は $\gamma = -\Omega_{\text{solid}}/2$。これは原点に置かれた「Berry モノポール」（縮退点）の効果である。</p>
+    </div>
+
+    <h2 id="qhe">3. 量子ホール効果</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 整数量子ホール効果</div>
+      <p>強磁場下の二次元電子系では，ホール伝導度が精密に量子化される:</p>
+      $$\sigma_{xy} = \nu\,\frac{e^2}{h}, \qquad \nu \in \mathbb{Z}$$
+      <p>同時に縦伝導度 $\sigma_{xx}\to 0$（散逸なし）。プラトーは試料の詳細によらず $e^2/h$ の整数倍に量子化され，標準抵抗の基準にも用いられる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ TKNN公式とChern数</div>
+      <p>Thouless–Kohmoto–Nightingale–den Nijs（TKNN）は，量子化整数が占有バンドの Berry 曲率の BZ 上積分（第一 Chern 数）であることを示した:</p>
+      $$\nu = \sum_{n\,\text{occ}} C_n, \qquad C_n = \frac{1}{2\pi}\iint_{\text{BZ}} \Omega_n^{xy}\, d^2k \in \mathbb{Z}$$
+      <p>$C_n$ は占有バンドを記述するファイバー束の特性類（Chern 数）であり整数値をとる。これがホール伝導度の量子化のトポロジカルな起源である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — カイラル端状態</div>
+      <p>$C\ne 0$ のバルクの境界には，バルク-境界対応により $|C|$ 本の一方向（カイラル）伝播する端状態が現れる。後方散乱の相手がいないため不純物があっても散逸せず，これが $\sigma_{xx}=0$ かつ $\sigma_{xy}$ の完全量子化を保証する。端電流のカイラリティは $C$ の符号で決まる。</p>
+    </div>
+
+    <h2 id="ti">4. トポロジカル絶縁体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 時間反転対称性とZ2不変量</div>
+      <p>時間反転対称（TRS）なスピン系では，反ユニタリ演算子 $\Theta$ が $\Theta^2=-1$ を満たし，Kramers 縮退が生じる。このとき Chern 数は $0$ になるが，新たな $\mathbb{Z}_2$ 不変量 $\nu\in\{0,1\}$ で相が分類される:</p>
+      $$(-1)^{\nu} = \prod_{i} \frac{\sqrt{\det w(\Gamma_i)}}{\mathrm{Pf}\, w(\Gamma_i)}$$
+      <p>ここで $w_{mn}(\mathbf{k}) = \langle u_m(-\mathbf{k})|\Theta|u_n(\mathbf{k})\rangle$ は縫合行列，$\Gamma_i$ は TRS 不変運動量点。$\nu=1$ が自明でないトポロジカル絶縁体に対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 量子スピンホール効果（2次元）</div>
+      <p>2 次元 $\mathbb{Z}_2$ トポロジカル絶縁体では，対向するスピンが互いに逆向きに伝播するヘリカル端状態の対が現れる。スピン上向き・下向きがそれぞれ反対のカイラリティをもち，正味の電荷ホール伝導度は $0$ だがスピンホール伝導度が量子化される。TRS により後方散乱が禁じられ端状態は保護される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 3次元トポロジカル絶縁体の表面状態</div>
+      <p>$\mathrm{Bi_2Se_3}$ などの 3 次元 TI では，4 つの $\mathbb{Z}_2$ 指数 $(\nu_0;\nu_1\nu_2\nu_3)$ のうち強指数 $\nu_0=1$ のとき，表面に単一の Dirac コーン（奇数個の Dirac 点）が現れる:</p>
+      $$H_{\text{surf}} = \hbar v_F(\boldsymbol{\sigma}\times\mathbf{k})\cdot\hat{\mathbf{z}}$$
+      <p>スピンと運動量がロックされ（スピン運動量ロッキング），TRS により無質量に保護される。</p>
+    </div>
+
+    <h2 id="semimetal">5. ディラック・ワイル半金属</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ワイル点とディラック点</div>
+      <p>3 次元でバンドが点状に縮退し，その近傍で線形分散をもつ系を半金属とよぶ。ワイル点近傍の有効ハミルトニアンは</p>
+      $$H(\mathbf{k}) = \pm\hbar v_F\,\mathbf{k}\cdot\boldsymbol{\sigma}$$
+      <p>で，符号 $\pm$ がカイラリティ（チャージ $\pm 1$ の Berry モノポール）を表す。ディラック点は逆カイラリティのワイル点が重なったもので，付加的な対称性（TRS かつ空間反転）で保護される。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ ワイル点はトポロジカル電荷をもつ（Nielsen–Ninomiya）</div>
+      <p>ワイル点は Berry 曲率の源・吸い込みであり，それを囲む小球面上の Chern 数がカイラリティ $\chi=\pm 1$ を与える。BZ はコンパクトなトーラスゆえ，全カイラリティの和は $0$ でなければならない:</p>
+      $$\sum_i \chi_i = 0$$
+      <p>すなわちワイル点は必ず正負ペアで現れる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — フェルミアーク</div>
+      <p>ワイル半金属の表面状態は，互いに逆カイラリティのワイル点の射影を結ぶ開いた曲線（フェルミアーク）をなす。通常の閉じたフェルミ面と異なり端点をもつ点が特異であり，バルクのワイル点の存在を直接反映する観測可能な指標となる。</p>
+    </div>
+
+    <h2 id="tsc">6. トポロジカル超伝導</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Bogoliubov–de Gennes 形式とMajorana</div>
+      <p>超伝導体は粒子-正孔対称性をもつ Bogoliubov–de Gennes（BdG）ハミルトニアンで記述される。準粒子演算子 $\gamma$ が自己共役 $\gamma=\gamma^\dagger$（粒子と正孔が等価）となるとき Majorana フェルミオンとよぶ。零エネルギー Majorana 束縛状態は通常のフェルミオンの「半分」に相当する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ p波超伝導体の端Majorana（Kitaev鎖）</div>
+      <p>1 次元 $p$ 波超伝導体（Kitaev 鎖）はトポロジカル相において鎖の両端に零モード Majorana を局在させる。化学ポテンシャル $\mu$，ホッピング $t$，対ポテンシャル $\Delta$ に対しトポロジカル相は</p>
+      $$|\mu| < 2t \quad(\Delta\ne 0)$$
+      <p>で実現し，端 Majorana はギャップ内零エネルギーに保護される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — トポロジカル量子計算への応用</div>
+      <p>空間的に離れた一対の Majorana は非局所的に 1 量子ビットを符号化する。2 次元の Majorana（非可換エニオン）を交換（ブレイディング）すると状態空間にユニタリ変換が作用し，その結果は経路のトポロジーのみに依存する。局所雑音に対して頑健なため，フォールトトレラントな量子計算の候補となる。</p>
+    </div>
+
+    <h2 id="classification">7. 対称性による分類</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Altland–Zirnbauer（AZ）対称性クラス</div>
+      <p>非相互作用ガップ系は，時間反転対称性 $\Theta$（$\Theta^2=\pm1$），粒子-正孔対称性 $\Xi$（$\Xi^2=\pm1$），カイラル対称性 $\Pi=\Theta\Xi$ の有無により 10 個の AZ クラス（A, AIII, AI, BDI, D, DIII, AII, CII, C, CI）に分類される。各対称性が「無し $0$ / $+1$ / $-1$」のいずれかをとる組合せで定まる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ トポロジカル絶縁体・超伝導体の周期表</div>
+      <p>各 AZ クラスと空間次元 $d$ に対し，トポロジカル不変量の群は $0,\ \mathbb{Z},\ \mathbb{Z}_2$ のいずれかとなる。例えば:</p>
+      <ul>
+        <li>クラス A（対称性なし）, $d=2$: $\mathbb{Z}$（整数量子ホール，Chern 絶縁体）</li>
+        <li>クラス AII（TRS, $\Theta^2=-1$）, $d=2,3$: $\mathbb{Z}_2$（量子スピンホール・3D TI）</li>
+        <li>クラス D（PHS, $\Xi^2=+1$）, $d=1$: $\mathbb{Z}_2$（Kitaev 鎖・Majorana）</li>
+      </ul>
+      <p>分類は次元・対称性に関して周期 $8$（実クラス）・周期 $2$（複素クラス）の Bott 周期性を示す。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 トポロジカル秩序</div>
+      <p>上記は非相互作用の「対称性保護トポロジカル相（SPT）」の分類である。一方，分数量子ホール状態のような強相関系では，対称性によらず長距離もつれと分数電荷・エニオン励起・基底状態縮退の位相依存性で特徴づけられる真の「トポロジカル秩序」が現れる。これは局所秩序変数では記述できない量子相の新しい範疇である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>Majorana を用いたブレイディングや非可換エニオンの計算的側面は <a href="quantum-computing.html">量子計算</a> へ。Berry 位相・異常・トポロジカル項の場の理論的定式化（Chern–Simons 理論など）は <a href="quantum-field-theory.html">量子場理論</a> へ続く。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>磁場中のスピン $1/2$（$H=-\mathbf{B}\cdot\boldsymbol{\sigma}$）について，磁場の向き $\hat{\mathbf{n}}$ を断熱的に一周させたときの下スピン状態の Berry 位相を，囲む立体角を用いて求めよ。</li>
+        <li>2 バンドモデル $H(\mathbf{k}) = \mathbf{d}(\mathbf{k})\cdot\boldsymbol{\sigma}$ について，下バンドの Chern 数が単位ベクトル $\hat{\mathbf{d}}(\mathbf{k})$ の BZ から $S^2$ への巻きつき数（写像度）に等しいことを示せ。</li>
+        <li>Kitaev 鎖のバルクハミルトニアンをブロッホ表示し，トポロジカル相転移が起こる条件 $|\mu|=2t$ でバルクギャップが閉じることを確認せよ。</li>
+        <li>3 次元トポロジカル絶縁体の表面 Dirac ハミルトニアン $H=\hbar v_F(\boldsymbol{\sigma}\times\mathbf{k})\cdot\hat{\mathbf{z}}$ の固有値・固有スピン状態を求め，スピン運動量ロッキングを説明せよ。</li>
+        <li>AZ 分類において，クラス AII の 2 次元・3 次元で不変量がともに $\mathbb{Z}_2$ となる理由を，時間反転対称性 $\Theta^2=-1$ と Kramers 縮退の観点から論ぜよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

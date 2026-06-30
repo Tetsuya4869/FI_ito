@@ -99,6 +99,17 @@
       </table>
       <p>正規分布の密度: $f(x)=\dfrac{1}{\sqrt{2\pi}\sigma}\exp\!\left(-\dfrac{(x-\mu)^2}{2\sigma^2}\right)$。</p>
     </div>
+    <figure class="diagram"><svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="正規分布">
+      <line x1="30" y1="200" x2="400" y2="200" stroke="#6e7681" stroke-width="1.5"/>
+      <line x1="210" y1="50" x2="210" y2="208" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <path d="M 40 199 C 110 197, 140 190, 160 150 C 180 110, 195 60, 210 60 C 225 60, 240 110, 260 150 C 280 190, 310 197, 380 199" stroke="#2f81f7" stroke-width="2" fill="#2f81f7" fill-opacity="0.12"/>
+      <line x1="160" y1="196" x2="160" y2="204" stroke="#6e7681" stroke-width="1.5"/>
+      <line x1="260" y1="196" x2="260" y2="204" stroke="#6e7681" stroke-width="1.5"/>
+      <text x="210" y="225" text-anchor="middle" fill="#e6edf3" font-size="13">μ</text>
+      <text x="160" y="225" text-anchor="middle" fill="#e6edf3" font-size="13">μ−σ</text>
+      <text x="260" y="225" text-anchor="middle" fill="#e6edf3" font-size="13">μ+σ</text>
+      <text x="200" y="45" text-anchor="end" fill="#e6edf3" font-size="13">f(x)</text>
+    </svg><figcaption>正規分布 $N(\mu,\sigma^2)$。平均 $\mu$ を中心に左右対称、$\pm\sigma$ に変曲点。</figcaption></figure>
 
     <h2 id="clt">6. 大数の法則と中心極限定理</h2>
     <div class="box thm">
@@ -127,6 +138,12 @@
         <li>コインを100回投げたときの表の枚数の期待値と標準偏差を求めよ（二項分布）。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>2個のサイコロの目の組は全部で $6\times 6=36$ 通り。和が7となるのは $(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)$ の $6$ 通り。よって $P = \dfrac{6}{36} = \dfrac{1}{6}$。</li>
+      <li>感染を $A$、陽性を $B$ とする。$P(A)=0.01$、$P(B\mid A)=0.99$、$P(B\mid A^c)=0.05$。全確率の定理より $P(B)=P(B\mid A)P(A)+P(B\mid A^c)P(A^c)=0.99\cdot 0.01+0.05\cdot 0.99=0.0099+0.0495=0.0594$。ベイズの定理より $P(A\mid B)=\dfrac{P(B\mid A)P(A)}{P(B)}=\dfrac{0.0099}{0.0594}=\dfrac{1}{6}\approx 0.167$。陽性でも実際に感染している確率は約 $16.7\%$ にとどまる。</li>
+      <li>$X$ は $1,\ldots,6$ を等確率 $1/6$ でとる。期待値は $E[X]=\dfrac{1}{6}(1+2+3+4+5+6)=\dfrac{21}{6}=\dfrac{7}{2}=3.5$。また $E[X^2]=\dfrac{1}{6}(1+4+9+16+25+36)=\dfrac{91}{6}$。よって分散は $V[X]=E[X^2]-(E[X])^2=\dfrac{91}{6}-\dfrac{49}{4}=\dfrac{182-147}{12}=\dfrac{35}{12}\approx 2.92$。</li>
+      <li>表の枚数 $X\sim B(n,p)$ で $n=100,\ p=\tfrac12$。期待値は $E[X]=np=100\cdot\dfrac12=50$。分散は $V[X]=np(1-p)=100\cdot\dfrac12\cdot\dfrac12=25$ なので標準偏差は $\sigma=\sqrt{25}=5$。</li>
+    </ol></div></details>
   </div>
 </div>
 </body>
