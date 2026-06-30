@@ -13,6 +13,17 @@ const SIDEBAR_HTML = `
     <nav><a href="index.html"><span class="nav-icon">⌂</span>ホーム</a></nav>
   </div>
   <div class="sidebar-section">
+    <div class="sidebar-label">基礎・入門</div>
+    <nav>
+      <a href="getting-started.html"><span class="nav-icon">✦</span>学習ガイド</a>
+      <a href="calculus-basics.html"><span class="nav-icon">∫</span>微分積分の基礎</a>
+      <a href="vectors-matrices.html"><span class="nav-icon">↗</span>ベクトルと行列</a>
+      <a href="sets-logic.html"><span class="nav-icon">∈</span>集合と論理・証明</a>
+      <a href="probability-basics.html"><span class="nav-icon">⚄</span>確率・統計の基礎</a>
+      <a href="newtonian-mechanics.html"><span class="nav-icon">F</span>ニュートン力学</a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
     <div class="sidebar-label">解析系</div>
     <nav>
       <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>

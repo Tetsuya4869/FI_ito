@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>確率・統計の基礎 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 確率・統計の基礎</div>
+    <h1>確率・統計の基礎</h1>
+    <p class="tagline">確率の定義・条件付き確率・期待値と分散・代表的な分布。確率論への橋渡し。</p>
+    <div class="tags"><span class="tag">入門</span><span class="tag">確率</span><span class="tag">期待値</span><span class="tag">分散</span><span class="tag">分布</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#prob">確率の基本</a></li>
+        <li><a href="#cond">条件付き確率とベイズ</a></li>
+        <li><a href="#rv">確率変数</a></li>
+        <li><a href="#ev">期待値と分散</a></li>
+        <li><a href="#dist">代表的な分布</a></li>
+        <li><a href="#clt">大数の法則と中心極限定理</a></li>
+        <li><a href="#next">次のステップ</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>場合の数（順列・組合せ）と <a href="calculus-basics.html">微分積分の基礎</a>（連続分布の積分）。この先は <a href="probability.html">確率論</a> へ。</p>
+    </div>
+
+    <h2 id="prob">1. 確率の基本</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 確率</div>
+      <p>すべての結果が同様に確からしいとき、事象 $A$ の確率は</p>
+      $$P(A) = \frac{A \text{が起こる場合の数}}{\text{全体の場合の数}}, \quad 0\le P(A)\le 1$$
+      <p>性質: $P(\text{全体})=1$、$P(A^c)=1-P(A)$、互いに排反なら $P(A\cup B)=P(A)+P(B)$。</p>
+      <p>一般には $P(A\cup B)=P(A)+P(B)-P(A\cap B)$（加法定理）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — サイコロ</div>
+      <p>1個のサイコロで偶数が出る確率は $P=3/6=1/2$。</p>
+    </div>
+
+    <h2 id="cond">2. 条件付き確率とベイズ</h2>
+    <div class="box def">
+      <div class="box-title">📖 条件付き確率と独立</div>
+      <p>$B$ が起きたもとでの $A$ の確率: $P(A\mid B)=\dfrac{P(A\cap B)}{P(B)}$。</p>
+      <p>$A,B$ が<strong>独立</strong>とは $P(A\cap B)=P(A)P(B)$（互いに影響しない）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ ベイズの定理</div>
+      $$P(A\mid B) = \frac{P(B\mid A)\,P(A)}{P(B)}$$
+      <p>「原因 $A$ → 結果 $B$」の確率から「結果 $B$ を見て原因 $A$ を推定」する。検査・機械学習の基礎。</p>
+    </div>
+
+    <h2 id="rv">3. 確率変数</h2>
+    <div class="box def">
+      <div class="box-title">📖 離散と連続</div>
+      <p>結果に数を対応させたものが<strong>確率変数</strong> $X$。</p>
+      <p><strong>離散</strong>: 確率質量関数 $P(X=k)$（例: サイコロの目）。</p>
+      <p><strong>連続</strong>: 確率密度関数 $f(x)$ で $P(a\le X\le b)=\displaystyle\int_a^b f(x)\,dx$、全体で $\int_{-\infty}^\infty f(x)\,dx=1$。</p>
+    </div>
+
+    <h2 id="ev">4. 期待値と分散</h2>
+    <div class="box def">
+      <div class="box-title">📖 期待値（平均）</div>
+      $$E[X] = \sum_k k\,P(X=k) \quad\text{(離散)}, \qquad E[X]=\int_{-\infty}^\infty x f(x)\,dx \quad\text{(連続)}$$
+      <p>線形性: $E[aX+bY]=aE[X]+bE[Y]$（独立でなくても成立）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 分散と標準偏差</div>
+      $$V[X] = E[(X-E[X])^2] = E[X^2] - (E[X])^2, \quad \sigma = \sqrt{V[X]}$$
+      <p>分散はばらつきの大きさ。独立なら $V[X+Y]=V[X]+V[Y]$。</p>
+    </div>
+
+    <h2 id="dist">5. 代表的な分布</h2>
+    <div class="box def">
+      <div class="box-title">📖 主要な分布</div>
+      <table>
+        <tr><th>分布</th><th>期待値</th><th>分散</th><th>例</th></tr>
+        <tr><td>ベルヌーイ $(p)$</td><td>$p$</td><td>$p(1-p)$</td><td>コイン1回</td></tr>
+        <tr><td>二項 $B(n,p)$</td><td>$np$</td><td>$np(1-p)$</td><td>コイン $n$ 回の表数</td></tr>
+        <tr><td>ポアソン $(\lambda)$</td><td>$\lambda$</td><td>$\lambda$</td><td>稀な事象の回数</td></tr>
+        <tr><td>正規 $N(\mu,\sigma^2)$</td><td>$\mu$</td><td>$\sigma^2$</td><td>測定誤差・身長</td></tr>
+      </table>
+      <p>正規分布の密度: $f(x)=\dfrac{1}{\sqrt{2\pi}\sigma}\exp\!\left(-\dfrac{(x-\mu)^2}{2\sigma^2}\right)$。</p>
+    </div>
+
+    <h2 id="clt">6. 大数の法則と中心極限定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 大数の法則 (LLN)</div>
+      <p>独立同分布な $X_1,\ldots,X_n$ の標本平均は、$n$ を大きくすると真の平均に近づく:</p>
+      $$\bar X_n = \frac{1}{n}\sum_{i=1}^n X_i \to E[X] \quad (n\to\infty)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 中心極限定理 (CLT)</div>
+      <p>独立同分布の和は、分布の形によらず正規分布に近づく:</p>
+      $$\frac{\bar X_n - \mu}{\sigma/\sqrt{n}} \xrightarrow{\;d\;} N(0,1)$$
+      <p>「世の中に正規分布が多い」理由。統計的推定の根拠でもある。</p>
+    </div>
+
+    <h2 id="next">7. 次のステップ</h2>
+    <div class="box note">
+      <div class="box-title">💡 ここから先へ</div>
+      <p>確率を厳密な測度として定式化するなら <a href="measure-theory.html">測度論</a> → <a href="probability.html">確率論</a> へ。時間とともに変化するランダム現象は <a href="stochastic.html">確率微分方程式（伊藤の公式）</a>、多数の粒子の統計は <a href="statistical-mechanics.html">統計力学</a> へつながります。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>2個のサイコロの目の和が7になる確率を求めよ。</li>
+        <li>ある病気の有病率1%、検査の陽性的中（感染者が陽性）99%、偽陽性5%。陽性のとき本当に感染している確率をベイズで求めよ。</li>
+        <li>サイコロ1個の目 $X$ の期待値と分散を求めよ。</li>
+        <li>コインを100回投げたときの表の枚数の期待値と標準偏差を求めよ（二項分布）。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

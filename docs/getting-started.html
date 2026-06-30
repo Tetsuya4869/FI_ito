@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学習ガイド | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+  <style>
+    .start-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .start-card { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 8px; padding: 1rem 1.2rem; text-decoration: none; color: var(--fg); display: block; transition: border-color .15s, background .15s; }
+    .start-card:hover { background: var(--bg3); border-left-color: var(--green); }
+    .start-card h3 { margin: 0 0 .4rem; font-size: 1rem; }
+    .start-card p { margin: 0; font-size: .82rem; color: var(--text3, var(--fg-muted)); line-height: 1.5; }
+    .start-card .lvl { display: inline-block; font-size: .72rem; padding: 1px 7px; border-radius: 4px; margin-bottom: .5rem; }
+    .lvl-1 { background: rgba(63,185,80,.15); color: var(--green); }
+    .lvl-2 { background: rgba(88,166,255,.15); color: var(--blue); }
+    .lvl-3 { background: rgba(188,140,255,.15); color: #bc8cff; }
+    .path-table td:first-child { white-space: nowrap; }
+  </style>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 学習ガイド</div>
+    <h1>学習ガイド — どこから始めるか</h1>
+    <p class="tagline">このサイトは大学院レベルまでをカバーしますが、まずは基礎から。レベル別の入口と、各分野へつながる前提知識を整理します。</p>
+    <div class="tags"><span class="tag">はじめに</span><span class="tag">前提知識</span><span class="tag">学習順序</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#how">このサイトの使い方</a></li>
+        <li><a href="#basics">まず押さえる基礎</a></li>
+        <li><a href="#prereq">前提知識マップ</a></li>
+        <li><a href="#path">レベル別ロードマップ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="how">1. このサイトの使い方</h2>
+    <div class="box note">
+      <div class="box-title">💡 進め方のコツ</div>
+      <ul>
+        <li>数式は <strong>KaTeX</strong> で表示されます。読み飛ばさず、紙に書き写すと定着します。</li>
+        <li>各ページの「📝 例」と「✏️ 練習問題」を必ず手を動かして確認しましょう。</li>
+        <li>難しいと感じたら、ページ冒頭の<strong>前提知識</strong>に戻るのが近道です。</li>
+        <li>サイドバー上部の検索でトピックを素早く探せます。</li>
+      </ul>
+    </div>
+
+    <h2 id="basics">2. まず押さえる基礎</h2>
+    <p>上級分野に入る前に、この5つを通しておくと一気に読みやすくなります。</p>
+    <div class="start-cards">
+      <a class="start-card" href="calculus-basics.html">
+        <span class="lvl lvl-1">入門</span>
+        <h3>∫ 微分積分の基礎</h3>
+        <p>極限・微分・積分・テイラー展開。解析学・物理すべての土台。</p>
+      </a>
+      <a class="start-card" href="vectors-matrices.html">
+        <span class="lvl lvl-1">入門</span>
+        <h3>↗ ベクトルと行列</h3>
+        <p>ベクトル演算・行列・連立方程式・固有値の入口。</p>
+      </a>
+      <a class="start-card" href="sets-logic.html">
+        <span class="lvl lvl-1">入門</span>
+        <h3>∈ 集合と論理・証明</h3>
+        <p>集合記号・論理・証明の型。数学の"読み書き"を身につける。</p>
+      </a>
+      <a class="start-card" href="probability-basics.html">
+        <span class="lvl lvl-1">入門</span>
+        <h3>⚄ 確率・統計の基礎</h3>
+        <p>確率・期待値・分散・代表的な分布。確率論への橋渡し。</p>
+      </a>
+      <a class="start-card" href="newtonian-mechanics.html">
+        <span class="lvl lvl-1">入門</span>
+        <h3>F ニュートン力学</h3>
+        <p>運動の3法則・エネルギー・運動量。古典力学への助走。</p>
+      </a>
+    </div>
+
+    <h2 id="prereq">3. 前提知識マップ</h2>
+    <p>「この分野を学ぶには、まず何を知っておくべきか」を一覧にしました。</p>
+    <div class="box def">
+      <div class="box-title">📖 上級分野 ← 前提となる基礎</div>
+      <table class="path-table">
+        <tr><th>学びたい分野</th><th>先に押さえたい基礎</th></tr>
+        <tr><td><a href="analysis.html">解析学</a></td><td>微分積分の基礎、集合と論理</td></tr>
+        <tr><td><a href="linear-algebra.html">線形代数</a></td><td>ベクトルと行列</td></tr>
+        <tr><td><a href="probability.html">確率論</a></td><td>確率・統計の基礎、微分積分</td></tr>
+        <tr><td><a href="stochastic.html">確率微分方程式</a></td><td>確率論、微分積分、解析学</td></tr>
+        <tr><td><a href="classical-mechanics.html">古典力学</a></td><td>ニュートン力学、微分積分、ベクトル</td></tr>
+        <tr><td><a href="quantum-mechanics.html">量子力学</a></td><td>線形代数、微分積分、古典力学</td></tr>
+        <tr><td><a href="electromagnetism.html">電磁気学</a></td><td>ベクトル（微分演算子）、微分積分</td></tr>
+        <tr><td><a href="relativity.html">相対性理論</a></td><td>ニュートン力学、ベクトル、（微分幾何）</td></tr>
+      </table>
+    </div>
+
+    <h2 id="path">4. レベル別ロードマップ</h2>
+    <div class="box example">
+      <div class="box-title">📝 STEP 0 — 基礎固め（高校〜大学1年）</div>
+      <p><a href="calculus-basics.html">微分積分の基礎</a> → <a href="vectors-matrices.html">ベクトルと行列</a> → <a href="sets-logic.html">集合と論理</a> → <a href="probability-basics.html">確率・統計の基礎</a> → <a href="newtonian-mechanics.html">ニュートン力学</a></p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 STEP 1 — 数学の柱（大学2〜3年）</div>
+      <p><a href="analysis.html">解析学</a> → <a href="linear-algebra.html">線形代数</a> → <a href="topology.html">位相空間論</a> → <a href="complex-analysis.html">複素解析</a></p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 STEP 2 — 確率と物理（大学3〜4年）</div>
+      <p><a href="measure-theory.html">測度論</a> → <a href="probability.html">確率論</a> → <a href="stochastic.html">確率微分方程式（伊藤の公式）</a>、並行して <a href="classical-mechanics.html">古典力学</a> → <a href="quantum-mechanics.html">量子力学</a></p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 STEP 3 — 発展（大学院）</div>
+      <p><a href="functional-analysis.html">関数解析</a>、<a href="differential-geometry.html">微分幾何学</a> → <a href="relativity.html">相対性理論</a>、<a href="statistical-mechanics.html">統計力学</a>、<a href="field-map.html">学問領域マップ</a>で全体を俯瞰</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

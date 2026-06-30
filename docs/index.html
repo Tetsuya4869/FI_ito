@@ -20,20 +20,64 @@
   <!-- Hero -->
   <div class="hero">
     <h1>高等数学・物理 学習サイト</h1>
-    <p class="sub">解析学から代数・幾何・確率・応用数学，さらに古典力学・量子力学・相対論まで体系的に学ぶ。</p>
+    <p class="sub">高校レベルの基礎から、解析・代数・幾何・確率，さらに古典力学・量子力学・相対論まで段階的に学ぶ。</p>
     <div class="stats-bar" style="margin-top:28px;padding:0">
-      <div class="stat"><div class="num">23</div><div class="lbl">分野</div></div>
-      <div class="stat"><div class="num">150+</div><div class="lbl">定理・定義</div></div>
-      <div class="stat"><div class="num">80+</div><div class="lbl">練習問題</div></div>
+      <div class="stat"><div class="num">28</div><div class="lbl">分野</div></div>
+      <div class="stat"><div class="num">170+</div><div class="lbl">定理・定義</div></div>
+      <div class="stat"><div class="num">100+</div><div class="lbl">練習問題</div></div>
       <div class="stat"><div class="num">KaTeX</div><div class="lbl">数式レンダリング</div></div>
     </div>
     <div class="cta" style="margin-top:28px">
-      <a href="stochastic.html" class="btn btn-primary">伊藤の公式を学ぶ →</a>
-      <a href="analysis.html" class="btn btn-secondary">解析学から始める</a>
+      <a href="getting-started.html" class="btn btn-primary">基礎から始める →</a>
+      <a href="stochastic.html" class="btn btn-secondary">伊藤の公式を学ぶ</a>
     </div>
     <p style="margin-top:20px;font-size:0.83rem;color:var(--text3)">
       例: $e^{i\pi}+1=0$，$\;\displaystyle\int_{-\infty}^\infty e^{-x^2}dx=\sqrt{\pi}$，$\;\hat{f}(\xi)=\int f(x)e^{-i\xi x}dx$
     </p>
+  </div>
+
+  <!-- 基礎・入門 -->
+  <div class="grid-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <h2>🌱 ここから始める（基礎・入門）</h2>
+    <p style="margin:-8px 0 18px;color:var(--text3);font-size:0.9rem">上級分野はどれも高度です。まずは下の基礎から。迷ったら <a href="getting-started.html" style="color:var(--blue)">学習ガイド</a> で順序と前提知識を確認できます。</p>
+    <div class="card-grid">
+      <a href="getting-started.html" class="card">
+        <div class="card-icon">✦</div>
+        <h3>学習ガイド</h3>
+        <p>どこから始めるか、各分野の前提知識マップ、レベル別ロードマップ。最初に読むページ。</p>
+        <div class="card-tags"><span>はじめに</span><span>前提知識</span><span>学習順序</span></div>
+      </a>
+      <a href="calculus-basics.html" class="card">
+        <div class="card-icon">∫</div>
+        <h3>微分積分の基礎</h3>
+        <p>極限・微分・積分・テイラー展開。解析学と物理すべての土台。</p>
+        <div class="card-tags"><span>極限</span><span>微分</span><span>積分</span><span>テイラー</span></div>
+      </a>
+      <a href="vectors-matrices.html" class="card">
+        <div class="card-icon">↗</div>
+        <h3>ベクトルと行列</h3>
+        <p>ベクトル演算・内積外積・行列・連立方程式・固有値の入口。</p>
+        <div class="card-tags"><span>ベクトル</span><span>行列</span><span>内積</span><span>固有値</span></div>
+      </a>
+      <a href="sets-logic.html" class="card">
+        <div class="card-icon">∈</div>
+        <h3>集合と論理・証明</h3>
+        <p>集合記号・論理結合子・量化子・写像・証明の型。数学の読み書き。</p>
+        <div class="card-tags"><span>集合</span><span>論理</span><span>証明</span><span>写像</span></div>
+      </a>
+      <a href="probability-basics.html" class="card">
+        <div class="card-icon">⚄</div>
+        <h3>確率・統計の基礎</h3>
+        <p>確率・条件付き確率・期待値と分散・代表的な分布・中心極限定理。</p>
+        <div class="card-tags"><span>確率</span><span>期待値</span><span>分散</span><span>分布</span></div>
+      </a>
+      <a href="newtonian-mechanics.html" class="card">
+        <div class="card-icon">F</div>
+        <h3>ニュートン力学</h3>
+        <p>運動の3法則・力・エネルギー・運動量・円運動。物理の出発点。</p>
+        <div class="card-tags"><span>運動の法則</span><span>エネルギー</span><span>運動量</span></div>
+      </a>
+    </div>
   </div>
 
   <!-- 解析系 -->
@@ -227,6 +271,12 @@
   <div class="roadmap">
     <h2>📍 推奨学習ロードマップ</h2>
     <div class="road-grid">
+      <div class="road-item"><div class="road-num">STEP 0a</div><a href="getting-started.html">学習ガイド</a><br><span style="color:var(--text3);font-size:0.78rem">前提知識マップ</span></div>
+      <div class="road-item"><div class="road-num">STEP 0b</div><a href="calculus-basics.html">微分積分の基礎</a><br><span style="color:var(--text3);font-size:0.78rem">極限 · 微分 · 積分</span></div>
+      <div class="road-item"><div class="road-num">STEP 0c</div><a href="vectors-matrices.html">ベクトルと行列</a><br><span style="color:var(--text3);font-size:0.78rem">内積 · 固有値</span></div>
+      <div class="road-item"><div class="road-num">STEP 0d</div><a href="sets-logic.html">集合と論理</a><br><span style="color:var(--text3);font-size:0.78rem">証明の型</span></div>
+      <div class="road-item"><div class="road-num">STEP 0e</div><a href="probability-basics.html">確率・統計の基礎</a><br><span style="color:var(--text3);font-size:0.78rem">期待値 · 分布</span></div>
+      <div class="road-item"><div class="road-num">STEP 0f</div><a href="newtonian-mechanics.html">ニュートン力学</a><br><span style="color:var(--text3);font-size:0.78rem">運動の3法則</span></div>
       <div class="road-item"><div class="road-num">STEP 1</div><a href="analysis.html">解析学</a><br><span style="color:var(--text3);font-size:0.78rem">ε-δ · MVT · 積分</span></div>
       <div class="road-item"><div class="road-num">STEP 2</div><a href="linear-algebra.html">線形代数</a><br><span style="color:var(--text3);font-size:0.78rem">固有値 · SVD</span></div>
       <div class="road-item"><div class="road-num">STEP 3</div><a href="topology.html">位相空間論</a><br><span style="color:var(--text3);font-size:0.78rem">コンパクト · 完備性</span></div>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>集合と論理・証明 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 集合と論理・証明</div>
+    <h1>集合と論理・証明の基礎</h1>
+    <p class="tagline">集合の記号・論理結合子・量化子・証明の型。数学を"読み書き"するための共通言語。</p>
+    <div class="tags"><span class="tag">入門</span><span class="tag">集合</span><span class="tag">論理</span><span class="tag">証明</span><span class="tag">写像</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#set">集合</a></li>
+        <li><a href="#ops">集合の演算</a></li>
+        <li><a href="#logic">論理（命題と結合子）</a></li>
+        <li><a href="#quant">量化子 ∀ と ∃</a></li>
+        <li><a href="#map">写像（関数）</a></li>
+        <li><a href="#proof">証明の型</a></li>
+        <li><a href="#next">次のステップ</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 なぜ必要か</div>
+      <p>上級ページの定義・定理はすべてこの記号で書かれています。ここを押さえると <a href="analysis.html">解析学</a> や <a href="topology.html">位相空間論</a> が一気に読めるようになります。</p>
+    </div>
+
+    <h2 id="set">1. 集合</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 集合と要素</div>
+      <p>ものの集まりを<strong>集合</strong>、その個々を<strong>要素</strong>という。$x\in A$（$x$ は $A$ の要素）、$x\notin A$（要素でない）。</p>
+      <p>表し方: $A=\{1,2,3\}$（列挙）、$B=\{x \mid x>0\}$（条件）。代表的な数の集合:</p>
+      <p>$\mathbb{N}$（自然数）$\subset \mathbb{Z}$（整数）$\subset \mathbb{Q}$（有理数）$\subset \mathbb{R}$（実数）$\subset \mathbb{C}$（複素数）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 部分集合</div>
+      <p>$A$ のすべての要素が $B$ に属するとき $A\subseteq B$（$A$ は $B$ の部分集合）。空集合 $\varnothing$ はすべての集合の部分集合。</p>
+    </div>
+
+    <h2 id="ops">2. 集合の演算</h2>
+    <div class="box def">
+      <div class="box-title">📖 和・共通部分・差・補</div>
+      <table>
+        <tr><th>演算</th><th>記号</th><th>意味</th></tr>
+        <tr><td>和集合</td><td>$A\cup B$</td><td>$A$ または $B$ に属する</td></tr>
+        <tr><td>共通部分</td><td>$A\cap B$</td><td>$A$ かつ $B$ に属する</td></tr>
+        <tr><td>差集合</td><td>$A\setminus B$</td><td>$A$ に属し $B$ に属さない</td></tr>
+        <tr><td>補集合</td><td>$A^c$</td><td>全体集合のうち $A$ 以外</td></tr>
+      </table>
+      <p><strong>ド・モルガンの法則</strong>: $(A\cup B)^c = A^c\cap B^c$、$(A\cap B)^c = A^c\cup B^c$。</p>
+    </div>
+
+    <h2 id="logic">3. 論理（命題と結合子）</h2>
+    <div class="box def">
+      <div class="box-title">📖 命題と結合子</div>
+      <p>真偽が定まる文を<strong>命題</strong>という。結合子:</p>
+      <table>
+        <tr><th>記号</th><th>読み</th><th>意味</th></tr>
+        <tr><td>$\lnot P$</td><td>でない</td><td>否定</td></tr>
+        <tr><td>$P \land Q$</td><td>かつ</td><td>両方真のとき真</td></tr>
+        <tr><td>$P \lor Q$</td><td>または</td><td>少なくとも一方が真</td></tr>
+        <tr><td>$P \Rightarrow Q$</td><td>ならば</td><td>$P$ が真で $Q$ が偽のときだけ偽</td></tr>
+        <tr><td>$P \Leftrightarrow Q$</td><td>同値</td><td>真偽が一致</td></tr>
+      </table>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 対偶</div>
+      <p>$P\Rightarrow Q$ と、その<strong>対偶</strong> $\lnot Q\Rightarrow\lnot P$ は常に同値。証明で「直接示しにくいときは対偶を示す」のが定石。</p>
+    </div>
+
+    <h2 id="quant">4. 量化子 ∀ と ∃</h2>
+    <div class="box def">
+      <div class="box-title">📖 全称・存在</div>
+      <p>$\forall x$（すべての $x$ について）、$\exists x$（ある $x$ が存在して）。</p>
+      <p>例: 「$\forall \varepsilon>0,\ \exists \delta>0$ s.t. …」は解析学の ε-δ 論法の骨格。</p>
+      <p><strong>否定のルール</strong>: $\lnot(\forall x\, P(x)) \equiv \exists x\,\lnot P(x)$、$\lnot(\exists x\,P(x))\equiv \forall x\,\lnot P(x)$。</p>
+    </div>
+
+    <h2 id="map">5. 写像（関数）</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 写像</div>
+      <p>$f:A\to B$ は、$A$ の各要素に $B$ の要素をひとつ対応させる規則。</p>
+      <ul>
+        <li><strong>単射</strong>: 異なる入力は異なる出力（$f(x)=f(y)\Rightarrow x=y$）</li>
+        <li><strong>全射</strong>: $B$ のどの要素も誰かの出力になっている</li>
+        <li><strong>全単射</strong>: 単射かつ全射（逆写像 $f^{-1}$ が存在）</li>
+      </ul>
+    </div>
+
+    <h2 id="proof">6. 証明の型</h2>
+    <div class="box thm">
+      <div class="box-title">✓ よく使う証明法</div>
+      <ul>
+        <li><strong>直接証明</strong>: 仮定から定義・既知の事実を積んで結論へ。</li>
+        <li><strong>対偶法</strong>: $P\Rightarrow Q$ の代わりに $\lnot Q\Rightarrow\lnot P$ を示す。</li>
+        <li><strong>背理法</strong>: 結論を否定すると矛盾が出ることを示す。</li>
+        <li><strong>数学的帰納法</strong>: $n=1$ で成立、$n=k$ を仮定して $n=k+1$ を示す。</li>
+      </ul>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 背理法（$\sqrt2$ は無理数）</div>
+      <p>$\sqrt2=p/q$（既約分数）と仮定。$2q^2=p^2$ より $p$ は偶数 $p=2k$。すると $q^2=2k^2$ で $q$ も偶数。これは既約に矛盾。よって $\sqrt2$ は無理数。$\square$</p>
+    </div>
+
+    <h2 id="next">7. 次のステップ</h2>
+    <div class="box note">
+      <div class="box-title">💡 ここから先へ</div>
+      <p>これらの記号と証明法は全ページの土台です。続けて <a href="calculus-basics.html">微分積分の基礎</a> → <a href="analysis.html">解析学</a> へ。集合論を深めると <a href="topology.html">位相空間論</a> や <a href="measure-theory.html">測度論</a> につながります。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$A=\{1,2,3,4\}$、$B=\{3,4,5\}$ について $A\cup B$、$A\cap B$、$A\setminus B$ を求めよ。</li>
+        <li>「$n^2$ が偶数 $\Rightarrow$ $n$ は偶数」を対偶法で証明せよ。</li>
+        <li>$\lnot(\forall x>0,\ x^2>x)$ を量化子を使って書き換え、真偽を判定せよ。</li>
+        <li>$f(x)=2x+1$（$\mathbb{R}\to\mathbb{R}$）が全単射であることを示し、逆写像を求めよ。</li>
+        <li>数学的帰納法で $1+2+\cdots+n = \dfrac{n(n+1)}{2}$ を証明せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
