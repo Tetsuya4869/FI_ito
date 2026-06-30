@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>量子情報 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 量子情報</div>
+    <h1>量子情報</h1>
+    <p class="tagline">密度行列・量子もつれ・Bell 不等式・テレポーテーション・von Neumann エントロピー・量子誤り訂正。情報を量子で扱う。</p>
+    <div class="tags"><span class="tag">密度行列</span><span class="tag">量子もつれ</span><span class="tag">Bell不等式</span><span class="tag">量子チャネル</span><span class="tag">von Neumannエントロピー</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#states">量子状態と密度行列</a></li>
+        <li><a href="#entanglement">量子もつれ</a></li>
+        <li><a href="#channels">量子測定とチャネル</a></li>
+        <li><a href="#bell">Bell 不等式と非局所性</a></li>
+        <li><a href="#protocols">量子プロトコル</a></li>
+        <li><a href="#entropy">量子エントロピー</a></li>
+        <li><a href="#qec">量子誤り訂正</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="quantum-mechanics.html">量子力学</a>（Hilbert 空間・bra-ket 記法・演算子形式）と <a href="information-theory.html">情報理論</a>（Shannon エントロピー・相互情報量）の理解を前提とする。量子状態を「情報を担う資源」とみなし，その操作・測定・伝送・誤り訂正を体系的に扱う。</p>
+    </div>
+
+    <h2 id="states">1. 量子状態と密度行列</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — qubit（量子ビット）</div>
+      <p>2 準位系の純粋状態は 2 次元 Hilbert 空間 $\mathcal{H}=\mathbb{C}^2$ のベクトル:</p>
+      $$|\psi\rangle = \alpha|0\rangle + \beta|1\rangle, \quad |\alpha|^2 + |\beta|^2 = 1, \quad \alpha,\beta\in\mathbb{C}$$
+      <p>$\{|0\rangle,|1\rangle\}$ は計算基底。$n$ qubit 系は $\mathcal{H}^{\otimes n}=\mathbb{C}^{2^n}$ に住み，状態空間の次元が指数的に増大する点が古典ビットとの本質的差異である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 密度行列 $\rho$</div>
+      <p>状態のアンサンブル $\{p_i,|\psi_i\rangle\}$（確率 $p_i$ で $|\psi_i\rangle$）に対して密度行列を</p>
+      $$\rho = \sum_i p_i\,|\psi_i\rangle\langle\psi_i|$$
+      <p>で定める。$\rho$ は次の 3 条件で特徴づけられる: (i) Hermite $\rho=\rho^\dagger$，(ii) 半正定値 $\rho\ge 0$，(iii) トレース 1 $\mathrm{tr}\,\rho = 1$。観測量 $\hat A$ の期待値は $\langle\hat A\rangle = \mathrm{tr}(\rho\hat A)$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 純粋状態と混合状態の判定</div>
+      <p>状態 $\rho$ が純粋状態（ある $|\psi\rangle$ で $\rho=|\psi\rangle\langle\psi|$）であることは次と同値:</p>
+      $$\rho^2 = \rho \iff \mathrm{tr}(\rho^2) = 1$$
+      <p>一般には純粋度 $\mathrm{tr}(\rho^2)\le 1$ であり，等号成立が純粋状態。$\mathrm{tr}(\rho^2)<1$ のとき混合状態とよぶ。最大混合状態は $\rho = I/d$（$d$ は次元）で $\mathrm{tr}(\rho^2)=1/d$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Bloch 球</div>
+      <p>1 qubit の密度行列は Pauli 行列 $\sigma_x,\sigma_y,\sigma_z$ を用いて</p>
+      $$\rho = \frac{1}{2}\left(I + \mathbf{r}\cdot\boldsymbol{\sigma}\right) = \frac{1}{2}\begin{pmatrix} 1+r_z & r_x - ir_y \\ r_x + ir_y & 1-r_z\end{pmatrix}$$
+      <p>と書ける。$\mathbf{r}=(r_x,r_y,r_z)\in\mathbb{R}^3$ を Bloch ベクトルとよび，$|\mathbf{r}|\le 1$。$|\mathbf{r}|=1$（球面上）が純粋状態，$|\mathbf{r}|<1$（球内部）が混合状態，原点 $\mathbf{r}=0$ が最大混合状態 $I/2$ に対応する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 部分トレース</div>
+      <p>合成系 $\mathcal{H}_A\otimes\mathcal{H}_B$ の状態 $\rho_{AB}$ から，部分系 $A$ の縮約密度行列を部分トレースで得る:</p>
+      $$\rho_A = \mathrm{tr}_B(\rho_{AB}) = \sum_k (I_A\otimes\langle k|_B)\,\rho_{AB}\,(I_A\otimes|k\rangle_B)$$
+      <p>$\{|k\rangle_B\}$ は $\mathcal{H}_B$ の正規直交基底。$\rho_A$ は $A$ のみを観測する者にとっての全情報を与える。たとえ $\rho_{AB}$ が純粋でも $\rho_A$ は一般に混合状態となる——これがもつれの兆候である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Bell 状態の縮約</div>
+      <p>$|\Phi^+\rangle = \frac{1}{\sqrt2}(|00\rangle+|11\rangle)$ に対し $\rho_{AB}=|\Phi^+\rangle\langle\Phi^+|$ は純粋。だが部分トレースをとると</p>
+      $$\rho_A = \mathrm{tr}_B(\rho_{AB}) = \frac{1}{2}\big(|0\rangle\langle0| + |1\rangle\langle1|\big) = \frac{I}{2}$$
+      <p>となり，$A$ 単独では最大混合状態。$\mathrm{tr}(\rho_A^2)=1/2<1$ であり，全体の純粋さが部分系には現れない。</p>
+    </div>
+
+    <h2 id="entanglement">2. 量子もつれ</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — テンソル積と積状態・もつれ状態</div>
+      <p>合成系の状態空間は $\mathcal{H}_{AB}=\mathcal{H}_A\otimes\mathcal{H}_B$。純粋状態 $|\psi\rangle_{AB}$ が積状態（分離可能）とは，ある $|\phi\rangle_A,|\chi\rangle_B$ で</p>
+      $$|\psi\rangle_{AB} = |\phi\rangle_A\otimes|\chi\rangle_B$$
+      <p>と書けることをいう。そう書けないとき，状態はもつれている（entangled）という。混合状態 $\rho_{AB}$ については，分離可能とは $\rho_{AB}=\sum_i p_i\,\rho_A^{(i)}\otimes\rho_B^{(i)}$ と表せることを指す。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Bell 状態（最大もつれ状態）</div>
+      <p>2 qubit の完全正規直交基底をなす 4 つの最大もつれ状態:</p>
+      $$|\Phi^\pm\rangle = \tfrac{1}{\sqrt2}(|00\rangle\pm|11\rangle), \quad |\Psi^\pm\rangle = \tfrac{1}{\sqrt2}(|01\rangle\pm|10\rangle)$$
+      <p>これらは縮約密度行列がいずれも $I/2$ となり，もつれの度合いが最大である。量子テレポーテーションや超密度符号化の資源となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Schmidt 分解</div>
+      <p>任意の純粋状態 $|\psi\rangle_{AB}\in\mathcal{H}_A\otimes\mathcal{H}_B$ は，各系の適切な正規直交基底 $\{|i\rangle_A\},\{|i\rangle_B\}$ を選ぶことで</p>
+      $$|\psi\rangle_{AB} = \sum_{i=1}^{r}\sqrt{\lambda_i}\,|i\rangle_A\otimes|i\rangle_B, \quad \lambda_i>0,\ \sum_i\lambda_i=1$$
+      <p>と一意に表せる。$\{\lambda_i\}$ は Schmidt 係数，非ゼロ項の個数 $r$ を Schmidt 数という。$r=1$ が積状態，$r\ge2$ がもつれ状態。$\lambda_i$ は両縮約密度行列 $\rho_A,\rho_B$ の共通の固有値である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — もつれの判定（PPT 条件）</div>
+      <p>分離可能な状態 $\rho_{AB}$ は部分転置 $\rho_{AB}^{T_B}$ が半正定値（PPT: Positive Partial Transpose）である。よって $\rho_{AB}^{T_B}$ が負の固有値をもてば $\rho_{AB}$ はもつれている（Peres-Horodecki 判定）。$2\times2$ および $2\times3$ 系では PPT が分離可能性と同値となり，必要十分条件である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — もつれエントロピー</div>
+      <p>純粋状態 $|\psi\rangle_{AB}$ のもつれの定量化として，縮約密度行列の von Neumann エントロピーを用いる:</p>
+      $$E(|\psi\rangle_{AB}) = S(\rho_A) = -\sum_i \lambda_i\log\lambda_i$$
+      <p>$\lambda_i$ は Schmidt 係数。積状態で $E=0$，最大もつれ状態（Bell 状態）で $E=\log 2 = 1$ bit（$\log_2$ のとき）。$S(\rho_A)=S(\rho_B)$ が常に成立する点に注意。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 一般 2 qubit 純粋状態のもつれ</div>
+      <p>$|\psi\rangle = \cos\theta\,|00\rangle + \sin\theta\,|11\rangle$ は既に Schmidt 形。Schmidt 係数は $\lambda_1=\cos^2\theta,\ \lambda_2=\sin^2\theta$。もつれエントロピーは</p>
+      $$E = -\cos^2\theta\log\cos^2\theta - \sin^2\theta\log\sin^2\theta$$
+      <p>$\theta=\pi/4$ で最大（Bell 状態），$\theta=0,\pi/2$ で $0$（積状態）となる。</p>
+    </div>
+
+    <h2 id="channels">3. 量子測定とチャネル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 射影測定（von Neumann 測定）</div>
+      <p>観測量 $\hat A = \sum_m a_m P_m$（$P_m$ は固有値 $a_m$ の固有空間への射影，$\sum_m P_m = I$，$P_mP_n=\delta_{mn}P_m$）に対する測定。結果 $m$ を得る確率と測定後状態は</p>
+      $$p(m) = \mathrm{tr}(P_m\rho), \quad \rho \to \frac{P_m\rho P_m}{p(m)}$$
+      <p>純粋状態 $|\psi\rangle$ なら $p(m)=\langle\psi|P_m|\psi\rangle$（Born 則）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — POVM（一般化測定）</div>
+      <p>正値演算子値測度 $\{E_m\}$ は次を満たす演算子の集合: $E_m\ge0$（半正定値）かつ $\sum_m E_m = I$。結果 $m$ の確率は</p>
+      $$p(m) = \mathrm{tr}(E_m\rho)$$
+      <p>射影測定は $E_m=P_m$（直交射影）の特別な場合。POVM は測定後状態を一意に定めないが，確率分布のみが必要な状況で最も一般的な測定の記述を与える。要素数は次元を超えてよい。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 量子チャネル（CPTP 写像）</div>
+      <p>物理的に許される最も一般的な状態変換は，密度行列の集合上の線形写像 $\mathcal{E}$ で次を満たすもの:</p>
+      <p>(i) <strong>完全正値性（CP）</strong>: 任意の補助系 $R$ に対し $\mathcal{E}\otimes\mathrm{id}_R$ が正値を保つ，(ii) <strong>トレース保存（TP）</strong>: $\mathrm{tr}(\mathcal{E}(\rho))=\mathrm{tr}(\rho)$。この CPTP 写像を量子チャネルとよぶ。単なる正値性ではなく完全正値性が必要なのは，もつれた補助系と合わせた変換も物理的でなければならないため。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Kraus 表現（演算子和表現）</div>
+      <p>$\mathcal{E}$ が量子チャネルであることは，ある演算子の組 $\{K_k\}$（Kraus 演算子）が存在して</p>
+      $$\mathcal{E}(\rho) = \sum_k K_k\,\rho\,K_k^\dagger, \quad \sum_k K_k^\dagger K_k = I$$
+      <p>と書けることと同値である。完全正値性は和の形から，トレース保存は完全性条件 $\sum_k K_k^\dagger K_k = I$ から従う。Kraus 表現はユニタリでない量子過程（エネルギー散逸や脱位相）も統一的に記述する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 代表的ノイズモデル</div>
+      <p><strong>ビット反転チャネル</strong>: $\mathcal{E}(\rho) = (1-p)\rho + p\,X\rho X$（$X=\sigma_x$）。</p>
+      <p><strong>位相反転（位相緩和）チャネル</strong>: $\mathcal{E}(\rho) = (1-p)\rho + p\,Z\rho Z$（$Z=\sigma_z$，非対角成分を減衰）。</p>
+      <p><strong>脱分極チャネル</strong>: $\mathcal{E}(\rho) = (1-p)\rho + \dfrac{p}{3}(X\rho X + Y\rho Y + Z\rho Z)$。確率 $p$ で状態を最大混合 $I/2$ 方向へ崩す。</p>
+      <p><strong>振幅減衰チャネル</strong>: Kraus 演算子 $K_0=\begin{pmatrix}1&0\\0&\sqrt{1-\gamma}\end{pmatrix},\ K_1=\begin{pmatrix}0&\sqrt\gamma\\0&0\end{pmatrix}$ で励起状態 $|1\rangle$ から $|0\rangle$ へのエネルギー散逸（$T_1$ 緩和）を表す。</p>
+    </div>
+
+    <h2 id="bell">4. Bell 不等式と非局所性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — EPR パラドックスと局所実在論</div>
+      <p>Einstein-Podolsky-Rosen（1935）はもつれ状態の片方を測定すると遠方のもう片方が瞬時に確定することを指摘し，量子力学が不完全で「局所的な隠れた変数」が真の状態を定めると主張した。局所実在論は (i) <strong>実在性</strong>（測定前に値が定まっている）と (ii) <strong>局所性</strong>（遠方の操作は瞬時に影響しない）を仮定する。Bell はこの仮定が検証可能な不等式を生むことを示した。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — CHSH 不等式</div>
+      <p>Alice は観測量 $A_0,A_1$（固有値 $\pm1$），Bob は $B_0,B_1$（固有値 $\pm1$）を測定する。CHSH 量を</p>
+      $$S = \langle A_0 B_0\rangle + \langle A_0 B_1\rangle + \langle A_1 B_0\rangle - \langle A_1 B_1\rangle$$
+      <p>と定める。任意の局所実在論的（局所隠れ変数）理論では</p>
+      $$|S| \le 2$$
+      <p>が成り立つ。これが破れれば局所実在論は棄却される。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Tsirelson 限界</div>
+      <p>量子力学では CHSH 量は古典限界 $2$ を超えうるが，無限には大きくなれず</p>
+      $$|S| \le 2\sqrt{2} \approx 2.828$$
+      <p>に抑えられる（Tsirelson 限界）。最大値 $2\sqrt2$ は Bell 状態 $|\Phi^+\rangle$ と適切な測定方向（相対角 $45^\circ$）で達成される。$2<|S|\le 2\sqrt2$ の領域が量子非局所性の領域である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Bell 状態での CHSH の最大化</div>
+      <p>$|\Phi^+\rangle$ に対し Alice が角度 $0,\ \pi/2$，Bob が角度 $\pi/4,\ -\pi/4$ で各々 $\boldsymbol{\sigma}\cdot\hat n$ を測ると，各相関は $\langle A_iB_j\rangle = \pm\cos(\pi/4)=\pm1/\sqrt2$ となり</p>
+      $$S = 4\times\frac{1}{\sqrt2} = 2\sqrt2$$
+      <p>古典限界 $2$ を明確に超える。Aspect らの実験以降，抜け穴を塞いだ実験（2015）でこの破れが確証された。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 非局所性と因果律</div>
+      <p>Bell 不等式の破れは「瞬時の情報伝達」を意味しない。測定結果は局所的にはランダムで，2 者が結果を比較するには古典通信が要る。よって非局所相関は相対論的因果律（信号は光速以下）と矛盾しない（no-signaling 原理）。量子相関は局所的でも完全に古典的でもない，第三の性質である。</p>
+    </div>
+
+    <h2 id="protocols">5. 量子プロトコル</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 複製不可能定理（no-cloning theorem）</div>
+      <p>未知の量子状態を複製するユニタリ $U$，すなわち任意の $|\psi\rangle$ に対し $U(|\psi\rangle\otimes|0\rangle)=|\psi\rangle\otimes|\psi\rangle$ を満たすものは存在しない。</p>
+      <p><strong>証明（概略）</strong>: 2 状態 $|\psi\rangle,|\phi\rangle$ に適用し内積をとると，ユニタリ性から $\langle\psi|\phi\rangle = \langle\psi|\phi\rangle^2$。よって $\langle\psi|\phi\rangle\in\{0,1\}$ となり，直交または同一の状態しか複製できず，任意状態の複製は不可能。□ これは量子暗号の安全性の根拠であり，かつ量子誤り訂正で単純な冗長化が使えない理由でもある。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 量子テレポーテーション</div>
+      <p>Alice の未知状態 $|\psi\rangle=\alpha|0\rangle+\beta|1\rangle$ を，共有した Bell 状態 $|\Phi^+\rangle_{AB}$ と 2 ビットの古典通信のみで Bob に転送する。全系は</p>
+      $$|\psi\rangle\otimes|\Phi^+\rangle = \tfrac12\sum_{i} |\beta_i\rangle_{A'A}\otimes (\sigma_i|\psi\rangle)_B$$
+      <p>と Bell 基底 $\{|\beta_i\rangle\}$ で展開できる。Alice が自分の 2 qubit を Bell 基底測定し，結果 2 bit を Bob に送る。Bob は対応する Pauli 補正 $\sigma_i\in\{I,X,Z,XZ\}$ を施すと $|\psi\rangle$ を復元する。状態自体は送らず（複製不可能定理と整合），Alice 側の元状態は測定で破壊される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 超密度符号化（superdense coding）</div>
+      <p>共有 Bell 状態 $|\Phi^+\rangle$ を用い，Alice が 1 qubit を送るだけで 2 古典ビットを伝送する。Alice は 2 bit $(a,b)$ に応じて自分の qubit に Pauli 操作 $Z^a X^b$ を施し，これにより全体が 4 つの直交 Bell 状態のいずれかになる:</p>
+      $$\{I,\,X,\,Z,\,ZX\}\otimes I\,|\Phi^+\rangle = \{|\Phi^+\rangle,\,|\Psi^+\rangle,\,|\Phi^-\rangle,\,|\Psi^-\rangle\}$$
+      <p>Bob は 2 qubit を Bell 基底測定して $(a,b)$ を完全に読み取る。もつれを資源として通信容量を倍化する点でテレポーテーションと双対をなす。</p>
+    </div>
+
+    <h2 id="entropy">6. 量子エントロピー</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — von Neumann エントロピー</div>
+      <p>密度行列 $\rho$ の von Neumann エントロピーは Shannon エントロピーの量子版:</p>
+      $$S(\rho) = -\mathrm{tr}(\rho\log\rho) = -\sum_i \lambda_i\log\lambda_i$$
+      <p>$\{\lambda_i\}$ は $\rho$ の固有値。純粋状態で $S=0$，$d$ 次元最大混合状態 $I/d$ で最大値 $S=\log d$。基底は文脈に応じ $\log_2$（bit）または自然対数（nat）をとる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — von Neumann エントロピーの性質</div>
+      <p><strong>劣加法性</strong>: $S(\rho_{AB}) \le S(\rho_A) + S(\rho_B)$（等号は積状態）。</p>
+      <p><strong>三角不等式（Araki-Lieb）</strong>: $|S(\rho_A) - S(\rho_B)| \le S(\rho_{AB})$。</p>
+      <p><strong>強劣加法性</strong>: $S(\rho_{ABC}) + S(\rho_B) \le S(\rho_{AB}) + S(\rho_{BC})$。</p>
+      <p>古典との重要な相違: 純粋もつれ状態では全体 $S(\rho_{AB})=0$ なのに部分系 $S(\rho_A)>0$ となりうる（条件付きエントロピーが負になる）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 量子相互情報</div>
+      <p>合成系 $\rho_{AB}$ における全相関（古典＋量子）の尺度:</p>
+      $$I(A\!:\!B) = S(\rho_A) + S(\rho_B) - S(\rho_{AB}) \ge 0$$
+      <p>劣加法性より非負。最大もつれ Bell 状態では $I(A\!:\!B)=2\log2$ となり，古典系の上限 $\log2$ の 2 倍に達する——量子相関の超越性を示す。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Holevo 限界</div>
+      <p>Alice が確率 $\{p_i\}$ で状態 $\{\rho_i\}$ を符号化し $\rho=\sum_i p_i\rho_i$ を Bob に送るとき，Bob が任意の測定で取り出せる古典情報（Bob の結果 $Y$ と Alice の入力 $X$ の相互情報量）は Holevo 量 $\chi$ で抑えられる:</p>
+      $$I(X\!:\!Y) \le \chi = S(\rho) - \sum_i p_i\,S(\rho_i)$$
+      <p>$\chi\le\log d$ より，$d$ 次元系（$\log d$ qubit）から取り出せる古典情報は高々 $\log d$ bit。すなわち 1 qubit には 1 bit 分の古典情報しか保持できない（重ね合わせの自由度は測定で完全には汲み取れない）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 非直交状態の識別限界</div>
+      <p>$|0\rangle$ と $|+\rangle=\tfrac1{\sqrt2}(|0\rangle+|1\rangle)$ を各 $1/2$ で送る。これらは非直交（$\langle0|+\rangle=1/\sqrt2$）ゆえ完全識別は不可能。$\rho=\tfrac12(|0\rangle\langle0|+|+\rangle\langle+|)$ の固有値から $S(\rho)\approx0.60$ bit，各 $\rho_i$ は純粋で $S(\rho_i)=0$ なので $\chi\approx0.60$ bit $<1$ bit。非直交性が伝送可能な情報を制限する。</p>
+    </div>
+
+    <h2 id="qec">7. 量子誤り訂正</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 量子誤りの離散化</div>
+      <p>連続的なノイズも，1 qubit 誤りは Pauli 演算子 $\{I,X,Z,Y=iXZ\}$ の線形結合で表せる（$X$: ビット反転，$Z$: 位相反転，$Y$: 両方）。任意の Kraus 演算子は $K_k=\sum c_{k,P}\,P$ と展開でき，符号が $X,Z$ 誤りを訂正できれば射影測定により連続誤りも離散誤りへ「畳み込んで」訂正できる。これが量子誤り訂正を可能にする鍵である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Shor の 9 量子ビット符号</div>
+      <p>1 論理 qubit を 9 物理 qubit に符号化し，任意の 1 qubit 誤りを訂正する最初の符号。位相反転符号（$|0\rangle\to|+\!+\!+\rangle$ 型）とビット反転符号（$|0\rangle\to|000\rangle$ 型）の連結:</p>
+      $$|0_L\rangle = \tfrac1{2\sqrt2}(|000\rangle+|111\rangle)^{\otimes3}, \quad |1_L\rangle = \tfrac1{2\sqrt2}(|000\rangle-|111\rangle)^{\otimes3}$$
+      <p>各 3 qubit ブロック内の多数決でビット反転を，ブロック間の符号でビット位相反転を訂正する。誤り症候群（syndrome）を測定するため論理状態を壊さずに誤り位置を特定できる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — スタビライザー符号</div>
+      <p>$n$ qubit の Pauli 群の可換部分群 $\mathcal{S}$（$-I\notin\mathcal{S}$）を安定化群とし，符号空間を全生成元の $+1$ 固有空間</p>
+      $$\mathcal{C} = \{\,|\psi\rangle : g|\psi\rangle = |\psi\rangle,\ \forall g\in\mathcal{S}\,\}$$
+      <p>として定める。$n-k$ 個の独立生成元で $k$ 論理 qubit を符号化する。誤り $E$ は安定化生成元との反交換／交換のパターン（症候群）を生み，状態を測定せずに $E$ を同定できる。Shor 符号・Steane 符号・表面符号（surface code）すべてがこの枠組みに収まり，現代の量子誤り訂正の標準言語である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — しきい値定理（fault-tolerant threshold）</div>
+      <p>物理 qubit あたりのゲート・測定の誤り率 $p$ がある臨界値 $p_{\mathrm{th}}$ を下回るなら，符号を再帰的に連結することで論理誤り率を任意に小さくできる:</p>
+      $$p_L \sim p_{\mathrm{th}}\left(\frac{p}{p_{\mathrm{th}}}\right)^{2^\ell} \xrightarrow{\ell\to\infty} 0 \quad (p<p_{\mathrm{th}})$$
+      <p>$\ell$ は連結のレベル。表面符号では $p_{\mathrm{th}}\sim 1\%$ 程度と比較的高く実現的である。任意精度の計算が多項式的オーバーヘッドで可能になることを保証し，スケーラブルな量子計算の理論的基盤を与える。</p>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>本ページで扱った量子状態・測定・誤り訂正は <a href="quantum-computing.html">量子計算</a> でアルゴリズム（Shor, Grover）や回路モデルとして具体化される。また密度行列・CPTP 写像・von Neumann エントロピーの数学的基盤は <a href="operator-algebras.html">作用素環論</a>（$C^*$ 環・von Neumann 環・状態と表現論）でより抽象的・一般的に展開される。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>密度行列 $\rho = \tfrac34|0\rangle\langle0| + \tfrac14|1\rangle\langle1|$ について，Bloch ベクトル $\mathbf{r}$，純粋度 $\mathrm{tr}(\rho^2)$，von Neumann エントロピー $S(\rho)$ を求めよ。純粋状態か混合状態か判定せよ。</li>
+        <li>Bell 状態 $|\Psi^-\rangle=\tfrac1{\sqrt2}(|01\rangle-|10\rangle)$ の Schmidt 分解を書き，Schmidt 数ともつれエントロピーを求めよ。さらに縮約密度行列 $\rho_A$ を計算せよ。</li>
+        <li>脱分極チャネル $\mathcal{E}(\rho)=(1-p)\rho + \tfrac{p}{3}(X\rho X + Y\rho Y + Z\rho Z)$ が CPTP であることを Kraus 表現で示し，最大混合状態 $I/2$ が不動点であることを確かめよ。</li>
+        <li>CHSH 量 $S=\langle A_0B_0\rangle+\langle A_0B_1\rangle+\langle A_1B_0\rangle-\langle A_1B_1\rangle$ が局所隠れ変数模型で $|S|\le2$ となることを，各観測量が $\pm1$ をとる前提から導け。</li>
+        <li>未知状態 $|\psi\rangle=\alpha|0\rangle+\beta|1\rangle$ をテレポートする際，Alice の Bell 基底測定結果が $|\Psi^-\rangle$ だったとき，Bob が施すべき Pauli 補正を求め，復元後の状態が $|\psi\rangle$ に一致することを示せ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

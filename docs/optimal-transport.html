@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>最適輸送 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 最適輸送</div>
+    <h1>最適輸送</h1>
+    <p class="tagline">Monge-Kantorovich・双対性・Wasserstein 距離・Brenier の定理・勾配流。確率分布を動かす最適化。</p>
+    <div class="tags"><span class="tag">Monge-Kantorovich</span><span class="tag">Wasserstein距離</span><span class="tag">双対性</span><span class="tag">Brenier定理</span><span class="tag">勾配流</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#monge">Monge 問題</a></li>
+        <li><a href="#kantorovich">Kantorovich 緩和</a></li>
+        <li><a href="#duality">双対性</a></li>
+        <li><a href="#wasserstein">Wasserstein 距離</a></li>
+        <li><a href="#brenier">Brenier の定理</a></li>
+        <li><a href="#dynamic">動的定式化</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>最適輸送は確率測度の上に展開される変分問題である。<a href="measure-theory.html">測度論</a>（測度・押し出し・弱収束），<a href="optimization.html">最適化</a>（線形計画・双対性・凸解析），<a href="probability.html">確率論</a>（確率測度・結合分布）を前提とすると理解が早い。</p>
+    </div>
+
+    <h2 id="monge">1. Monge 問題</h2>
+    <p>1781 年に Monge が提起した「土砂を最も効率よく運ぶにはどうするか」という問題が，最適輸送理論の出発点である。砂山（供給分布）を穴（需要分布）へ，総運搬コストを最小化して移し替えることを考える。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 輸送写像とコスト関数</div>
+      <p>$X, Y$ を可測空間とし，確率測度 $\mu$ を $X$ 上に，$\nu$ を $Y$ 上に与える。可測写像 $T : X \to Y$ が $\mu$ を $\nu$ に<strong>押し出す</strong>とは，任意の可測集合 $B \subseteq Y$ に対して</p>
+      $$T_\# \mu = \nu \quad\Longleftrightarrow\quad \mu\bigl(T^{-1}(B)\bigr) = \nu(B)$$
+      <p>が成り立つことをいう。このとき $T$ を<strong>輸送写像</strong>と呼ぶ。点 $x$ を $y = T(x)$ へ運ぶ単位コストを<strong>コスト関数</strong> $c(x,y) \ge 0$ で表す（例: $c(x,y) = |x-y|$，$c(x,y) = |x-y|^2$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Monge の定式化</div>
+      <p>Monge 問題は，押し出し制約を満たす輸送写像のうち総コストを最小化するものを求める：</p>
+      $$\inf_{T} \left\{ \int_X c\bigl(x, T(x)\bigr)\, d\mu(x) \;:\; T_\#\mu = \nu \right\}$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Monge 問題の難しさ — 非凸性と非存在</div>
+      <p>制約 $T_\#\mu = \nu$ は $T$ について<strong>非線形</strong>であり，許容写像の集合は凸ではない。そのため標準的な変分法・凸解析が直接は使えない。さらに $\mu$ が一点に集中する一方で $\nu$ が拡がっている場合（質量分割が必要な場合），そもそも輸送写像 $T$ が存在しないことがある。たとえば $\mu = \delta_0$，$\nu = \tfrac12(\delta_{-1}+\delta_{1})$ では，1 点 $0$ を 2 点へ分けて送る写像は存在しない。この困難を解消するのが次の Kantorovich 緩和である。</p>
+    </div>
+
+    <h2 id="kantorovich">2. Kantorovich 緩和</h2>
+    <p>1942 年に Kantorovich は，質量を「分割して」運ぶことを許す形に問題を緩める発想を導入した。写像 $T$ の代わりに，$X \times Y$ 上の<strong>結合測度</strong>（どこからどこへどれだけ運ぶか）を変数とする。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 輸送計画（結合測度）</div>
+      <p>$\mu, \nu$ を周辺分布にもつ $X \times Y$ 上の確率測度全体を</p>
+      $$\Pi(\mu,\nu) = \bigl\{ \pi \in \mathcal{P}(X\times Y) \;:\; (\mathrm{proj}_X)_\#\pi = \mu,\ (\mathrm{proj}_Y)_\#\pi = \nu \bigr\}$$
+      <p>と書く。すなわち任意の可測集合 $A\subseteq X,\ B\subseteq Y$ について $\pi(A\times Y)=\mu(A)$，$\pi(X\times B)=\nu(B)$。要素 $\pi\in\Pi(\mu,\nu)$ を<strong>輸送計画</strong>（カップリング）と呼ぶ。$\pi(dx,dy)$ は点 $x$ から点 $y$ へ運ぶ質量を表す。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Kantorovich 問題（線形計画）</div>
+      <p>Kantorovich の最適輸送問題は</p>
+      $$\mathcal{K}(\mu,\nu) = \inf_{\pi\in\Pi(\mu,\nu)} \int_{X\times Y} c(x,y)\, d\pi(x,y)$$
+      <p>と定式化される。目的関数も制約も $\pi$ について<strong>線形</strong>であり，これは（無限次元の）線形計画である。輸送写像 $T$ は $\pi_T = (\mathrm{id}, T)_\#\mu$ という特別な計画に対応するので，常に $\mathcal{K}(\mu,\nu) \le (\text{Monge 値})$ が成り立つ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最小化子の存在</div>
+      <p>$X, Y$ をポーランド空間，$c : X\times Y \to [0,\infty]$ を下半連続とする。このとき $\Pi(\mu,\nu)$ は空でなく（積測度 $\mu\otimes\nu$ を含む），弱位相についてコンパクトであり，汎関数 $\pi \mapsto \int c\, d\pi$ は下半連続である。ゆえに最小化子 $\pi^\star\in\Pi(\mu,\nu)$ が<strong>存在する</strong>。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 離散最適輸送</div>
+      <p>$\mu = \sum_{i=1}^m a_i\delta_{x_i}$，$\nu = \sum_{j=1}^n b_j\delta_{y_j}$（$\sum a_i = \sum b_j = 1$）のとき，輸送計画は行列 $P = (p_{ij})$ で表され，問題は有限次元 LP に帰着する：</p>
+      $$\min_{P\ge 0} \sum_{i,j} c_{ij}\, p_{ij} \quad\text{s.t.}\quad \sum_j p_{ij} = a_i,\ \ \sum_i p_{ij} = b_j$$
+      <p>$a_i = b_j = 1/n$（同数の点）の特別な場合，最適解は置換行列となり，これは<strong>割当問題</strong>（ハンガリアン法で可解）と一致する。</p>
+    </div>
+
+    <h2 id="duality">3. 双対性</h2>
+    <p>Kantorovich 問題は線形計画なので，対応する双対問題をもつ。双対変数は「価格」の解釈をもち，理論と計算の両面で中心的役割を果たす。</p>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Kantorovich 双対</div>
+      <p>$c$ を下半連続とする。主問題の最小値は次の双対問題の最大値に一致する（強双対性）：</p>
+      $$\mathcal{K}(\mu,\nu) = \sup_{(\varphi,\psi)} \left\{ \int_X \varphi\, d\mu + \int_Y \psi\, d\nu \;:\; \varphi(x)+\psi(y) \le c(x,y)\ \ \forall (x,y) \right\}$$
+      <p>ここで $\varphi\in L^1(\mu),\ \psi\in L^1(\nu)$。直観的には，$\varphi$ は出発地での価格，$\psi$ は到着地での価格を表し，どの輸送ルートよりも安くなるよう価格を最大化する「運送業者の利潤最大化」と読める。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — c-変換と Kantorovich ポテンシャル</div>
+      <p>関数 $\varphi : X\to\mathbb{R}$ の <strong>c-変換</strong>を</p>
+      $$\varphi^c(y) = \inf_{x\in X}\bigl( c(x,y) - \varphi(x) \bigr)$$
+      <p>で定義する。$\psi = \varphi^c$ と取れば制約 $\varphi(x)+\psi(y)\le c(x,y)$ は自動的に満たされ，双対問題は単一の関数 $\varphi$ について</p>
+      $$\sup_{\varphi}\left\{ \int_X \varphi\, d\mu + \int_Y \varphi^c\, d\nu \right\}$$
+      <p>と書き直せる。$\varphi = \varphi^{cc}$ を満たす関数を <strong>c-凹</strong> といい，最適 $\varphi$ を <strong>Kantorovich ポテンシャル</strong>と呼ぶ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 相補性（最適性の特徴づけ）</div>
+      <p>$\pi^\star$ が主問題の最適計画，$(\varphi,\psi)$ が双対問題の最適解であるとき，$\pi^\star$-ほとんど至るところで等号が成り立つ：</p>
+      $$\varphi(x) + \psi(y) = c(x,y) \qquad \pi^\star\text{-a.e.}$$
+      <p>すなわち最適計画の台 $\mathrm{supp}\,\pi^\star$ は，制約が活性化する集合 $\{\varphi+\psi = c\}$ に含まれる。これは離散 LP における相補性条件の連続版であり，最適写像の幾何（c-巡回単調性）を導く鍵となる。</p>
+    </div>
+
+    <h2 id="wasserstein">4. Wasserstein 距離</h2>
+    <p>最適輸送コストを「分布間の距離」として用いると，確率測度の空間に豊かな幾何構造が入る。これが Wasserstein 距離である。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Wasserstein 距離</div>
+      <p>$(M,d)$ を距離空間，$p\ge 1$ とする。コスト $c(x,y) = d(x,y)^p$ に対する最適輸送コストの $1/p$ 乗を <strong>$p$-Wasserstein 距離</strong> と定義する：</p>
+      $$W_p(\mu,\nu) = \left( \inf_{\pi\in\Pi(\mu,\nu)} \int_{M\times M} d(x,y)^p\, d\pi(x,y) \right)^{1/p}$$
+      <p>これは $p$ 次モーメントが有限な確率測度の空間 $\mathcal{P}_p(M)$ 上で定義される。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 距離の公理と Wasserstein 空間</div>
+      <p>$W_p$ は $\mathcal{P}_p(M)$ 上の<strong>距離</strong>である：非負性，対称性，$W_p(\mu,\nu)=0 \Leftrightarrow \mu=\nu$，および三角不等式（gluing lemma による結合の貼り合わせで示される）を満たす。$(\mathcal{P}_p(M), W_p)$ を <strong>Wasserstein 空間</strong>と呼び，$M$ が完備可分なら $\mathcal{P}_p(M)$ も完備可分である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 弱収束との関係</div>
+      <p>$\mathcal{P}_p(M)$ 上で $W_p(\mu_k,\mu)\to 0$ であることは，$\mu_k$ が $\mu$ に<strong>弱収束</strong>し，かつ $p$ 次モーメントが収束すること（$\int d(x,x_0)^p\, d\mu_k \to \int d(x,x_0)^p\, d\mu$）と同値である。とくに $W_1$ は Kantorovich-Rubinstein 双対により</p>
+      $$W_1(\mu,\nu) = \sup_{\mathrm{Lip}(f)\le 1} \left( \int f\, d\mu - \int f\, d\nu \right)$$
+      <p>と表され，1-Lipschitz 関数による積分差の上限に等しい。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 1 次元と Gauss 分布</div>
+      <p>$M=\mathbb{R}$ では，累積分布関数の逆（分位関数）$F_\mu^{-1}, F_\nu^{-1}$ を用いて閉形式で書ける：</p>
+      $$W_p(\mu,\nu)^p = \int_0^1 \bigl| F_\mu^{-1}(t) - F_\nu^{-1}(t) \bigr|^p\, dt$$
+      <p>また平均 $m_1,m_2$・共分散 $\Sigma_1,\Sigma_2$ をもつ Gauss 分布に対し，2-Wasserstein 距離は</p>
+      $$W_2^2 = |m_1-m_2|^2 + \mathrm{tr}\Bigl(\Sigma_1 + \Sigma_2 - 2\bigl(\Sigma_1^{1/2}\Sigma_2\Sigma_1^{1/2}\bigr)^{1/2}\Bigr)$$
+      <p>と陽に与えられる。</p>
+    </div>
+
+    <h2 id="brenier">5. Brenier の定理</h2>
+    <p>二次コスト $c(x,y)=|x-y|^2$ の場合，最適輸送は際立って美しい構造をもつ。最適計画はじつは輸送写像により実現され，しかもその写像は凸関数の勾配である，というのが Brenier の定理である。</p>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Brenier（1987, 1991）</div>
+      <p>$\mu, \nu \in \mathcal{P}_2(\mathbb{R}^d)$ とし，$\mu$ が Lebesgue 測度について絶対連続であるとする。二次コスト $c(x,y)=|x-y|^2$ に対して，最適輸送計画は<strong>一意</strong>に存在し，それはある<strong>輸送写像</strong> $T$ に台をもつ。さらに $T$ はある凸関数 $\varphi:\mathbb{R}^d\to\mathbb{R}$ の勾配として表される：</p>
+      $$T(x) = \nabla\varphi(x), \qquad \varphi\ \text{は凸},\qquad (\nabla\varphi)_\#\mu = \nu$$
+      <p>逆に，凸関数の勾配で $\mu$ を $\nu$ に押し出すものは二次コストの最適写像である（凸関数の勾配は c-巡回単調な写像と対応する）。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ポテンシャルとの関係</div>
+      <p>二次コストでは双対の Kantorovich ポテンシャル $\psi$ と凸ポテンシャル $\varphi$ は $\varphi(x) = \tfrac12|x|^2 - \psi(x)$ で結びつく。$|x-y|^2 = |x|^2 - 2\langle x,y\rangle + |y|^2$ と展開すると，二次コストの最適化は内積 $\langle x,y\rangle$ の最大化と等価になり，凸性（Legendre 変換）が自然に現れる。Brenier 写像は「分布を運ぶ恒等写像の単調な一般化」とみなせる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Monge-Ampère 方程式</div>
+      <p>$\mu = f\, dx$，$\nu = g\, dx$ が密度をもつとき，押し出し条件 $(\nabla\varphi)_\#\mu = \nu$ は変数変換公式により，凸ポテンシャル $\varphi$ についての非線形 2 階楕円型 PDE，<strong>Monge-Ampère 方程式</strong>に帰着する：</p>
+      $$g\bigl(\nabla\varphi(x)\bigr)\, \det\bigl(D^2\varphi(x)\bigr) = f(x)$$
+      <p>ここで $D^2\varphi$ は Hesse 行列。$\varphi$ の凸性により $\det D^2\varphi \ge 0$ が保証される。Caffarelli らによる正則性理論が解の滑らかさを論じる。</p>
+    </div>
+
+    <h2 id="dynamic">6. 動的定式化</h2>
+    <p>これまでは「どこからどこへ運ぶか」を静的に見てきたが，質量が時間とともに流れる様子を追う動的な視点を導入すると，Wasserstein 空間が Riemann 多様体のような幾何をもつことが見えてくる。</p>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Benamou-Brenier 公式</div>
+      <p>2-Wasserstein 距離は，密度の時間発展 $\rho_t$ と速度場 $v_t$ にわたる最小化として書ける（2000 年）：</p>
+      $$W_2(\mu,\nu)^2 = \inf_{(\rho_t, v_t)} \int_0^1\!\!\int_{\mathbb{R}^d} |v_t(x)|^2\, \rho_t(x)\, dx\, dt$$
+      <p>ただし最小化は <strong>連続の式</strong>（質量保存）</p>
+      $$\partial_t \rho_t + \nabla\cdot(\rho_t\, v_t) = 0, \qquad \rho_0 = \mu,\ \ \rho_1 = \nu$$
+      <p>を満たすすべての対 $(\rho_t, v_t)$ にわたる。これは静的問題を流体力学的な変分問題に変換したもので，凸最適化として数値解法に適する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Wasserstein 測地線（変位補間）</div>
+      <p>Brenier 写像 $T=\nabla\varphi$ を用いて，$T_t(x) = (1-t)x + t\,T(x)$ と定め，$\mu_t = (T_t)_\#\mu$ とおくと，$(\mu_t)_{t\in[0,1]}$ は $\mu$ と $\nu$ を結ぶ $W_2$ の<strong>測地線</strong>（McCann の<strong>変位補間</strong>）を与える：</p>
+      $$W_2(\mu_s,\mu_t) = |t-s|\, W_2(\mu,\nu)$$
+      <p>各点を最適写像に沿って一定速度で動かすことに相当する。線形補間 $(1-t)\mu+t\nu$ とは本質的に異なり，質量の「運搬」を反映する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 勾配流と JKO スキーム</div>
+      <p>多くの発展方程式は，あるエネルギー汎関数 $\mathcal{F}$ の Wasserstein 空間上の<strong>勾配流</strong>として解釈できる。Jordan-Kinderlehrer-Otto（1998）は，時間刻み $\tau>0$ で逐次最小化（<strong>JKO スキーム</strong>）</p>
+      $$\rho^{(k+1)} = \arg\min_{\rho} \left\{ \mathcal{F}(\rho) + \frac{1}{2\tau} W_2(\rho, \rho^{(k)})^2 \right\}$$
+      <p>を行うと，$\tau\to 0$ の極限が勾配流の解に収束することを示した。とくにエントロピー $\mathcal{F}(\rho)=\int \rho\log\rho$ を取ると，対応する勾配流は<strong>熱方程式</strong> $\partial_t\rho = \Delta\rho$ となる（Fokker-Planck 方程式も同様に表現できる）。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <p>最適輸送は純粋数学にとどまらず，分布を比較・変形する普遍的な道具として多くの分野で使われている。</p>
+    <div class="box example">
+      <div class="box-title">📝 例 — 機械学習（Wasserstein GAN）</div>
+      <p>生成モデルでは，生成分布 $\mu_\theta$ をデータ分布 $\nu$ に近づけたい。従来の Jensen-Shannon ダイバージェンスは台が交わらないと勾配が消えるのに対し，<strong>Wasserstein GAN</strong> は $W_1$ を損失に用いる：</p>
+      $$\min_\theta\ W_1(\mu_\theta, \nu) = \min_\theta\ \sup_{\mathrm{Lip}(f)\le 1}\ \bigl( \mathbb{E}_{x\sim\mu_\theta}[f(x)] - \mathbb{E}_{y\sim\nu}[f(y)] \bigr)$$
+      <p>Kantorovich-Rubinstein 双対の 1-Lipschitz 関数 $f$ を「批評者（critic）」としてニューラルネットで近似し，重みクリッピングや勾配ペナルティで Lipschitz 制約を課す。分布が離れていても安定な勾配が得られるのが利点である。最適輸送はドメイン適応や分布間距離（OT データセット距離）にも広く使われる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 画像処理・コンピュータグラフィックス</div>
+      <p>カラーヒストグラムを最適輸送で対応づけると，自然な<strong>色変換（color transfer）</strong>が実現できる。画像をピクセル質量の分布とみなした Wasserstein バリセンター（複数分布の「平均」）はテクスチャ合成・形状補間に使われ，変位補間によるモーフィングは滑らかな中間形状を生成する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 経済学・PDE</div>
+      <p>経済学では，最適輸送は資源配分・マッチング理論（労働者と職の割当，需給均衡）や厚生分析に現れ，価格双対変数が均衡価格に対応する。PDE 分野では，前節の勾配流の視点により，熱方程式・Fokker-Planck 方程式・多孔質媒質方程式などが Wasserstein 勾配流として統一的に扱われ，エネルギー減衰・収束率の解析（曲率条件 $\mathrm{CD}(K,N)$）に道具立てを与える。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 計算面 — エントロピー正則化</div>
+      <p>大規模問題では，エントロピー項を加えた正則化 $\min_\pi \int c\, d\pi + \varepsilon\, H(\pi)$ を解く<strong>Sinkhorn アルゴリズム</strong>（行・列の交互正規化）が高速・並列向きで，機械学習における事実上の標準となっている。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$\mu=\delta_0$，$\nu=\tfrac12(\delta_{-1}+\delta_{1})$ に対して Monge 問題の輸送写像が存在しないことを示し，一方で Kantorovich 問題の最適計画を具体的に書き下せ。</li>
+        <li>離散最適輸送 $\mu=\sum a_i\delta_{x_i}$，$\nu=\sum b_j\delta_{y_j}$ について，主問題（LP）とその双対問題を行列形式で書き，相補性条件を述べよ。</li>
+        <li>$M=\mathbb{R}$，$\mu=\mathcal{U}[0,1]$（一様分布），$\nu=\mathcal{U}[a,a+1]$ のとき，分位関数を用いて $W_2(\mu,\nu)$ を計算せよ。</li>
+        <li>$\varphi(x)=\tfrac12 a|x|^2$（$a>0$）の勾配 $T=\nabla\varphi$ が標準 Gauss 分布をどの分布へ押し出すかを求め，これが二次コスト最適であることを Brenier の定理から述べよ。</li>
+        <li>連続の式 $\partial_t\rho + \nabla\cdot(\rho v)=0$ から出発し，変位補間 $\mu_t=(T_t)_\#\mu$（$T_t=(1-t)\,\mathrm{id}+t\,T$）が Benamou-Brenier 汎関数を最小化することの概略を説明せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>最適輸送を応用へ展開するなら <a href="machine-learning.html">機械学習の数理</a>（Wasserstein GAN・分布間距離・Sinkhorn），理論を深めるなら <a href="pde.html">偏微分方程式</a>（Monge-Ampère 方程式・勾配流・Fokker-Planck）へ進むとよい。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

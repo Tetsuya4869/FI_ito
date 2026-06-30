@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>連続体力学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 連続体力学</div>
+    <h1>連続体力学</h1>
+    <p class="tagline">ひずみ・応力テンソル・Hookeの法則・弾性波・梁の曲げ・座屈。固体の変形を記述する力学。</p>
+    <div class="tags"><span class="tag">ひずみテンソル</span><span class="tag">応力テンソル</span><span class="tag">線形弾性</span><span class="tag">弾性波</span><span class="tag">梁と座屈</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#deformation">連続体と変形</a></li>
+        <li><a href="#strain">ひずみテンソル</a></li>
+        <li><a href="#stress">応力テンソル</a></li>
+        <li><a href="#constitutive">構成則（線形弾性）</a></li>
+        <li><a href="#waves">弾性体の運動と弾性波</a></li>
+        <li><a href="#beams">梁の曲げと座屈</a></li>
+        <li><a href="#beyond">塑性・粘弾性と流体への接続</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは<a href="classical-mechanics.html">古典力学</a>（Newton 力学・運動方程式・釣り合い）と，<a href="vectors-matrices.html">ベクトルと行列</a>（特にテンソル，対称行列の対角化・固有値）の基礎を前提とする。連続体の物理量はテンソル場として記述されるため，添字記法 $A_{ij}$ と和の規約に慣れておくと読みやすい。</p>
+    </div>
+
+    <h2 id="deformation">1. 連続体と変形</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 連続体近似と変位場</div>
+      <p>物体を構成する原子の離散性を無視し，質量・運動量・エネルギーが空間に連続的に分布するとみなす理想化を<strong>連続体近似</strong>という。各物質点は基準配置での位置 $\mathbf{X}$ で識別され，変形後の現在位置 $\mathbf{x}$ へ移る。</p>
+      <p><strong>変位場</strong>はこの移動量を表すベクトル場：</p>
+      $$\mathbf{u}(\mathbf{X}, t) = \mathbf{x}(\mathbf{X}, t) - \mathbf{X}$$
+      <p>連続体の変形・運動はすべて $\mathbf{u}$ とその空間微分から記述される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 変形勾配テンソル</div>
+      <p>基準配置から現在配置への局所的な写像 $\mathbf{x} = \mathbf{x}(\mathbf{X})$ の Jacobi 行列を<strong>変形勾配テンソル</strong>という：</p>
+      $$F_{iJ} = \frac{\partial x_i}{\partial X_J} = \delta_{iJ} + \frac{\partial u_i}{\partial X_J}$$
+      <p>体積変化は $J = \det F$ で測られ（$J>0$ が物理的），$J=1$ は非圧縮変形を意味する。$F$ から並進・回転（剛体運動）を除いた純粋な変形がひずみとして取り出される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Lagrange 記述と Euler 記述</div>
+      <p><strong>Lagrange（物質）記述</strong>では物質点 $\mathbf{X}$ を独立変数とし「この粒子を追いかける」。固体力学で自然な記述で，変位 $\mathbf{u}(\mathbf{X},t)$ がそのまま未知関数となる。</p>
+      <p><strong>Euler（空間）記述</strong>では空間点 $\mathbf{x}$ を独立変数とし「ある場所を通過する物質」を見る。流体で標準的。両者は物質微分 $\dfrac{D}{Dt}=\partial_t + \mathbf{v}\cdot\nabla$ で結ばれる。微小変形の弾性論では両記述の差は高次の微小量となり区別が不要になる。</p>
+    </div>
+
+    <h2 id="strain">2. ひずみテンソル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 微小ひずみテンソル</div>
+      <p>変位勾配 $\partial u_i/\partial x_j$ が微小（$|\partial u| \ll 1$）のとき，変形の対称部分を<strong>微小ひずみテンソル</strong>と定義する：</p>
+      $$\varepsilon_{ij} = \frac{1}{2}\left(\frac{\partial u_i}{\partial x_j} + \frac{\partial u_j}{\partial x_i}\right) = \frac{1}{2}(\partial_j u_i + \partial_i u_j)$$
+      <p>反対称部分 $\omega_{ij}=\tfrac12(\partial_j u_i - \partial_i u_j)$ は微小な剛体回転を表し，変形には寄与しない。$\varepsilon_{ij}$ は対称テンソル（$\varepsilon_{ij}=\varepsilon_{ji}$）で，独立成分は 6 個。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 成分の意味</div>
+      <p>対角成分 $\varepsilon_{xx},\varepsilon_{yy},\varepsilon_{zz}$ は各軸方向の<strong>伸び縮み（垂直ひずみ）</strong>，非対角成分 $\varepsilon_{xy}$ 等は角度の変化（<strong>せん断ひずみ</strong>）を表す。工学せん断ひずみ $\gamma_{xy}=2\varepsilon_{xy}$ が用いられることもあるので注意。有限変形では Green-Lagrange ひずみ $E_{ij}=\tfrac12(F_{ki}F_{kj}-\delta_{ij})$ を使い，二次の項を含む。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 主ひずみ</div>
+      <p>$\varepsilon_{ij}$ は実対称テンソルなので直交変換で対角化でき，固有値 $\varepsilon_1,\varepsilon_2,\varepsilon_3$ を<strong>主ひずみ</strong>，対応する固有方向を<strong>主軸</strong>という。主軸方向にはせん断ひずみが 0 で，純粋な伸縮のみが生じる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 体積ひずみ（膨張率）</div>
+      <p>微小変形での相対体積変化はひずみテンソルのトレースに等しい：</p>
+      $$\theta = \frac{\Delta V}{V} = \varepsilon_{xx}+\varepsilon_{yy}+\varepsilon_{zz} = \varepsilon_{kk} = \nabla\cdot\mathbf{u}$$
+      <p>これを<strong>体積ひずみ</strong>（dilatation）という。非圧縮材料では $\theta=0$，すなわち $\nabla\cdot\mathbf{u}=0$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 単軸引張</div>
+      <p>$x$ 方向に一様引張を受け，変位が $u_x = \alpha x$，$u_y = -\beta y$，$u_z = -\beta z$ で与えられるとき：</p>
+      $$\varepsilon_{xx}=\alpha,\quad \varepsilon_{yy}=\varepsilon_{zz}=-\beta,\quad \varepsilon_{ij}=0\ (i\neq j)$$
+      <p>体積ひずみは $\theta = \alpha - 2\beta$。後述のポアソン比は $\nu=\beta/\alpha$ で定義される。</p>
+    </div>
+
+    <h2 id="stress">3. 応力テンソル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Cauchy 応力テンソルと応力ベクトル</div>
+      <p>連続体内部の仮想的な面に働く単位面積あたりの内力を<strong>応力</strong>という。法線ベクトル $\mathbf{n}$ をもつ面に作用する力（応力ベクトル，トラクション）$\mathbf{t}^{(\mathbf{n})}$ は，<strong>Cauchy 応力テンソル</strong> $\sigma_{ij}$ を用いて</p>
+      $$t_i^{(\mathbf{n})} = \sigma_{ij}\, n_j$$
+      <p>と線形に表される（Cauchy の関係式）。$\sigma_{ij}$ は「$j$ に垂直な面に働く力の $i$ 成分」を表す。対角成分が垂直応力，非対角成分がせん断応力。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 釣り合い方程式（運動量保存）</div>
+      <p>微小体積要素についての Newton の第二法則（運動量保存則）を局所形にすると：</p>
+      $$\frac{\partial \sigma_{ij}}{\partial x_j} + f_i = \rho\,\ddot u_i$$
+      <p>ここで $f_i$ は体積力密度（重力など），$\rho$ は質量密度，$\ddot u_i$ は加速度。静的釣り合いでは右辺が 0 となり $\partial_j\sigma_{ij}+f_i=0$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 応力の対称性</div>
+      <p>角運動量保存則（体積要素のモーメント釣り合い）から，体積モーメントがない通常の連続体では Cauchy 応力テンソルは対称となる：</p>
+      $$\sigma_{ij} = \sigma_{ji}$$
+      <p>これにより独立成分は 6 個。対称性ゆえ応力テンソルも対角化可能で，固有値を<strong>主応力</strong>，固有方向を<strong>主応力軸</strong>という。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 静水圧</div>
+      <p>流体静止状態のように，あらゆる面に等方的な圧力 $p$ のみが働く場合，応力テンソルは</p>
+      $$\sigma_{ij} = -p\,\delta_{ij}$$
+      <p>せん断応力は存在しない。一般の応力は等方部分（圧力）$-p\delta_{ij}$（$p=-\tfrac13\sigma_{kk}$）と，トレースが 0 の<strong>偏差応力</strong> $s_{ij}=\sigma_{ij}+p\delta_{ij}$ に分解できる。偏差応力が形状変化（せん断）を担う。</p>
+    </div>
+
+    <h2 id="constitutive">4. 構成則（線形弾性）</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 一般化 Hooke の法則</div>
+      <p>応力とひずみを結ぶ材料固有の関係を<strong>構成則</strong>という。線形弾性体では応力がひずみに線形比例する（一般化 Hooke の法則）：</p>
+      $$\sigma_{ij} = C_{ijkl}\,\varepsilon_{kl}$$
+      <p>$C_{ijkl}$ は<strong>弾性係数テンソル</strong>（4 階テンソル，対称性により独立成分は最大 21 個）。これは 1 次元のばねの法則 $F=kx$ を 3 次元テンソルへ一般化したものである。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 等方弾性体と Lamé 定数</div>
+      <p>すべての方向が等価な<strong>等方弾性体</strong>では，弾性係数は 2 つの独立定数（<strong>Lamé 定数</strong> $\lambda,\mu$）のみで表される：</p>
+      $$\sigma_{ij} = \lambda\,\varepsilon_{kk}\,\delta_{ij} + 2\mu\,\varepsilon_{ij}$$
+      <p>$\mu$ は剛性率（せん断弾性係数），$\lambda$ は第一 Lamé 定数。逆に解くと $\varepsilon_{ij}=\dfrac{1}{2\mu}\left(\sigma_{ij}-\dfrac{\lambda}{3\lambda+2\mu}\sigma_{kk}\delta_{ij}\right)$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 工学的弾性定数</div>
+      <p>実用上は次の定数が用いられ，Lamé 定数と相互変換できる：</p>
+      <table>
+        <tr><th>定数</th><th>意味</th><th>関係式</th></tr>
+        <tr><td>ヤング率 $E$</td><td>単軸引張での応力/ひずみ</td><td>$E=\dfrac{\mu(3\lambda+2\mu)}{\lambda+\mu}$</td></tr>
+        <tr><td>ポアソン比 $\nu$</td><td>横収縮/縦伸び</td><td>$\nu=\dfrac{\lambda}{2(\lambda+\mu)}$</td></tr>
+        <tr><td>剛性率 $G=\mu$</td><td>せん断応力/せん断ひずみ</td><td>$G=\dfrac{E}{2(1+\nu)}$</td></tr>
+        <tr><td>体積弾性率 $K$</td><td>圧力/体積ひずみ</td><td>$K=\lambda+\dfrac{2}{3}\mu=\dfrac{E}{3(1-2\nu)}$</td></tr>
+      </table>
+      <p>熱力学的安定性から $-1<\nu<\tfrac12$。$\nu\to\tfrac12$ は非圧縮極限（$K\to\infty$）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 単軸引張でのヤング率</div>
+      <p>$x$ 方向のみに応力 $\sigma_{xx}=\sigma$（他成分 0）をかけると，等方則から</p>
+      $$\varepsilon_{xx}=\frac{\sigma}{E},\quad \varepsilon_{yy}=\varepsilon_{zz}=-\nu\,\frac{\sigma}{E}$$
+      <p>すなわち縦に伸びると横に縮む。$\sigma=E\varepsilon_{xx}$ が 1 次元 Hooke 則の形である。</p>
+    </div>
+
+    <h2 id="waves">5. 弾性体の運動と弾性波</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Navier-Cauchy 方程式</div>
+      <p>等方弾性体の構成則 $\sigma_{ij}=\lambda\varepsilon_{kk}\delta_{ij}+2\mu\varepsilon_{ij}$ を運動方程式 $\partial_j\sigma_{ij}+f_i=\rho\ddot u_i$ に代入すると，変位場 $\mathbf{u}$ に関する基礎方程式が得られる：</p>
+      $$\rho\,\ddot{\mathbf{u}} = (\lambda+\mu)\,\nabla(\nabla\cdot\mathbf{u}) + \mu\,\nabla^2\mathbf{u} + \mathbf{f}$$
+      <p>これを <strong>Navier-Cauchy 方程式</strong>という。弾性体の静的変形・振動・波動をすべて支配する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 縦波（P 波）と横波（S 波）</div>
+      <p>外力なし $\mathbf{f}=0$ のとき，Helmholtz 分解 $\mathbf{u}=\nabla\phi+\nabla\times\boldsymbol{\psi}$ により波は 2 種類に分離される。</p>
+      <p><strong>縦波（P 波，疎密波）</strong>: $\nabla\cdot\mathbf{u}\neq0,\ \nabla\times\mathbf{u}=0$。変位が伝播方向に平行で，体積変化を伴う。波速</p>
+      $$c_P = \sqrt{\frac{\lambda+2\mu}{\rho}}$$
+      <p><strong>横波（S 波，せん断波）</strong>: $\nabla\cdot\mathbf{u}=0,\ \nabla\times\mathbf{u}\neq0$。変位が伝播方向に垂直で，体積変化を伴わない。波速</p>
+      $$c_S = \sqrt{\frac{\mu}{\rho}}$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 P 波が先に届く</div>
+      <p>常に $c_P>c_S$ なので（$\lambda+2\mu>\mu$），地震では縦波の P 波が先に，横波の S 波が遅れて到達する。両者の到達時間差から震源距離を推定できる。流体は $\mu=0$ のためせん断波 S 波を伝えず，音波（縦波）のみが伝わる。</p>
+    </div>
+
+    <h2 id="beams">6. 梁の曲げと座屈</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Euler-Bernoulli 梁理論</div>
+      <p>細長い棒（梁）の曲げを扱う近似理論。「変形前に断面に垂直だった平面は変形後も平面のまま中立軸に垂直」と仮定する。中立軸からの距離 $y$ に比例して軸方向ひずみが生じ，たわみ $w(x)$ の曲率に関係づけられる：</p>
+      $$\varepsilon_{xx} = -y\,\frac{d^2 w}{dx^2}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 曲げモーメントとたわみの方程式</div>
+      <p>断面に働く内力モーメント（<strong>曲げモーメント</strong>）$M$ は曲率に比例する：</p>
+      $$M = E I \frac{d^2 w}{dx^2},\qquad I = \int_A y^2\,dA$$
+      <p>$EI$ は<strong>曲げ剛性</strong>，$I$ は断面二次モーメント。分布荷重 $q(x)$ とのたわみの基礎方程式：</p>
+      $$EI\,\frac{d^4 w}{dx^4} = q(x)$$
+      <p>境界条件（固定端・単純支持・自由端）を課して $w(x)$ を解く。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 片持ち梁の先端たわみ</div>
+      <p>長さ $L$ の片持ち梁の自由端に集中荷重 $P$ を加えると，先端のたわみは</p>
+      $$w_{\max} = \frac{P L^3}{3 E I}$$
+      <p>剛性 $EI$ が大きいほど，また長さ $L$ が短いほどたわみにくい（$L^3$ に効く）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Euler 座屈</div>
+      <p>軸方向の圧縮荷重 $P$ がある臨界値を超えると，梁・柱は突然横方向に座屈する。両端単純支持の柱の<strong>Euler 座屈荷重</strong>は</p>
+      $$P_{\rm cr} = \frac{\pi^2 E I}{L^2}$$
+      <p>これは Navier 方程式 $EI\,w''''+P\,w''=0$ の非自明解が存在する条件（固有値問題）として導かれる。端末条件により $L$ を有効長さ $L_e$ に置換する（一端固定他端自由なら $L_e=2L$ 等）。座屈は材料破壊ではなく構造の幾何学的不安定性である。</p>
+    </div>
+
+    <h2 id="beyond">7. 塑性・粘弾性と流体への接続</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 降伏条件と塑性変形</div>
+      <p>応力が小さいうちは線形弾性（除荷で元に戻る）だが，<strong>降伏応力</strong>を超えると永久変形（<strong>塑性変形</strong>）が残る。降伏の開始は<strong>降伏条件</strong>で判定する。代表例の von Mises 条件は偏差応力 $s_{ij}$ を用いて</p>
+      $$\sqrt{\tfrac{3}{2}\,s_{ij}s_{ij}} = \sigma_Y$$
+      <p>と書け，$\sigma_Y$ は降伏応力。Tresca 条件（最大せん断応力基準）も広く使われる。塑性流動は体積を保存し，偏差応力に支配される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 粘弾性</div>
+      <p>ゴム・高分子・生体組織などは弾性（ばね）と粘性（ダッシュポット）の両方の性質をもつ。<strong>粘弾性</strong>体は応力がひずみだけでなくひずみ速度にも依存する。代表的モデル：</p>
+      <p>Maxwell モデル（直列）: $\dot\varepsilon=\dfrac{\dot\sigma}{E}+\dfrac{\sigma}{\eta}$（応力緩和を表現）。<br>Kelvin-Voigt モデル（並列）: $\sigma=E\varepsilon+\eta\dot\varepsilon$（クリープを表現）。</p>
+      <p>$\eta$ は粘性係数。時間依存の応答（クリープ・応力緩和・ヒステリシス）が特徴。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 固体から流体への連続性</div>
+      <p>応力を「弾性（変形量に依存）」と「粘性（変形速度に依存）」の組み合わせと見ると，固体力学と流体力学は連続的につながる。剛性率 $\mu\to0$ の極限では弾性応力が消え，せん断に抵抗しない＝流体になる。逆に Navier-Cauchy 方程式の構成則 $\sigma=\lambda\theta\delta+2\mu\varepsilon$ で，ひずみをひずみ速度に置き換えた $\sigma_{ij}=-p\delta_{ij}+\lambda'\,\dot\varepsilon_{kk}\delta_{ij}+2\eta\,\dot\varepsilon_{ij}$ が Newton 流体の構成則であり，これを運動方程式に入れると Navier-Stokes 方程式が得られる。応力・ひずみ・釣り合いというテンソルの枠組みは固体・流体に共通である。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>変位場 $u_x=ky,\ u_y=u_z=0$（単純せん断）に対するひずみテンソル $\varepsilon_{ij}$ と回転テンソル $\omega_{ij}$ を求め，体積ひずみが 0 であることを確認せよ。</li>
+        <li>等方弾性体の関係 $E=\dfrac{\mu(3\lambda+2\mu)}{\lambda+\mu}$，$\nu=\dfrac{\lambda}{2(\lambda+\mu)}$ から，逆に $\lambda,\mu$ を $E,\nu$ で表せ。また $\nu\to\tfrac12$ で体積弾性率 $K$ がどうなるか論ぜよ。</li>
+        <li>静水圧 $\sigma_{ij}=-p\,\delta_{ij}$ をかけたときの体積ひずみ $\theta$ を等方則から求め，$p=-K\theta$ となることを示し $K$ を Lamé 定数で表せ。</li>
+        <li>Navier-Cauchy 方程式に対し，渦なし変位 $\mathbf{u}=\nabla\phi$ と発散なし変位 $\mathbf{u}=\nabla\times\boldsymbol{\psi}$ をそれぞれ代入し，P 波・S 波の波動方程式と波速 $c_P,c_S$ を導け。</li>
+        <li>両端単純支持の柱（長さ $L$，曲げ剛性 $EI$）について，方程式 $EI\,w''''+P\,w''=0$ と境界条件 $w(0)=w(L)=0$，$w''(0)=w''(L)=0$ から Euler 座屈荷重 $P_{\rm cr}=\pi^2 EI/L^2$ を導け。</li>
+      </ol>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>剛性率 $\mu\to0$ の極限・構成則のひずみ速度版から自然につながる<a href="fluid-dynamics.html">流体力学</a>（Navier-Stokes 方程式）へ進むとよい。また本ページの基礎方程式（Navier-Cauchy・梁のたわみ・波動方程式）はすべて<a href="pde.html">偏微分方程式</a>であり，その解法（境界値問題・固有値問題・分離変数法）を学ぶと弾性体の具体問題を解けるようになる。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

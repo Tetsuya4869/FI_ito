@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作用素環論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 作用素環論</div>
+    <h1>作用素環論</h1>
+    <p class="tagline">C*環・Gelfand-Naimark・GNS構成・von Neumann環・因子環の分類。作用素のなす代数。</p>
+    <div class="tags"><span class="tag">C*環</span><span class="tag">Gelfand理論</span><span class="tag">GNS構成</span><span class="tag">von Neumann環</span><span class="tag">因子環</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="functional-analysis.html">関数解析</a>（Banach空間・Hilbert空間・有界作用素・双対性）と <a href="abstract-algebra.html">抽象代数学</a>（環・代数・準同型）の基礎を仮定する。スペクトル理論の初歩を知っていると理解が深まる。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#cstar">Banach環とC*環</a></li>
+        <li><a href="#spectrum">スペクトルと正則計算</a></li>
+        <li><a href="#gelfand">Gelfand理論</a></li>
+        <li><a href="#states">正値性と状態・GNS構成</a></li>
+        <li><a href="#vonneumann">von Neumann環</a></li>
+        <li><a href="#factors">因子環の分類</a></li>
+        <li><a href="#applications">応用と非可換幾何</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="cstar">1. Banach環とC*環</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Banach環</div>
+      <p>複素 Banach 空間 $A$ が，連想的・双線型な積を持ち，ノルムが劣乗法的</p>
+      $$\|ab\| \le \|a\|\,\|b\| \quad (a,b \in A)$$
+      <p>を満たすとき，$A$ を <strong>Banach 環</strong>（Banach 代数）という。単位元 $1$ を持ち $\|1\|=1$ のとき<strong>単位的</strong>という。可換性は仮定しない。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 対合とC*環</div>
+      <p>Banach 環 $A$ 上の写像 $* : A \to A$ が次を満たすとき<strong>対合</strong>（involution）という：</p>
+      $$(a^*)^* = a, \quad (a+b)^* = a^* + b^*, \quad (\lambda a)^* = \bar\lambda\, a^*, \quad (ab)^* = b^* a^*.$$
+      <p>対合つき Banach 環が<strong>C*条件</strong></p>
+      $$\|a^* a\| = \|a\|^2 \quad (\forall a \in A)$$
+      <p>を満たすとき，$A$ を <strong>$C^*$環</strong> と呼ぶ。この一見単純な等式が理論全体を強く統制する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 C*条件の威力</div>
+      <p>C*条件から直ちに $\|a^*\| = \|a\|$（等長対合）が従い，さらにノルムは代数構造のみで一意に決まる（$\|a\|^2 = \|a^*a\| = $ スペクトル半径 $r(a^*a)$）。すなわち $C^*$環には「自分の幾何を内蔵する代数」という著しい剛性がある。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 基本的な$C^*$環</div>
+      <p><strong>(1) $B(H)$:</strong> Hilbert 空間 $H$ 上の有界線型作用素全体 $B(H)$ は，作用素ノルムと随伴 $T \mapsto T^*$ を対合として $C^*$環をなす。実際 $\|T^*T\| = \|T\|^2$ は随伴の定義から従う。これが非可換 $C^*$環の原型である。</p>
+      <p><strong>(2) $C(X)$:</strong> コンパクト Hausdorff 空間 $X$ 上の複素連続関数全体 $C(X)$ は，各点ごとの積，上限ノルム $\|f\|_\infty$，複素共役 $f^*(x)=\overline{f(x)}$ を対合として<strong>可換</strong> $C^*$環をなす。$\|f^*f\|_\infty = \||f|^2\|_\infty = \|f\|_\infty^2$。</p>
+      <p>局所コンパクトな $X$ では無限遠で消える連続関数の環 $C_0(X)$ が（非単位的な）可換 $C^*$環を与える。</p>
+    </div>
+
+    <h2 id="spectrum">2. スペクトルと正則計算</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — スペクトル</div>
+      <p>単位的 Banach 環 $A$ の元 $a$ に対し，その<strong>スペクトル</strong>を</p>
+      $$\sigma(a) = \{\lambda \in \mathbb{C} : a - \lambda 1 \text{ は } A \text{ で可逆でない}\}$$
+      <p>で定義する。$\sigma(a)$ は $\mathbb{C}$ の空でないコンパクト部分集合である。<strong>スペクトル半径</strong>は</p>
+      $$r(a) = \max_{\lambda \in \sigma(a)} |\lambda| = \lim_{n\to\infty} \|a^n\|^{1/n}$$
+      <p>（Gelfand の公式）。常に $r(a) \le \|a\|$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 正規元のスペクトルとノルム</div>
+      <p>$C^*$環において，$a$ が<strong>自己共役</strong>（$a^*=a$）または<strong>正規</strong>（$a^*a=aa^*$）ならば</p>
+      $$r(a) = \|a\|.$$
+      <p>自己共役元のスペクトルは実軸上に乗り（$\sigma(a)\subset\mathbb{R}$），ユニタリ元（$u^*u=uu^*=1$）のスペクトルは単位円周上に乗る。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 連続関数計算</div>
+      <p>$C^*$環 $A$ の正規元 $a$ に対し，$a$ と $1$ が生成する可換 $C^*$部分環は $C(\sigma(a))$ と等長同型である。この同型により，任意の連続関数 $f \in C(\sigma(a))$ に対して元 $f(a) \in A$ を意味づけできる。これを<strong>連続関数計算</strong>（continuous functional calculus）という。</p>
+      <p>多項式 $f(\lambda)=\sum c_k \lambda^k$ に対しては $f(a)=\sum c_k a^k$ と一致し，$\sigma(f(a)) = f(\sigma(a))$（スペクトル写像定理）が成り立つ。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 平方根と絶対値</div>
+      <p>正の元 $a \ge 0$（$\sigma(a)\subset[0,\infty)$）に対し $f(\lambda)=\sqrt\lambda$ を適用すると一意な正の平方根 $a^{1/2}$ が得られる。一般の元 $a$ には $|a| = (a^*a)^{1/2}$ が定義でき，極分解 $a = u|a|$ の基礎となる。</p>
+    </div>
+
+    <h2 id="gelfand">3. Gelfand理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 指標空間とGelfand変換</div>
+      <p>可換 Banach 環 $A$ に対し，ゼロでない環準同型 $\chi : A \to \mathbb{C}$ を<strong>指標</strong>（character，乗法的線型汎関数）という。指標全体 $\widehat{A}$ を弱*位相で考えたものを<strong>指標空間</strong>（スペクトル，極大イデアル空間）という。単位的なら $\widehat{A}$ はコンパクト Hausdorff である。</p>
+      <p><strong>Gelfand 変換</strong>は各 $a\in A$ を関数 $\hat a \in C(\widehat A)$，$\hat a(\chi) = \chi(a)$ に対応させる環準同型 $\Gamma : A \to C(\widehat A)$ である。常に $\hat a(\widehat A) = \sigma(a)$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Gelfand-Naimark（可換版）</div>
+      <p>$A$ が<strong>可換 $C^*$環</strong>ならば，Gelfand 変換は等長 $*$同型</p>
+      $$A \;\cong\; C_0(\widehat A)$$
+      <p>を与える（$A$ が単位的なら $C(\widehat A)$）。すなわち<strong>すべての可換 $C^*$環は，ある局所コンパクト Hausdorff 空間上の連続関数環として実現される</strong>。逆に $\widehat{C_0(X)} \cong X$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 双対性：代数と空間の対応</div>
+      <p>Gelfand-Naimark の定理は，可換 $C^*$環の圏と局所コンパクト Hausdorff 空間の圏とが（射の向きを逆にして）<strong>反変同値</strong>であることを述べる。「空間を調べること」と「その上の関数環を調べること」が完全に同じ情報を持つ。この観点が次の非可換幾何の出発点となる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 単位円周上の連続関数</div>
+      <p>$A = C(S^1)$ の指標空間は $S^1$ 自身に一致する：各点 $z \in S^1$ が評価指標 $\chi_z(f)=f(z)$ を与える。生成元 $u(z)=z$（ユニタリ）のスペクトルは $\sigma(u)=S^1$。Fourier 級数は Gelfand 変換の具体例とみなせる。</p>
+    </div>
+
+    <h2 id="states">4. 正値性と状態・GNS構成</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 正の元と状態</div>
+      <p>$C^*$環の元 $a$ が<strong>正</strong>（$a \ge 0$）とは，$a=a^*$ かつ $\sigma(a)\subset[0,\infty)$ であること。同値に $a = b^*b$ となる $b$ が存在することである。正の元全体は閉錐をなす。</p>
+      <p>線型汎関数 $\varphi : A \to \mathbb{C}$ が<strong>正</strong>とは $a\ge 0 \Rightarrow \varphi(a)\ge 0$。正かつ正規化 $\|\varphi\|=1$（単位的なら $\varphi(1)=1$）のものを<strong>状態</strong>（state）という。状態は「期待値」を与える物理的対象である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — GNS構成（Gelfand-Naimark-Segal）</div>
+      <p>$C^*$環 $A$ 上の任意の状態 $\varphi$ に対し，Hilbert 空間 $H_\varphi$，$*$表現 $\pi_\varphi : A \to B(H_\varphi)$，巡回ベクトル $\xi_\varphi \in H_\varphi$ が存在して</p>
+      $$\varphi(a) = \langle \pi_\varphi(a)\,\xi_\varphi,\ \xi_\varphi\rangle \quad (\forall a\in A)$$
+      <p>が成り立ち，$\overline{\pi_\varphi(A)\xi_\varphi} = H_\varphi$（巡回性）。すなわち<strong>状態から具体的な作用素表現が再構成できる</strong>。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 GNS構成の手続き</div>
+      <p>(1) $A$ 上に半内積 $\langle a,b\rangle = \varphi(b^*a)$ を入れる。(2) ノルムゼロの元（左イデアル $N_\varphi=\{a:\varphi(a^*a)=0\}$）で商をとり，完備化して $H_\varphi$ を得る。(3) 左掛け算 $\pi_\varphi(a)[b] = [ab]$ が表現を与え，$\xi_\varphi = [1]$ が巡回ベクトルとなる。$\varphi$ が純粋状態であることと $\pi_\varphi$ が既約であることは同値。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Gelfand-Naimark（一般版）</div>
+      <p>任意の $C^*$環は，ある Hilbert 空間 $H$ 上の $B(H)$ の閉 $*$部分環として等長 $*$同型に実現できる。証明はすべての状態にわたる GNS 表現の直和 $\pi = \bigoplus_\varphi \pi_\varphi$（普遍表現）が忠実であることによる。</p>
+    </div>
+
+    <h2 id="vonneumann">5. von Neumann環</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 弱作用素位相と交換子</div>
+      <p>$B(H)$ 上の<strong>弱作用素位相</strong>（WOT）は，汎関数 $T \mapsto \langle T\xi,\eta\rangle$（$\xi,\eta\in H$）が連続となる最弱位相。<strong>強作用素位相</strong>（SOT）は $T\mapsto \|T\xi\|$ による。部分集合 $M\subset B(H)$ の<strong>交換子</strong>（commutant）は</p>
+      $$M' = \{T \in B(H) : TS = ST \ (\forall S\in M)\}.$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — von Neumann環</div>
+      <p>単位元を含む $*$部分環 $M\subset B(H)$ が<strong>弱作用素位相で閉じている</strong>とき，$M$ を <strong>von Neumann 環</strong>（$W^*$環）という。$C^*$環がノルム閉であることに比べ，WOT 閉はより強く，豊富な射影を含む。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 二重交換子定理（von Neumann）</div>
+      <p>$1\in M$ なる $*$部分環 $M\subset B(H)$ について，次は同値：</p>
+      $$M \text{ は von Neumann 環} \iff M = M''.$$
+      <p>すなわち<strong>位相的条件（WOT閉）と純代数的条件（二重交換子に一致）が完全に一致する</strong>。これは作用素環論の基礎を支える顕著な定理である（一般に $M\subset M''$ は常に成り立ち，$M''=\overline{M}^{\,\mathrm{WOT}}$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 中心と因子環</div>
+      <p>von Neumann 環 $M$ の<strong>中心</strong>は $Z(M) = M \cap M'$。中心が自明，すなわち</p>
+      $$Z(M) = M \cap M' = \mathbb{C}1$$
+      <p>であるとき，$M$ を<strong>因子環</strong>（factor）という。任意の von Neumann 環は中心上の直積分として因子環に分解されるため，因子環の分類が中心的課題となる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 基本的なvon Neumann環</div>
+      <p>$B(H)$ 自身は因子環（$Z=\mathbb{C}1$）。対角作用素環 $L^\infty(X,\mu)$ は $L^2(X,\mu)$ 上の可換 von Neumann 環で，$M=M'$（極大可換）。群 $G$ の左正則表現から作られる群 von Neumann 環 $\mathcal{L}(G)$ は，$G$ が i.c.c.（共役類が無限）なら因子環となる。</p>
+    </div>
+
+    <h2 id="factors">6. 因子環の分類</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 射影の同値とMurray-von Neumann比較</div>
+      <p>因子環 $M$ の射影 $p,q$（$p=p^*=p^2$）が<strong>同値</strong>（$p\sim q$）とは，部分等長作用素 $v\in M$ があって $v^*v=p,\ vv^*=q$ となること。射影に「次元」に相当する順序が入り，これが分類の鍵となる。各因子環には射影の同値類に値をとる<strong>相対次元関数</strong>が（定数倍を除き一意に）定まる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Murray-von Neumann の型分類</div>
+      <p>すべての因子環は，相対次元関数の値域によって次の型に分類される：</p>
+      <table>
+        <tr><th>型</th><th>次元の値域</th><th>トレース</th><th>代表例</th></tr>
+        <tr><td>$\mathrm{I}_n$</td><td>$\{0,1,\ldots,n\}$</td><td>有限・整数値</td><td>$M_n(\mathbb{C})$</td></tr>
+        <tr><td>$\mathrm{I}_\infty$</td><td>$\{0,1,\ldots,\infty\}$</td><td>半有限</td><td>$B(H)$（$\dim H=\infty$）</td></tr>
+        <tr><td>$\mathrm{II}_1$</td><td>$[0,1]$</td><td>有限・連続値</td><td>i.c.c. 群環 $\mathcal{L}(G)$</td></tr>
+        <tr><td>$\mathrm{II}_\infty$</td><td>$[0,\infty]$</td><td>半有限</td><td>$\mathrm{II}_1 \otimes B(H)$</td></tr>
+        <tr><td>$\mathrm{III}$</td><td>$\{0,\infty\}$</td><td>トレース無し</td><td>富田-竹崎理論の対象</td></tr>
+      </table>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — トレースと型II$_1$因子</div>
+      <p>因子環上の<strong>トレース</strong>とは，正の線型汎関数 $\tau$ で $\tau(ab)=\tau(ba)$ を満たすもの。型 $\mathrm{II}_1$ 因子は正規化された有限トレース $\tau$（$\tau(1)=1$）を一意に持ち，射影の次元は $[0,1]$ の任意の実数値をとる——<strong>連続次元</strong>という非古典的現象が現れる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 型IIIと近代的展開</div>
+      <p>型 $\mathrm{III}$ 因子はトレースを持たず長く謎であったが，富田-竹崎のモジュラー理論（時間発展に相当するモジュラー自己同型群 $\sigma_t$）により解析が進み，Connes による型 $\mathrm{III}_\lambda$（$0\le\lambda\le1$）への細分と入射的因子の完全分類（Fields 賞，1982）へ至った。型 $\mathrm{III}$ は場の量子論で本質的に現れる。</p>
+    </div>
+
+    <h2 id="applications">7. 応用と非可換幾何</h2>
+    <div class="box note">
+      <div class="box-title">💡 量子力学の数学的基礎</div>
+      <p>量子系の観測量は $C^*$環（または von Neumann 環）の自己共役元として，状態は環上の状態として定式化される（代数的量子論）。期待値 $\langle a\rangle = \varphi(a)$ は状態の値そのもの，GNS 構成は与えられた状態に対応する Hilbert 空間表現を与える。Heisenberg の正準交換関係 $[Q,P]=i\hbar$ は有界作用素では実現できず，Weyl 形式 $e^{isQ}e^{itP}=e^{-ist\hbar}e^{itP}e^{isQ}$ による $C^*$環（CCR 環）として扱われる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 場の量子論と局所代数</div>
+      <p>代数的場の量子論（Haag-Kastler）では，時空の各開領域 $\mathcal{O}$ に観測量の von Neumann 環 $\mathcal{A}(\mathcal{O})$ を割り当てるネットを基本構造とする。物理的に自然な局所代数は型 $\mathrm{III}_1$ 因子であることが知られ，因子環の分類が物理に直結する。詳しくは <a href="quantum-field-theory.html">量子場理論</a> を参照。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ K理論と作用素環</div>
+      <p>$C^*$環 $A$ には位相的 K 理論の類似として群 $K_0(A),\,K_1(A)$ が定義される。$K_0(A)$ は射影の同値類（の Grothendieck 群），$K_1(A)$ はユニタリ元の連結成分に基づく。可換な場合 $K_i(C_0(X)) \cong K^i(X)$ で空間の位相的 K 理論を回復する。指数定理（Atiyah-Singer）の作用素環的拡張や，半有限因子上の連続次元が $K_0$ のトレースとして現れる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 非可換幾何への概観</div>
+      <p>Gelfand-Naimark の双対性「可換 $C^*$環 $\leftrightarrow$ 空間」を逆手にとり，<strong>一般の（非可換な）$C^*$環を「非可換空間上の関数環」とみなす</strong>のが Connes の<strong>非可換幾何</strong>である。点の集合として記述できない空間（葉層構造の葉空間，群の作用の商，フラクタル等）も $C^*$環としては自然に扱える。スペクトル三対 $(A, H, D)$（環・Hilbert 空間・Dirac 型作用素 $D$）が「非可換リーマン多様体」を与え，距離・次元・曲率の概念が代数的に再定義される。標準模型の幾何学的記述や量子重力への応用が研究されている。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>C*条件 $\|a^*a\|=\|a\|^2$ から，対合が等長 $\|a^*\|=\|a\|$ であることを示せ。</li>
+        <li>$C^*$環において自己共役元 $a=a^*$ のスペクトルが実軸 $\sigma(a)\subset\mathbb{R}$ に含まれることを，$\|e^{ita}\|$ を評価して示せ。</li>
+        <li>有限次元 $C^*$環 $A=M_n(\mathbb{C})$ 上の状態が，あるトレース 1 の正値行列（密度行列）$\rho$ により $\varphi(a)=\mathrm{Tr}(\rho a)$ と表されることを示せ。</li>
+        <li>$A=C(X)$（$X$ コンパクト）上の純粋状態が $X$ の点での評価 $\chi_x(f)=f(x)$ に限ることを示し，対応する GNS 表現を記述せよ。</li>
+        <li>$B(H)$ の交換子が $B(H)'=\mathbb{C}1$ であることを示し，二重交換子定理から $B(H)$ が因子環（型 $\mathrm{I}$）であることを結論せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

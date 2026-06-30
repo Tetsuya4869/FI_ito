@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ホモロジー代数 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / ホモロジー代数</div>
+    <h1>ホモロジー代数</h1>
+    <p class="tagline">完全列・鎖複体・導来関手・Tor/Ext・スペクトル系列。代数を貫くホモロジーの言語。</p>
+    <div class="tags"><span class="tag">完全列</span><span class="tag">鎖複体</span><span class="tag">導来関手</span><span class="tag">Tor / Ext</span><span class="tag">スペクトル系列</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは環・加群・準同型などの基本に親しんでいることを前提とする。代数構造については <a href="abstract-algebra.html">抽象代数学</a> を，関手・自然変換・極限などの言語については <a href="category-theory.html">圏論</a> を先に押さえておくと理解が格段に進む。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#modules">加群と完全列</a></li>
+        <li><a href="#complexes">鎖複体とホモロジー</a></li>
+        <li><a href="#categorical">アーベル圏と図式追跡</a></li>
+        <li><a href="#derived">導来関手</a></li>
+        <li><a href="#tor-ext">Tor と Ext</a></li>
+        <li><a href="#spectral">スペクトル系列</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="modules">1. 加群と完全列</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 環上の加群</div>
+      <p>環 $R$（単位元をもつとする）に対し，アーベル群 $M$ と作用 $R \times M \to M$, $(r,m)\mapsto rm$ が次を満たすとき $M$ を<strong>左 $R$ 加群</strong>という：</p>
+      $$r(m+m') = rm + rm',\quad (r+r')m = rm + r'm,\quad (rr')m = r(r'm),\quad 1\cdot m = m.$$
+      <p>$R$ が体のときは $R$ 加群はベクトル空間に他ならない。$R = \mathbb{Z}$ のときは加群はアーベル群と一致する。$R$ 加群とその間の準同型のなす圏を $\mathbf{Mod}_R$ と書く。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 加群準同型</div>
+      <p>写像 $f\colon M \to N$ が<strong>$R$ 加群準同型</strong>であるとは，</p>
+      $$f(m+m') = f(m)+f(m'),\qquad f(rm) = r\,f(m)\quad (r\in R,\ m,m'\in M)$$
+      <p>を満たすこと。$\ker f = \{m : f(m)=0\}$ と $\operatorname{im} f = \{f(m): m\in M\}$ はそれぞれ部分加群であり，準同型定理 $M/\ker f \cong \operatorname{im} f$ が成り立つ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 完全列と短完全列</div>
+      <p>加群準同型の列</p>
+      $$\cdots \to M_{n+1} \xrightarrow{\,f_{n+1}\,} M_n \xrightarrow{\,f_n\,} M_{n-1} \to \cdots$$
+      <p>が点 $M_n$ で<strong>完全</strong>であるとは $\operatorname{im} f_{n+1} = \ker f_n$ が成り立つこと。すべての点で完全な列を<strong>完全列</strong>という。特に</p>
+      $$0 \to A \xrightarrow{\,f\,} B \xrightarrow{\,g\,} C \to 0$$
+      <p>を<strong>短完全列</strong>という。これは「$f$ が単射」「$g$ が全射」「$\operatorname{im} f = \ker g$」と同値であり，$A$ を $B$ の部分加群，$C \cong B/A$ を商加群とみなす状況を表す。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 分裂補題</div>
+      <p>短完全列 $0 \to A \xrightarrow{f} B \xrightarrow{g} C \to 0$ について，次は同値：</p>
+      <ol>
+        <li>$f$ の左逆 $r\colon B\to A$（$r\circ f = \mathrm{id}_A$）が存在する；</li>
+        <li>$g$ の右逆（切断）$s\colon C\to B$（$g\circ s = \mathrm{id}_C$）が存在する；</li>
+        <li>同型 $B \cong A \oplus C$ が存在し，$f,g$ がそれぞれ標準的な入射・射影に対応する。</li>
+      </ol>
+      <p>このとき短完全列は<strong>分裂する</strong>という。$C$ が射影加群（例えば自由加群）ならば必ず分裂する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 分裂しない完全列</div>
+      <p>$\mathbb{Z}$ 加群（アーベル群）の短完全列</p>
+      $$0 \to \mathbb{Z} \xrightarrow{\ \times 2\ } \mathbb{Z} \xrightarrow{\ \bmod 2\ } \mathbb{Z}/2\mathbb{Z} \to 0$$
+      <p>は分裂しない。もし分裂すれば $\mathbb{Z} \cong \mathbb{Z}\oplus \mathbb{Z}/2\mathbb{Z}$ となるが，右辺は捩れ元 $(0,1)$ をもつのに左辺は捩れ自由であり矛盾する。</p>
+    </div>
+
+    <h2 id="complexes">2. 鎖複体とホモロジー</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 鎖複体</div>
+      <p>$R$ 加群の列と準同型の組</p>
+      $$C_\bullet:\quad \cdots \to C_{n+1} \xrightarrow{\,\partial_{n+1}\,} C_n \xrightarrow{\,\partial_n\,} C_{n-1} \to \cdots$$
+      <p>が<strong>鎖複体</strong>であるとは，連続する境界作用素の合成がゼロになること：</p>
+      $$\partial_n \circ \partial_{n+1} = 0\qquad(\text{すべての } n).$$
+      <p>これは $\operatorname{im}\partial_{n+1} \subseteq \ker\partial_n$ を意味する。$\partial_n$ を<strong>境界作用素</strong>（微分）と呼ぶ。番号を上付きにし $d^n\colon C^n\to C^{n+1}$ とする双対版を<strong>余鎖複体</strong>という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ホモロジー群</div>
+      <p>$Z_n = \ker\partial_n$ の元を<strong>$n$ 次サイクル</strong>，$B_n = \operatorname{im}\partial_{n+1}$ の元を<strong>$n$ 次境界</strong>という。$B_n \subseteq Z_n$ であるから商加群</p>
+      $$H_n(C_\bullet) = \frac{\ker\partial_n}{\operatorname{im}\partial_{n+1}} = Z_n / B_n$$
+      <p>が定義でき，これを<strong>$n$ 次ホモロジー群</strong>という。$H_n = 0$（すべての $n$）であることと，$C_\bullet$ が完全列であることは同値。すなわちホモロジーは「完全性からのずれ」を測る不変量である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 鎖写像とホモロジーの関手性</div>
+      <p>鎖複体の間の<strong>鎖写像</strong> $\varphi\colon C_\bullet \to D_\bullet$ とは，準同型の族 $\varphi_n\colon C_n\to D_n$ で各正方形が可換になるもの：</p>
+      $$\partial_n^{D}\circ \varphi_n = \varphi_{n-1}\circ \partial_n^{C}.$$
+      <p>このとき $\varphi$ はサイクルをサイクルに，境界を境界に写すので，誘導準同型 $H_n(\varphi)\colon H_n(C_\bullet)\to H_n(D_\bullet)$ を定める。$H_n$ は鎖複体の圏からアーベル群の圏への関手となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 鎖ホモトピー</div>
+      <p>鎖写像 $\varphi,\psi\colon C_\bullet\to D_\bullet$ が<strong>鎖ホモトピック</strong>とは，準同型族 $h_n\colon C_n\to D_{n+1}$ が存在して $\varphi_n - \psi_n = \partial_{n+1}^{D} h_n + h_{n-1}\partial_n^{C}$ となること。ホモトピックな鎖写像は同じホモロジー準同型を誘導する（$H_n(\varphi)=H_n(\psi)$）。これは位相幾何のホモトピー不変性の代数的核心である。</p>
+    </div>
+
+    <h2 id="categorical">3. アーベル圏と図式追跡</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — アーベル圏</div>
+      <p><strong>アーベル圏</strong>とは，加法圏であって次を満たす圏である：</p>
+      <ol>
+        <li>零対象をもち，任意の有限積（＝有限余積）が存在する；</li>
+        <li>すべての射が核と余核をもつ；</li>
+        <li>すべての単射は核であり，すべての全射は余核である（正規・余正規）。</li>
+      </ol>
+      <p>$\mathbf{Mod}_R$ や有限生成加群の圏，層の圏 $\mathbf{Sh}(X)$ などが典型例。アーベル圏では短完全列・ホモロジー・導来関手といったホモロジー代数の構成がすべて意味をもち，「加群の言葉」で行う議論の多くがそのまま通用する（Freyd–Mitchell の埋め込み定理が背景にある）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 蛇の補題</div>
+      <p>アーベル圏において，行が完全で各正方形が可換な図式</p>
+      $$\begin{array}{ccccccccc}
+      & & A & \to & B & \to & C & \to & 0\\
+      & & \downarrow{\scriptstyle f} & & \downarrow{\scriptstyle g} & & \downarrow{\scriptstyle h} & & \\
+      0 & \to & A' & \to & B' & \to & C' & &
+      \end{array}$$
+      <p>が与えられたとき，<strong>連結準同型</strong> $\delta\colon \ker h \to \operatorname{coker} f$ が存在し，次の長完全列が成り立つ：</p>
+      $$\ker f \to \ker g \to \ker h \xrightarrow{\ \delta\ } \operatorname{coker} f \to \operatorname{coker} g \to \operatorname{coker} h.$$
+      <p>「蛇」のように図式を蛇行する連結準同型がこの補題の核心であり，後述の長完全列のすべての源泉である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 5項補題</div>
+      <p>行が完全で可換な図式</p>
+      $$\begin{array}{ccccccccc}
+      A_1 & \to & A_2 & \to & A_3 & \to & A_4 & \to & A_5\\
+      \downarrow{\scriptstyle f_1} & & \downarrow{\scriptstyle f_2} & & \downarrow{\scriptstyle f_3} & & \downarrow{\scriptstyle f_4} & & \downarrow{\scriptstyle f_5}\\
+      B_1 & \to & B_2 & \to & B_3 & \to & B_4 & \to & B_5
+      \end{array}$$
+      <p>において，$f_1$ が全射，$f_2,f_4$ が同型，$f_5$ が単射ならば $f_3$ は同型である。特に両端の四つが同型なら中央も同型。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 図式追跡（diagram chasing）</div>
+      <p>蛇の補題や5項補題の証明は「元を取って図式を追う」方法で行うのが直観的である。例えば $c\in\ker h$ をとり，$B$ から持ち上げ，$g$ で送り，行の完全性から $A'$ の元を取り出して連結準同型 $\delta(c)$ を構成する。アーベル圏一般では「元」は存在しないが，Freyd–Mitchell の埋め込み定理により加群圏での図式追跡の結論がそのまま転用できる。</p>
+    </div>
+
+    <h2 id="derived">4. 導来関手</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 左完全・右完全関手</div>
+      <p>加法関手 $F$ が短完全列 $0\to A\to B\to C\to 0$ に対し</p>
+      $$0 \to F(A) \to F(B) \to F(C)\quad(\text{右端の全射は保証されない})$$
+      <p>を完全にするとき $F$ を<strong>左完全</strong>という。例：$\operatorname{Hom}(M,-)$ と $\operatorname{Hom}(-,M)$（反変）。逆に左端の単射が崩れ得るが残りが完全なら<strong>右完全</strong>といい，テンソル積 $M\otimes_R -$ が代表例。導来関手はこのような関手の「完全性の破れ」を高次の不変量として捉える仕組みである。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 射影分解・入射分解</div>
+      <p>加群 $M$ の<strong>射影分解</strong>とは，各 $P_i$ が射影加群である完全列</p>
+      $$\cdots \to P_2 \xrightarrow{\partial_2} P_1 \xrightarrow{\partial_1} P_0 \xrightarrow{\varepsilon} M \to 0$$
+      <p>のこと。双対に，各 $I^i$ が入射加群である完全列 $0\to M\to I^0\to I^1\to\cdots$ を<strong>入射分解</strong>という。$\mathbf{Mod}_R$ は十分多くの射影対象・入射対象をもつので，任意の加群はこれらの分解をもつ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 導来関手の構成と well-defined 性</div>
+      <p>右完全関手 $F$ の<strong>左導来関手</strong>は，$M$ の射影分解 $P_\bullet$ をとり $M$ を除いて $F$ を施した複体 $F(P_\bullet)$ のホモロジーとして定義する：</p>
+      $$L_n F(M) = H_n\bigl(F(P_\bullet)\bigr),\qquad L_0 F \cong F.$$
+      <p>双対に，左完全関手 $G$ の<strong>右導来関手</strong>は入射分解 $I^\bullet$ を用いて $R^n G(M) = H^n\bigl(G(I^\bullet)\bigr)$。射影分解の取り方によらず（鎖ホモトピー同値で結ばれるため）一意に定まる。さらに短完全列 $0\to A\to B\to C\to 0$ に対し<strong>長完全列</strong></p>
+      $$\cdots \to L_n F(A)\to L_n F(B)\to L_n F(C)\xrightarrow{\delta} L_{n-1}F(A)\to\cdots$$
+      <p>が存在し，これが導来関手の最大の威力である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 完全関手なら高次は消える</div>
+      <p>$F$ が完全関手であれば $L_nF = 0$（$n\ge 1$）かつ $R^nF = 0$（$n\ge 1$）。したがって高次導来関手の非自明さは，まさに $F$ が完全性をどれだけ崩すかの精密な測定値である。</p>
+    </div>
+
+    <h2 id="tor-ext">5. Tor と Ext</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Tor 関手</div>
+      <p>右完全関手 $-\otimes_R N$ の左導来関手を <strong>Tor</strong> という：</p>
+      $$\operatorname{Tor}_n^R(M,N) = L_n(-\otimes_R N)(M) = H_n\bigl(P_\bullet \otimes_R N\bigr),$$
+      <p>ここで $P_\bullet \to M$ は射影分解。$\operatorname{Tor}_0^R(M,N)\cong M\otimes_R N$ であり，二変数で対称：$\operatorname{Tor}_n^R(M,N)\cong\operatorname{Tor}_n^R(N,M)$。$\operatorname{Tor}_1$ はテンソル積が単射を壊す度合い（捩れ）を測る。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Ext 関手</div>
+      <p>左完全な反変関手 $\operatorname{Hom}_R(-,N)$ の右導来関手を <strong>Ext</strong> という：</p>
+      $$\operatorname{Ext}^n_R(M,N) = R^n\operatorname{Hom}_R(-,N)(M) = H^n\bigl(\operatorname{Hom}_R(P_\bullet, N)\bigr).$$
+      <p>$\operatorname{Ext}^0_R(M,N)\cong\operatorname{Hom}_R(M,N)$。共変関手 $\operatorname{Hom}_R(M,-)$ を入射分解で導いても同じものが得られる（バランス性）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $\mathbb{Z}$ 上の計算</div>
+      <p>$M = \mathbb{Z}/m\mathbb{Z}$ の射影（自由）分解 $0\to\mathbb{Z}\xrightarrow{\times m}\mathbb{Z}\to\mathbb{Z}/m\to 0$ を用いる。$-\otimes_{\mathbb Z}\mathbb{Z}/n$ を施すと $\mathbb{Z}/n\xrightarrow{\times m}\mathbb{Z}/n$ となり，</p>
+      $$\operatorname{Tor}_0^{\mathbb Z}(\mathbb Z/m,\mathbb Z/n)\cong \mathbb Z/\gcd(m,n),\qquad \operatorname{Tor}_1^{\mathbb Z}(\mathbb Z/m,\mathbb Z/n)\cong \mathbb Z/\gcd(m,n),$$
+      <p>かつ $n\ge 2$ で高次はゼロ。同様に $\operatorname{Hom}(-,\mathbb Z/n)$ を施して</p>
+      $$\operatorname{Ext}^1_{\mathbb Z}(\mathbb Z/m,\mathbb Z/n)\cong \mathbb Z/\gcd(m,n),\qquad \operatorname{Ext}^1_{\mathbb Z}(\mathbb Z/m,\mathbb Z)\cong \mathbb Z/m.$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Ext と拡大の対応</div>
+      <p>$\operatorname{Ext}^1_R(C,A)$ は，$A$ による $C$ の<strong>拡大</strong>，すなわち短完全列</p>
+      $$0 \to A \to E \to C \to 0$$
+      <p>の同値類の集合と自然に一対一対応する（Baer 和をアーベル群構造とする）。零元は分裂拡大 $E = A\oplus C$ に対応する。したがって $\operatorname{Ext}^1_R(C,A)=0$ であることと「$A$ による $C$ の拡大がすべて分裂する」ことは同値であり，これが $\operatorname{Ext}$ の名前（extension）の由来である。</p>
+    </div>
+
+    <h2 id="spectral">6. スペクトル系列</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — フィルトレーション付き複体</div>
+      <p>鎖複体 $C_\bullet$ の<strong>フィルトレーション</strong>とは，微分で保たれる部分複体の増大列</p>
+      $$\cdots \subseteq F_{p-1}C \subseteq F_p C \subseteq F_{p+1}C \subseteq \cdots \subseteq C$$
+      <p>のこと。フィルトレーションはホモロジー $H_n(C)$ にも誘導され，付随する次数化 $\operatorname{gr}_p H_n = F_p H_n / F_{p-1}H_n$ を考えることでホモロジーを「段階的に」計算する道具立てが得られる。これを系統化したものがスペクトル系列である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — スペクトル系列</div>
+      <p>（ホモロジー型の）<strong>スペクトル系列</strong>とは，両次数付き加群と微分の族 $\bigl(E^r_{p,q},\ d^r\bigr)_{r\ge r_0}$ であって，</p>
+      $$d^r\colon E^r_{p,q}\to E^r_{p-r,\,q+r-1},\qquad d^r\circ d^r = 0,$$
+      <p>かつ次のページが前のページのホモロジーになっているもの：</p>
+      $$E^{r+1}_{p,q}\cong \frac{\ker\bigl(d^r\colon E^r_{p,q}\to E^r_{p-r,q+r-1}\bigr)}{\operatorname{im}\bigl(d^r\colon E^r_{p+r,q-r+1}\to E^r_{p,q}\bigr)}.$$
+      <p>各 $r$ を「ページ」と呼ぶ。ページを進めるごとに微分が長く伸び，情報が精密化していく。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 収束</div>
+      <p>各 $(p,q)$ である $r$ 以降 $d^r$ が出入りともゼロになるとき（第一象限スペクトル系列では必ず起こる），極限 $E^\infty_{p,q}$ が定まる。スペクトル系列が次数 $n$ の加群 $H_n$ に<strong>収束する</strong>とは，$H_n$ にフィルトレーションが入り</p>
+      $$E^\infty_{p,q}\cong \operatorname{gr}_p H_{p+q}$$
+      <p>が成り立つこと。記号で $E^{r_0}_{p,q}\Rightarrow H_{p+q}$ と書く。$E^\infty$ から $H_n$ を復元するには各次数の<strong>拡大問題</strong>を解く必要がある（一般に一意でない）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Grothendieck スペクトル系列</div>
+      <p>合成可能な左完全関手 $F,G$ について（$G$ が入射対象を $F$-非輪状対象に写すという条件下で），右導来関手の間に</p>
+      $$E_2^{p,q} = (R^pF)\bigl((R^qG)(A)\bigr)\ \Longrightarrow\ R^{p+q}(F\circ G)(A)$$
+      <p>が成り立つ。これから Leray スペクトル系列（連続写像 $f$ と層 $\mathcal F$ について $H^p(Y,R^qf_*\mathcal F)\Rightarrow H^{p+q}(X,\mathcal F)$）や，群の拡大に対する Lyndon–Hochschild–Serre スペクトル系列などが特別な場合として得られる。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box def">
+      <div class="box-title">📖 群コホモロジー</div>
+      <p>群 $G$ と $G$ 加群 $M$（＝群環 $\mathbb Z[G]$ 上の加群）に対し，不変部分をとる左完全関手 $M\mapsto M^G$ の右導来関手を<strong>群コホモロジー</strong>という：</p>
+      $$H^n(G,M) = \operatorname{Ext}^n_{\mathbb Z[G]}(\mathbb Z, M).$$
+      <p>$H^0 = M^G$（不変元），$H^1$ は交差準同型を主交差準同型で割ったもの，$H^2$ は群拡大 $1\to M\to E\to G\to 1$ の分類に対応する。$\operatorname{Tor}$ 側からは群ホモロジー $H_n(G,M)=\operatorname{Tor}_n^{\mathbb Z[G]}(\mathbb Z,M)$ が得られる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 層コホモロジー</div>
+      <p>位相空間 $X$ 上のアーベル群の層 $\mathcal F$ に対し，大域切断関手 $\Gamma(X,-)\colon \mathcal F\mapsto \mathcal F(X)$ は左完全である。その右導来関手を<strong>層コホモロジー</strong>という：</p>
+      $$H^n(X,\mathcal F) = R^n\Gamma(X,-)(\mathcal F).$$
+      <p>入射分解の代わりに脆弱層（flasque）や軟弱層による非輪状分解を使って計算でき，de Rham コホモロジーや Čech コホモロジーとの比較定理を通じて幾何学的情報を引き出す。代数幾何の連接層コホモロジーはこの枠組みの中心的道具である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 特異ホモロジーとの関係</div>
+      <p>位相空間 $X$ の特異鎖複体 $C_\bullet(X)$ は，特異単体の張る自由アーベル群 $C_n(X)$ と境界作用素 $\partial_n(\sigma)=\sum_i(-1)^i\,\sigma|_{[v_0,\dots,\hat v_i,\dots,v_n]}$ からなる鎖複体で，そのホモロジーが特異ホモロジー $H_n(X)=H_n(C_\bullet(X))$ である。係数を取り替えると<strong>普遍係数定理</strong></p>
+      $$0\to H_n(X)\otimes A \to H_n(X;A)\to \operatorname{Tor}_1^{\mathbb Z}(H_{n-1}(X),A)\to 0$$
+      <p>が成り立ち，コホモロジー側には $\operatorname{Ext}$ を含む対応する短完全列がある。ホモロジー代数が位相幾何の計算をいかに統制するかを示す好例である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>ここで培った完全列・導来関手・スペクトル系列の言語は，空間の不変量を扱う <a href="algebraic-topology.html">代数的位相幾何</a>，および層・スキーム・連接層コホモロジーを扱う <a href="algebraic-geometry.html">代数幾何</a> で本領を発揮する。これらのページに進んで具体的な計算と幾何学的意味を確かめてほしい。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>短完全列 $0\to A\to B\to C\to 0$ で $C$ が射影加群ならば分裂することを，切断の存在を用いて示せ。</li>
+        <li>鎖ホモトピック な二つの鎖写像が誘導するホモロジー準同型が一致することを，定義に従って証明せよ。</li>
+        <li>蛇の補題における連結準同型 $\delta\colon\ker h\to\operatorname{coker} f$ を図式追跡で構成し，それが well-defined であることを確かめよ。</li>
+        <li>$0\to\mathbb Z\xrightarrow{\times 4}\mathbb Z\to\mathbb Z/4\to 0$ を射影分解として用い，$\operatorname{Tor}_*^{\mathbb Z}(\mathbb Z/4,\mathbb Z/6)$ と $\operatorname{Ext}^*_{\mathbb Z}(\mathbb Z/4,\mathbb Z/6)$ をすべて計算せよ。</li>
+        <li>$\operatorname{Ext}^1_R(C,A)$ の零元が分裂拡大 $0\to A\to A\oplus C\to C\to 0$ に対応することを，拡大の同値の定義に基づいて説明せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

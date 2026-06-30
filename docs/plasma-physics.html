@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プラズマ物理 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / プラズマ物理</div>
+    <h1>プラズマ物理</h1>
+    <p class="tagline">Debye遮蔽・ドリフト運動・Vlasov方程式・MHD・Landau減衰・磁気閉じ込め。第4の物質状態の物理。</p>
+    <div class="tags"><span class="tag">Debye遮蔽</span><span class="tag">ドリフト運動</span><span class="tag">Vlasov方程式</span><span class="tag">電磁流体力学</span><span class="tag">Landau減衰</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="electromagnetism.html">電磁気学</a>（Maxwell 方程式・Lorentz 力），<a href="fluid-dynamics.html">流体力学</a>（連続の方程式・運動方程式），<a href="statistical-mechanics.html">統計力学</a>（分布関数・Boltzmann 方程式）を前提とする。プラズマはこれらが交差する場である。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#intro">プラズマの基本</a></li>
+        <li><a href="#single">単一粒子運動</a></li>
+        <li><a href="#kinetic">運動論的記述</a></li>
+        <li><a href="#mhd">電磁流体力学（MHD）</a></li>
+        <li><a href="#waves">波動と不安定性</a></li>
+        <li><a href="#confinement">平衡と閉じ込め</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="intro">1. プラズマの基本</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — プラズマ</div>
+      <p>プラズマとは，正イオンと電子（および中性粒子）が混在する電離気体で，集団的な振る舞いを示し，全体として電気的に中性（<strong>準中性</strong>）であるものをいう。固体・液体・気体に次ぐ「第4の物質状態」と呼ばれる。</p>
+      <p>準中性条件: 巨視的スケールでは正電荷密度と負電荷密度がほぼ等しく，</p>
+      $$n_e \approx \sum_i Z_i n_i$$
+      <p>ここで $n_e$ は電子数密度，$n_i$ はイオン数密度，$Z_i$ はイオンの電荷数。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Debye 遮蔽と Debye 長</div>
+      <p>プラズマ中に挿入された試験電荷の電場は，反対符号の荷電粒子の集まりによって遮蔽され，距離 $\lambda_D$ 程度で指数関数的に減衰する。点電荷まわりのポテンシャルは:</p>
+      $$\phi(r) = \frac{q}{4\pi\varepsilon_0 r}\,e^{-r/\lambda_D}$$
+      <p>Debye 長は（電子の寄与を主とすると）:</p>
+      $$\lambda_D = \sqrt{\frac{\varepsilon_0 k_B T_e}{n_e e^2}}$$
+      <p>$\lambda_D$ より十分大きいスケールで準中性が成り立つ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — プラズマ振動数</div>
+      <p>準中性からのずれが生じると静電復元力が働き，電子は集団的に振動する。その固有角振動数が電子プラズマ振動数:</p>
+      $$\omega_{pe} = \sqrt{\frac{n_e e^2}{\varepsilon_0 m_e}}$$
+      <p>これは外部から加えられた電磁波がプラズマ中を伝搬できるか否かを決める指標でもある（$\omega < \omega_{pe}$ の電磁波は反射される）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — プラズマパラメータ</div>
+      <p>Debye 球（半径 $\lambda_D$ の球）内に含まれる粒子数:</p>
+      $$N_D = n_e \cdot \frac{4}{3}\pi\lambda_D^3, \qquad \Lambda \equiv n_e \lambda_D^3 \gg 1$$
+      <p>$\Lambda \gg 1$（多数の粒子が遮蔽に関与）であることが，集団的・気体的な振る舞いを示す「理想プラズマ」の条件。物質がプラズマであるための3条件は，(i) $\lambda_D \ll L$（系のサイズ），(ii) $N_D \gg 1$，(iii) $\omega_{pe}\tau \gg 1$（$\tau$: 衝突時間）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 核融合プラズマと電離層</div>
+      <p>トカマク炉心では $n_e \sim 10^{20}\,\text{m}^{-3}$，$T_e \sim 10\,\text{keV}$ 程度で，$\lambda_D \sim 10^{-5}\,\text{m}$，$\omega_{pe} \sim 10^{12}\,\text{rad/s}$。地球電離層では $n_e \sim 10^{12}\,\text{m}^{-3}$，$T_e \sim 0.1\,\text{eV}$ 程度。いずれも $N_D \gg 1$ を満たす理想プラズマである。</p>
+    </div>
+
+    <h2 id="single">2. 単一粒子運動</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Lorentz 力と運動方程式</div>
+      <p>電場 $\mathbf{E}$，磁場 $\mathbf{B}$ 中の荷電粒子（電荷 $q$，質量 $m$）の運動方程式:</p>
+      $$m\frac{d\mathbf{v}}{dt} = q(\mathbf{E} + \mathbf{v}\times\mathbf{B})$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ ジャイロ運動（サイクロトロン運動）</div>
+      <p>一様磁場 $\mathbf{B}=B\hat z$，$\mathbf{E}=0$ のとき，粒子は磁力線まわりを円運動する。サイクロトロン角振動数とラーモア半径:</p>
+      $$\omega_c = \frac{|q|B}{m}, \qquad r_L = \frac{mv_\perp}{|q|B} = \frac{v_\perp}{\omega_c}$$
+      <p>$v_\perp$ は磁場に垂直な速度成分。磁場に平行な運動は等速直線運動となり，全体としてらせん軌道を描く。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 各種ドリフト</div>
+      <p>外力や場の非一様性があると，ジャイロ運動の中心（案内中心）がゆっくり横方向に移動する。一様な $\mathbf{E}$ がある場合の $\mathbf{E}\times\mathbf{B}$ ドリフト:</p>
+      $$\mathbf{v}_{E} = \frac{\mathbf{E}\times\mathbf{B}}{B^2}$$
+      <p>これは電荷の符号・質量によらず共通であることが特徴。一般の力 $\mathbf{F}$ に対しては:</p>
+      $$\mathbf{v}_F = \frac{\mathbf{F}\times\mathbf{B}}{qB^2}$$
+      <p>磁場勾配による $\nabla B$ ドリフトと磁力線の曲率による曲率ドリフト:</p>
+      $$\mathbf{v}_{\nabla B} = \frac{m v_\perp^2}{2qB^3}\,\mathbf{B}\times\nabla B, \qquad \mathbf{v}_R = \frac{m v_\parallel^2}{qB^2}\,\frac{\mathbf{R}_c\times\mathbf{B}}{R_c^2}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 断熱不変量（磁気モーメント）</div>
+      <p>場が粒子のジャイロ周期に比べてゆっくり変化するとき，第一断熱不変量である磁気モーメントが保存する:</p>
+      $$\mu = \frac{m v_\perp^2}{2B} = \text{一定}$$
+      <p>$B$ が増す領域へ進むと $v_\perp$ が増え，エネルギー保存より $v_\parallel$ が減る。$v_\parallel=0$ で粒子は跳ね返される（<strong>磁気ミラー</strong>）。これが磁気閉じ込めの基礎となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ドリフトと電流</div>
+      <p>イオンと電子のドリフト方向が異なる場合（$\nabla B$・曲率ドリフトなど），正味の電流が流れ，電荷分離や不安定性の起源となる。一方 $\mathbf{E}\times\mathbf{B}$ ドリフトは両種で同方向のため電流を生まない。</p>
+    </div>
+
+    <h2 id="kinetic">3. 運動論的記述</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 分布関数</div>
+      <p>粒子種 $s$ の分布関数 $f_s(\mathbf{r},\mathbf{v},t)$ は，位相空間の体積要素 $d^3r\,d^3v$ 内に存在する粒子数を表す:</p>
+      $$dN_s = f_s(\mathbf{r},\mathbf{v},t)\,d^3r\,d^3v$$
+      <p>巨視量はモーメントとして得られる: 数密度 $n_s = \int f_s\,d^3v$，平均速度 $\mathbf{u}_s = \dfrac{1}{n_s}\int \mathbf{v} f_s\,d^3v$。熱平衡では Maxwell 分布。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Vlasov 方程式</div>
+      <p>衝突が無視できる無衝突プラズマでは，位相空間における分布関数の保存（Liouville の定理）より:</p>
+      $$\frac{\partial f_s}{\partial t} + \mathbf{v}\cdot\nabla_{\mathbf{r}} f_s + \frac{q_s}{m_s}(\mathbf{E} + \mathbf{v}\times\mathbf{B})\cdot\nabla_{\mathbf{v}} f_s = 0$$
+      <p>ここで $\mathbf{E},\mathbf{B}$ は外部場と全粒子が作る自己無撞着な場（平均場）の和であり，Maxwell 方程式と連立する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 衝突項と Boltzmann 方程式</div>
+      <p>衝突を考慮すると右辺に衝突項が加わり，Boltzmann 方程式となる:</p>
+      $$\frac{\partial f_s}{\partial t} + \mathbf{v}\cdot\nabla_{\mathbf{r}} f_s + \frac{q_s}{m_s}(\mathbf{E} + \mathbf{v}\times\mathbf{B})\cdot\nabla_{\mathbf{v}} f_s = \left(\frac{\partial f_s}{\partial t}\right)_{\text{coll}}$$
+      <p>プラズマでは Coulomb 衝突は小角散乱の多数回累積が支配的であり，衝突項として Fokker–Planck 形式（Landau 衝突項）が用いられる。Vlasov 方程式は衝突項を $0$ とした極限に対応する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 記述の階層</div>
+      <p>運動論（分布関数）は最も詳細な記述で，速度空間の情報（Landau 減衰・不安定性など）を保持する。これを速度モーメントで積分し閉じることで，より粗視化された流体（MHD）記述が得られる。粒子描像・運動論・流体の使い分けが重要。</p>
+    </div>
+
+    <h2 id="mhd">4. 電磁流体力学（MHD）</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 電磁流体力学（MHD）</div>
+      <p>プラズマを単一の導電性流体として扱う巨視的記述。各種のモーメント方程式を一流体に統合し，Maxwell 方程式と結合する。低周波・長波長（$\omega \ll \omega_c$，スケール $\gg r_L$）の現象に有効。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ MHD 方程式</div>
+      <p>質量密度 $\rho$，流速 $\mathbf{u}$，圧力 $p$，電流密度 $\mathbf{J}$ について:</p>
+      $$\frac{\partial\rho}{\partial t} + \nabla\cdot(\rho\mathbf{u}) = 0 \quad\text{（連続の方程式）}$$
+      $$\rho\frac{d\mathbf{u}}{dt} = \mathbf{J}\times\mathbf{B} - \nabla p \quad\text{（運動方程式）}$$
+      $$\mathbf{E} + \mathbf{u}\times\mathbf{B} = \eta\mathbf{J} \quad\text{（一般化 Ohm の法則）}$$
+      <p>これに Maxwell 方程式 $\nabla\times\mathbf{B} = \mu_0\mathbf{J}$，$\nabla\times\mathbf{E} = -\partial\mathbf{B}/\partial t$ を連立する。$\eta$ は電気抵抗率。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 理想 MHD と磁場の凍結</div>
+      <p>抵抗を無視できる理想 MHD（$\eta\to 0$）では Ohm の法則は $\mathbf{E} = -\mathbf{u}\times\mathbf{B}$ となり，磁場の発展は:</p>
+      $$\frac{\partial\mathbf{B}}{\partial t} = \nabla\times(\mathbf{u}\times\mathbf{B})$$
+      <p>このとき任意の流体面を貫く磁束が保存され（Alfvén の凍結定理），磁力線は流体とともに運動する。一般には磁場拡散項 $\dfrac{\eta}{\mu_0}\nabla^2\mathbf{B}$ が加わり，両者の比が磁気 Reynolds 数 $R_m$ を与える。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 磁気圧と磁気張力</div>
+      <p>Lorentz 力は $\mathbf{J}\times\mathbf{B} = -\nabla\left(\dfrac{B^2}{2\mu_0}\right) + \dfrac{1}{\mu_0}(\mathbf{B}\cdot\nabla)\mathbf{B}$ と分解でき，第1項は等方的な磁気圧 $B^2/(2\mu_0)$，第2項は磁力線に沿う張力を表す。プラズマ圧と磁気圧の比 $\beta = \dfrac{p}{B^2/(2\mu_0)}$ は閉じ込め性能の重要指標である。</p>
+    </div>
+
+    <h2 id="waves">5. 波動と不安定性</h2>
+    <div class="box thm">
+      <div class="box-title">✓ プラズマ波（Langmuir 波・Alfvén 波）</div>
+      <p>静電的な電子振動（Langmuir 波，電子プラズマ波）の分散関係（Bohm–Gross）:</p>
+      $$\omega^2 = \omega_{pe}^2 + 3k^2 v_{th,e}^2$$
+      <p>磁化プラズマでは磁力線の張力を復元力とする Alfvén 波が伝わる。Alfvén 速度と分散関係:</p>
+      $$v_A = \frac{B}{\sqrt{\mu_0\rho}}, \qquad \omega = k_\parallel v_A$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Landau 減衰</div>
+      <p>無衝突プラズマでも，波の位相速度近傍の速度をもつ粒子と波とのエネルギー交換により波が減衰する純運動論的効果。減衰率は分布関数の速度勾配で決まる:</p>
+      $$\gamma \propto \left.\frac{\partial f_0}{\partial v}\right|_{v=\omega/k}$$
+      <p>Maxwell 分布では $\partial f_0/\partial v < 0$（位相速度より遅い粒子が多い）のため波はエネルギーを失い減衰する。逆に勾配が正なら波が成長する（速度空間不安定性）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 各種不安定性</div>
+      <p>プラズマには多数の不安定性が存在する。代表例:</p>
+      <ul>
+        <li><strong>レイリー・テイラー型（交換不安定性）</strong>: 重い流体が軽い流体に支えられる配置に類似し，圧力勾配と磁場曲率が逆向きのとき発生。</li>
+        <li><strong>キンク不安定性・ソーセージ不安定性</strong>: 電流柱の折れ曲がり・くびれによるマクロな MHD 不安定性。</li>
+        <li><strong>2 流体（ストリーミング）不安定性</strong>: 相対速度をもつビームとプラズマの間で波が成長する運動論的不安定性。</li>
+        <li><strong>抵抗性不安定性（テアリングモード）</strong>: 有限抵抗により磁力線がつなぎ替わり磁気島を形成する。</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 不安定性と閉じ込め</div>
+      <p>不安定性は閉じ込めを破壊し輸送を増大させる主因であり，核融合研究の中心課題。一方，磁気リコネクションのように天体現象（太陽フレアなど）のエネルギー解放を担う重要過程でもある。</p>
+    </div>
+
+    <h2 id="confinement">6. 平衡と閉じ込め</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 圧力平衡（MHD 平衡）</div>
+      <p>定常状態（$\partial/\partial t = 0$，$\mathbf{u}=0$）では運動方程式より力のつり合い:</p>
+      $$\nabla p = \mathbf{J}\times\mathbf{B}$$
+      <p>これより $\mathbf{B}\cdot\nabla p = 0$，$\mathbf{J}\cdot\nabla p = 0$ が成り立ち，磁力線と電流は等圧面（磁気面）上にある。軸対称トロイダル平衡は Grad–Shafranov 方程式で記述される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 磁気閉じ込め</div>
+      <p>荷電粒子が磁力線を横切りにくい性質を利用し，磁場でプラズマを保持する方式。磁力線を閉じたトーラス状にし端からの損失を防ぐ。トロイダル磁場だけでは粒子がドリフトで逃げるため，ポロイダル磁場を加えて磁力線をらせん状にねじる（回転変換）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — トカマクとピンチ</div>
+      <p><strong>トカマク</strong>: 外部コイルによる強いトロイダル磁場と，プラズマ電流が作るポロイダル磁場を組み合わせる代表的方式（ITER など）。<strong>ピンチ</strong>: プラズマ電流自身が作る磁場でプラズマを圧縮・閉じ込める方式。$\mathbf{J}\times\mathbf{B}$ による収縮を利用するが（Z ピンチ・$\theta$ ピンチ），キンク・ソーセージ不安定性に弱い。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 慣性閉じ込めとの対比</div>
+      <p>磁気閉じ込めに対し，強力なレーザーやイオンビームで燃料ペレットを急速に圧縮・加熱し，慣性で飛散する前に核融合を起こす慣性閉じ込め方式もある。閉じ込め時間と密度の積（Lawson 条件）が点火の鍵。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 核融合（Lawson 条件）</div>
+      <p>軽い原子核を融合させエネルギーを得る。代表反応は D–T 反応 $\mathrm{D}+\mathrm{T}\to{}^4\mathrm{He}+n+17.6\,\text{MeV}$。自己点火に必要な条件は，密度 $n$・閉じ込め時間 $\tau_E$・温度 $T$ の三重積で表される:</p>
+      $$n\,T\,\tau_E \gtrsim 3\times 10^{21}\ \text{keV·s·m}^{-3}$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 宇宙・天体プラズマ</div>
+      <p>宇宙の可視物質の大半はプラズマ状態にある。恒星内部・星間物質・降着円盤・パルサー磁気圏など，磁場とプラズマの相互作用（MHD・リコネクション・ダイナモ）が天体物理の根幹を成す。銀河磁場の生成や宇宙線加速もプラズマ過程による。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 太陽風と宇宙天気</div>
+      <p>太陽コロナから噴き出す高温プラズマの流れが太陽風で，惑星間空間に磁場を運ぶ。地球磁気圏との相互作用が磁気嵐・オーロラを生む。コロナ質量放出（CME）は衛星・送電網に影響し，宇宙天気予報の対象となる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — プラズマ加工</div>
+      <p>低温プラズマは半導体製造で広く利用される。プラズマエッチング（反応性イオンエッチング）や薄膜堆積（プラズマ CVD・スパッタリング），表面改質などに不可欠。蛍光灯・プラズマディスプレイ・プラズマトーチも応用例である。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$n_e = 10^{19}\,\text{m}^{-3}$，$T_e = 1\,\text{keV}$ のプラズマについて Debye 長 $\lambda_D$，電子プラズマ振動数 $\omega_{pe}$，プラズマパラメータ $N_D$ を概算し，理想プラズマの3条件を確認せよ。</li>
+        <li>一様磁場 $\mathbf{B}=B\hat z$ と一様電場 $\mathbf{E}=E\hat x$ 中の荷電粒子の運動方程式を解き，$\mathbf{E}\times\mathbf{B}$ ドリフトが電荷の符号によらないことを示せ。</li>
+        <li>磁気モーメント $\mu = m v_\perp^2/(2B)$ の保存とエネルギー保存を用い，磁気ミラーの反射条件（ロスコーン）を $B$ の比で表せ。</li>
+        <li>理想 MHD の誘導方程式 $\partial\mathbf{B}/\partial t = \nabla\times(\mathbf{u}\times\mathbf{B})$ から，任意の流体ループを貫く磁束 $\Phi=\int\mathbf{B}\cdot d\mathbf{S}$ が保存される（凍結定理）ことを示せ。</li>
+        <li>Maxwell 分布 $f_0(v)\propto e^{-v^2/v_{th}^2}$ について $\partial f_0/\partial v < 0$（$v>0$）を確かめ，Langmuir 波が Landau 減衰する理由を物理的に説明せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>プラズマを流体として扱う MHD の基礎は <a href="fluid-dynamics.html">流体力学</a> にある。また天体・宇宙スケールのプラズマと磁場の役割は <a href="cosmology.html">宇宙論</a> へと続く。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
