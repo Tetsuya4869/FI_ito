@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圏論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 圏論</div>
+    <h1>圏論</h1>
+    <p class="tagline">対象と射・関手・自然変換・普遍性・随伴・モナド。数学とプログラミングを貫く統一言語。</p>
+    <div class="tags"><span class="tag">圏と射</span><span class="tag">関手</span><span class="tag">自然変換</span><span class="tag">普遍性</span><span class="tag">随伴</span><span class="tag">モナド</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#category">圏の定義</a></li>
+        <li><a href="#morphisms">特別な射と双対</a></li>
+        <li><a href="#functor">関手</a></li>
+        <li><a href="#natural">自然変換</a></li>
+        <li><a href="#limits">普遍性と極限</a></li>
+        <li><a href="#adjunction">随伴関手</a></li>
+        <li><a href="#monad">モナド</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="category">1. 圏の定義</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 圏 (Category)</div>
+      <p>圏 $\mathcal{C}$ とは，次のデータからなる：</p>
+      <ul>
+        <li><strong>対象</strong> (object) の集まり $\mathrm{Ob}(\mathcal{C})$；</li>
+        <li>各対象の組 $A, B$ に対する<strong>射</strong> (morphism) の集まり $\mathrm{Hom}_{\mathcal{C}}(A,B)$。$f \in \mathrm{Hom}(A,B)$ を $f\colon A\to B$ と書き，$A$ を始域・$B$ を終域と呼ぶ；</li>
+        <li><strong>合成</strong>: $f\colon A\to B$ と $g\colon B\to C$ に対して $g\circ f\colon A\to C$；</li>
+        <li>各対象 $A$ に対する<strong>恒等射</strong> $\mathrm{id}_A\colon A\to A$。</li>
+      </ul>
+      <p>これらは次の公理を満たす。</p>
+      <p><strong>結合律</strong>: $h\colon C\to D$ に対して</p>
+      $$h\circ(g\circ f) = (h\circ g)\circ f.$$
+      <p><strong>単位律</strong>: $f\colon A\to B$ に対して</p>
+      $$\mathrm{id}_B \circ f = f = f\circ \mathrm{id}_A.$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 集合論的サイズへの注意</div>
+      <p>対象や射が「集合」をなさない場合（例: すべての集合の圏）があるため，正確には<strong>類 (class)</strong> を用いる。$\mathrm{Hom}(A,B)$ がつねに集合になる圏を<strong>局所小</strong>，さらに対象も集合をなす圏を<strong>小圏</strong>と呼ぶ。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 代表的な圏</div>
+      <table>
+        <tr><th>圏</th><th>対象</th><th>射</th></tr>
+        <tr><td>$\mathbf{Set}$</td><td>集合</td><td>写像</td></tr>
+        <tr><td>$\mathbf{Grp}$</td><td>群</td><td>群準同型</td></tr>
+        <tr><td>$\mathbf{Top}$</td><td>位相空間</td><td>連続写像</td></tr>
+        <tr><td>$\mathbf{Vect}_k$</td><td>$k$ 上のベクトル空間</td><td>線形写像</td></tr>
+      </table>
+      <p>これらの「具体圏」では射は構造を保つ写像だが，対象が要素を持つ必要はない。</p>
+      <p><strong>半順序集合</strong> $(P,\le)$ は圏とみなせる：対象は $P$ の要素，射 $a\to b$ は $a\le b$ のとき<strong>ただ一つ</strong>存在する。推移律が合成を，反射律が恒等射を与える。</p>
+      <p><strong>モノイド</strong> $(M,\cdot,e)$ は対象が一つだけの圏とみなせる：唯一の対象 $\ast$ に対し，射の集合 $\mathrm{Hom}(\ast,\ast) = M$，合成がモノイド演算 $\cdot$，恒等射が単位元 $e$。</p>
+    </div>
+
+    <h2 id="morphisms">2. 特別な射と双対</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — モノ射・エピ射・同型</div>
+      <p>射 $f\colon A\to B$ が</p>
+      <ul>
+        <li><strong>モノ射</strong> (monomorphism) ⟺ 左簡約可能：任意の $g_1,g_2\colon X\to A$ に対し $f\circ g_1 = f\circ g_2 \Rightarrow g_1 = g_2$。</li>
+        <li><strong>エピ射</strong> (epimorphism) ⟺ 右簡約可能：任意の $h_1,h_2\colon B\to Y$ に対し $h_1\circ f = h_2\circ f \Rightarrow h_1 = h_2$。</li>
+        <li><strong>同型</strong> (isomorphism) ⟺ ある $g\colon B\to A$ が存在して $g\circ f = \mathrm{id}_A$ かつ $f\circ g = \mathrm{id}_B$。</li>
+      </ul>
+      <p>$\mathbf{Set}$ ではモノ射＝単射，エピ射＝全射，同型＝全単射。ただし一般の圏では「モノかつエピ」でも同型とは限らない（例: $\mathbf{Top}$ や $\mathbf{Ring}$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 始対象・終対象</div>
+      <p><strong>始対象</strong> $0$: 任意の対象 $A$ に対して射 $0\to A$ がちょうど一つ存在する。</p>
+      <p><strong>終対象</strong> $1$: 任意の対象 $A$ に対して射 $A\to 1$ がちょうど一つ存在する。</p>
+      <p>始対象・終対象は存在すれば（一意な同型を除いて）一意。$\mathbf{Set}$ では始対象は空集合 $\varnothing$，終対象は一点集合 $\{\ast\}$。$\mathbf{Grp}$ では自明群が始対象かつ終対象（零対象）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 双対圏 $\mathcal{C}^{op}$</div>
+      <p>圏 $\mathcal{C}$ の<strong>双対圏</strong> $\mathcal{C}^{op}$ は，同じ対象を持ち，射の向きをすべて反転したもの：$\mathrm{Hom}_{\mathcal{C}^{op}}(A,B) = \mathrm{Hom}_{\mathcal{C}}(B,A)$。合成は $g \circ^{op} f = f\circ g$ で定める。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 双対原理</div>
+      <p>圏論の命題 $P$ が任意の圏で真ならば，すべての射の向き・合成順序を反転して得られる<strong>双対命題</strong> $P^{op}$ もまた任意の圏で真である。$\mathcal{C}^{op}$ で $P$ を主張することが $\mathcal{C}$ で $P^{op}$ を主張することに他ならないからである。</p>
+      <p>例: 「始対象」と「終対象」，「モノ射」と「エピ射」，「積」と「余積」は互いに双対概念。一方を証明すれば他方は自動的に従う。</p>
+    </div>
+
+    <h2 id="functor">3. 関手</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 共変関手・反変関手</div>
+      <p><strong>（共変）関手</strong> $F\colon \mathcal{C}\to\mathcal{D}$ とは，対象を対象へ $A\mapsto F(A)$，射を射へ $(f\colon A\to B)\mapsto (F(f)\colon F(A)\to F(B))$ 対応させ，次を満たすもの：</p>
+      $$F(g\circ f) = F(g)\circ F(f), \qquad F(\mathrm{id}_A) = \mathrm{id}_{F(A)}.$$
+      <p><strong>反変関手</strong>は射の向きを反転する：$F(f)\colon F(B)\to F(A)$ かつ $F(g\circ f) = F(f)\circ F(g)$。反変関手 $\mathcal{C}\to\mathcal{D}$ は共変関手 $\mathcal{C}^{op}\to\mathcal{D}$ と同一視できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 忘却関手と自由関手</div>
+      <p><strong>忘却関手</strong> $U\colon \mathbf{Grp}\to\mathbf{Set}$ は群 $G$ にその台集合 $U(G)$ を，準同型にその写像を対応させ，群構造を「忘れる」。同様に $\mathbf{Vect}_k\to\mathbf{Set}$，$\mathbf{Top}\to\mathbf{Set}$ など。</p>
+      <p><strong>自由関手</strong> $F\colon \mathbf{Set}\to\mathbf{Grp}$ は集合 $X$ に自由群 $F(X)$ を対応させる。後述するように $F$ と $U$ は随伴の関係にある。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 関手の合成と Hom 関手</div>
+      <p>関手 $F\colon\mathcal{C}\to\mathcal{D}$ と $G\colon\mathcal{D}\to\mathcal{E}$ は合成 $G\circ F\colon\mathcal{C}\to\mathcal{E}$ をなし，合成は結合的，各圏に恒等関手 $\mathrm{Id}_{\mathcal{C}}$ がある。よって（小）圏全体は圏 $\mathbf{Cat}$ をなす。</p>
+      <p>局所小圏 $\mathcal{C}$ では対象 $A$ を固定すると <strong>Hom 関手</strong></p>
+      $$\mathrm{Hom}(A,-)\colon \mathcal{C}\to\mathbf{Set}, \quad B\mapsto \mathrm{Hom}(A,B)$$
+      <p>が共変関手となる（$f\colon B\to C$ に対し $g\mapsto f\circ g$）。第一引数については反変で，</p>
+      $$\mathrm{Hom}(-,B)\colon \mathcal{C}^{op}\to\mathbf{Set}$$
+      <p>が得られる。両者を併せた $\mathrm{Hom}(-,-)\colon \mathcal{C}^{op}\times\mathcal{C}\to\mathbf{Set}$ を<strong>双関手</strong>と呼ぶ。</p>
+    </div>
+
+    <h2 id="natural">4. 自然変換</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 自然変換 (Natural Transformation)</div>
+      <p>二つの関手 $F, G\colon \mathcal{C}\to\mathcal{D}$ の間の<strong>自然変換</strong> $\eta\colon F\Rightarrow G$ とは，各対象 $A$ に対する $\mathcal{D}$ の射（<strong>成分</strong>）$\eta_A\colon F(A)\to G(A)$ の族であって，任意の射 $f\colon A\to B$ に対して<strong>自然性</strong>の条件</p>
+      $$G(f)\circ \eta_A = \eta_B \circ F(f)$$
+      <p>を満たすもの。これは「$F(A)\to F(B)\to G(B)$ と $F(A)\to G(A)\to G(B)$ が等しい」という可換四角形（自然性正方形）を表す。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 自然同型・関手圏</div>
+      <p>すべての成分 $\eta_A$ が同型であるとき $\eta$ を<strong>自然同型</strong>と呼び，$F\cong G$ と書く。</p>
+      <p>固定した $\mathcal{C},\mathcal{D}$ に対し，対象を関手 $\mathcal{C}\to\mathcal{D}$，射を自然変換とする圏を<strong>関手圏</strong> $[\mathcal{C},\mathcal{D}]$（または $\mathcal{D}^{\mathcal{C}}$）と呼ぶ。自然変換の合成には成分ごとの<strong>縦合成</strong> $(\beta\circ\eta)_A = \beta_A\circ\eta_A$ と，関手の合成に沿う<strong>横合成</strong>がある。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 米田の補題 (Yoneda Lemma)</div>
+      <p>局所小圏 $\mathcal{C}$，対象 $A$，関手 $F\colon\mathcal{C}\to\mathbf{Set}$ に対し，自然変換全体と $F(A)$ の要素との間に自然な全単射が成り立つ：</p>
+      $$\mathrm{Nat}\bigl(\mathrm{Hom}(A,-),\, F\bigr)\;\cong\; F(A).$$
+      <p>対応は $\eta \mapsto \eta_A(\mathrm{id}_A)$ で与えられる。特に $F = \mathrm{Hom}(B,-)$ とすると</p>
+      $$\mathrm{Nat}\bigl(\mathrm{Hom}(A,-),\mathrm{Hom}(B,-)\bigr)\cong \mathrm{Hom}(B,A)$$
+      <p>となり，<strong>米田埋め込み</strong> $A\mapsto \mathrm{Hom}(A,-)$ が $\mathcal{C}^{op}$ を関手圏に充満忠実に埋め込む。「対象はそれが他のすべての対象とどう関係するかで完全に決まる」という思想を定式化したものである。</p>
+    </div>
+
+    <h2 id="limits">5. 普遍性と極限</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 普遍的性質 (Universal Property)</div>
+      <p>ある対象（や射）が，「与えられた条件を満たすものの中で，他のすべてが一意に因子分解される」ような最良の対象として特徴づけられるとき，それを<strong>普遍的性質</strong>による特徴づけという。普遍性で定まる対象は，存在すれば一意な同型を除いて一意である。始対象・終対象はその最も単純な例。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 積と余積</div>
+      <p>対象 $A, B$ の<strong>積</strong> $A\times B$ とは，射影 $\pi_A\colon A\times B\to A$，$\pi_B\colon A\times B\to B$ を備え，次の普遍性を満たす対象：任意の対象 $X$ と射 $f\colon X\to A$，$g\colon X\to B$ に対して，一意な射 $\langle f,g\rangle\colon X\to A\times B$ が存在し $\pi_A\circ\langle f,g\rangle = f$，$\pi_B\circ\langle f,g\rangle = g$。</p>
+      <p><strong>余積</strong> $A+B$ はその双対：入射 $\iota_A\colon A\to A+B$，$\iota_B\colon B\to A+B$ を備え，任意の $f\colon A\to X$，$g\colon B\to X$ に対し一意な $[f,g]\colon A+B\to X$ が存在する。$\mathbf{Set}$ では積は直積，余積は非交和。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 引き戻し (Pullback)</div>
+      <p>射 $f\colon A\to C$，$g\colon B\to C$ の<strong>引き戻し</strong>は，$p\colon P\to A$，$q\colon P\to B$ で $f\circ p = g\circ q$ を満たし普遍的なもの。$\mathbf{Set}$ では</p>
+      $$P = A\times_C B = \{(a,b)\in A\times B \mid f(a) = g(b)\}.$$
+      <p>双対概念は<strong>押し出し</strong> (pushout)。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 極限・余極限の概観</div>
+      <p>小圏 $\mathcal{J}$（添字図式）から $\mathcal{C}$ への関手 $D\colon\mathcal{J}\to\mathcal{C}$（<strong>図式</strong>）に対し，その<strong>極限</strong> $\lim D$ は，$D$ への自然な錐 (cone) のうち普遍的なものとして定義される。積・引き戻し・終対象・等化子はすべて極限の特別な場合。双対に<strong>余極限</strong> $\operatorname{colim} D$（余錐の普遍対象）があり，余積・押し出し・始対象・余等化子を含む。Hom 関手 $\mathrm{Hom}(A,-)$ は極限を保ち，$\mathrm{Hom}(-,B)$ は余極限を極限に移す。</p>
+    </div>
+
+    <h2 id="adjunction">6. 随伴関手</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 随伴 $F\dashv G$</div>
+      <p>関手 $F\colon\mathcal{C}\to\mathcal{D}$ と $G\colon\mathcal{D}\to\mathcal{C}$ が<strong>随伴</strong>（$F$ が左随伴，$G$ が右随伴，$F\dashv G$）であるとは，すべての $A\in\mathcal{C}$，$B\in\mathcal{D}$ に対し $A, B$ について自然な全単射</p>
+      $$\mathrm{Hom}_{\mathcal{D}}(F(A),\,B)\;\cong\;\mathrm{Hom}_{\mathcal{C}}(A,\,G(B))$$
+      <p>が存在すること。この対応で互いに移り合う射を<strong>転置</strong>と呼ぶ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 単位・余単位</div>
+      <p>随伴 $F\dashv G$ は，二つの自然変換</p>
+      $$\eta\colon \mathrm{Id}_{\mathcal{C}} \Rightarrow G\circ F \quad(\text{単位}), \qquad \varepsilon\colon F\circ G \Rightarrow \mathrm{Id}_{\mathcal{D}} \quad(\text{余単位})$$
+      <p>で，<strong>三角等式</strong></p>
+      $$\varepsilon_{F} \circ F\eta = \mathrm{id}_F, \qquad G\varepsilon \circ \eta_{G} = \mathrm{id}_G$$
+      <p>を満たすものと同値に記述できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 自由-忘却随伴</div>
+      <p>自由関手 $F\colon\mathbf{Set}\to\mathbf{Grp}$ と忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ は $F\dashv U$ を満たす：</p>
+      $$\mathrm{Hom}_{\mathbf{Grp}}(F(X),\,G)\;\cong\;\mathrm{Hom}_{\mathbf{Set}}(X,\,U(G)).$$
+      <p>左辺は「自由群 $F(X)$ からの群準同型」，右辺は「生成元集合 $X$ から群 $G$ の元への写像」で，自由群の普遍性そのもの。単位 $\eta_X\colon X\to U(F(X))$ は生成元の埋め込み。同様の随伴がベクトル空間・モノイド・テンソル代数など多くの「自由構成」に現れる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 随伴は左で余極限・右で極限を保つ</div>
+      <p>左随伴関手はすべての余極限を保存し，右随伴関手はすべての極限を保存する。これは「忘却関手が積を保つ」「自由関手が余積を保つ」といった事実を統一的に説明する。</p>
+    </div>
+
+    <h2 id="monad">7. モナド</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — モナド $(T,\eta,\mu)$</div>
+      <p>圏 $\mathcal{C}$ 上の<strong>モナド</strong>とは，自己関手 $T\colon\mathcal{C}\to\mathcal{C}$ と二つの自然変換</p>
+      $$\eta\colon \mathrm{Id}_{\mathcal{C}}\Rightarrow T \quad(\text{単位}), \qquad \mu\colon T\circ T\Rightarrow T \quad(\text{乗法})$$
+      <p>の組であって，次の<strong>結合律</strong>と<strong>単位律</strong>を満たすもの：</p>
+      $$\mu\circ T\mu = \mu\circ \mu_T, \qquad \mu\circ T\eta = \mathrm{id}_T = \mu\circ \eta_T.$$
+      <p>これはモノイドの公理 $($結合律・単位律$)$ を，自己関手の合成 $\circ$ を「積」とみなして書き換えたものである（「モナドは自己関手の圏におけるモノイド」）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 随伴から生じるモナド</div>
+      <p>任意の随伴 $F\dashv G$（$F\colon\mathcal{C}\to\mathcal{D}$，$G\colon\mathcal{D}\to\mathcal{C}$，単位 $\eta$，余単位 $\varepsilon$）に対し，$T = G\circ F\colon\mathcal{C}\to\mathcal{C}$ は</p>
+      $$\eta\colon \mathrm{Id}\Rightarrow T, \qquad \mu = G\varepsilon_F\colon T\circ T \Rightarrow T$$
+      <p>によりモナドをなす。逆に，すべてのモナドはある随伴から（Kleisli 圏や Eilenberg–Moore 圏を用いて）生じる。例: 自由-忘却随伴 $\mathbf{Set}\leftrightarrows\mathbf{Grp}$ から「自由群モナド」が得られる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — プログラミングにおけるモナド</div>
+      <p>$\mathcal{C} = \mathbf{Set}$（型と関数の圏の近似）上で考える。</p>
+      <p><strong>Maybe モナド</strong>: $T(X) = X + \{\bot\}$（値か「失敗」）。$\eta_X(x) = x$ は値の包み込み，$\mu_X$ は二重の失敗を一つにつぶす。失敗しうる計算の合成を表す。</p>
+      <p><strong>List モナド</strong>: $T(X) = X^{\ast}$（$X$ の有限列全体）。$\eta_X(x) = [x]$（一要素リスト），$\mu_X$ はリストのリストを平坦化 (flatten) する。非決定的計算（複数の結果）を表す。</p>
+      <p>いずれも単位 $\eta$（return）と乗法 $\mu$（join）が前述の法則を満たし，これらから「結合」演算 $\mathrm{bind}$（$\gg\!=$）が $\mathrm{bind}(m,f) = \mu(T(f)(m))$ として定まる。圏論的構造がそのまま副作用の合成規則を与える点が，関数型プログラミングにおけるモナドの要諦である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>圏論の言葉は代数構造の理解を一段深める。群・環・加群の構造は <a href="abstract-algebra.html">抽象代数学</a> で，関手や自然変換が活躍するホモロジー・基本群などは <a href="algebraic-topology.html">代数的位相幾何</a> で本領を発揮する。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>半順序集合を圏とみなしたとき，二対象の積・余積がそれぞれ何に対応するか（下限・上限）を確かめよ。</li>
+        <li>$\mathbf{Set}$ において，モノ射が単射に，エピ射が全射に一致することを示せ。また「モノかつエピだが同型でない」射の例を $\mathbf{Top}$ または $\mathbf{Mon}$（モノイドの圏）で挙げよ。</li>
+        <li>米田の補題で $F = \mathrm{Hom}(B,-)$ ととった系として，米田埋め込みが充満忠実であることを導け。</li>
+        <li>自由-忘却随伴 $F\dashv U$（$\mathbf{Set}\leftrightarrows\mathbf{Vect}_k$）の全単射 $\mathrm{Hom}_{\mathbf{Vect}}(F(X),V)\cong\mathrm{Hom}_{\mathbf{Set}}(X,U(V))$ を，基底の普遍性として説明せよ。</li>
+        <li>Maybe モナドについて，単位律 $\mu\circ T\eta = \mathrm{id}_T = \mu\circ \eta_T$ と結合律 $\mu\circ T\mu = \mu\circ\mu_T$ を成分計算で確かめよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

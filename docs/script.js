@@ -27,6 +27,7 @@ const SIDEBAR_HTML = `
     <div class="sidebar-label">解析系</div>
     <nav>
       <a href="analysis.html"><span class="nav-icon">ε</span>解析学</a>
+      <a href="ordinary-differential-equations.html"><span class="nav-icon">y′</span>常微分方程式</a>
       <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
       <a href="fourier-analysis.html"><span class="nav-icon">∿</span>フーリエ解析</a>
       <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
@@ -39,6 +40,14 @@ const SIDEBAR_HTML = `
       <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
       <a href="abstract-algebra.html"><span class="nav-icon">∘</span>抽象代数学</a>
       <a href="number-theory.html"><span class="nav-icon">ℤ</span>数論</a>
+      <a href="category-theory.html"><span class="nav-icon">⟶</span>圏論</a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">離散・情報</div>
+    <nav>
+      <a href="combinatorics.html"><span class="nav-icon">⊕</span>組合せ論・グラフ理論</a>
+      <a href="information-theory.html"><span class="nav-icon">ℹ</span>情報理論</a>
     </nav>
   </div>
   <div class="sidebar-section">
@@ -70,9 +79,12 @@ const SIDEBAR_HTML = `
     <nav>
       <a href="classical-mechanics.html"><span class="nav-icon">⚙</span>古典力学</a>
       <a href="electromagnetism.html"><span class="nav-icon">⚡</span>電磁気学</a>
-      <a href="quantum-mechanics.html"><span class="nav-icon">ψ</span>量子力学</a>
+      <a href="thermodynamics.html"><span class="nav-icon">T</span>熱力学</a>
+      <a href="fluid-dynamics.html"><span class="nav-icon">≋</span>流体力学</a>
       <a href="statistical-mechanics.html"><span class="nav-icon">S</span>統計力学</a>
       <a href="relativity.html"><span class="nav-icon">c</span>相対性理論</a>
+      <a href="quantum-mechanics.html"><span class="nav-icon">ψ</span>量子力学</a>
+      <a href="quantum-field-theory.html"><span class="nav-icon">φ</span>量子場理論</a>
     </nav>
   </div>
   <div class="sidebar-section">

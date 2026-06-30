@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>情報理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 情報理論</div>
+    <h1>情報理論</h1>
+    <p class="tagline">エントロピー・相互情報量・符号化定理・通信路容量・誤り訂正。情報を測る数学。</p>
+    <div class="tags"><span class="tag">エントロピー</span><span class="tag">相互情報量</span><span class="tag">符号化定理</span><span class="tag">通信路容量</span><span class="tag">誤り訂正符号</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#entropy">情報量とエントロピー</a></li>
+        <li><a href="#mutual">結合・条件付き・相互情報量</a></li>
+        <li><a href="#kl">KL ダイバージェンス</a></li>
+        <li><a href="#source-coding">情報源符号化</a></li>
+        <li><a href="#channel">通信路と通信路容量</a></li>
+        <li><a href="#ecc">誤り訂正符号</a></li>
+        <li><a href="#continuous">連続系と物理との接点</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="entropy">1. 情報量とエントロピー</h2>
+    <p>情報理論は「情報をどれだけ正確に・どれだけ効率よく伝えられるか」を数学的に扱う分野で，1948 年の C. E. Shannon の論文に始まる。出発点は「確率の低い事象ほど，それが起きたときに得られる情報は大きい」という直観の定量化である。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 自己情報量</div>
+      <p>確率 $p$ で起こる事象が実現したときに得られる<strong>自己情報量</strong>（驚きの量）を</p>
+      $$I(x) = -\log p(x) = \log \frac{1}{p(x)}$$
+      <p>で定義する。対数の底が $2$ なら単位は<strong>ビット (bit)</strong>，自然対数 $e$ なら<strong>ナット (nat)</strong>。$p=1$ なら $I=0$（確実な事象は情報を運ばない），$p\to 0$ で $I\to\infty$。独立事象 $x,y$ では $I(x,y) = I(x) + I(y)$ と加法的になる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Shannon エントロピー</div>
+      <p>確率変数 $X$ が値域 $\mathcal{X}$ 上で分布 $p(x)$ をもつとき，その<strong>エントロピー</strong>は自己情報量の期待値</p>
+      $$H(X) = -\sum_{x\in\mathcal{X}} p(x)\log p(x) = \mathbb{E}\bigl[-\log p(X)\bigr]$$
+      <p>で定義される（$p(x)=0$ の項は $0\log 0 = 0$ と約束する）。$H(X)$ は「$X$ を観測する前の不確かさ」あるいは「$X$ を表現するのに平均的に必要なビット数」を表す。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — エントロピーの性質</div>
+      <p>底 $2$ のとき，$|\mathcal{X}| = M$ の有限アルファベット上で：</p>
+      $$0 \le H(X) \le \log M$$
+      <ul>
+        <li><strong>非負性</strong>：$H(X) \ge 0$。等号は $X$ が決定的（ある $x$ で $p=1$）のとき。</li>
+        <li><strong>最大エントロピー</strong>：$H(X) = \log M$ となるのは<strong>一様分布</strong> $p(x) = 1/M$ のときに限る。不確かさが最大になる。</li>
+        <li><strong>凹性</strong>：$H(X)$ は分布 $p$ について凹関数。</li>
+      </ul>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 二値エントロピー関数</div>
+      <p>$P(X=1)=p,\ P(X=0)=1-p$ のベルヌーイ分布のエントロピーは</p>
+      $$H_2(p) = -p\log_2 p - (1-p)\log_2(1-p)$$
+      <p>$p=0$ または $p=1$ で $H_2=0$（結果が確定），$p=\tfrac12$ で最大値 $H_2=1$ ビット。例えばイカサマでない硬貨は 1 回の投げで 1 ビット，常に表が出る硬貨は 0 ビットの情報しか運ばない。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 なぜ対数なのか</div>
+      <p>連続性・単調性・独立事象での加法性という自然な要請を満たす情報量は，定数倍を除いて対数関数に限られることが Shannon により公理的に示されている。底の選択は単位の選択に過ぎず，$\log_2 = \log_e / \ln 2$ で換算できる。</p>
+    </div>
+
+    <h2 id="mutual">2. 結合・条件付き・相互情報量</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 結合エントロピーと条件付きエントロピー</div>
+      <p>2 つの確率変数 $X, Y$ の<strong>結合エントロピー</strong>：</p>
+      $$H(X,Y) = -\sum_{x,y} p(x,y)\log p(x,y)$$
+      <p>$X$ を知った後に残る $Y$ の不確かさを表す<strong>条件付きエントロピー</strong>：</p>
+      $$H(Y\mid X) = -\sum_{x,y} p(x,y)\log p(y\mid x) = \sum_x p(x)\,H(Y\mid X=x)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 連鎖律</div>
+      <p>結合エントロピーは条件付きエントロピーに分解できる：</p>
+      $$H(X,Y) = H(X) + H(Y\mid X) = H(Y) + H(X\mid Y)$$
+      <p>一般に $H(X_1,\ldots,X_n) = \sum_{i=1}^{n} H(X_i\mid X_1,\ldots,X_{i-1})$。また条件づけは不確かさを増やさない：$H(Y\mid X) \le H(Y)$（等号は $X \perp Y$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 相互情報量</div>
+      <p>$X$ を観測することで $Y$ の不確かさが減る量を<strong>相互情報量</strong>という：</p>
+      $$I(X;Y) = H(X) - H(X\mid Y) = H(Y) - H(Y\mid X)$$
+      $$= \sum_{x,y} p(x,y)\log\frac{p(x,y)}{p(x)p(y)} = H(X) + H(Y) - H(X,Y)$$
+      <p>$I(X;Y) = I(Y;X) \ge 0$ で対称。$I(X;Y) = 0 \iff X \perp Y$。これは通信路で「入力について出力が運ぶ情報量」を測る基本量となる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — ベン図的関係</div>
+      <p>3 つの量は次のように重なり合う関係にある。</p>
+      <table>
+        <tr><th>量</th><th>意味</th><th>等式</th></tr>
+        <tr><td>$H(X,Y)$</td><td>2 変数全体の不確かさ</td><td>$H(X)+H(Y)-I(X;Y)$</td></tr>
+        <tr><td>$H(X\mid Y)$</td><td>$Y$ を知った後の $X$ の残り</td><td>$H(X)-I(X;Y)$</td></tr>
+        <tr><td>$I(X;Y)$</td><td>共有される情報</td><td>$H(X)+H(Y)-H(X,Y)$</td></tr>
+      </table>
+      <p>$X=Y$ の極端な場合 $I(X;Y)=H(X)=H(Y)=H(X,Y)$，独立の場合 $I(X;Y)=0$。</p>
+    </div>
+
+    <h2 id="kl">3. KL ダイバージェンス</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Kullback-Leibler ダイバージェンス</div>
+      <p>同じ値域上の 2 つの分布 $p, q$ について，$p$ を真の分布としたときに $q$ で近似する「ずれ」を表す量：</p>
+      $$D(p\,\|\,q) = \sum_{x} p(x)\log\frac{p(x)}{q(x)} = \mathbb{E}_p\!\left[\log\frac{p(X)}{q(X)}\right]$$
+      <p>相対エントロピーとも呼ぶ。$q(x)=0$ かつ $p(x)>0$ の点があれば $D = +\infty$ とする。一般に $D(p\|q) \ne D(q\|p)$（非対称）であり，三角不等式も満たさないので距離ではない。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 非負性（Gibbs の不等式）</div>
+      <p>任意の分布 $p, q$ について</p>
+      $$D(p\,\|\,q) \ge 0, \qquad D(p\,\|\,q) = 0 \iff p = q$$
+      <p><strong>証明の要点</strong>：$\log$ は凹関数なので Jensen の不等式より</p>
+      $$-D(p\|q) = \sum_x p(x)\log\frac{q(x)}{p(x)} \le \log\sum_x p(x)\frac{q(x)}{p(x)} = \log\sum_x q(x) = \log 1 = 0.$$
+      <p>等号成立は $q/p$ が定数のとき，すなわち $p=q$ のとき。エントロピーの上界 $H(X)\le\log M$ もこの不等式から従う（$q$ を一様分布にとる）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 相互情報量との関係</div>
+      <p>相互情報量は，結合分布 $p_{XY}$ と独立を仮定した積分布 $p_X p_Y$ との KL ダイバージェンスに等しい：</p>
+      $$I(X;Y) = D\bigl(p_{XY}\,\big\|\,p_X p_Y\bigr)$$
+      <p>これにより $I(X;Y)\ge 0$ が Gibbs の不等式から直ちに従い，「$X$ と $Y$ の依存の強さ＝独立分布からの隔たり」という解釈が得られる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 機械学習との接点</div>
+      <p>KL ダイバージェンスは統計学・機械学習の中心的な量である。最尤推定は経験分布とモデルの間の $D$ の最小化と等価であり，変分推論・VAE の ELBO，クロスエントロピー損失 $H(p,q)=H(p)+D(p\|q)$ などはすべてここに根を持つ。</p>
+    </div>
+
+    <h2 id="source-coding">4. 情報源符号化</h2>
+    <p>情報源符号化（データ圧縮）の目的は，記号列を平均的に最も短い符号語で表現することである。語頭符号（どの符号語も他の符号語の接頭辞でない瞬時復号可能な符号）に焦点を当てる。</p>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Kraft の不等式</div>
+      <p>$D$ 元アルファベット上で符号語長 $\ell_1,\ldots,\ell_M$ をもつ語頭符号が存在する必要十分条件は</p>
+      $$\sum_{i=1}^{M} D^{-\ell_i} \le 1$$
+      <p>逆に，この不等式を満たす長さの組に対して語頭符号を構成できる。短い符号語を増やすほど制約が厳しくなることを定量化している。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 平均符号長の下界と情報源符号化定理</div>
+      <p>確率 $p_i$ の記号に長さ $\ell_i$ を割り当てる語頭符号の平均符号長 $L = \sum_i p_i \ell_i$（単位ビット，$D=2$）は，Kraft の制約のもとで</p>
+      $$L \ge H(X)$$
+      <p>を満たし，等号は $\ell_i = -\log_2 p_i$ がすべて整数のときに達成される。最適化により常に</p>
+      $$H(X) \le L_{\min} < H(X) + 1$$
+      <p>が成り立つ（Shannon 符号 $\ell_i = \lceil -\log_2 p_i\rceil$ で上界を達成）。さらに $n$ 個のブロックをまとめて符号化すれば，記号あたりの平均長は $n\to\infty$ で $H(X)$ に収束する。これが <strong>Shannon の情報源符号化定理</strong>であり，エントロピーが圧縮の究極限界であることを意味する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Huffman 符号</div>
+      <p>記号 $\{a,b,c,d\}$ が確率 $\{0.5, 0.25, 0.125, 0.125\}$ のとき，エントロピーは</p>
+      $$H = -\bigl(0.5\log_2 0.5 + 0.25\log_2 0.25 + 2\cdot 0.125\log_2 0.125\bigr) = 1.75\ \text{ビット}$$
+      <p>Huffman 法（確率の小さい 2 記号を繰り返し併合して二分木を作る）で得る符号 $a\!:\!0,\ b\!:\!10,\ c\!:\!110,\ d\!:\!111$ の平均長は $0.5\cdot1 + 0.25\cdot2 + 0.125\cdot3 + 0.125\cdot3 = 1.75$ ビットとなり，下界 $H$ に一致する。Huffman 符号は記号ごとの符号として最適（平均長最小）であることが証明されている。</p>
+    </div>
+
+    <h2 id="channel">5. 通信路と通信路容量</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 離散無記憶通信路 (DMC)</div>
+      <p>入力アルファベット $\mathcal{X}$，出力アルファベット $\mathcal{Y}$，遷移確率 $p(y\mid x)$ で特徴づけられる通信路。「無記憶」とは各時刻の出力が現在の入力のみに依存し，過去に依存しないこと：</p>
+      $$p(y_1,\ldots,y_n\mid x_1,\ldots,x_n) = \prod_{k=1}^{n} p(y_k\mid x_k)$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 二元対称通信路 (BSC)</div>
+      <p>入出力とも $\{0,1\}$ で，確率 $f$ でビットが反転する通信路。遷移行列は $p(0\mid 0)=p(1\mid 1)=1-f$，$p(1\mid 0)=p(0\mid 1)=f$。一様入力のもとで条件付きエントロピーは $H(Y\mid X) = H_2(f)$ となり，容量は</p>
+      $$C_{\text{BSC}} = 1 - H_2(f) \quad\text{(ビット/利用)}$$
+      <p>$f=0$（雑音なし）で $C=1$，$f=\tfrac12$（完全雑音）で $C=0$，$f=1$（常に反転）でも反転を戻せるので $C=1$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 通信路容量</div>
+      <p>通信路容量は，入力分布 $p(x)$ を最適化したときの相互情報量の最大値：</p>
+      $$C = \max_{p(x)} I(X;Y)$$
+      <p>「1 回の通信路利用あたりに確実に運べる情報量（ビット）」の上限を与える。$I(X;Y)$ は $p(x)$ について凹なので，この最大化は凸最適化問題となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Shannon の通信路符号化定理</div>
+      <p>伝送速度 $R$ が容量 $C$ より小さければ（$R < C$），符号長 $n$ を十分大きくすることで誤り確率をいくらでも $0$ に近づける符号が存在する。逆に $R > C$ では誤り確率を $0$ にできない（逆定理）。</p>
+      <p>すなわち $C$ は<strong>信頼できる通信の達成可能速度の厳密な境界</strong>である。雑音があっても，速度を容量以下に抑えれば任意に小さい誤りで通信できるという，情報理論で最も深い結果のひとつ。</p>
+    </div>
+
+    <h2 id="ecc">6. 誤り訂正符号</h2>
+    <p>符号化定理は信頼できる符号の<strong>存在</strong>を保証するが，具体的な構成は別問題である。ブロック符号は $k$ ビットの情報を $n$ ビットの符号語に冗長化し，受信側で誤りを検出・訂正する。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ハミング距離と最小距離</div>
+      <p>2 つの符号語 $\mathbf{u},\mathbf{v}$ の<strong>ハミング距離</strong> $d(\mathbf{u},\mathbf{v})$ は，異なる成分の個数。符号 $\mathcal{C}$ の<strong>最小距離</strong>は</p>
+      $$d_{\min} = \min_{\mathbf{u}\ne\mathbf{v}\in\mathcal{C}} d(\mathbf{u},\mathbf{v})$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最小距離と誤り訂正能力</div>
+      <p>最小距離 $d_{\min}$ の符号は，</p>
+      $$t = \left\lfloor \frac{d_{\min}-1}{2}\right\rfloor \ \text{個までの誤りを訂正}, \qquad d_{\min}-1 \ \text{個までの誤りを検出}$$
+      <p>できる。受信語を最も近い符号語に復号する（最尤・最近傍復号）。符号語どうしを十分離せば，雑音で多少ずれても元の符号語が一意に定まる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — ハミング符号 $(7,4)$</div>
+      <p>$k=4$ 情報ビットに 3 個のパリティビットを加えて $n=7$ ビットの符号語を作る線形符号。最小距離 $d_{\min}=3$ なので $t=1$ ビットの誤りを訂正できる。符号化率は</p>
+      $$R = \frac{k}{n} = \frac{4}{7} \approx 0.571$$
+      <p>受信語にパリティ検査行列 $H$ を掛けて得る<strong>シンドローム</strong> $\mathbf{s} = H\mathbf{r}^{\mathsf T}$ が誤りビットの位置を 2 進数で直接指し示すため，1 ビット誤りを即座に特定・訂正できる。$2^3 - 1 = 7$ 通りの非零シンドロームが 7 つのビット位置に対応する効率的な構成である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 符号化率と限界</div>
+      <p>符号化率 $R=k/n$ が高いほど冗長性は小さく効率的だが，訂正能力は下がる。理想は「$R$ を容量 $C$ 近くに保ちつつ誤りを抑える」こと。LDPC 符号やターボ符号は反復復号により容量にきわめて近い性能を達成し，現代の通信規格で広く使われている。</p>
+    </div>
+
+    <h2 id="continuous">7. 連続系と物理との接点</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 微分エントロピー</div>
+      <p>連続確率変数 $X$（密度 $f(x)$）に対する<strong>微分エントロピー</strong>：</p>
+      $$h(X) = -\int_{-\infty}^{\infty} f(x)\log f(x)\,dx$$
+      <p>離散エントロピーと違い負にもなりうる（座標変換で値が変わる）。分散 $\sigma^2$ を固定したときに $h(X)$ を最大化するのは<strong>ガウス分布</strong>で，その値は $h = \tfrac12\log(2\pi e\,\sigma^2)$。これは離散の「一様分布が最大エントロピー」に対応する性質である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ガウス通信路の容量（Shannon-Hartley）</div>
+      <p>平均電力 $P$ に制限された入力に，分散 $N$ の加法的白色ガウス雑音が乗る通信路の容量は</p>
+      $$C = \frac{1}{2}\log_2\!\left(1 + \frac{P}{N}\right) = \frac{1}{2}\log_2\!\left(1 + \mathrm{SNR}\right)\ \text{(ビット/利用)}$$
+      <p>容量を最大にする入力分布はガウス分布。帯域 $B$，雑音電力 $N_0 B$ の連続時間版では $C = B\log_2(1+P/(N_0 B))$ ビット/秒となり，通信工学の基礎式（Shannon-Hartley の定理）を与える。信号対雑音比 SNR を上げる効果は対数的にしか効かない点が重要である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Landauer の原理</div>
+      <p>1 ビットの情報を不可逆に消去すると，少なくとも</p>
+      $$E_{\min} = k_B T \ln 2$$
+      <p>のエネルギーが熱として環境に放出される（$k_B$: Boltzmann 定数，$T$: 絶対温度）。情報の消去は熱力学第二法則と結びつき，「情報は物理的である」ことを示す。Shannon エントロピー $H = -\sum p\log p$ と熱力学エントロピー $S = -k_B\sum p\ln p$ は形が一致し，両者は単位の違い（$S = k_B\ln 2\cdot H$）を除いて同じ量である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Maxwell の悪魔との関係</div>
+      <p>分子を選り分けてエントロピーを下げるように見える「Maxwell の悪魔」は，得た情報を最終的に消去する段階で Landauer 限界に従って熱を出すため，全体としては第二法則を破らない（Landauer-Bennett の解決）。情報理論と統計力学は，この一点で深く結びついている。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>4 つの記号が確率 $\{0.4, 0.3, 0.2, 0.1\}$ で生成される情報源について，エントロピー $H$ を計算し，Huffman 符号を構成してその平均符号長と比較せよ。</li>
+        <li>二元対称通信路で反転確率 $f=0.1$ のとき，容量 $C = 1 - H_2(0.1)$ を数値で求めよ。</li>
+        <li>分布 $p=(\tfrac12,\tfrac12)$，$q=(\tfrac14,\tfrac34)$ について $D(p\|q)$ と $D(q\|p)$ を計算し，非対称性を確認せよ。</li>
+        <li>$I(X;Y) = D(p_{XY}\|p_X p_Y)$ を定義から導き，これより $I(X;Y)\ge 0$ を示せ。</li>
+        <li>ハミング符号 $(7,4)$ の最小距離が $3$ であることを用いて，2 ビット誤りは検出できるが訂正はできない理由を説明せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>エントロピーや相互情報量の基礎には確率論があります。土台を固めるには <a href="probability-basics.html">確率・統計の基礎</a> へ。情報エントロピーと熱力学エントロピーの結びつき（Landauer の原理）をさらに深めたい場合は <a href="statistical-mechanics.html">統計力学</a> へ進みましょう。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

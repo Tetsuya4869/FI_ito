@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>流体力学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 流体力学</div>
+    <h1>流体力学</h1>
+    <p class="tagline">連続の式・Euler方程式・Navier-Stokes・Bernoulli・渦度・レイノルズ数。流れの物理。</p>
+    <div class="tags"><span class="tag">連続体力学</span><span class="tag">Navier-Stokes</span><span class="tag">Bernoulli</span><span class="tag">渦度</span><span class="tag">レイノルズ数</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#continuum">連続体としての流体</a></li>
+        <li><a href="#continuity">連続の式</a></li>
+        <li><a href="#euler">Euler 方程式</a></li>
+        <li><a href="#navier-stokes">Navier-Stokes 方程式</a></li>
+        <li><a href="#bernoulli">Bernoulli の定理</a></li>
+        <li><a href="#vorticity">渦度と循環</a></li>
+        <li><a href="#turbulence">レイノルズ数と乱流</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="continuum">1. 連続体としての流体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 連続体近似と速度場</div>
+      <p>流体は膨大な数の分子から成るが，巨視的なスケールでは個々の分子を追わず，各点に密度・圧力・速度などの場が定義された<strong>連続体</strong>として扱う。これが成立するのは，注目する長さスケールが平均自由行程よりはるかに大きい（Knudsen 数 $\mathrm{Kn}\ll 1$）場合である。</p>
+      <p>位置 $\mathbf{r}$ と時刻 $t$ における流体の運動を表す基本量が<strong>速度場</strong>である：</p>
+      $$\mathbf{u}(\mathbf{r},t) = \bigl(u_x(\mathbf{r},t),\,u_y(\mathbf{r},t),\,u_z(\mathbf{r},t)\bigr)$$
+      <p>同様に密度場 $\rho(\mathbf{r},t)$，圧力場 $p(\mathbf{r},t)$ を考える。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Lagrange 的記述と Euler 的記述</div>
+      <p><strong>Lagrange 的記述</strong>では，個々の流体粒子に着目し，その軌道 $\mathbf{r}(t)$ を追跡する（粒子に「乗って」観測する）。</p>
+      <p><strong>Euler 的記述</strong>では，空間の固定点での場の時間変化を観測する（川岸から流れを眺める）。流体力学では Euler 的記述が標準的である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 物質微分（Lagrange 微分）</div>
+      <p>流体粒子に乗って測った物理量の時間変化率を<strong>物質微分</strong>と呼ぶ。スカラー量 $f(\mathbf{r},t)$ について，粒子の軌道に沿った全微分は</p>
+      $$\frac{Df}{Dt} = \frac{\partial f}{\partial t} + \frac{d\mathbf{r}}{dt}\cdot\nabla f = \frac{\partial f}{\partial t} + \mathbf{u}\cdot\nabla f$$
+      <p>すなわち物質微分演算子は</p>
+      $$\frac{D}{Dt} = \frac{\partial}{\partial t} + \mathbf{u}\cdot\nabla$$
+      <p>右辺第1項は局所的（時間的）変化，第2項は<strong>移流項</strong>（対流項）で，流れに運ばれることによる変化を表す。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 加速度の移流項</div>
+      <p>速度場 $\mathbf{u}$ に乗った粒子の加速度は，速度の物質微分</p>
+      $$\mathbf{a} = \frac{D\mathbf{u}}{Dt} = \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u}$$
+      <p>定常流（$\partial_t\mathbf{u}=0$）でも，狭まる管などで速度が空間変化すれば $(\mathbf{u}\cdot\nabla)\mathbf{u}\neq 0$ となり加速度が生じる。この非線形項こそ流体力学を難しくする源である。</p>
+    </div>
+
+    <h2 id="continuity">2. 連続の式</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 連続の式（質量保存）</div>
+      <p>任意の固定領域内の質量変化は，その境界を通る質量流束（$\rho\mathbf{u}$）の出入りに等しい。微分形では</p>
+      $$\frac{\partial \rho}{\partial t} + \nabla\cdot(\rho\mathbf{u}) = 0$$
+      <p>これは流体の質量が湧き出しも消滅もしないという保存則の局所表現である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 物質微分を用いた表現</div>
+      <p>$\nabla\cdot(\rho\mathbf{u}) = \mathbf{u}\cdot\nabla\rho + \rho\nabla\cdot\mathbf{u}$ を使うと，連続の式は</p>
+      $$\frac{D\rho}{Dt} + \rho\,\nabla\cdot\mathbf{u} = 0$$
+      <p>と書ける。$\nabla\cdot\mathbf{u}$ は流体粒子の体積膨張率を表す。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 非圧縮流れ</div>
+      <p>流体粒子の密度が運動に沿って変化しない（$D\rho/Dt = 0$）流れを<strong>非圧縮流れ</strong>という。このとき連続の式は速度場の発散ゼロ条件に帰着する：</p>
+      $$\nabla\cdot\mathbf{u} = 0$$
+      <p>水など液体や，マッハ数が小さい（音速に比べ十分遅い）気体の流れは良い近似で非圧縮として扱える。発散ゼロの速度場は<strong>湧き出しなし</strong>であり，流線は途切れない。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 管路の連続条件</div>
+      <p>断面積 $A_1, A_2$ の管を非圧縮・定常で流れる流体は，体積流量保存より</p>
+      $$A_1 u_1 = A_2 u_2$$
+      <p>断面が狭まれば（$A_2<A_1$）流速は増す（$u_2>u_1$）。庭のホースの先を絞ると水が速くなるのはこのためである。</p>
+    </div>
+
+    <h2 id="euler">3. Euler 方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 完全流体（理想流体）</div>
+      <p>粘性（内部摩擦）と熱伝導を無視した流体を<strong>完全流体</strong>（理想流体）と呼ぶ。このとき，流体内部の応力は等方的な圧力 $p$ のみであり，せん断応力は存在しない。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Euler 方程式（完全流体の運動方程式）</div>
+      <p>流体粒子に Newton の第二法則を適用する。単位体積あたり，質量 $\rho$ × 加速度 $D\mathbf{u}/Dt$ が圧力勾配の力 $-\nabla p$ と外力（重力 $\rho\mathbf{g}$）の和に等しい：</p>
+      $$\rho\frac{D\mathbf{u}}{Dt} = \rho\left(\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u}\right) = -\nabla p + \rho\mathbf{g}$$
+      <p>連続の式と状態方程式を加えて閉じた系となる。Leonhard Euler が1757年に導いた，流体力学の基礎方程式である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 圧力勾配が力を生む</div>
+      <p>圧力そのものではなく圧力の<strong>勾配</strong> $-\nabla p$ が流体を動かす。高圧側から低圧側へ向かう力が働く。一様な大気圧の中で物体が押し潰されないのと同じ理屈である。移流項 $(\mathbf{u}\cdot\nabla)\mathbf{u}$ が非線形であるため，Euler 方程式は解析的に解けることは稀である。</p>
+    </div>
+
+    <h2 id="navier-stokes">4. Navier-Stokes 方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 粘性と粘性応力</div>
+      <p>実在流体には<strong>粘性</strong>があり，速度差のある層の間でせん断応力（内部摩擦）が働く。Newton 流体では，せん断応力は速度勾配に比例し，比例係数が<strong>粘性係数</strong> $\mu$（動粘性係数 $\nu = \mu/\rho$）である。この粘性応力の発散が，非圧縮流れでは $\mu\nabla^2\mathbf{u}$ という拡散項を与える。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Navier-Stokes 方程式（非圧縮）</div>
+      <p>Euler 方程式に粘性項を加えた，実在流体の運動方程式：</p>
+      $$\rho\frac{D\mathbf{u}}{Dt} = \rho\left(\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u}\right) = -\nabla p + \mu\nabla^2\mathbf{u} + \rho\mathbf{g}$$
+      <p>非圧縮条件 $\nabla\cdot\mathbf{u}=0$ と連立する。$\mu\nabla^2\mathbf{u}$ は運動量の拡散（粘性散逸）を表し，速度の不均一をならす効果を持つ。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ミレニアム問題</div>
+      <p>3次元 Navier-Stokes 方程式について，滑らかな初期条件から出発した解が常に滑らかなまま大域的に存在するか（あるいは有限時間で発散・特異点が生じるか）は未解決である。これは Clay 数学研究所が懸賞金100万ドルを掛けた<strong>ミレニアム問題</strong>の一つである。乱流の本質的な難しさと深く関わる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Poiseuille 流れ</div>
+      <p>半径 $R$ の円管を流れる定常・非圧縮の層流。圧力勾配 $-dp/dx = G$ 一定のもとで Navier-Stokes を解くと，速度分布は放物線型になる：</p>
+      $$u(r) = \frac{G}{4\mu}\bigl(R^2 - r^2\bigr)$$
+      <p>体積流量は $Q = \dfrac{\pi G R^4}{8\mu}$（Hagen-Poiseuille の法則）。流量が半径の4乗に比例する点が重要で，血管や配管設計の基礎となる。</p>
+    </div>
+
+    <h2 id="bernoulli">5. Bernoulli の定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ Bernoulli の定理</div>
+      <p>定常・非粘性・非圧縮の流れにおいて，1本の流線に沿って次の量が一定に保たれる：</p>
+      $$\frac{1}{2}\rho u^2 + p + \rho g z = \text{一定}$$
+      <p>第1項は動圧（運動エネルギー密度），第2項は静圧，第3項は位置エネルギー密度。これは Euler 方程式を流線に沿って積分して得られる，エネルギー保存則の流体版である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 速いほど圧力が低い</div>
+      <p>水平な流れ（$z$ 一定）では $\tfrac12\rho u^2 + p = \text{一定}$ となり，<strong>流速が大きい所では圧力が低い</strong>。これが翼の<strong>揚力</strong>の直感的説明である：翼上面で流れが速く圧力が下がり，下面との圧力差が上向きの力を生む。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — ベンチュリ管</div>
+      <p>断面が狭まる管（ベンチュリ管）では，連続の式より細い部分で流速が増し，Bernoulli の定理より圧力が下がる。太い部分（断面 $A_1$，圧力 $p_1$）と細い部分（断面 $A_2$，圧力 $p_2$）で，水平流れなら</p>
+      $$p_1 - p_2 = \frac{1}{2}\rho\bigl(u_2^2 - u_1^2\bigr)$$
+      <p>$u_1 A_1 = u_2 A_2$ と組み合わせれば圧力差から流量を測定できる（流量計）。霧吹きやキャブレターも同じ原理を利用する。</p>
+    </div>
+
+    <h2 id="vorticity">6. 渦度と循環</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 渦度</div>
+      <p>速度場の回転を表すベクトル量を<strong>渦度</strong>という：</p>
+      $$\boldsymbol{\omega} = \nabla\times\mathbf{u}$$
+      <p>渦度は局所的な流体要素の角速度の2倍に相当し，流れの「回転の強さ」を点ごとに測る。$\boldsymbol{\omega}=\mathbf{0}$ の流れを<strong>渦なし流れ</strong>（非回転流）という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 循環</div>
+      <p>閉曲線 $C$ に沿った速度の線積分を<strong>循環</strong>という：</p>
+      $$\Gamma = \oint_C \mathbf{u}\cdot d\boldsymbol{\ell} = \int_S (\nabla\times\mathbf{u})\cdot d\mathbf{S} = \int_S \boldsymbol{\omega}\cdot d\mathbf{S}$$
+      <p>最後の等号は Stokes の定理による。循環は曲線が囲む渦度の総和に等しく，翼まわりの循環が揚力を決める（Kutta-Joukowski の定理 $L = \rho U \Gamma$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Kelvin の循環定理</div>
+      <p>完全流体（非粘性・バロトロピック，保存力場）では，流体とともに動く閉曲線に沿った循環は時間的に一定に保たれる：</p>
+      $$\frac{D\Gamma}{Dt} = 0$$
+      <p>すなわち渦は生成も消滅もせず保存される。粘性があると渦度は拡散し，循環は変化しうる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 渦なし流れとポテンシャル流</div>
+      <p>渦なし流れ（$\nabla\times\mathbf{u}=\mathbf{0}$）では速度ポテンシャル $\phi$ が存在し，$\mathbf{u}=\nabla\phi$ と書ける。さらに非圧縮（$\nabla\cdot\mathbf{u}=0$）なら，$\phi$ は Laplace 方程式</p>
+      $$\nabla^2\phi = 0$$
+      <p>を満たす。これを<strong>ポテンシャル流</strong>と呼び，複素関数論（2次元）など線形理論の強力な手法が適用できる。</p>
+    </div>
+
+    <h2 id="turbulence">7. レイノルズ数と乱流</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 無次元化とレイノルズ数</div>
+      <p>代表速度 $U$，代表長さ $L$ で Navier-Stokes 方程式を無次元化すると，慣性項と粘性項の比を表す唯一の無次元パラメータが現れる。これが<strong>レイノルズ数</strong>である：</p>
+      $$Re = \frac{\rho U L}{\mu} = \frac{U L}{\nu} = \frac{\text{慣性力}}{\text{粘性力}}$$
+      <p>$Re$ が等しい流れは幾何学的に相似であれば力学的にも相似となる（相似則）。模型実験の基礎である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 層流と乱流</div>
+      <p>$Re$ が小さい（粘性が支配的）と流れは規則的な<strong>層流</strong>となる。$Re$ が臨界値を超えると流れは不安定化し，多数のスケールの渦が入り乱れる不規則な<strong>乱流</strong>へ遷移する（円管では概ね $Re\sim 2300$ が目安）。乱流では運動量・熱・物質の輸送が著しく増大する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 境界層</div>
+      <p>高 $Re$ の流れでも，固体壁のごく近傍には粘性が効く薄い<strong>境界層</strong>が形成される。壁面では流体が静止する（粘着条件，no-slip）ため，壁から離れるにつれ速度が主流速へと急変する。境界層の剥離は抗力増大や失速の原因となり，翼・自動車の設計で重要である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Stokes 流れ（低レイノルズ数）</div>
+      <p>$Re\ll 1$ では慣性項を無視でき，Navier-Stokes は線形な Stokes 方程式 $\nabla p = \mu\nabla^2\mathbf{u}$ に簡略化される。半径 $a$ の球が速度 $U$ で動くときに受ける抗力は</p>
+      $$F = 6\pi\mu a U$$
+      <p>（Stokes の抗力法則）。微生物の遊泳や微小粒子の沈降，霧の液滴の落下などがこの領域に属する。慣性が無視できるため運動は時間反転に対し可逆的という独特の性質を持つ。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>定常な水平流れに対して Euler 方程式を流線に沿って積分し，Bernoulli の定理 $\tfrac12\rho u^2 + p + \rho gz = $ 一定を導け。</li>
+        <li>非圧縮条件 $\nabla\cdot\mathbf{u}=0$ のもとで，連続の式 $\partial_t\rho + \nabla\cdot(\rho\mathbf{u})=0$ が $D\rho/Dt=0$ と等価であることを示せ。</li>
+        <li>半径 $R$ の円管を流れる定常層流について Navier-Stokes 方程式を解き，放物線速度分布と Hagen-Poiseuille の流量則 $Q=\pi G R^4/(8\mu)$ を導け。</li>
+        <li>2次元渦なし非圧縮流れでは速度ポテンシャル $\phi$ が $\nabla^2\phi=0$ を満たすことを示し，流れ関数 $\psi$ との関係（Cauchy-Riemann 方程式）を述べよ。</li>
+        <li>直径 $2\,\mathrm{cm}$ の管を水（$\nu\approx 10^{-6}\,\mathrm{m^2/s}$）が平均速度 $0.5\,\mathrm{m/s}$ で流れるときのレイノルズ数を求め，層流か乱流かを判定せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>流体の支配方程式は典型的な偏微分方程式であり，その解法の一般論は<a href="pde.html">偏微分方程式</a>のページで扱う。また，乱流に見られる不規則な振る舞いは決定論的方程式から生じるカオスと深く関わっており，<a href="dynamical-systems.html">力学系</a>（カオス）のページが理解の助けとなる。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
