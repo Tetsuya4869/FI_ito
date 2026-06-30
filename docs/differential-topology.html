@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>微分位相幾何 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 微分位相幾何</div>
+    <h1>微分位相幾何</h1>
+    <p class="tagline">滑らかな多様体・Sardの定理・横断性・写像度・Poincaré-Hopf・Morse理論。微分構造で多様体を調べる。</p>
+    <div class="tags"><span class="tag">滑らかな多様体</span><span class="tag">Sardの定理</span><span class="tag">横断性</span><span class="tag">写像度</span><span class="tag">Morse理論</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#manifolds">滑らかな多様体と写像</a></li>
+        <li><a href="#sard">Sard の定理</a></li>
+        <li><a href="#transversality">横断性</a></li>
+        <li><a href="#degree">写像度</a></li>
+        <li><a href="#vector-fields">ベクトル場と Poincaré-Hopf</a></li>
+        <li><a href="#morse">Morse 理論</a></li>
+        <li><a href="#cobordism">コボルディズムと展望</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページでは多様体上の微分構造を仮定する。接空間・接バンドル・微分形式については <a href="differential-geometry.html">微分幾何学</a> を，ホモロジーやホモトピーといった位相不変量については <a href="algebraic-topology.html">代数的位相幾何</a> を参照されたい。微分位相幾何は両者を橋渡しし，滑らかさを用いて位相的な情報を取り出す。</p>
+    </div>
+
+    <h2 id="manifolds">1. 滑らかな多様体と写像</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 滑らかな多様体</div>
+      <p>位相空間 $M$ が $n$ 次元<strong>滑らかな多様体</strong>であるとは，$M$ がHausdorffかつ第二可算で，各点が $\mathbb{R}^n$ の開集合と同相な開近傍（チャート）をもち，重なり合うチャート間の座標変換</p>
+      $$\varphi_\beta \circ \varphi_\alpha^{-1} : \varphi_\alpha(U_\alpha \cap U_\beta) \to \varphi_\beta(U_\alpha \cap U_\beta)$$
+      <p>がすべて $C^\infty$ 級であることをいう。このようなチャートの族 $\{(U_\alpha, \varphi_\alpha)\}$ を<strong>滑らかなアトラス</strong>という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 滑らかな写像・微分同相・接写像</div>
+      <p>写像 $f : M \to N$ が<strong>滑らか</strong>であるとは，チャートで表した局所表示 $\psi \circ f \circ \varphi^{-1}$ がすべて $C^\infty$ 級であること。$f$ が全単射で $f$ と $f^{-1}$ がともに滑らかなとき，$f$ を<strong>微分同相</strong>といい，$M \cong N$ と書く。</p>
+      <p>各点 $p \in M$ において，$f$ は接空間の間の線型写像<strong>接写像（微分）</strong></p>
+      $$df_p = T_p f : T_p M \to T_{f(p)} N$$
+      <p>を誘導する。局所座標では $df_p$ はJacobi行列 $\left(\partial(\psi\circ f\circ\varphi^{-1})^i/\partial x^j\right)$ で表される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 球面 $S^n$</div>
+      <p>$S^n = \{x \in \mathbb{R}^{n+1} : |x| = 1\}$ は北極・南極からの立体射影による2枚のチャートで $n$ 次元滑らかな多様体になる。座標変換は $y \mapsto y/|y|^2$（反転）で，$\mathbb{R}^n \setminus \{0\}$ 上 $C^\infty$。</p>
+      <p>包含写像 $S^n \hookrightarrow \mathbb{R}^{n+1}$ は滑らかな埋め込みであり，接空間は $T_p S^n = \{v : v \cdot p = 0\} = p^\perp$ と同一視できる。</p>
+    </div>
+
+    <h2 id="sard">2. Sard の定理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 臨界点・臨界値・正則値</div>
+      <p>滑らかな写像 $f : M \to N$ に対し，点 $p \in M$ が<strong>臨界点</strong>であるとは，接写像 $df_p : T_p M \to T_{f(p)} N$ が全射でないことをいう。臨界点の像を<strong>臨界値</strong>，臨界値でない $N$ の点を<strong>正則値</strong>という。</p>
+      <p>$y$ が正則値ならば，逆像 $f^{-1}(y)$ は $M$ の $(\dim M - \dim N)$ 次元の滑らかな部分多様体になる（正則値定理）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Sard の定理</div>
+      <p>$f : M \to N$ を滑らかな写像とする。このとき $f$ の臨界値全体は $N$ において<strong>測度零</strong>の集合をなす。したがって正則値は $N$ の中で稠密に存在する（ほとんどすべての点が正則値）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — はめ込みと埋め込み</div>
+      <p>$f : M \to N$ が<strong>はめ込み</strong>であるとは，各点で $df_p$ が単射であること。さらに $f$ が同相写像 $M \to f(M)$（像に部分空間位相を入れる）を与える単射はめ込みであるとき，$f$ を<strong>埋め込み</strong>という。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Whitney の埋め込み定理</div>
+      <p>Sard の定理の応用として，任意の $n$ 次元滑らかな多様体は $\mathbb{R}^{2n}$ に埋め込め，$\mathbb{R}^{2n+1}$ にはめ込める（Whitney）。一般の位置への摂動で自己交叉を消すのにSardの定理が本質的に使われる。</p>
+    </div>
+
+    <h2 id="transversality">3. 横断性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 横断的交叉</div>
+      <p>$N$ の部分多様体 $A$ に対し，滑らかな写像 $f : M \to N$ が $A$ に<strong>横断的</strong>（$f \pitchfork A$）であるとは，$f(p) \in A$ となるすべての $p$ で</p>
+      $$df_p(T_p M) + T_{f(p)} A = T_{f(p)} N$$
+      <p>が成り立つこと。二つの部分多様体 $A, B \subset N$ が横断的（$A \pitchfork B$）とは，交点 $q$ ごとに $T_q A + T_q B = T_q N$ となること。横断的なとき $A \cap B$ は余次元 $\operatorname{codim} A + \operatorname{codim} B$ の部分多様体になる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 横断性定理（Thom）</div>
+      <p>滑らかな写像族 $F : M \times S \to N$ が部分多様体 $A$ に横断的ならば，パラメータ $s$ に関してほとんどすべての $s \in S$ について，スライス $f_s = F(\cdot, s) : M \to N$ もまた $A$ に横断的である。すなわち横断性は<strong>一般的（generic）</strong>な性質であり，任意の $f$ は $A$ に横断的な写像に好きなだけ小さく摂動できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 平面内の曲線</div>
+      <p>$\mathbb{R}^2$ 内の二つの曲線が横断的に交わるとは，交点で接線方向が一致しないこと。二直線の交叉は横断的だが，接する二円の交叉は横断的でない。後者はわずかに片方を動かせば，交点が消えるか横断的な2点交叉に分かれる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 一般の位置</div>
+      <p>「一般の位置（general position）」とは，まさに横断性が成り立つ配置のことである。横断性定理により，どんな配置も微小摂動で一般の位置にできる。横断的交叉数は摂動に対して安定で，写像度や交叉理論の基礎となる。</p>
+    </div>
+
+    <h2 id="degree">4. 写像度</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 写像度</div>
+      <p>$M, N$ を向き付けられた同次元 $n$ のコンパクト連結多様体（$N$ は境界なし），$f : M \to N$ を滑らかな写像とする。正則値 $y \in N$ をとると $f^{-1}(y)$ は有限個の点からなり，各点 $p$ での $df_p$ の符号 $\operatorname{sign}\det df_p = \pm 1$ を数えて</p>
+      $$\deg f = \sum_{p \in f^{-1}(y)} \operatorname{sign}\det(df_p) \in \mathbb{Z}$$
+      <p>を<strong>写像度</strong>という。これは正則値 $y$ の選び方によらない。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ホモトピー不変性</div>
+      <p>$f, g : M \to N$ が滑らかにホモトピックならば $\deg f = \deg g$。したがって写像度は連続写像のホモトピー類の不変量である。とくに $\deg f \neq 0$ ならば $f$ は全射である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Brouwer の不動点定理</div>
+      <p>閉円板 $D^n$ から自身への任意の連続写像 $f : D^n \to D^n$ は不動点をもつ。</p>
+      <p>証明の要点: 不動点がなければ各 $x$ から $f(x)$ を通る半直線が境界 $S^{n-1}$ と交わる点へのレトラクション $r : D^n \to S^{n-1}$ が構成できる。しかし恒等写像 $\mathrm{id}_{S^{n-1}}$（度 $1$）と定値写像（度 $0$）をつなぐホモトピーが生じ，写像度のホモトピー不変性に矛盾する。</p>
+    </div>
+
+    <h2 id="vector-fields">5. ベクトル場と Poincaré-Hopf</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ベクトル場と零点の指数</div>
+      <p>多様体 $M$ 上の<strong>滑らかなベクトル場</strong> $v$ とは，各点 $p$ に接ベクトル $v(p) \in T_p M$ を滑らかに対応させる切断である。$v(p) = 0$ となる点 $p$ を<strong>零点（特異点）</strong>という。</p>
+      <p>孤立零点 $p$ の<strong>指数</strong> $\operatorname{ind}_p(v)$ は，$p$ を囲む小球面 $S^{n-1}$ 上で正規化したベクトル場 $v/|v| : S^{n-1} \to S^{n-1}$ の写像度として定義される。非退化な零点では $\operatorname{ind}_p(v) = \operatorname{sign}\det(Dv_p) = \pm 1$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Poincaré-Hopf の定理</div>
+      <p>$M$ をコンパクトで境界のない多様体，$v$ を孤立零点のみをもつ滑らかなベクトル場とする。このとき零点の指数の総和は $M$ の Euler 標数に等しい：</p>
+      $$\sum_{p : v(p)=0} \operatorname{ind}_p(v) = \chi(M)$$
+      <p>右辺は $v$ の選び方によらない位相不変量である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 毛玉の定理（hairy ball theorem）</div>
+      <p>偶数次元球面 $S^{2k}$ では $\chi(S^{2k}) = 2 \neq 0$。Poincaré-Hopf より，どんなベクトル場も零点をもたなければならない。すなわち「球面の毛をすべて滑らかに撫でつけることはできない」。一方 $\chi(S^{2k+1}) = 0$ なので奇数次元球面には零点をもたないベクトル場が存在する（例: $S^1$ の単位接ベクトル場）。</p>
+    </div>
+
+    <h2 id="morse">6. Morse 理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Morse 関数と臨界点</div>
+      <p>滑らかな関数 $f : M \to \mathbb{R}$ の臨界点 $p$（$df_p = 0$）が<strong>非退化</strong>であるとは，Hesse行列 $H_f(p) = \left(\partial^2 f/\partial x^i \partial x^j\right)$ が正則であること。すべての臨界点が非退化な $f$ を<strong>Morse 関数</strong>という。Morse 関数は稠密に存在する（Sard の定理の帰結）。</p>
+      <p>非退化臨界点 $p$ の<strong>指数</strong> $\lambda(p)$ は，$H_f(p)$ の負の固有値の個数で定義される。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Morse の補題とハンドル分解</div>
+      <p>指数 $\lambda$ の非退化臨界点のまわりには適当な局所座標がとれて</p>
+      $$f = f(p) - x_1^2 - \cdots - x_\lambda^2 + x_{\lambda+1}^2 + \cdots + x_n^2.$$
+      <p>臨界値を越えるごとに準位集合 $M^a = f^{-1}(-\infty, a]$ は指数 $\lambda$ の<strong>ハンドル</strong>（$\lambda$ 次元胞体）を貼り付けることで変化する。よってコンパクト多様体 $M$ は，各指数 $\lambda$ の臨界点に対応する $\lambda$ 胞体をもつCW複体のホモトピー型をもつ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Morse 不等式</div>
+      <p>$c_\lambda$ を指数 $\lambda$ の臨界点の個数，$b_\lambda = \dim H_\lambda(M;\mathbb{F})$ を Betti 数とすると</p>
+      $$c_\lambda \geq b_\lambda \quad(\text{弱 Morse 不等式}),$$
+      $$\sum_{\lambda=0}^{n}(-1)^\lambda c_\lambda = \sum_{\lambda=0}^{n}(-1)^\lambda b_\lambda = \chi(M).$$
+      <p>とくに臨界点の総数は $\sum_\lambda b_\lambda$ 以上であり，多様体の位相が関数の臨界点を強制する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — トーラスの高さ関数</div>
+      <p>立てたトーラス $T^2$ に高さ関数 $f$ をとると，臨界点は4つ: 最小点（指数 0），下の鞍点と上の鞍点（指数 1 が2つ），最大点（指数 2）。よって $c_0=1, c_1=2, c_2=1$ で，Betti 数 $b_0=1, b_1=2, b_2=1$ と一致し，$\chi(T^2) = 1 - 2 + 1 = 0$。</p>
+    </div>
+
+    <h2 id="cobordism">7. コボルディズムと展望</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — コボルディズム関係</div>
+      <p>境界のないコンパクト $n$ 次元多様体 $M_0, M_1$ が<strong>コボルダント</strong>であるとは，コンパクトな $(n+1)$ 次元多様体 $W$ が存在して</p>
+      $$\partial W = M_0 \sqcup M_1$$
+      <p>となること。コボルディズムは同値関係であり，その同値類全体は非交和を演算とする群（コボルディズム群 $\Omega_n$）をなす。$W$ は $M_0$ から $M_1$ への「変化の履歴」を与える。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — コボルディズム不変量</div>
+      <p>Euler 標数を法 $2$ で見た値や，向き付き多様体の特性数（Pontryagin 数・Stiefel-Whitney 数）はコボルディズム不変量である。Thom はコボルディズム群をある Thom 空間のホモトピー群と同一視し（Thom-Pontryagin 構成），$\Omega_n^{\mathrm{SO}} \otimes \mathbb{Q}$ を完全に決定した。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 応用と低次元トポロジーへの展望</div>
+      <p>Morse 理論とハンドル分解は手術理論や $h$-コボルディズム定理（Smale）へと発展し，$5$ 次元以上での Poincaré 予想を解決した。一方，$3$・$4$ 次元では微分構造が特異な振る舞いを見せ，Donaldson 理論や Seiberg-Witten 不変量を用いた研究が活発である。これらは <a href="algebraic-topology.html">代数的位相幾何</a> の不変量と <a href="differential-geometry.html">微分幾何学</a> のゲージ理論を融合した現代的な対象であり，<a href="knot-theory.html">結び目理論</a> とも深く結びつく。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$f : \mathbb{R}^3 \to \mathbb{R}$，$f(x,y,z) = x^2 + y^2 + z^2$ について，$1$ が正則値であることを確かめ，$f^{-1}(1)$ が滑らかな多様体であることを示せ。$0$ は正則値か。</li>
+        <li>$f : S^1 \to S^1$ を $z \mapsto z^k$（複素数表示）とするとき，写像度が $k$ になることを正則値の逆像を数えて確かめよ。</li>
+        <li>平面上のベクトル場 $v(x,y) = (x, -y)$ の原点における零点の指数を計算せよ。また $v(x,y) = (x^2 - y^2, 2xy)$ の原点での指数を求めよ。</li>
+        <li>$2$ 次元種数 $g$ の閉曲面 $\Sigma_g$ に高さ関数を与えてMorse関数を構成し，各指数の臨界点数を数えて $\chi(\Sigma_g) = 2 - 2g$ を確かめよ。</li>
+        <li>$\chi(M) = 0$ を満たすコンパクト多様体 $M$ には零点をもたないベクトル場が存在する（Poincaré-Hopf の逆）。$M = T^2$ の場合に具体的にそのような場を一つ構成せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>計算神経科学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 計算神経科学</div>
+    <h1>計算神経科学</h1>
+    <p class="tagline">Hodgkin-Huxley・発火率・STDP・Hopfield・神経符号化。脳の計算原理を数理モデルで。</p>
+    <div class="tags"><span class="tag">Hodgkin-Huxley</span><span class="tag">発火率モデル</span><span class="tag">STDP</span><span class="tag">Hopfieldネットワーク</span><span class="tag">神経符号化</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#neuron">ニューロンの生物物理</a></li>
+        <li><a href="#reduced">簡約ニューロンモデル</a></li>
+        <li><a href="#synapse">シナプスと可塑性</a></li>
+        <li><a href="#networks">ネットワークダイナミクス</a></li>
+        <li><a href="#coding">神経符号化</a></li>
+        <li><a href="#learning">学習理論</a></li>
+        <li><a href="#applications">応用と人工知能との関係</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは微分方程式と力学系の言葉でニューロンの動態を記述する。<a href="ordinary-differential-equations.html">常微分方程式</a>（膜電位の時間発展）、<a href="dynamical-systems.html">力学系</a>（固定点・分岐・アトラクター）、<a href="machine-learning.html">機械学習の数理</a>（学習則・最適化）を前提とする。</p>
+    </div>
+
+    <h2 id="neuron">1. ニューロンの生物物理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 膜電位と膜の等価回路</div>
+      <p>ニューロンの細胞膜はキャパシタとイオンチャネル（抵抗）の並列回路としてモデル化される。<strong>膜電位</strong> $V$ は膜内外の電位差で，静止状態では約 $-65\,\mathrm{mV}$。膜容量 $C_m$ を用いて電流保存則より</p>
+      $$C_m \frac{dV}{dt} = -\sum_i I_i + I_{\rm ext}$$
+      <p>$I_i$ は各イオン種を通じた電流，$I_{\rm ext}$ は外部入力電流。各イオン電流は $I_i = g_i (V - E_i)$（$g_i$: コンダクタンス，$E_i$: 平衡電位）で与えられる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Nernst の平衡電位</div>
+      <p>イオン $X$ の<strong>平衡電位</strong>（逆転電位）は熱力学的平衡から Nernst の式で決まる：</p>
+      $$E_X = \frac{RT}{zF}\ln\frac{[X]_{\rm out}}{[X]_{\rm in}}$$
+      <p>$R$: 気体定数，$T$: 絶対温度，$z$: 価数，$F$: Faraday 定数。$\mathrm{Na^+}$ は正（$\approx +50\,\mathrm{mV}$），$\mathrm{K^+}$ は負（$\approx -77\,\mathrm{mV}$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Hodgkin-Huxley モデル</div>
+      <p>イカの巨大軸索の活動電位を記述する4変数の連立 ODE。電位依存性の $\mathrm{Na^+}$ チャネル（活性化 $m$，不活性化 $h$）と $\mathrm{K^+}$ チャネル（活性化 $n$）を含む：</p>
+      $$C_m\frac{dV}{dt} = -\bar g_{\rm Na} m^3 h (V - E_{\rm Na}) - \bar g_{\rm K} n^4 (V - E_{\rm K}) - g_L(V - E_L) + I_{\rm ext}$$
+      <p>ゲート変数 $x \in \{m, h, n\}$ は一次の緩和方程式に従う：</p>
+      $$\frac{dx}{dt} = \alpha_x(V)(1 - x) - \beta_x(V)\,x = \frac{x_\infty(V) - x}{\tau_x(V)}$$
+      <p>$\alpha_x, \beta_x$ は電位依存の開閉率，$x_\infty = \alpha_x/(\alpha_x+\beta_x)$ は定常開確率。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 活動電位（スパイク）の生成</div>
+      <p>脱分極が閾値（$\approx -55\,\mathrm{mV}$）を超えると，$\mathrm{Na^+}$ チャネルが急速に開いて $V$ が立ち上がる（脱分極相）。続いて $\mathrm{Na^+}$ チャネルが不活性化（$h\to 0$）し，遅い $\mathrm{K^+}$ チャネルが開いて再分極する。この正帰還→負帰還の連鎖が <strong>全か無か</strong> のスパイクを生む。再分極後に過分極（アンダーシュート）が起こり，<strong>不応期</strong> となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 時間スケールの分離</div>
+      <p>$m$ の時定数 $\tau_m$ は $h, n$ より格段に小さい。この高速・低速変数の分離が力学系的な解析（後述の簡約モデル）を可能にする。準静的近似 $m \approx m_\infty(V)$ により変数を消去できる。</p>
+    </div>
+
+    <h2 id="reduced">2. 簡約ニューロンモデル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Leaky Integrate-and-Fire（LIF）モデル</div>
+      <p>スパイク波形の詳細を捨象し，膜電位の積分と閾値発火だけを残した最小モデル：</p>
+      $$\tau_m \frac{dV}{dt} = -(V - V_{\rm rest}) + R\,I(t)$$
+      <p>$V$ が閾値 $V_{\rm th}$ に達した瞬間にスパイクを発し，$V$ を $V_{\rm reset}$ にリセットする（必要なら不応期 $\tau_{\rm ref}$ を挿入）。$\tau_m = R C_m$ は膜時定数。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — LIF の f-I 曲線</div>
+      <p>定常入力電流 $I$ に対する発火率（周波数）は閉形式で求まる。$RI > V_{\rm th}-V_{\rm rest}$ のとき，不応期込みの発火間隔から</p>
+      $$f(I) = \left[\tau_{\rm ref} + \tau_m \ln\frac{RI - (V_{\rm reset}-V_{\rm rest})}{RI - (V_{\rm th}-V_{\rm rest})}\right]^{-1}$$
+      <p>閾値直上で発火率がゼロから連続的に立ち上がる（Type I 的挙動）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — FitzHugh-Nagumo モデル</div>
+      <p>HH モデルを2変数（速い電位 $v$，遅い回復変数 $w$）に簡約した興奮性系：</p>
+      $$\dot v = v - \frac{v^3}{3} - w + I, \qquad \dot w = \varepsilon (v + a - b w)$$
+      <p>$0 < \varepsilon \ll 1$ により時間スケールが分離する。相平面上で $v$-ナルクライン（3次曲線）と $w$-ナルクライン（直線）の交点が固定点を与え，Hopf 分岐を経てリミットサイクル（周期発火）が現れる。<a href="dynamical-systems.html">力学系</a>の典型的応用例。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 発火率モデル（rate model）</div>
+      <p>個々のスパイクを平均化し，ニューロン集団の<strong>発火率</strong> $r(t)$ の動態を扱う粗視化モデル：</p>
+      $$\tau \frac{dr}{dt} = -r + \phi\!\left(\sum_j w_j r_j + I_{\rm ext}\right)$$
+      <p>$\phi(\cdot)$ は入出力関数（シグモイドや ReLU 型のf-I曲線），$w_j$ はシナプス結合強度。ネットワークレベルの解析に便利で，深層学習の人工ニューロンと直接対応する。</p>
+    </div>
+
+    <h2 id="synapse">3. シナプスと可塑性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — シナプス伝達とコンダクタンスモデル</div>
+      <p>プレシナプスのスパイク到来によりポストシナプスのコンダクタンスが瞬間的に増え，指数的に減衰する：</p>
+      $$I_{\rm syn}(t) = g_{\rm syn}(t)\,(V - E_{\rm syn}), \qquad g_{\rm syn}(t) = \bar g\sum_{t_f} e^{-(t - t_f)/\tau_s}\,\Theta(t - t_f)$$
+      <p>$E_{\rm syn}$ が静止電位より高ければ興奮性（AMPA・NMDA），低ければ抑制性（$\mathrm{GABA}$）。$t_f$ はスパイク到来時刻，$\Theta$ はステップ関数。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Hebb 則</div>
+      <p>「同時に発火する細胞は結合を強める」という基本原理。発火率 $r_i$（ポスト），$r_j$（プレ）に対し</p>
+      $$\frac{dw_{ij}}{dt} = \eta\, r_i\, r_j$$
+      <p>$\eta$ は学習率。素朴な Hebb 則は無制限に増大するため，正規化（Oja 則 $\dot w = \eta\,r_i(r_j - r_i w)$）や恒常性機構で安定化する。Oja 則は重みベクトルを主成分方向へ収束させる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — STDP（スパイクタイミング依存可塑性）</div>
+      <p>結合変化はプレ・ポストのスパイク時刻差 $\Delta t = t_{\rm post} - t_{\rm pre}$ に依存する。典型的な窓関数は</p>
+      $$\Delta w = \begin{cases} A_+\, e^{-\Delta t/\tau_+} & (\Delta t > 0,\ \text{LTP}) \\[4pt] -A_-\, e^{\Delta t/\tau_-} & (\Delta t < 0,\ \text{LTD}) \end{cases}$$
+      <p>プレがポストに<strong>先行</strong>すれば（因果的，$\Delta t>0$）結合は増強（LTP），<strong>逆順</strong>なら減弱（LTD）。Hebb 則に因果的な時間構造を与えたものと解釈できる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 LTP と LTD の分子機構</div>
+      <p>NMDA 受容体は脱分極とグルタミン酸の同時到来でのみ $\mathrm{Ca^{2+}}$ を通す「同時検出器」として働く。大きく速い $\mathrm{Ca^{2+}}$ 流入は長期増強（LTP）を，小さく持続的な流入は長期抑圧（LTD）を誘導する。この双方向性が STDP の生物物理的基盤を与える。</p>
+    </div>
+
+    <h2 id="networks">4. ネットワークダイナミクス</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — リカレントネットワーク</div>
+      <p>ニューロン同士が相互結合した系。発火率変数 $\mathbf{r}$ と結合行列 $W$ に対し</p>
+      $$\tau \frac{d\mathbf{r}}{dt} = -\mathbf{r} + \phi(W\mathbf{r} + \mathbf{I})$$
+      <p>$W$ の固有値スペクトルが安定性を決める。フィードバックが信号を保持・増幅し，短期記憶や持続的活動（working memory）の基盤となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Hopfield モデルとエネルギー関数</div>
+      <p>対称結合 $w_{ij} = w_{ji}$，$w_{ii}=0$ をもつ離散ニューロン $s_i \in \{-1, +1\}$ の非同期更新 $s_i \leftarrow \mathrm{sgn}(\sum_j w_{ij} s_j)$ を考える。このとき</p>
+      $$E(\mathbf{s}) = -\frac{1}{2}\sum_{i,j} w_{ij}\, s_i s_j$$
+      <p>は更新ごとに単調非増加であり，力学は $E$ の局所最小（アトラクター）へ必ず収束する。$E$ は Lyapunov 関数の役割を果たす。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 連想記憶</div>
+      <p>$P$ 個の記憶パターン $\boldsymbol{\xi}^{\mu}$ を Hebb 則で埋め込む：</p>
+      $$w_{ij} = \frac{1}{N}\sum_{\mu=1}^{P} \xi_i^{\mu}\,\xi_j^{\mu}$$
+      <p>各パターンがエネルギー地形の谷（アトラクター）となり，ノイズや部分入力から完全なパターンを想起できる（パターン補完）。記憶容量は $P_{\max} \approx 0.138\,N$ で，これを超えると干渉によりスピングラス状態に崩壊する。</p>
+    </div>
+
+    <h2 id="coding">5. 神経符号化</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 発火率符号と時間符号</div>
+      <p><strong>発火率符号</strong>: 時間窓内のスパイク数（平均発火率）が情報を担う。<strong>時間符号</strong>: 個々のスパイクの精密なタイミングや相対位相が情報を担う。同じスパイク列から，平均化の時間スケールによって異なる情報を読み出せる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ポアソン過程としてのスパイク列</div>
+      <p>不規則発火を瞬時発火率 $r(t)$ をもつ非斉次ポアソン過程で近似する。区間 $[0,T]$ に $n$ 個のスパイクが生じる確率は</p>
+      $$P(n) = \frac{(\bar r T)^n}{n!}\, e^{-\bar r T}, \qquad \bar r = \frac{1}{T}\int_0^T r(t)\,dt$$
+      <p>このときスパイク数の分散が平均に等しく，変動係数 $\mathrm{CV}=1$ となる（ポアソン的不規則性の指標）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 情報理論的解析</div>
+      <p>刺激 $S$ と神経応答 $R$（発火率やスパイクパターン）の間の<strong>相互情報量</strong>で符号化効率を定量化する：</p>
+      $$I(S;R) = \sum_{s, r} P(s, r)\,\log_2\frac{P(s, r)}{P(s)\,P(r)} = H(R) - H(R\mid S)$$
+      <p>$H(R)$ は応答の総エントロピー（表現容量），$H(R\mid S)$ はノイズエントロピー。詳細は<a href="information-theory.html">情報理論</a>を参照。スパイク列のエントロピーから単一ニューロンの情報伝達率（bits/spike）が見積もられる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 集団符号化と次元削減</div>
+      <p>個々のニューロンは粗く曖昧でも，多数のニューロンの<strong>集団活動</strong>として刺激を精密に表現できる（population coding）。神経状態は低次元の多様体上にしばしば拘束され，PCA や多様体学習でその構造を抽出できる。</p>
+    </div>
+
+    <h2 id="learning">6. 学習理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 教師あり・教師なし・強化学習</div>
+      <p><strong>教師あり学習</strong>: 目標出力との誤差を最小化（小脳の運動学習など）。<strong>教師なし学習</strong>: 入力の統計構造を抽出（Hebb 則・主成分・スパース符号化）。<strong>強化学習</strong>: スカラー報酬を最大化する行動方策を学習（大脳基底核）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 報酬予測誤差と TD 学習</div>
+      <p>強化学習における価値関数 $V(s)$ は時間差（TD）誤差で更新される：</p>
+      $$\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t), \qquad V(s_t) \leftarrow V(s_t) + \alpha\,\delta_t$$
+      <p>$\gamma$ は割引率，$\alpha$ は学習率。中脳<strong>ドーパミン</strong>ニューロンの位相性発火がこの $\delta_t$（報酬予測誤差）を符号化することが実験的に示されており，脳における誤差信号の代表例である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 誤差逆伝播と生物学的妥当性</div>
+      <p>深層ネットワークの誤差逆伝播法は重み行列の<strong>転置</strong> $W^\top$ を逆方向に使うが，実際のシナプスは一方向であり生物学的に非現実的（weight transport problem）。これに対し，ランダムなフィードバック結合で誤差を伝える <strong>feedback alignment</strong> や，局所的な活動差で勾配を近似する <strong>predictive coding</strong> 等が脳に近い代替学習則として研究されている。</p>
+    </div>
+
+    <h2 id="applications">7. 応用と人工知能との関係</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ニューロモルフィック計算</div>
+      <p>スパイクを基本単位とする<strong>イベント駆動</strong>のハードウェア（SpiNNaker，Loihi，TrueNorth など）。アナログ回路で膜方程式を直接実装し，イベントがあるときだけ計算するため，超低消費電力での並列処理を実現する。スパイキングニューラルネット（SNN）がそのソフトウェア対応物。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 深層学習との対応</div>
+      <table>
+        <tr><th>脳・神経科学</th><th>深層学習</th></tr>
+        <tr><td>発火率モデル $r=\phi(\sum w_j r_j)$</td><td>人工ニューロン（活性化関数）</td></tr>
+        <tr><td>シナプス結合 $w_{ij}$</td><td>重みパラメータ</td></tr>
+        <tr><td>視覚野の階層（V1→V2→IT）</td><td>畳み込みネットの層構造</td></tr>
+        <tr><td>STDP・Hebb 則</td><td>勾配降下による重み更新</td></tr>
+        <tr><td>ドーパミン報酬予測誤差</td><td>強化学習の TD 誤差</td></tr>
+      </table>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 脳型計算へ向けて</div>
+      <p>注意機構，予測符号化，世界モデルなど現代 AI の多くの概念は神経科学に着想を得ている。逆に，大規模人工ネットワークは脳の表現を理解する仮説生成装置にもなる。両分野の双方向の対話が<strong>脳型計算（brain-inspired computing）</strong>の核心である。詳細な数理は<a href="machine-learning.html">機械学習の数理</a>を参照。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>LIF モデル $\tau_m \dot V = -(V-V_{\rm rest}) + RI$ について，定常電流 $I$ 下で $V$ が $V_{\rm th}$ に達するまでの時間を解析的に求め，f-I 曲線（不応期なし）を導け。</li>
+        <li>FitzHugh-Nagumo モデルの固定点を $I=0$ で求め，Jacobi 行列の固有値からその安定性を分類せよ。$\varepsilon$ の役割を述べよ。</li>
+        <li>STDP 窓関数 $\Delta w(\Delta t)$ の下で，プレ・ポストがともにポアソン的に独立発火するとき，重みの平均的ドリフト $\langle \dot w\rangle$ を $A_\pm, \tau_\pm$ と発火率で表せ。LTP/LTD のバランス条件を求めよ。</li>
+        <li>2パターン（直交 $\boldsymbol\xi^1\cdot\boldsymbol\xi^2=0$）を埋め込んだ Hopfield ネットで，各記憶パターンがエネルギー $E$ の局所最小であり安定であることを示せ。</li>
+        <li>瞬時発火率 $r(t)=r_0(1+\cos\omega t)$ をもつ非斉次ポアソン過程について，時間窓 $T$ あたりのスパイク数の平均と分散を求め，変動係数 CV を評価せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

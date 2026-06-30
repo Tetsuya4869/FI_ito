@@ -62,6 +62,31 @@
       $$f'(x) = \lim_{h\to 0}\frac{f(x+h)-f(x)}{h}$$
       <p>$f'(x)$、$\dfrac{df}{dx}$、$\dot f$（時間微分）などと書く。物理では「速度＝位置の微分」「加速度＝速度の微分」。</p>
     </div>
+    <figure class="diagram">
+      <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="曲線と接線">
+        <!-- 座標軸 -->
+        <line x1="40" y1="230" x2="400" y2="230" stroke="#6e7681" stroke-width="1.5"/>
+        <line x1="60" y1="20" x2="60" y2="245" stroke="#6e7681" stroke-width="1.5"/>
+        <polygon points="400,230 392,226 392,234" fill="#6e7681"/>
+        <polygon points="60,20 56,28 64,28" fill="#6e7681"/>
+        <text x="405" y="234" fill="#e6edf3" font-size="13">x</text>
+        <text x="48" y="20" fill="#e6edf3" font-size="13">y</text>
+        <!-- 曲線 y=f(x) -->
+        <path d="M70 215 Q170 60 250 110 T390 60" stroke="#2f81f7" fill="none" stroke-width="2"/>
+        <!-- 接線（点(a,f(a))=(250,110) で傾き f'(a)） -->
+        <line x1="160" y1="170" x2="360" y2="38" stroke="#f0883e" stroke-width="2"/>
+        <!-- 接点からの補助線 -->
+        <line x1="250" y1="110" x2="250" y2="230" stroke="#6e7681" stroke-width="1" stroke-dasharray="4 3"/>
+        <!-- 接点 -->
+        <circle cx="250" cy="110" r="4.5" fill="#3fb950"/>
+        <!-- ラベル -->
+        <text x="234" y="248" fill="#e6edf3" font-size="13">a</text>
+        <text x="258" y="104" fill="#e6edf3" font-size="13">(a, f(a))</text>
+        <text x="300" y="68" fill="#f0883e" font-size="13">傾き = f'(a)</text>
+        <text x="300" y="135" fill="#2f81f7" font-size="13">y = f(x)</text>
+      </svg>
+      <figcaption>点 $a$ における接線の傾きが微分係数 $f'(a)$。</figcaption>
+    </figure>
     <div class="box example">
       <div class="box-title">📝 例 — 定義から計算</div>
       <p>$f(x)=x^2$ のとき:</p>
@@ -147,6 +172,37 @@
         <li>$\ln(1+x)$ の $x=0$ まわりのテイラー展開を3次まで求めよ。</li>
       </ol>
     </div>
+    <details class="solution">
+      <summary>解答例を見る</summary>
+      <div class="sol-body">
+        <ol>
+          <li>
+            $f(x)=x^3-3x$ より $f'(x)=3x^2-3=3(x-1)(x+1)$。
+            $f'(x)=0$ となるのは $x=\pm 1$。$x<-1$ で $f'>0$、$-1<x<1$ で $f'<0$、$x>1$ で $f'>0$ なので、
+            $x=-1$ で極大 $f(-1)=-1+3=2$、$x=1$ で極小 $f(1)=1-3=-2$。
+            よって $x=-1$ で極大値 $2$、$x=1$ で極小値 $-2$。
+          </li>
+          <li>
+            連鎖律で外側を $e^{u}$、内側を $u=-x^2$ とする。$\dfrac{d}{dx}e^{-x^2}=e^{-x^2}\cdot\dfrac{d}{dx}(-x^2)=e^{-x^2}\cdot(-2x)=-2x\,e^{-x^2}$。
+          </li>
+          <li>
+            $\sin x$ の原始関数は $-\cos x$。
+            $\displaystyle\int_0^{\pi}\sin x\,dx=\big[-\cos x\big]_0^{\pi}=(-\cos\pi)-(-\cos 0)=(1)-(-1)=2$。
+          </li>
+          <li>
+            部分積分 $\displaystyle\int f g'\,dx=fg-\int f'g\,dx$ で $f=x$、$g'=e^x$（よって $f'=1$、$g=e^x$）。
+            $\displaystyle\int x e^x\,dx=x e^x-\int 1\cdot e^x\,dx=x e^x-e^x+C=(x-1)e^x+C$。
+          </li>
+          <li>
+            $f(x)=\ln(1+x)$ とすると $f(0)=0$、$f'(x)=\dfrac{1}{1+x}$ より $f'(0)=1$、
+            $f''(x)=-\dfrac{1}{(1+x)^2}$ より $f''(0)=-1$、$f'''(x)=\dfrac{2}{(1+x)^3}$ より $f'''(0)=2$。
+            テイラー展開 $\displaystyle\sum_{n}\frac{f^{(n)}(0)}{n!}x^n$ に代入して、
+            $$\ln(1+x)=x-\frac{x^2}{2}+\frac{x^3}{3}-\cdots$$
+            3次まででは $\displaystyle\ln(1+x)\approx x-\frac{x^2}{2}+\frac{x^3}{3}$。
+          </li>
+        </ol>
+      </div>
+    </details>
   </div>
 </div>
 </body>

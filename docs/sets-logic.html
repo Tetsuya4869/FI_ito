@@ -66,6 +66,19 @@
       </table>
       <p><strong>ド・モルガンの法則</strong>: $(A\cup B)^c = A^c\cap B^c$、$(A\cap B)^c = A^c\cup B^c$。</p>
     </div>
+    <figure class="diagram">
+      <svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2集合のVenn図">
+        <rect x="10" y="10" width="400" height="220" stroke="#6e7681" fill="none" stroke-width="1.5"/>
+        <text x="24" y="32" fill="#e6edf3" font-size="14">U</text>
+        <circle cx="165" cy="120" r="85" stroke="#2f81f7" fill="#2f81f7" fill-opacity="0.18" stroke-width="2"/>
+        <circle cx="255" cy="120" r="85" stroke="#f0883e" fill="#f0883e" fill-opacity="0.18" stroke-width="2"/>
+        <text x="95" y="125" fill="#e6edf3" font-size="14" text-anchor="middle">A</text>
+        <text x="325" y="125" fill="#e6edf3" font-size="14" text-anchor="middle">B</text>
+        <text x="210" y="220" fill="#e6edf3" font-size="14" text-anchor="middle">A∩B</text>
+        <line x1="210" y1="120" x2="210" y2="208" stroke="#e6edf3" stroke-width="1"/>
+      </svg>
+      <figcaption>2つの円が集合 $A,B$。重なりが共通部分 $A\cap B$、全体が和集合 $A\cup B$。</figcaption>
+    </figure>
 
     <h2 id="logic">3. 論理（命題と結合子）</h2>
     <div class="box def">
@@ -134,6 +147,13 @@
         <li>数学的帰納法で $1+2+\cdots+n = \dfrac{n(n+1)}{2}$ を証明せよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>要素を直接比較する。$A\cup B$ は $A$ または $B$ に属する要素全体なので $A\cup B=\{1,2,3,4,5\}$。$A\cap B$ は両方に属する要素なので $A\cap B=\{3,4\}$。$A\setminus B$ は $A$ に属し $B$ に属さない要素なので $A\setminus B=\{1,2\}$。</li>
+      <li>命題「$n^2$ が偶数 $\Rightarrow n$ は偶数」の対偶は「$n$ が奇数 $\Rightarrow n^2$ は奇数」。$n$ が奇数なら $n=2k+1$（$k\in\mathbb{Z}$）と書ける。このとき $n^2=(2k+1)^2=4k^2+4k+1=2(2k^2+2k)+1$ となり、$2k^2+2k\in\mathbb{Z}$ だから $n^2$ は奇数。よって対偶が成り立ち、元の命題も成り立つ。$\square$</li>
+      <li>量化子の否定ルール $\lnot(\forall x\,P(x))\equiv\exists x\,\lnot P(x)$ を適用すると、$\lnot(\forall x>0,\ x^2>x)\equiv \exists x>0,\ x^2\le x$。真偽: たとえば $x=\tfrac12>0$ のとき $x^2=\tfrac14\le\tfrac12=x$ が成り立つので、この存在命題は<strong>真</strong>（したがって元の全称命題は偽）。</li>
+      <li>$f(x)=2x+1$。<br>単射: $f(x)=f(y)$ とすると $2x+1=2y+1$ より $2x=2y$、ゆえに $x=y$。よって単射。<br>全射: 任意の $y\in\mathbb{R}$ に対し $x=\dfrac{y-1}{2}\in\mathbb{R}$ をとれば $f(x)=2\cdot\dfrac{y-1}{2}+1=y$。よって全射。<br>以上より $f$ は全単射。逆写像は $y=2x+1$ を $x$ について解いて $x=\dfrac{y-1}{2}$、すなわち $f^{-1}(x)=\dfrac{x-1}{2}$。</li>
+      <li>$S(n):\ 1+2+\cdots+n=\dfrac{n(n+1)}{2}$ とおく。<br>（基底）$n=1$ のとき左辺 $=1$、右辺 $=\dfrac{1\cdot2}{2}=1$ で一致。<br>（帰納）$n=k$ で $S(k)$ が成り立つと仮定すると $1+2+\cdots+k=\dfrac{k(k+1)}{2}$。両辺に $k+1$ を加えると<br>$1+2+\cdots+k+(k+1)=\dfrac{k(k+1)}{2}+(k+1)=\dfrac{k(k+1)+2(k+1)}{2}=\dfrac{(k+1)(k+2)}{2}$。<br>これは $S(k+1)$ そのもの。よって数学的帰納法によりすべての自然数 $n$ で $S(n)$ が成り立つ。$\square$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

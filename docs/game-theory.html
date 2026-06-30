@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ゲーム理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / ゲーム理論</div>
+    <h1>ゲーム理論</h1>
+    <p class="tagline">利得行列・ナッシュ均衡・混合戦略・部分ゲーム完全・Shapley値。戦略的意思決定の数学。</p>
+    <div class="tags"><span class="tag">ナッシュ均衡</span><span class="tag">混合戦略</span><span class="tag">展開形ゲーム</span><span class="tag">繰り返しゲーム</span><span class="tag">Shapley値</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#games">ゲームの表現</a></li>
+        <li><a href="#nash">支配戦略とナッシュ均衡</a></li>
+        <li><a href="#mixed">混合戦略</a></li>
+        <li><a href="#extensive">展開形ゲーム</a></li>
+        <li><a href="#repeated">繰り返しゲーム</a></li>
+        <li><a href="#cooperative">協力ゲーム</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>混合戦略の期待利得や均衡の存在定理には確率論の知識が必要です。<a href="probability-basics.html">確率・統計の基礎</a> を，最適反応・ミニマックスの計算には <a href="optimization.html">最適化</a> を先に確認しておくとスムーズです。</p>
+    </div>
+
+    <h2 id="games">1. ゲームの表現</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 標準形ゲーム</div>
+      <p><strong>標準形（戦略形）ゲーム</strong>は三つ組 $G = (N, (S_i)_{i\in N}, (u_i)_{i\in N})$ で与えられる。</p>
+      <ul>
+        <li>$N = \{1,\ldots,n\}$: <strong>プレイヤー</strong>の集合。</li>
+        <li>$S_i$: プレイヤー $i$ の<strong>戦略</strong>集合。戦略の組 $s = (s_1,\ldots,s_n) \in S = \prod_i S_i$ を<strong>戦略プロファイル</strong>という。</li>
+        <li>$u_i : S \to \mathbb{R}$: プレイヤー $i$ の<strong>利得関数</strong>。</li>
+      </ul>
+      <p>記法 $s_{-i} = (s_1,\ldots,s_{i-1},s_{i+1},\ldots,s_n)$ は $i$ 以外の戦略を表し，$s = (s_i, s_{-i})$ と書く。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 囚人のジレンマ（利得行列）</div>
+      <p>2人のプレイヤーが「黙秘 (C)」か「自白 (D)」を選ぶ。各セルは $(u_1, u_2)$ を表す（利得は大きいほど望ましい）。</p>
+      <table>
+        <tr><th></th><th>2: 黙秘 (C)</th><th>2: 自白 (D)</th></tr>
+        <tr><th>1: 黙秘 (C)</th><td>$(3,\,3)$</td><td>$(0,\,5)$</td></tr>
+        <tr><th>1: 自白 (D)</th><td>$(5,\,0)$</td><td>$(1,\,1)$</td></tr>
+      </table>
+      <p>相手の戦略によらず「自白」の利得が高いため，両者とも自白する $(D,D)$ に至るが，これは双方が黙秘する $(C,C)$ よりも悪い。個人合理性と全体最適の乖離を示す代表例である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ゼロ和ゲームと非ゼロ和ゲーム</div>
+      <p>すべての $s$ で $\sum_i u_i(s) = 0$ となるゲームを<strong>ゼロ和ゲーム</strong>という。一方の利得が他方の損失に等しく，純粋な利害対立を表す。囚人のジレンマは $\sum_i u_i$ が一定でないため非ゼロ和であり，協調による「パイの拡大」が起こり得る。</p>
+    </div>
+
+    <h2 id="nash">2. 支配戦略とナッシュ均衡</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 支配戦略</div>
+      <p>戦略 $s_i'$ が $s_i''$ を<strong>強支配</strong>するとは，すべての $s_{-i}$ に対して</p>
+      $$u_i(s_i', s_{-i}) > u_i(s_i'', s_{-i})$$
+      <p>が成り立つこと。相手の出方によらず常に有利な戦略を<strong>支配戦略</strong>という。支配される戦略を逐次的に除去する手続きを<strong>支配戦略の逐次消去</strong>と呼ぶ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 最適反応</div>
+      <p>$s_{-i}$ が与えられたとき，プレイヤー $i$ の利得を最大化する戦略の集合を<strong>最適反応</strong>という。</p>
+      $$BR_i(s_{-i}) = \arg\max_{s_i \in S_i} u_i(s_i, s_{-i})$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ナッシュ均衡（純粋戦略）</div>
+      <p>戦略プロファイル $s^* = (s_1^*,\ldots,s_n^*)$ が<strong>ナッシュ均衡</strong>であるとは，各プレイヤー $i$ が他者の戦略 $s_{-i}^*$ に対して最適反応をとっていること，すなわち</p>
+      $$u_i(s_i^*, s_{-i}^*) \ge u_i(s_i, s_{-i}^*) \quad \forall s_i \in S_i,\ \forall i \in N$$
+      <p>同値に $s_i^* \in BR_i(s_{-i}^*)$ が全 $i$ で成り立つこと。どのプレイヤーも単独で戦略を変えても利得を改善できない状態である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 純粋戦略均衡を求める</div>
+      <p>囚人のジレンマでは，各プレイヤーにとって「自白 (D)」が支配戦略であり，$(D,D)$ が唯一のナッシュ均衡。利得は $(1,1)$ である。</p>
+      <p>一方，下の「調整ゲーム」では各セルの利得を相互の最適反応で確認すると，$(A,A)$ と $(B,B)$ の二つの純粋戦略ナッシュ均衡が存在する。</p>
+      <table>
+        <tr><th></th><th>2: A</th><th>2: B</th></tr>
+        <tr><th>1: A</th><td>$(2,\,2)$</td><td>$(0,\,0)$</td></tr>
+        <tr><th>1: B</th><td>$(0,\,0)$</td><td>$(1,\,1)$</td></tr>
+      </table>
+      <p>均衡が複数あるとき，どれが選ばれるかは均衡選択の問題となる。</p>
+    </div>
+
+    <h2 id="mixed">3. 混合戦略</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 混合戦略と期待利得</div>
+      <p>有限戦略集合 $S_i = \{s_i^1,\ldots,s_i^m\}$ 上の確率分布</p>
+      $$\sigma_i = (\sigma_i^1,\ldots,\sigma_i^m), \quad \sigma_i^k \ge 0,\ \sum_k \sigma_i^k = 1$$
+      <p>を<strong>混合戦略</strong>という（$S_i$ 上の確率単体 $\Delta(S_i)$ の要素）。各プレイヤーが独立に混合戦略 $\sigma = (\sigma_1,\ldots,\sigma_n)$ をとるときの<strong>期待利得</strong>は</p>
+      $$U_i(\sigma) = \sum_{s \in S} \Bigl(\prod_{j\in N}\sigma_j(s_j)\Bigr) u_i(s)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ナッシュの存在定理</div>
+      <p>プレイヤー数が有限，各 $S_i$ が有限のとき，混合戦略まで許せば少なくとも一つのナッシュ均衡 $\sigma^*$ が存在する：</p>
+      $$U_i(\sigma_i^*, \sigma_{-i}^*) \ge U_i(\sigma_i, \sigma_{-i}^*) \quad \forall \sigma_i \in \Delta(S_i),\ \forall i$$
+      <p>証明は最適反応対応に角谷の不動点定理を適用することで得られる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — マッチング・ペニーズ</div>
+      <p>各プレイヤーが「表 (H)」か「裏 (T)」を出す。一致すれば 1 が勝ち，不一致なら 2 が勝つゼロ和ゲーム。</p>
+      <table>
+        <tr><th></th><th>2: H</th><th>2: T</th></tr>
+        <tr><th>1: H</th><td>$(1,\,-1)$</td><td>$(-1,\,1)$</td></tr>
+        <tr><th>1: T</th><td>$(-1,\,1)$</td><td>$(1,\,-1)$</td></tr>
+      </table>
+      <p>純粋戦略ナッシュ均衡は存在しない。各自が確率 $1/2$ ずつで $H, T$ を出す混合戦略 $\sigma_i = (1/2, 1/2)$ が唯一の均衡。均衡では相手の各純戦略に対する期待利得が等しくなる（無差別条件）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — ミニマックス定理（von Neumann）</div>
+      <p>2人ゼロ和ゲームでは，混合戦略の範囲で</p>
+      $$\max_{\sigma_1}\min_{\sigma_2} U_1(\sigma_1,\sigma_2) = \min_{\sigma_2}\max_{\sigma_1} U_1(\sigma_1,\sigma_2) = v$$
+      <p>が成り立つ。共通の値 $v$ を<strong>ゲームの値</strong>といい，これを実現する戦略の組がナッシュ均衡（鞍点）に対応する。線形計画法の双対性と等価な構造をもつ。</p>
+    </div>
+
+    <h2 id="extensive">4. 展開形ゲーム</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 展開形ゲームとゲーム木</div>
+      <p><strong>展開形ゲーム</strong>は手番の順序を明示した<strong>ゲーム木</strong>で表現される。各節点はある手番（どのプレイヤーが行動するか），各枝は選択肢，葉は終端での利得ベクトルを表す。</p>
+      <p>あるプレイヤーが区別できない複数の節点の集合を<strong>情報集合</strong>という。すべての情報集合が単一の節点からなるゲームを<strong>完全情報ゲーム</strong>，そうでないものを不完全情報ゲームという。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 部分ゲーム完全均衡</div>
+      <p>ゲーム木のある節点以下の全体を<strong>部分ゲーム</strong>という。戦略プロファイルが<strong>部分ゲーム完全均衡 (SPE)</strong> であるとは，すべての部分ゲームにおいてそれがナッシュ均衡を誘導すること。</p>
+      <p>SPE は「信じ難い脅し」を排除し，展開形ゲームに適した均衡概念を与える（ナッシュ均衡の精緻化）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 後ろ向き帰納法</div>
+      <p>有限な完全情報ゲームでは，ゲーム木の末端から最適行動を順に決定していく<strong>後ろ向き帰納法</strong>により，部分ゲーム完全均衡が求まる。</p>
+      <p>有限完全情報ゲームには必ず（混合戦略を要しない）純粋戦略の部分ゲーム完全均衡が存在する（Zermelo / Kuhn の定理）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 参入ゲーム</div>
+      <p>新規企業が市場に「参入」するか「断念」するかを決め，参入した場合に既存企業が「協調」するか「価格競争」するかを選ぶ。利得を（新規, 既存）で表す。</p>
+      <table>
+        <tr><th>新規の行動</th><th>既存の反応</th><th>利得（新規, 既存）</th></tr>
+        <tr><td>断念</td><td>—</td><td>$(0,\,4)$</td></tr>
+        <tr><td>参入</td><td>協調</td><td>$(2,\,2)$</td></tr>
+        <tr><td>参入</td><td>価格競争</td><td>$(-1,\,-1)$</td></tr>
+      </table>
+      <p>既存企業にとって参入後は「協調」が最適（$2 > -1$）。これを見越して新規は「参入」を選ぶ。後ろ向き帰納法による SPE は（参入, 協調）。既存の「参入すれば価格競争する」という脅しは信じ難く，SPE では排除される。</p>
+    </div>
+
+    <h2 id="repeated">5. 繰り返しゲーム</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 繰り返しゲーム</div>
+      <p>同じ標準形ゲーム（<strong>ステージゲーム</strong>）を繰り返しプレイする状況。<strong>有限回繰り返し</strong>では回数 $T$ が固定され，<strong>無限回繰り返し</strong>では割引因子 $\delta \in (0,1)$ を用いて将来利得を割り引く。プレイヤー $i$ の総利得は</p>
+      $$U_i = (1-\delta)\sum_{t=0}^{\infty} \delta^t\, u_i(s^t)$$
+      <p>過去の行動履歴に依存して現在の行動を選べる点が単発ゲームとの本質的な違いである。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — トリガー戦略</div>
+      <p>「相手が協調する限り協調を続け，一度でも裏切ったら以後ずっと罰（ナッシュ均衡行動など）に切り替える」戦略を<strong>トリガー戦略</strong>（グリム・トリガー）という。協調の維持を裏切りへの罰によって支える仕組みである。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — フォーク定理</div>
+      <p>無限回繰り返しゲームで割引因子 $\delta$ が十分 1 に近ければ，各プレイヤーがミニマックス値（最低保証利得）を上回るような実行可能な利得ベクトルは，いずれも部分ゲーム完全均衡として実現できる。</p>
+      <p>例えば囚人のジレンマでも，$\delta$ が大きければトリガー戦略により協調 $(C,C)$ が均衡として支えられる。協調が崩れない条件は，裏切りの一時的利得と将来の罰による損失を比較して</p>
+      $$\frac{1}{1-\delta}\, u_i^{\text{協調}} \ge u_i^{\text{裏切り}} + \frac{\delta}{1-\delta}\, u_i^{\text{罰}}$$
+      <p>が満たされること。注意: 有限回繰り返し（$T$ 有限）では後ろ向き帰納法により最終回から協調が崩れ，全期間で裏切りが唯一の SPE となる。</p>
+    </div>
+
+    <h2 id="cooperative">6. 協力ゲーム</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 提携と特性関数</div>
+      <p><strong>協力ゲーム</strong>では，プレイヤーが拘束力ある合意のもとで<strong>提携</strong>（部分集合 $C \subseteq N$）を形成する。各提携が確保できる総利得を表す<strong>特性関数</strong> $v : 2^N \to \mathbb{R}$ で記述する（$v(\varnothing)=0$）。</p>
+      <p>提携が分割しても総和が下がらない（$v(C\cup D)\ge v(C)+v(D)$ for disjoint $C,D$）性質を優加法性という。問題は提携利得 $v(N)$ をどう配分するかである。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — コア</div>
+      <p>配分 $x = (x_1,\ldots,x_n)$（ただし $\sum_i x_i = v(N)$）が<strong>コア</strong>に属するとは，どの提携 $C$ も離脱して得をできないこと：</p>
+      $$\sum_{i \in C} x_i \ge v(C) \quad \forall\, C \subseteq N$$
+      <p>コアは安定な配分の集合だが，空になる場合もある。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Shapley値</div>
+      <p>各プレイヤーの「平均的限界貢献」によって利得を配分する公平な解：</p>
+      $$\phi_i(v) = \sum_{C \subseteq N\setminus\{i\}} \frac{|C|!\,(n-|C|-1)!}{n!}\bigl(v(C\cup\{i\}) - v(C)\bigr)$$
+      <p>Shapley値は，効率性・対称性・ダミープレイヤー・加法性の四公理を満たす唯一の配分として一意に特徴づけられる。常に存在し一意である点でコアと対照的だが，必ずしもコアに属するとは限らない。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 手袋ゲーム</div>
+      <p>左手袋をもつプレイヤー 1, 2 と右手袋をもつプレイヤー 3 がいる。1組（左右）の手袋に価値 1，単独の手袋に価値 0。特性関数は $v(\{1,3\})=v(\{2,3\})=v(\{1,2,3\})=1$，他は $0$。</p>
+      <p>希少な右手袋をもつ 3 の Shapley値は $\phi_3 = 2/3$，左手袋の 1, 2 はそれぞれ $1/6$ となり，供給の希少性が配分に反映される。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — オークションとメカニズムデザイン</div>
+      <p><strong>オークション</strong>はプレイヤーの私的情報（評価額）のもとでの資源配分ゲーム。第一価格・第二価格（Vickrey）・イングリッシュ・ダッチなどの形式がある。<strong>メカニズムデザイン</strong>は「望ましい社会的結果を均衡として実現するルール」を逆問題として設計する分野である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 第二価格オークションの耐戦略性</div>
+      <p>第二価格（Vickrey）オークションでは，各入札者が自分の真の評価額を入札することが（弱）支配戦略である。すなわち正直な申告が最適となる<strong>耐戦略的</strong>メカニズムである。これは Vickrey–Clarke–Groves (VCG) 機構の特別な場合にあたる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 進化ゲームと進化的安定戦略</div>
+      <p>集団内の戦略頻度が利得（適応度）に応じて変化する動学を扱うのが<strong>進化ゲーム</strong>。戦略 $x^*$ が<strong>進化的安定戦略 (ESS)</strong> であるとは，少数の突然変異戦略 $y$ に対して</p>
+      $$U(x^*, x^*) > U(y, x^*),\quad \text{または}\quad U(x^*,x^*)=U(y,x^*) \text{ かつ } U(x^*,y) > U(y,y)$$
+      <p>が成り立つこと。集団動学の典型として<strong>レプリケーター方程式</strong> $\dot x_k = x_k\bigl(f_k(x) - \bar f(x)\bigr)$ がある。ESS はナッシュ均衡の精緻化であり，生物の行動進化や社会規範の定着を説明する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 経済・社会への応用</div>
+      <p>ゲーム理論は寡占市場（クールノー・ベルトラン競争），公共財供給とフリーライダー問題，交渉（ナッシュ交渉解），マッチング（安定マッチング・Gale–Shapley アルゴリズム），ネットワーク形成，国際関係や軍拡競争の分析まで幅広く応用される。戦略的相互依存があらゆる社会科学に共通する構造であることを示す。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>戦略の学習・均衡計算の発展として <a href="machine-learning.html">機械学習の数理</a>（強化学習・マルチエージェント学習との接続）へ，進化ゲームとレプリケーター動学の生物学的背景は <a href="mathematical-biology.html">数理生物学</a> へ進むとよいでしょう。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>2×2 ゲーム $u_1$: $(A,A)=3,(A,B)=0,(B,A)=0,(B,B)=2$（$u_2$ も対称）の純粋戦略ナッシュ均衡をすべて求め，さらに混合戦略均衡を無差別条件から導け。</li>
+        <li>囚人のジレンマを割引因子 $\delta$ で無限回繰り返すとき，グリム・トリガー戦略で協調 $(C,C)$ が部分ゲーム完全均衡となる $\delta$ の条件を，本文の利得行列を用いて求めよ。</li>
+        <li>参入ゲーム（本文の例）について，標準形に書き直してすべてのナッシュ均衡を列挙し，そのうち部分ゲーム完全でないものを指摘せよ。</li>
+        <li>3人協力ゲーム $v(\{1\})=v(\{2\})=v(\{3\})=0$，$v(\{1,2\})=v(\{1,3\})=v(\{2,3\})=1$，$v(\{1,2,3\})=2$ について，Shapley値を計算し，それがコアに属するかどうか判定せよ。</li>
+        <li>第二価格オークションで真の評価額を入札することが支配戦略であることを，「真値より高く入札する」「低く入札する」場合の損得を場合分けして証明せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

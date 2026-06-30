@@ -209,6 +209,49 @@ hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
 .warn { background: var(--red-bg); border-color: var(--red); }
 .warn .box-title { color: var(--red); }
 
+/* ── Collapsible solutions ── */
+details.solution {
+  margin: 10px 0 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg2);
+  padding: 0 14px;
+}
+details.solution > summary {
+  cursor: pointer;
+  padding: 9px 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--green);
+  list-style: none;
+  user-select: none;
+}
+details.solution > summary::-webkit-details-marker { display: none; }
+details.solution > summary::before { content: '▶'; font-size: 0.7em; margin-right: 8px; }
+details.solution[open] > summary::before { content: '▼'; }
+details.solution[open] { padding-bottom: 12px; }
+details.solution .sol-body { border-top: 1px solid var(--border); padding-top: 10px; }
+details.solution .sol-body > *:last-child { margin-bottom: 0; }
+details.solution ol, details.solution ul { padding-left: 1.3rem; }
+details.solution li { margin-bottom: 6px; }
+
+/* ── Diagrams ── */
+figure.diagram { margin: 20px 0; text-align: center; }
+figure.diagram svg {
+  max-width: 100%;
+  height: auto;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+figure.diagram figcaption {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text3);
+}
+
 /* ── Math ── */
 .math-display {
   overflow-x: auto;
