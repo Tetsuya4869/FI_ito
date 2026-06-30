@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宇宙論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 宇宙論</div>
+    <h1>宇宙論</h1>
+    <p class="tagline">FLRW計量・Friedmann方程式・ΛCDM・CMB・インフレーション・暗黒物質。宇宙全体を記述する物理。</p>
+    <div class="tags"><span class="tag">FLRW計量</span><span class="tag">Friedmann方程式</span><span class="tag">ΛCDMモデル</span><span class="tag">宇宙マイクロ波背景放射</span><span class="tag">インフレーション</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="relativity.html">相対性理論</a>（特に一般相対論：Einstein 方程式・計量・測地線）と <a href="statistical-mechanics.html">統計力学</a>（熱平衡・黒体放射・状態方程式）の理解を前提とする。宇宙論はこの2つを宇宙全体に適用する分野である。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#flrw">宇宙原理と FLRW 計量</a></li>
+        <li><a href="#friedmann">Friedmann 方程式</a></li>
+        <li><a href="#components">宇宙の構成要素</a></li>
+        <li><a href="#history">膨張史</a></li>
+        <li><a href="#cmb">宇宙マイクロ波背景放射</a></li>
+        <li><a href="#inflation">インフレーション</a></li>
+        <li><a href="#structure">構造形成と暗黒物質</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="flrw">1. 宇宙原理と FLRW 計量</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 宇宙原理</div>
+      <p>十分大きなスケール（$\gtrsim 100\,\text{Mpc}$）で見ると，宇宙は <strong>一様（homogeneous）</strong> かつ <strong>等方（isotropic）</strong> である，という仮定。すなわち空間内のどの点も特別ではなく（一様性），どの方向も特別ではない（等方性）。この仮定が宇宙全体を少数のパラメータで記述することを可能にする。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — FLRW 計量</div>
+      <p>一様等方な時空の最も一般的な計量（Friedmann–Lemaître–Robertson–Walker 計量）:</p>
+      $$ds^2 = -c^2 dt^2 + a(t)^2\left[\frac{dr^2}{1-kr^2} + r^2\left(d\theta^2 + \sin^2\theta\,d\phi^2\right)\right]$$
+      <p>$a(t)$: <strong>スケール因子</strong>（無次元，現在値 $a_0 \equiv a(t_0)=1$ と規格化することが多い）。$k$: 空間曲率定数で $k=+1$（閉じた・球面），$k=0$（平坦），$k=-1$（開いた・双曲）。$(r,\theta,\phi)$ は膨張とともに動く <strong>共動座標（comoving coordinates）</strong>。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 宇宙論的赤方偏移</div>
+      <p>光が放出されたとき（スケール因子 $a$）と観測されたとき（$a_0$）の波長の比から赤方偏移 $z$ が定義される:</p>
+      $$1 + z = \frac{\lambda_{\text{obs}}}{\lambda_{\text{emit}}} = \frac{a_0}{a}$$
+      <p>遠方の天体ほど過去の小さな $a$ で光を放っているため，波長が引き伸ばされ赤方偏移する。これは Doppler 効果ではなく空間そのものの膨張による効果である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 物理距離と共動距離</div>
+      <p>物理的（固有）距離は $d_{\text{phys}}(t) = a(t)\,\chi$，共動距離 $\chi$ は膨張で変化しない。後退速度 $v = \dot a\,\chi = (\dot a/a)\,d_{\text{phys}} = H\,d_{\text{phys}}$ となり，これが Hubble–Lemaître の法則 $v = H_0 d$ を与える。</p>
+    </div>
+
+    <h2 id="friedmann">2. Friedmann 方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Hubble パラメータ</div>
+      <p>スケール因子の相対的な膨張率:</p>
+      $$H(t) \equiv \frac{\dot a(t)}{a(t)}$$
+      <p>現在値 $H_0 \approx 67\text{–}73\ \text{km}\,\text{s}^{-1}\,\text{Mpc}^{-1}$（Hubble 定数）。無次元化して $h \equiv H_0/(100\,\text{km}\,\text{s}^{-1}\,\text{Mpc}^{-1})$ と書く。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Friedmann 方程式（第一）</div>
+      <p>FLRW 計量を Einstein 方程式 $G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu}$ に代入し，エネルギー運動量テンソルを完全流体 $T^\mu{}_\nu = \text{diag}(-\rho c^2, p, p, p)$ とすると，時間–時間成分から:</p>
+      $$H^2 = \left(\frac{\dot a}{a}\right)^2 = \frac{8\pi G}{3}\rho - \frac{kc^2}{a^2} + \frac{\Lambda c^2}{3}$$
+      <p>宇宙定数項を密度 $\rho_\Lambda = \Lambda c^2/(8\pi G)$ に吸収すれば $H^2 = \frac{8\pi G}{3}\rho - \frac{kc^2}{a^2}$ と書ける。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 加速度方程式（第二 Friedmann 方程式）</div>
+      <p>空間成分からは膨張の加速・減速を支配する式が得られる:</p>
+      $$\frac{\ddot a}{a} = -\frac{4\pi G}{3}\left(\rho + \frac{3p}{c^2}\right) + \frac{\Lambda c^2}{3}$$
+      <p>圧力が正でも重力的には引力として働く（$\rho + 3p/c^2$）。負の圧力（暗黒エネルギー）があると右辺が正となり加速膨張が起こる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 流体（連続）方程式</div>
+      <p>2つの Friedmann 方程式（あるいは $\nabla_\mu T^{\mu\nu}=0$）から導かれるエネルギー保存則:</p>
+      $$\dot\rho + 3H\left(\rho + \frac{p}{c^2}\right) = 0$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 臨界密度</div>
+      <p>$k=0$（平坦宇宙，$\Lambda=0$）を実現する密度:</p>
+      $$\rho_c(t) = \frac{3H^2}{8\pi G}, \qquad \rho_{c,0} \approx 9 \times 10^{-27}\ \text{kg}\,\text{m}^{-3} \approx 5\ \text{陽子}/\text{m}^3$$
+      <p>実際の密度が臨界密度より大なら閉じた宇宙（$k>0$），小なら開いた宇宙（$k<0$）になる。</p>
+    </div>
+
+    <h2 id="components">3. 宇宙の構成要素</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 状態方程式パラメータ</div>
+      <p>各成分の圧力と密度の関係を無次元パラメータ $w$ で表す:</p>
+      $$w \equiv \frac{p}{\rho c^2}$$
+      <p>流体方程式 $\dot\rho + 3H(1+w)\rho = 0$ を $w=$ 一定で解くと:</p>
+      $$\rho \propto a^{-3(1+w)}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 主要成分の振る舞い</div>
+      <ul>
+        <li><strong>物質（ダスト：バリオン＋暗黒物質）</strong>：圧力ゼロ $w=0$，$\rho_m \propto a^{-3}$（体積膨張で希釈）。</li>
+        <li><strong>放射（光子・相対論的粒子）</strong>：$w=1/3$，$\rho_r \propto a^{-4}$（希釈＋赤方偏移によるエネルギー減少）。</li>
+        <li><strong>暗黒エネルギー（宇宙定数）</strong>：$w=-1$，$\rho_\Lambda \propto a^0 = $ 一定（膨張しても薄まらない）。</li>
+      </ul>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 密度パラメータ $\Omega$</div>
+      <p>各成分の密度を臨界密度で規格化した無次元量:</p>
+      $$\Omega_i \equiv \frac{\rho_i}{\rho_c} = \frac{8\pi G\,\rho_i}{3H^2}$$
+      <p>Friedmann 方程式は $\Omega_m + \Omega_r + \Omega_\Lambda + \Omega_k = 1$（ただし曲率項 $\Omega_k \equiv -kc^2/(a^2H^2)$）と書ける。観測値（現在）はおよそ $\Omega_{m,0}\approx 0.31$，$\Omega_{\Lambda,0}\approx 0.69$，$\Omega_{r,0}\sim 10^{-4}$，$\Omega_{k,0}\approx 0$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 宇宙定数 $\Lambda$ と真空エネルギー</div>
+      <p>Einstein が静的宇宙のために導入した $\Lambda$ は，量子場の真空エネルギー密度として解釈できる（$w=-1$）。ただし場の理論が予言する真空エネルギーと観測値の差は約 $10^{120}$ 桁にも及び（宇宙定数問題），現代物理最大の難問の一つである。</p>
+    </div>
+
+    <h2 id="history">4. 膨張史</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 優勢成分の遷移</div>
+      <p>各成分の密度は $a$ への依存性が異なるため，宇宙史で支配的な成分が移り変わる:</p>
+      <ul>
+        <li><strong>放射優勢期（radiation-dominated）</strong>：初期（$a$ 小）。$\rho_r\propto a^{-4}$ が最大。$a \propto t^{1/2}$。</li>
+        <li><strong>物質優勢期（matter-dominated）</strong>：放射と物質が等しくなる時刻（$z_{\text{eq}}\approx 3400$）以降。$a \propto t^{2/3}$。</li>
+        <li><strong>暗黒エネルギー優勢期</strong>：$z\lesssim 0.3$ から現在。$\Lambda$ が支配し $a \propto e^{H t}$ に漸近。</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 加速膨張</div>
+      <p>加速度方程式から $\ddot a > 0$ の条件は $\rho + 3p/c^2 < 0$，すなわち $w < -1/3$。暗黒エネルギー（$w\approx -1$）が支配する現在の宇宙は加速膨張している。1998年の Ia 型超新星観測（遠方ほど予想より暗い＝遠い）がこの加速膨張の証拠となった。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — $\Lambda$CDM モデル（標準宇宙論モデル）</div>
+      <p>宇宙定数 $\Lambda$ と <strong>冷たい暗黒物質（Cold Dark Matter）</strong> を主成分とする標準モデル。平坦な FLRW 宇宙に，バリオン物質・冷たい暗黒物質・放射・暗黒エネルギーを含み，初期ゆらぎはほぼスケール不変なガウス揺らぎとする。少数のパラメータ（$H_0,\ \Omega_b,\ \Omega_c,\ \Omega_\Lambda,\ n_s,\ \sigma_8$ 等）で CMB・大規模構造・超新星の観測を統一的に説明する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ビッグバンと宇宙年齢</div>
+      <p>過去に向かって $a\to 0$ となる特異点がビッグバン。$\Lambda$CDM の最良パラメータから宇宙年齢は約 $137.9$ 億年と求まる。$a=0$ そのものでは一般相対論が破綻するため，極初期は量子重力の領域となる。</p>
+    </div>
+
+    <h2 id="cmb">5. 宇宙マイクロ波背景放射</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 再結合と晴れ上がり</div>
+      <p>初期宇宙は高温の電離プラズマで，光子は自由電子による Thomson 散乱で頻繁に散乱され不透明だった。膨張で温度が約 $3000\,\text{K}$（$z\approx 1090$）まで下がると，電子と陽子が結合して中性水素ができる（<strong>再結合, recombination</strong>）。すると散乱相手が消え，光子が自由に直進できるようになる（<strong>晴れ上がり, decoupling／最終散乱面</strong>）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ CMB の黒体スペクトル</div>
+      <p>晴れ上がり時の熱放射が膨張で冷却され，現在 $T_0 = 2.725\,\text{K}$ のほぼ完全な黒体放射として全天から到来する。これが宇宙マイクロ波背景放射（CMB）。温度は赤方偏移とともに</p>
+      $$T(z) = T_0\,(1+z)$$
+      <p>とスケールする（黒体は膨張後も黒体を保つ）。COBE 衛星はこのスペクトルが理論的黒体に極めてよく一致することを示した。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 温度ゆらぎ</div>
+      <p>CMB は完全一様ではなく，方向ごとに $10^{-5}$ 程度の微小な温度ゆらぎをもつ:</p>
+      $$\frac{\Delta T}{T} \sim 10^{-5}$$
+      <p>これを球面調和関数で展開した角度パワースペクトル $C_\ell$ には音響ピーク（バリオン音響振動）が現れ，第一ピークの位置から宇宙が空間的にほぼ平坦（$\Omega_k\approx 0$）であること，ピークの相対高さから $\Omega_b,\ \Omega_c$ などが精密に決定される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ゆらぎの起源</div>
+      <p>$\Delta T/T$ のゆらぎは，晴れ上がり時の密度ゆらぎを反映している。これらは後の銀河や銀河団などの大規模構造の「種」であり，その起源はインフレーション期の量子ゆらぎに遡ると考えられている。</p>
+    </div>
+
+    <h2 id="inflation">6. インフレーション</h2>
+    <div class="box note">
+      <div class="box-title">💡 標準ビッグバンの2つの問題</div>
+      <ul>
+        <li><strong>地平線問題</strong>：CMB は全天でほぼ同じ温度だが，晴れ上がり時に互いに因果的に接触できない（光の地平線より遠い）領域がなぜ同じ温度なのか説明できない。</li>
+        <li><strong>平坦性問題</strong>：$\Omega_k$ は膨張とともに $1$ から離れていく不安定な量。現在 $\Omega_k\approx 0$ であるためには初期宇宙で極めて精密に $\Omega=1$ へ微調整されていた必要がある。</li>
+      </ul>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — インフレーションとインフラトン場</div>
+      <p>極初期（$\sim 10^{-36}\,\text{s}$）に，スカラー場 <strong>インフラトン $\phi$</strong> のポテンシャルエネルギー $V(\phi)$ が支配する <strong>指数的加速膨張</strong> が起きたとする仮説。ほぼ一定のポテンシャルは $w\approx -1$ の真空のように振る舞い:</p>
+      $$a(t) \propto e^{H t}, \qquad H^2 \approx \frac{8\pi G}{3}\cdot\frac{V(\phi)}{c^2}$$
+      <p>このとき宇宙はごく短時間で $e^{60}$ 倍以上に膨張する（e-folding 数 $N\gtrsim 60$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 問題の解決</div>
+      <p>指数膨張により，<strong>地平線問題</strong>は「現在見える全宇宙がインフレーション前は因果接触していた微小領域」だったことで解消し，<strong>平坦性問題</strong>は $\Omega_k\propto a^{-2}H^{-2}$ の急減により $\Omega$ が自動的に $1$ へ駆動されることで解消する。スローロール条件 $\dot\phi^2 \ll V(\phi)$ のもとでインフレーションが持続する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 原始密度ゆらぎ</div>
+      <p>インフラトン場の量子ゆらぎが指数膨張で引き伸ばされ，マクロな古典的密度ゆらぎとして凍結される。これがほぼスケール不変（スペクトル指数 $n_s\approx 0.96$，完全なスケール不変は $n_s=1$）でガウス的なゆらぎを生み，CMB のゆらぎや大規模構造の種となる。観測される $n_s$ がわずかに $1$ より小さいことはインフレーション理論の予言とよく一致する。</p>
+    </div>
+
+    <h2 id="structure">7. 構造形成と暗黒物質</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 重力不安定性</div>
+      <p>わずかな密度ゆらぎ $\delta \equiv \delta\rho/\rho$ は重力で増幅される。物質優勢期の線形成長では（亜 Hubble スケールで）</p>
+      $$\ddot\delta + 2H\dot\delta - 4\pi G\rho_m\,\delta = 0$$
+      <p>が成り立ち，成長モードは $\delta \propto a$（物質優勢期）で増大する。十分成長すると非線形崩壊を起こし，ハロー・銀河・銀河団・宇宙の大規模構造（フィラメントとボイドからなるコズミックウェブ）を形成する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 暗黒物質</div>
+      <p>電磁的にほとんど相互作用せず（見えない），重力的にのみ存在が分かる物質。バリオンの約5倍の量があり，$\Omega_c\approx 0.26$。構造形成の重力の種を提供し，バリオンが落ち込む「足場」となる。冷たい（非相対論的，CDM）と仮定するのが標準。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 暗黒物質の証拠</div>
+      <ul>
+        <li><strong>銀河回転曲線</strong>：渦巻銀河の外縁の回転速度が $v(r)\approx$ 一定で，可視物質だけでは説明できない（$v^2 = GM(r)/r$ から外縁に質量が必要）。</li>
+        <li><strong>銀河団の力学・X線温度</strong>：ビリアル定理から見積もる質量が光る物質を大きく上回る。</li>
+        <li><strong>重力レンズ</strong>：弱・強レンズで測る質量分布が可視光分布と一致しない（例：弾丸銀河団）。</li>
+        <li><strong>CMB と大規模構造</strong>：音響ピークの相対高さや物質パワースペクトルが暗黒物質量を要求する。</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 宇宙の未来</div>
+      <p>暗黒エネルギーが $w=-1$ の宇宙定数なら，宇宙は永遠に加速膨張を続け，遠方銀河は次々に地平線の彼方へ去り，最終的に「冷たく暗い」希薄宇宙へ向かう（熱的死）。もし $w<-1$（ファントムエネルギー）なら有限時間後にあらゆる構造が引き裂かれるビッグリップに至る。未来は暗黒エネルギーの正体に決定的に依存する。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>状態方程式 $w$ が一定の単一成分宇宙について，流体方程式から $\rho\propto a^{-3(1+w)}$ を導け。さらに平坦宇宙（$k=0,\ \Lambda=0$）で Friedmann 方程式を解き，$a(t)\propto t^{2/(3(1+w))}$ となることを示せ。放射（$w=1/3$）と物質（$w=0$）の場合の $a(t)$ を具体的に書け。</li>
+        <li>赤方偏移 $z$ の天体について，CMB 温度が $T(z)=T_0(1+z)$ となることを，黒体放射が膨張下で黒体を保つことを用いて説明せよ。$z=1090$ での温度を求めよ。</li>
+        <li>臨界密度の式 $\rho_c = 3H^2/(8\pi G)$ に $H_0 = 70\ \text{km}\,\text{s}^{-1}\,\text{Mpc}^{-1}$ を代入し，$\rho_{c,0}$ を $\text{kg}\,\text{m}^{-3}$ で数値評価せよ（$1\,\text{Mpc}=3.086\times10^{22}\,\text{m}$）。</li>
+        <li>加速膨張の条件が $w<-1/3$ となることを，加速度方程式 $\ddot a/a = -\frac{4\pi G}{3}(\rho+3p/c^2)$ から導け。</li>
+        <li>平坦性問題：$\Omega-1 = kc^2/(a^2H^2)$ が放射優勢・物質優勢期にそれぞれ時間とともにどう変化するかを評価し，現在 $\Omega\approx 1$ であるために初期に必要な微調整を論ぜよ。インフレーション（$a\propto e^{Ht}$）でこれがどう解消されるか説明せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>初期宇宙の高エネルギー物理（元素合成・対称性の破れ・インフラトン場の起源）を深めるには <a href="particle-physics.html">素粒子物理</a> へ。宇宙論が数学・物理の全体像のどこに位置するかは <a href="field-map.html">学問領域マップ</a> で確認できる。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

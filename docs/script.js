@@ -39,6 +39,7 @@ const SIDEBAR_HTML = `
     <nav>
       <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
       <a href="abstract-algebra.html"><span class="nav-icon">∘</span>抽象代数学</a>
+      <a href="representation-theory.html"><span class="nav-icon">ρ</span>表現論</a>
       <a href="number-theory.html"><span class="nav-icon">ℤ</span>数論</a>
       <a href="category-theory.html"><span class="nav-icon">⟶</span>圏論</a>
     </nav>
@@ -51,11 +52,19 @@ const SIDEBAR_HTML = `
     </nav>
   </div>
   <div class="sidebar-section">
+    <div class="sidebar-label">論理・計算</div>
+    <nav>
+      <a href="mathematical-logic.html"><span class="nav-icon">⊢</span>数理論理</a>
+      <a href="computational-complexity.html"><span class="nav-icon">P</span>計算複雑性</a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
     <div class="sidebar-label">幾何・位相</div>
     <nav>
       <a href="topology.html"><span class="nav-icon">⊙</span>位相空間論</a>
       <a href="differential-geometry.html"><span class="nav-icon">∇</span>微分幾何学</a>
       <a href="algebraic-topology.html"><span class="nav-icon">π</span>代数的位相幾何</a>
+      <a href="algebraic-geometry.html"><span class="nav-icon">𝕍</span>代数幾何</a>
     </nav>
   </div>
   <div class="sidebar-section">
@@ -71,6 +80,8 @@ const SIDEBAR_HTML = `
     <nav>
       <a href="dynamical-systems.html"><span class="nav-icon">↻</span>力学系</a>
       <a href="optimization.html"><span class="nav-icon">▽</span>最適化・変分法</a>
+      <a href="control-theory.html"><span class="nav-icon">⟳</span>制御理論</a>
+      <a href="machine-learning.html"><span class="nav-icon">⊛</span>機械学習の数理</a>
       <a href="numerical-analysis.html"><span class="nav-icon">≈</span>数値解析</a>
     </nav>
   </div>
@@ -83,8 +94,11 @@ const SIDEBAR_HTML = `
       <a href="fluid-dynamics.html"><span class="nav-icon">≋</span>流体力学</a>
       <a href="statistical-mechanics.html"><span class="nav-icon">S</span>統計力学</a>
       <a href="relativity.html"><span class="nav-icon">c</span>相対性理論</a>
+      <a href="cosmology.html"><span class="nav-icon">Λ</span>宇宙論</a>
+      <a href="condensed-matter.html"><span class="nav-icon">⬢</span>物性物理</a>
       <a href="quantum-mechanics.html"><span class="nav-icon">ψ</span>量子力学</a>
       <a href="quantum-field-theory.html"><span class="nav-icon">φ</span>量子場理論</a>
+      <a href="particle-physics.html"><span class="nav-icon">⚛</span>素粒子物理</a>
     </nav>
   </div>
   <div class="sidebar-section">

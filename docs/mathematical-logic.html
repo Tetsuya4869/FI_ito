@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数理論理 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 数理論理</div>
+    <h1>数理論理</h1>
+    <p class="tagline">命題・述語論理・完全性・ZFC・計算可能性・Gödel の不完全性定理・モデル理論。数学そのものを対象にする数学。</p>
+    <div class="tags"><span class="tag">述語論理</span><span class="tag">完全性定理</span><span class="tag">ZFC</span><span class="tag">計算可能性</span><span class="tag">不完全性定理</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#propositional">命題論理</a></li>
+        <li><a href="#predicate">述語論理</a></li>
+        <li><a href="#completeness">形式的証明と完全性</a></li>
+        <li><a href="#set-theory">集合論 ZFC</a></li>
+        <li><a href="#computability">計算可能性</a></li>
+        <li><a href="#incompleteness">Gödel の不完全性定理</a></li>
+        <li><a href="#model-theory">モデル理論入門</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは集合・写像・基本的な証明法（背理法・数学的帰納法）に親しんでいることを前提とする。未習の場合は <a href="sets-logic.html">集合と論理・証明</a> を先に読むとよい。本ページではそれらの「証明」という営み自体を数学的対象として定式化し，その能力と限界を探る。</p>
+    </div>
+
+    <h2 id="propositional">1. 命題論理</h2>
+    <p>命題論理は，真偽の定まる文（命題）を論理結合子で組み合わせた論理式を扱う，最も基本的な形式体系である。内部構造（量化や対象）を見ず，原子命題を単位として真理値の伝播のみを論じる。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 論理式（well-formed formula）</div>
+      <p>命題変数 $p, q, r, \ldots$ の集合を固定する。<strong>論理式</strong>は次の規則で帰納的に定義される。</p>
+      <ul>
+        <li>各命題変数 $p$ は論理式である（原子論理式）。</li>
+        <li>$\varphi$ が論理式なら $\lnot\varphi$ も論理式である。</li>
+        <li>$\varphi, \psi$ が論理式なら $(\varphi \land \psi),\ (\varphi \lor \psi),\ (\varphi \Rightarrow \psi),\ (\varphi \Leftrightarrow \psi)$ も論理式である。</li>
+      </ul>
+      <p>結合子の意味は否定 $\lnot$，連言 $\land$，選言 $\lor$，含意 $\Rightarrow$，同値 $\Leftrightarrow$ である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 付値と真理値表</div>
+      <p>各命題変数に真理値 $\{T, F\}$ を割り当てる写像 $v$ を<strong>付値</strong>という。$v$ は結合子の真理値表によって全論理式へ一意に拡張される。</p>
+      <table>
+        <tr><th>$\varphi$</th><th>$\psi$</th><th>$\lnot\varphi$</th><th>$\varphi\land\psi$</th><th>$\varphi\lor\psi$</th><th>$\varphi\Rightarrow\psi$</th></tr>
+        <tr><td>$T$</td><td>$T$</td><td>$F$</td><td>$T$</td><td>$T$</td><td>$T$</td></tr>
+        <tr><td>$T$</td><td>$F$</td><td>$F$</td><td>$F$</td><td>$T$</td><td>$F$</td></tr>
+        <tr><td>$F$</td><td>$T$</td><td>$T$</td><td>$F$</td><td>$T$</td><td>$T$</td></tr>
+        <tr><td>$F$</td><td>$F$</td><td>$T$</td><td>$F$</td><td>$F$</td><td>$T$</td></tr>
+      </table>
+      <p>特に含意 $\varphi\Rightarrow\psi$ は $\varphi$ が偽のとき常に真（vacuously true）である点に注意。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — トートロジー・充足可能性・論理的同値</div>
+      <p>論理式 $\varphi$ が<strong>トートロジー</strong>（恒真）であるとは，すべての付値で $\varphi$ が真になること。$\models \varphi$ と書く。</p>
+      <p>$\varphi$ が<strong>充足可能</strong>であるとは，$\varphi$ を真にする付値が少なくとも一つ存在すること。<strong>矛盾</strong>（恒偽）はその否定。</p>
+      <p>$\varphi, \psi$ が<strong>論理的に同値</strong> $\varphi \equiv \psi$ とは，すべての付値で両者の真理値が一致すること。すなわち $\models (\varphi \Leftrightarrow \psi)$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 主要なトートロジーと同値則</div>
+      <p>排中律 $\models p \lor \lnot p$，矛盾律 $\models \lnot(p \land \lnot p)$。</p>
+      <p>含意の言い換え: $(p \Rightarrow q) \equiv (\lnot p \lor q) \equiv (\lnot q \Rightarrow \lnot p)$（対偶）。</p>
+      <p>de Morgan の法則: $\lnot(p \land q) \equiv (\lnot p \lor \lnot q)$，$\lnot(p \lor q) \equiv (\lnot p \land \lnot q)$。</p>
+      <p>分配律: $p \land (q \lor r) \equiv (p \land q) \lor (p \land r)$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 真理値表は決定手続き</div>
+      <p>命題変数が $n$ 個なら付値は $2^n$ 通り。原理上は真理値表を全展開すればトートロジー判定・充足可能性判定が機械的に行える。つまり命題論理は<strong>決定可能</strong>である。ただし $2^n$ の指数爆発があり，SAT 問題は NP 完全（詳細は <a href="computational-complexity.html">計算複雑性</a>）。</p>
+    </div>
+
+    <h2 id="predicate">2. 述語論理</h2>
+    <p>命題論理は「すべての」「ある」といった量化を表現できない。述語論理（一階論理）は，対象を走る変数と量化子 $\forall, \exists$ を導入して数学的言明を精密に書き下す枠組みを与える。現代数学の標準的言語である。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 言語・項・論理式</div>
+      <p>一階の<strong>言語</strong> $\mathcal{L}$ は，定数記号・関数記号・述語（関係）記号の集合からなる。<strong>項</strong>は変数・定数，および関数記号を項に施したもので帰納的に定義される。</p>
+      <p><strong>原子論理式</strong>は $P(t_1,\ldots,t_n)$（$P$ は述語，$t_i$ は項）または $t_1 = t_2$。一般の論理式は，原子論理式を結合子 $\lnot,\land,\lor,\Rightarrow$ と量化子で組み合わせて得る。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 量化子と自由・束縛変数</div>
+      <p><strong>全称量化子</strong> $\forall x\,\varphi$ は「すべての $x$ について $\varphi$」，<strong>存在量化子</strong> $\exists x\,\varphi$ は「ある $x$ が存在して $\varphi$」を表す。</p>
+      <p>量化子の作用域内に現れる変数を<strong>束縛変数</strong>，そうでない変数を<strong>自由変数</strong>という。自由変数を持たない論理式を<strong>文</strong>（sentence）と呼ぶ。双対関係 $\lnot\forall x\,\varphi \equiv \exists x\,\lnot\varphi$ が成り立つ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 構造とモデル，充足関係 $\models$</div>
+      <p>言語 $\mathcal{L}$ の<strong>構造</strong>（モデル）$\mathfrak{M} = (M, \cdot^{\mathfrak{M}})$ は，空でない領域 $M$ と，各記号への解釈（定数 $\mapsto M$ の元，$n$ 項関数記号 $\mapsto M^n\to M$，$n$ 項述語 $\mapsto M^n$ 上の関係）からなる。</p>
+      <p>変数割当 $s$ のもとで，文 $\varphi$ が $\mathfrak{M}$ で真であることを <strong>Tarski の充足関係</strong> $\mathfrak{M} \models \varphi$ で表す。とくに</p>
+      $$\mathfrak{M} \models \forall x\,\varphi \iff \text{すべての } a \in M \text{ について } \mathfrak{M} \models \varphi[x/a].$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 群の公理を一階で書く</div>
+      <p>言語 $\{\cdot, e\}$（二項演算と定数）で群の公理は次の文の集合。</p>
+      $$\forall x\forall y\forall z\,\big((x\cdot y)\cdot z = x\cdot(y\cdot z)\big),\quad \forall x\,(x\cdot e = x \land e\cdot x = x),$$
+      $$\forall x\,\exists y\,(x\cdot y = e \land y\cdot x = e).$$
+      <p>ある構造 $\mathfrak{M}$ がこれら全てを満たすとき，$\mathfrak{M}$ は群論の<strong>モデル</strong>，すなわち群そのものである。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 一階と高階の境界</div>
+      <p>一階論理では変数は領域の<strong>元</strong>のみを走り，部分集合や関数を直接量化できない。「すべての部分集合 $S$ について…」のような量化を許すと二階論理になる。一階論理は次節の完全性定理が成り立つ一方，二階論理は完全な証明体系を持たない。この違いが論理学の多くの結果の鍵となる。</p>
+    </div>
+
+    <h2 id="completeness">3. 形式的証明と完全性</h2>
+    <p>これまでの $\models$ は意味論（モデルでの真理）であった。これに対し，記号操作だけで結論を導く構文論的な営みが<strong>証明</strong>である。両者が一致すること，それが完全性定理の主張である。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 公理系・推論規則・証明 $\vdash$</div>
+      <p>形式体系は<strong>論理公理</strong>（恒真な公理スキーマ）と<strong>推論規則</strong>からなる。代表的な推論規則は modus ponens：$\varphi$ と $\varphi \Rightarrow \psi$ から $\psi$ を導く。</p>
+      <p>文の集合 $\Gamma$ から $\varphi$ が<strong>証明可能</strong>であるとは，$\Gamma$ と論理公理を前提に推論規則の有限回適用で $\varphi$ に至る列（証明）が存在すること。$\Gamma \vdash \varphi$ と書く。証明は有限の記号列であり，その正しさは機械的に検証できる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 健全性（Soundness）</div>
+      <p>証明可能なものは真である。すなわち，</p>
+      $$\Gamma \vdash \varphi \implies \Gamma \models \varphi.$$
+      <p>各推論規則が真理を保存することの帰納法で示される。これにより形式的証明は「正しさ」を保証する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Gödel の完全性定理（1929）</div>
+      <p>一階論理において，意味論的帰結はすべて構文論的に証明できる。健全性と合わせて，</p>
+      $$\Gamma \vdash \varphi \iff \Gamma \models \varphi.$$
+      <p>すなわち「すべてのモデルで成り立つ」ことと「有限の証明が存在する」ことは完全に一致する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 完全性とコンパクト性</div>
+      <p>完全性定理の直接の帰結が次節以降で活躍するコンパクト性定理である：証明は有限の前提しか使えないため，$\Gamma \models \varphi$ ならある有限部分 $\Gamma_0 \subseteq \Gamma$ で $\Gamma_0 \models \varphi$。なお<strong>完全性定理</strong>（証明能力の十分さ）と次々節の<strong>不完全性定理</strong>（特定理論が真理を取り尽くせない）は別物である点に注意せよ。</p>
+    </div>
+
+    <h2 id="set-theory">4. 集合論 ZFC</h2>
+    <p>現代数学はほぼすべて集合論の言語に翻訳できる。標準的な土台が Zermelo–Fraenkel 集合論に選択公理を加えた <strong>ZFC</strong> である。言語は等号と二項関係 $\in$（帰属関係）のみという極小さでありながら，数・関数・構造の一切を構成できる。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ZFC の公理（抜粋）</div>
+      <ul>
+        <li><strong>外延性</strong>: $\forall x\forall y\,\big(\forall z(z\in x \Leftrightarrow z\in y) \Rightarrow x=y\big)$（要素が同じ集合は等しい）。</li>
+        <li><strong>対・和・冪</strong>: 二元の対集合，和集合 $\bigcup x$，冪集合 $\mathcal{P}(x)$ の存在。</li>
+        <li><strong>分出（内包）</strong>: 任意の論理式 $\varphi$ と集合 $a$ に対し $\{z \in a : \varphi(z)\}$ が存在。</li>
+        <li><strong>置換</strong>: 関数的な対応の像が集合をなす。</li>
+        <li><strong>無限</strong>: 帰納的集合（自然数を含む無限集合）の存在 $\exists x\,(\varnothing \in x \land \forall y(y\in x \Rightarrow y\cup\{y\}\in x))$。</li>
+        <li><strong>正則性</strong>: $\in$ 無限下降列を禁じ，集合の宇宙を階層的にする。</li>
+        <li><strong>選択公理 (AC)</strong>: 空でない集合の任意の族に選択関数が存在する。</li>
+      </ul>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 順序数と基数</div>
+      <p><strong>順序数</strong>は $\in$ で整列された推移的集合で，$0=\varnothing,\ 1=\{0\},\ 2=\{0,1\},\ \ldots,\ \omega,\ \omega+1,\ldots$ と続く。整列順序の「長さ」を測る。</p>
+      <p><strong>基数</strong>は集合の濃度を測る順序数で，$\aleph_0 = |\mathbb{N}|,\ \aleph_1,\ \aleph_2,\ldots$。Cantor の定理より $|x| < |\mathcal{P}(x)|$，特に $\aleph_0 < 2^{\aleph_0} = |\mathbb{R}|$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 選択公理の同値命題</div>
+      <p>ZF 上で次は互いに同値：選択公理 (AC)，整列定理（任意の集合は整列可能），Zorn の補題（帰納的順序集合は極大元を持つ）。これらは線型代数の基底の存在やコンパクト性など数学全域で用いられる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 連続体仮説の独立性</div>
+      <p>連続体仮説 (CH) $2^{\aleph_0} = \aleph_1$ は ZFC から証明も反証もできない。Gödel (1940) が構成可能宇宙 $L$ により $\mathrm{Con}(\mathrm{ZFC}) \Rightarrow \mathrm{Con}(\mathrm{ZFC}+\mathrm{CH})$ を，Cohen (1963) が強制法 (forcing) により $\mathrm{Con}(\mathrm{ZFC}+\lnot\mathrm{CH})$ を示した。すなわち CH は ZFC から<strong>独立</strong>である。AC もまた ZF から独立。</p>
+    </div>
+
+    <h2 id="computability">5. 計算可能性</h2>
+    <p>「アルゴリズムで解ける」とは何かを数学的に定義するのが計算可能性理論である。直観的な計算概念を機械モデルで形式化し，その限界を明らかにする。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Turing 機械</div>
+      <p><strong>Turing 機械</strong>は，無限テープ・読み書きヘッド・有限個の内部状態・遷移関数からなる抽象計算モデルである。各ステップで現在の状態とテープ記号に応じて，記号の書き換え・ヘッド移動・状態遷移を行う。停止すればテープ内容が出力となる。</p>
+      <p>入力 $w$ に対し Turing 機械 $M$ が停止して受理/拒否を返す部分関数を計算する。これが「計算可能関数」の標準的な定式化である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 決定可能・帰納的可算</div>
+      <p>言語 $A$ が<strong>決定可能</strong>（再帰的）であるとは，すべての入力で停止し $A$ への所属を正しく判定する Turing 機械が存在すること。</p>
+      <p>$A$ が<strong>帰納的可算</strong>（半決定可能）であるとは，$A$ の元に対しては停止して受理する機械が存在すること（非元に対しては停止しなくてよい）。$A$ が決定可能 $\iff$ $A$ と補集合 $\bar A$ がともに帰納的可算。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 停止問題は決定不能（Turing 1936）</div>
+      <p>停止問題 $\mathrm{HALT} = \{\langle M, w\rangle : M \text{ は入力 } w \text{ で停止する}\}$ を判定する Turing 機械は存在しない。</p>
+      <p><em>証明（対角線論法）</em>: 仮に判定機 $H$ が存在するとし，「$D(\langle M\rangle)$ は $H$ が『$M$ は $\langle M\rangle$ で停止する』と言えば無限ループ，さもなくば停止」と定める。$D(\langle D\rangle)$ の挙動を考えると停止する $\iff$ 停止しない，という矛盾が生じる。$\square$</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Church–Turing のテーゼ</div>
+      <p>Turing 機械で計算可能な関数のクラスは，$\lambda$ 計算・帰納的関数・レジスタ機械など，これまで提案されたあらゆる「機械的計算」のモデルと完全に一致する。この経験的事実から，<strong>「直観的に計算可能」＝「Turing 計算可能」</strong>と同一視する立場を Church–Turing のテーゼという。これは定理ではなく，計算の定義に関する主張である。</p>
+    </div>
+
+    <h2 id="incompleteness">6. Gödel の不完全性定理</h2>
+    <p>完全性定理は一階論理の証明体系が「論理的帰結を取り尽くす」ことを保証した。では，自然数論のような具体的理論は「数学的真理を取り尽くせる」か。Gödel (1931) の答えは否であり，20 世紀数学の根幹を揺るがした。</p>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 第1不完全性定理</div>
+      <p>自然数論を含む，無矛盾で計算可能に公理化された理論 $T$（例：Peano 算術 PA）に対して，$T$ で証明も反証もできない文 $G$ が存在する：</p>
+      $$T \nvdash G \quad \text{かつ} \quad T \nvdash \lnot G.$$
+      <p>カギは<strong>算術化（Gödel 数化）</strong>と自己言及である。証明可能性を算術の述語として $T$ 内部に符号化し，「この文は $T$ で証明できない」と（不動点定理により）主張する文 $G$ を構成する。$G$ が証明できれば偽を証明することになり矛盾，反証もできない。よって $G$ は真だが証明不能である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 第2不完全性定理</div>
+      <p>同じ条件下で，理論 $T$ は自分自身の無矛盾性を証明できない。$\mathrm{Con}(T)$ を「$T$ は無矛盾」を表す算術文とすると，</p>
+      $$T \nvdash \mathrm{Con}(T) \qquad (T \text{ が無矛盾なら}).$$
+      <p>これは第1定理の論法を $T$ 内部で形式化することで得られる：$\mathrm{Con}(T) \Rightarrow G$ が $T$ 内で証明でき，もし $T \vdash \mathrm{Con}(T)$ なら $T \vdash G$ となって第1定理に反する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 含意 — Hilbert プログラムの限界</div>
+      <p>数学全体の無矛盾性を有限の立場で証明しようとした Hilbert プログラムは，第2不完全性定理により素朴な形では達成不能と判明した。十分強い理論は自らの整合性を保証できない。一方これは「数学が信用できない」という意味ではなく，真理（$\models$）と証明可能性（$\vdash$）が特定理論内では原理的に乖離しうることを示している。完全性定理（一階論理全体）と不完全性定理（個別の算術理論）の対比に注意せよ。</p>
+    </div>
+
+    <h2 id="model-theory">7. モデル理論入門</h2>
+    <p>モデル理論は，理論（文の集合）とそのモデル（構造）の関係を体系的に研究する分野である。構文と意味論を橋渡しし，代数や数論への応用も豊かである。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 初等同値と初等部分構造</div>
+      <p>二つの構造 $\mathfrak{M}, \mathfrak{N}$ が<strong>初等同値</strong> $\mathfrak{M} \equiv \mathfrak{N}$ とは，同じ言語の文をすべて共有すること：任意の文 $\varphi$ について $\mathfrak{M}\models\varphi \iff \mathfrak{N}\models\varphi$。同型なら初等同値だが，逆は一般に成り立たない。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — コンパクト性定理</div>
+      <p>文の集合 $\Gamma$ がモデルを持つ $\iff$ $\Gamma$ の任意の有限部分集合がモデルを持つ。</p>
+      <p>完全性定理から導かれる（証明が有限であることの帰結）。新しい定数 $c$ と $\{c \neq 0, c \neq 1, c \neq 2, \ldots\}$ を既存理論に加えても各有限部分は充足可能なので，全体もモデルを持つ。こうして「無限大の元」を含むモデルが作れる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Löwenheim–Skolem の定理</div>
+      <p>可算言語の理論が無限モデルを持つなら，<strong>任意の無限濃度</strong> $\kappa$ のモデルを持つ。とくに（下方）どんな理論にも可算モデルがある。</p>
+      <p>帰結が <strong>Skolem のパラドックス</strong>：ZFC が無矛盾なら可算モデルを持つが，その内部では「非可算集合の存在」が成り立つ。可算性は外から見た性質であり，モデル内部の一階言語では非可算性と矛盾しない。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 超準モデルと超準解析</div>
+      <p>コンパクト性により，標準的な実数体 $\mathbb{R}$ と初等同値でありながら<strong>無限大・無限小</strong>を含む<strong>超準モデル</strong> ${}^*\mathbb{R}$ が存在する。$0$ でない無限小 $\varepsilon$（任意の正の実数より小さい正の数）を用いると，微分や連続性を $\varepsilon$–$\delta$ なしで直接扱える。これが Robinson の超準解析である。標準実数論で真な一階の言明はすべて ${}^*\mathbb{R}$ でも真（移行原理）。</p>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>計算可能性の限界の先には，「解けるが計算資源をどれだけ要するか」を問う <a href="computational-complexity.html">計算複雑性</a> がある（命題論理の SAT が NP 完全であった点を想起せよ）。また，ZFC や群・体の公理から立ち上がる代数構造の理論を体系的に学ぶなら <a href="abstract-algebra.html">抽象代数学</a> へ進むとよい。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>真理値表を用いて $(p \Rightarrow q) \equiv (\lnot p \lor q)$ および $\lnot(p \land q) \equiv (\lnot p \lor \lnot q)$ を確かめよ。</li>
+        <li>双対関係 $\lnot\forall x\,\varphi \equiv \exists x\,\lnot\varphi$ を Tarski の充足関係の定義に基づいて説明せよ。また「すべての実数には逆数が存在する」が偽であることを一階論理の文として書いて示せ。</li>
+        <li>健全性と完全性を合わせると $\Gamma \vdash \varphi \iff \Gamma \models \varphi$ となる理由を述べ，ここからコンパクト性定理を導く筋道を説明せよ。</li>
+        <li>停止問題の決定不能性の証明（対角線論法）を，自分の言葉で再構成せよ。さらに「自分自身を出力するプログラム」との論法上の類似を論ぜよ。</li>
+        <li>第1不完全性定理の文 $G$ が「真だが証明不能」と言える根拠を述べよ。これが一階論理の完全性定理と矛盾しないのはなぜか。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

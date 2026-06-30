@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>機械学習の数理 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 機械学習の数理</div>
+    <h1>機械学習の数理</h1>
+    <p class="tagline">経験リスク最小化・正則化・勾配降下・ニューラルネット・カーネル法・PAC学習。データから学ぶ数学。</p>
+    <div class="tags"><span class="tag">経験リスク最小化</span><span class="tag">正則化</span><span class="tag">勾配降下法</span><span class="tag">ニューラルネット</span><span class="tag">カーネル法</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#setup">学習問題の定式化</a></li>
+        <li><a href="#linear">線形回帰とロジスティック回帰</a></li>
+        <li><a href="#regularization">正則化と汎化</a></li>
+        <li><a href="#optimization">最適化</a></li>
+        <li><a href="#neural">ニューラルネットワーク</a></li>
+        <li><a href="#kernel">カーネル法と SVM</a></li>
+        <li><a href="#theory">確率モデルと学習理論</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="linear-algebra.html">線形代数</a>（行列・固有値・正定値性），<a href="optimization.html">最適化</a>（凸関数・勾配・Lagrange 双対），<a href="probability-basics.html">確率・統計の基礎</a>（期待値・分散・最尤推定・Bayes の定理）を前提とする。これらに不安があれば先に参照されたい。</p>
+    </div>
+
+    <h2 id="setup">1. 学習問題の定式化</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 教師あり学習</div>
+      <p>入力空間 $\mathcal X$，出力空間 $\mathcal Y$ 上の未知の同時分布 $\mathcal D$ から独立同分布(i.i.d.)に抽出された訓練データ</p>
+      $$S = \{(x_1,y_1),\ldots,(x_n,y_n)\} \sim \mathcal D^n$$
+      <p>が与えられる。目標は予測関数 $f:\mathcal X \to \mathcal Y$ を学習することである。$\mathcal Y$ が連続なら<strong>回帰</strong>，離散（カテゴリ）なら<strong>分類</strong>と呼ぶ。一方，ラベル $y$ が与えられず $x$ のみから構造（クラスタ・低次元表現・密度）を学ぶのが<strong>教師なし学習</strong>である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 仮説集合と損失関数</div>
+      <p>探索する候補関数の集合を<strong>仮説集合</strong> $\mathcal H = \{f_\theta : \theta \in \Theta\}$ という（例: 線形関数の族，ニューラルネット）。予測の良し悪しを測る<strong>損失関数</strong> $\ell(f(x), y) \ge 0$ を導入する。代表例:</p>
+      $$\text{二乗損失: } \ell(\hat y, y)=(\hat y - y)^2, \qquad \text{0-1 損失: } \ell(\hat y, y)=\mathbf 1[\hat y \ne y]$$
+      <p>ロジスティック（交差エントロピー）損失: $\ell = -y\log\hat p - (1-y)\log(1-\hat p)$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 期待リスクと経験リスク</div>
+      <p>真に最小化したいのは未知分布上の<strong>期待リスク（汎化誤差）</strong></p>
+      $$R(f) = \mathbb E_{(x,y)\sim\mathcal D}\bigl[\ell(f(x),y)\bigr]$$
+      <p>であるが $\mathcal D$ は未知なので，標本平均で近似した<strong>経験リスク</strong></p>
+      $$\hat R_S(f) = \frac1n\sum_{i=1}^n \ell(f(x_i),y_i)$$
+      <p>を最小化する。これを<strong>経験リスク最小化(ERM)</strong>といい，$\hat f = \arg\min_{f\in\mathcal H}\hat R_S(f)$ を求める。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 汎化ギャップ</div>
+      <p>本質的な問いは $\hat R_S(\hat f)$ ではなく $R(\hat f)$ がどれだけ小さいか，すなわち<strong>汎化ギャップ</strong> $R(\hat f) - \hat R_S(\hat f)$ の大きさである。$\mathcal H$ を複雑にすると経験リスクは下がるが汎化ギャップは広がる。この緊張関係が第3節・第7節の主題となる。</p>
+    </div>
+
+    <h2 id="linear">2. 線形回帰とロジスティック回帰</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 線形回帰と最小二乗法</div>
+      <p>仮説 $f_w(x) = w^\top x$（バイアス項は $x$ に定数 $1$ を含めて吸収）。$n$ 個のデータを行ごとに並べた計画行列 $X\in\mathbb R^{n\times d}$，目標ベクトル $y\in\mathbb R^n$ に対し，二乗損失の経験リスクは</p>
+      $$\hat R(w) = \frac1n\lVert Xw - y\rVert_2^2.$$
+      <p>これを最小化するのが<strong>最小二乗法</strong>である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 正規方程式</div>
+      <p>$\hat R(w)$ の勾配を $0$ とおくと $X^\top X\, w = X^\top y$ を得る（<strong>正規方程式</strong>）。$X^\top X$ が正則なら解は一意で</p>
+      $$\hat w = (X^\top X)^{-1}X^\top y.$$
+      <p>幾何学的には $X\hat w$ は $y$ の列空間 $\mathrm{col}(X)$ への直交射影であり，残差 $y - X\hat w$ は列空間に直交する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 1 変数回帰</div>
+      <p>$x_i\in\mathbb R$ に切片を加え $f(x)=w_0+w_1 x$ とする。正規方程式を解くと</p>
+      $$\hat w_1 = \frac{\sum_i (x_i-\bar x)(y_i-\bar y)}{\sum_i (x_i-\bar x)^2}, \qquad \hat w_0 = \bar y - \hat w_1\bar x.$$
+      <p>これは共分散を分散で割った最も基本的な回帰係数の公式である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ロジスティック回帰</div>
+      <p>二値分類 $y\in\{0,1\}$ で，シグモイド $\sigma(z)=\dfrac{1}{1+e^{-z}}$ を用い確率をモデル化する:</p>
+      $$p(y=1\mid x) = \sigma(w^\top x) = \frac{1}{1+e^{-w^\top x}}.$$
+      <p>決定境界 $w^\top x = 0$ は線形だが，出力は確率として解釈できる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最尤推定と交差エントロピー</div>
+      <p>各標本の対数尤度を最大化する。負の対数尤度（交差エントロピー損失）は</p>
+      $$\mathcal L(w) = -\sum_{i=1}^n\Bigl[y_i\log\sigma(w^\top x_i) + (1-y_i)\log\bigl(1-\sigma(w^\top x_i)\bigr)\Bigr].$$
+      <p>$\mathcal L$ は $w$ に関して凸であり，勾配は閉形式 $\nabla\mathcal L(w) = \sum_i\bigl(\sigma(w^\top x_i)-y_i\bigr)x_i = X^\top(\sigma(Xw)-y)$ となる。閉じた解は存在せず，第4節の反復法で解く。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 線形モデルの統一的視点</div>
+      <p>線形回帰（恒等リンク・二乗損失）とロジスティック回帰（ロジットリンク・交差エントロピー）はいずれも<strong>一般化線形モデル(GLM)</strong>の特別な場合であり，指数型分布族の最尤推定として統一的に理解できる。</p>
+    </div>
+
+    <h2 id="regularization">3. 正則化と汎化</h2>
+    <div class="box note">
+      <div class="box-title">💡 過学習（オーバーフィッティング）</div>
+      <p>$\mathcal H$ が大きすぎると訓練データのノイズまで記憶し，$\hat R_S$ は小さいのに $R$ は大きい状態に陥る。これを<strong>過学習</strong>という。逆に表現力が不足すれば<strong>過小適合</strong>となる。両者を制御する代表的手法が正則化である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — L2 正則化(Ridge)と L1 正則化(Lasso)</div>
+      <p>経験リスクに係数の大きさのペナルティを加える。<strong>Ridge 回帰</strong>(L2):</p>
+      $$\hat w_{\rm ridge} = \arg\min_w \lVert Xw-y\rVert_2^2 + \lambda\lVert w\rVert_2^2, \qquad \hat w_{\rm ridge} = (X^\top X + \lambda I)^{-1}X^\top y.$$
+      <p><strong>Lasso 回帰</strong>(L1):</p>
+      $$\hat w_{\rm lasso} = \arg\min_w \lVert Xw-y\rVert_2^2 + \lambda\lVert w\rVert_1.$$
+      <p>$\lambda>0$ は正則化強度。Ridge は係数を全体的に縮小し，行列 $X^\top X+\lambda I$ が常に正則になるため数値的に安定する。Lasso は L1 ノルムの角張った等高線により多くの係数を厳密に $0$ にし，<strong>変数選択</strong>（スパース性）を促す。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Bayes 的解釈</div>
+      <p>Ridge は係数に Gauss 事前分布 $w\sim\mathcal N(0,\tau^2 I)$ を，Lasso は Laplace 事前分布を置いた最大事後確率(MAP)推定と等価である（第7節参照）。正則化項は対数事前分布に対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — バイアス-バリアンス分解</div>
+      <p>二乗損失の回帰で，真の関数を $g(x)$，ノイズ分散を $\sigma^2$，訓練集合 $S$ をランダムとした予測子を $\hat f_S$ とする。点 $x$ における期待二乗誤差は次のように分解される:</p>
+      $$\mathbb E_S\bigl[(y - \hat f_S(x))^2\bigr] = \underbrace{\bigl(g(x)-\mathbb E_S[\hat f_S(x)]\bigr)^2}_{\text{バイアス}^2} + \underbrace{\mathbb E_S\bigl[(\hat f_S(x)-\mathbb E_S[\hat f_S(x)])^2\bigr]}_{\text{バリアンス}} + \underbrace{\sigma^2}_{\text{既約誤差}}.$$
+      <p>モデルを複雑にするとバイアスは減りバリアンスは増える。$\lambda$ を大きくするとバイアスを増やしバリアンスを減らす。最適な汎化はこのトレードオフの均衡点で達成される。</p>
+    </div>
+
+    <h2 id="optimization">4. 最適化</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 勾配降下法</div>
+      <p>微分可能な目的関数 $J(\theta)$ を最小化する反復法。勾配の逆向きにステップする:</p>
+      $$\theta_{t+1} = \theta_t - \eta\,\nabla J(\theta_t),$$
+      <p>$\eta>0$ は学習率。$J$ が $L$-平滑（勾配が Lipschitz 連続）なら $\eta \le 1/L$ で単調減少が保証される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 確率的勾配降下法(SGD)とミニバッチ</div>
+      <p>$J(\theta)=\frac1n\sum_i \ell_i(\theta)$ の全勾配は $n$ に比例して高コスト。<strong>SGD</strong> はランダムに選んだ 1 標本（またはミニバッチ $B$）で勾配を推定する:</p>
+      $$\theta_{t+1} = \theta_t - \eta\,\nabla\ell_{i_t}(\theta_t), \qquad \mathbb E[\nabla\ell_{i_t}] = \nabla J.$$
+      <p>不偏推定だが分散を持つため，収束には学習率の減衰 $\sum_t\eta_t=\infty,\ \sum_t\eta_t^2<\infty$ が要請される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — モーメンタムと Adam</div>
+      <p><strong>モーメンタム法</strong>は過去の勾配を指数移動平均で蓄積し，谷を加速し振動を抑える:</p>
+      $$v_{t+1} = \mu v_t - \eta\nabla J(\theta_t), \qquad \theta_{t+1} = \theta_t + v_{t+1}.$$
+      <p><strong>Adam</strong> は勾配の一次・二次モーメントを各成分ごとに適応的に正規化する:</p>
+      $$m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t, \quad v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2,$$
+      $$\theta_{t+1} = \theta_t - \eta\,\frac{\hat m_t}{\sqrt{\hat v_t}+\epsilon},$$
+      <p>ここで $\hat m_t, \hat v_t$ はバイアス補正済みの推定量。座標ごとに有効学習率を調整するため，スケールの異なるパラメータに頑健である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 凸性と大域最適性</div>
+      <p>$J$ が凸関数（$\nabla^2 J\succeq 0$）なら任意の停留点 $\nabla J(\theta^\star)=0$ は<strong>大域的最小点</strong>である。さらに $J$ が $\mu$-強凸かつ $L$-平滑なら，勾配降下法は線形収束</p>
+      $$J(\theta_t)-J(\theta^\star) \le \Bigl(1-\tfrac{\mu}{L}\Bigr)^t\bigl(J(\theta_0)-J(\theta^\star)\bigr)$$
+      <p>を達成する。線形回帰・ロジスティック回帰・SVM の目的関数は凸だが，ニューラルネットは非凸であり局所解・鞍点を持つ。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 非凸最適化の実務</div>
+      <p>深層学習の損失曲面は非凸だが，高次元では多くの局所解が大域解に近い値をとり，悪い局所解よりも鞍点が支配的であることが知られている。SGD のノイズは鞍点からの脱出を助け，平坦な解（汎化が良いとされる）へ導く効果がある。</p>
+    </div>
+
+    <h2 id="neural">5. ニューラルネットワーク</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 多層パーセプトロン(MLP)</div>
+      <p>$L$ 層のネットワークは，各層でアフィン変換と非線形<strong>活性化関数</strong> $\phi$ の合成を繰り返す:</p>
+      $$a^{(l)} = W^{(l)}h^{(l-1)} + b^{(l)}, \qquad h^{(l)} = \phi(a^{(l)}), \qquad h^{(0)} = x.$$
+      <p>最終出力 $h^{(L)}$ が予測。代表的な活性化関数: ReLU $\phi(z)=\max(0,z)$，シグモイド $\sigma(z)$，$\tanh(z)$。非線形性がなければ全体が単一の線形変換に潰れてしまうため，$\phi$ の非線形性が表現力の源である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 誤差逆伝播（連鎖律）</div>
+      <p>損失 $J$ の各パラメータに関する勾配は，出力層から入力層へ連鎖律を再帰的に適用して効率的に計算される。各層の誤差信号を $\delta^{(l)} = \partial J/\partial a^{(l)}$ とおくと</p>
+      $$\delta^{(L)} = \nabla_{h^{(L)}}J \odot \phi'(a^{(L)}), \qquad \delta^{(l)} = \bigl(W^{(l+1)\top}\delta^{(l+1)}\bigr)\odot\phi'(a^{(l)}),$$
+      $$\frac{\partial J}{\partial W^{(l)}} = \delta^{(l)}\,h^{(l-1)\top}, \qquad \frac{\partial J}{\partial b^{(l)}} = \delta^{(l)},$$
+      <p>ここで $\odot$ は要素積。順伝播 1 回と逆伝播 1 回で全勾配が得られ，計算量は順伝播と同オーダーである。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 普遍近似定理</div>
+      <p>$\phi$ が非多項式（連続・有界・非定数で十分）な活性化関数のとき，隠れ層 1 層で十分な数のユニットを持つネットワークは，コンパクト集合上の任意の連続関数 $g$ を一様ノルムで任意の精度に近似できる。すなわち任意の $\varepsilon>0$ に対し</p>
+      $$\sup_{x\in K}\bigl|g(x) - \textstyle\sum_{j=1}^N c_j\,\phi(w_j^\top x + b_j)\bigr| < \varepsilon$$
+      <p>となる $N, c_j, w_j, b_j$ が存在する。ただし必要な幅 $N$ は指数的に大きくなりうる。深い構造はより少ないパラメータで複雑な関数を表現できることが理論・実験の両面で示唆されている。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 勾配消失・爆発</div>
+      <p>層を深くすると $\delta^{(l)}$ が $W^{(l+1)\top}$ と $\phi'$ の積で繰り返し変調され，勾配が指数的に小さく（または大きく）なりうる。ReLU の採用，適切な初期化（He / Xavier），バッチ正規化，残差結合がこの問題を緩和する。</p>
+    </div>
+
+    <h2 id="kernel">6. カーネル法と SVM</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — マージン最大化分類器</div>
+      <p>線形分離可能な二値データ $y_i\in\{-1,+1\}$ に対し，超平面 $w^\top x + b = 0$ と最も近い点との距離（<strong>マージン</strong>）を最大化する。これは次の凸二次計画問題に帰着する:</p>
+      $$\min_{w,b}\ \tfrac12\lVert w\rVert^2 \quad \text{s.t.}\quad y_i(w^\top x_i + b)\ge 1\ \ (\forall i).$$
+      <p>非分離データには<strong>ソフトマージン</strong>（スラック変数 $\xi_i\ge 0$ とペナルティ $C\sum_i\xi_i$）を導入する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 双対問題とサポートベクター</div>
+      <p>Lagrange 双対をとると，問題は内積 $x_i^\top x_j$ のみに依存する形になる:</p>
+      $$\max_{\alpha}\ \sum_i \alpha_i - \tfrac12\sum_{i,j}\alpha_i\alpha_j y_i y_j\, x_i^\top x_j \quad \text{s.t.}\quad 0\le\alpha_i\le C,\ \sum_i\alpha_i y_i = 0.$$
+      <p>最適解では $\alpha_i>0$ となる点（マージン上または内側の点）のみが解を決定する。これらを<strong>サポートベクター</strong>といい，重みは $w = \sum_i \alpha_i y_i x_i$ と表せる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — カーネルトリック</div>
+      <p>双対問題が内積のみに依存することを利用し，特徴写像 $\phi:\mathcal X\to\mathcal F$ による内積を直接計算するカーネル関数 $k(x,x') = \langle\phi(x),\phi(x')\rangle$ で置き換える。$\phi$ を陽に計算せず高次元（無限次元）空間での線形分離が可能になる。代表例:</p>
+      $$\text{多項式: } k(x,x')=(x^\top x'+c)^p, \qquad \text{RBF: } k(x,x')=\exp\!\Bigl(-\tfrac{\lVert x-x'\rVert^2}{2\sigma^2}\Bigr).$$
+      <p>関数 $k$ がカーネルであるための条件は，任意の有限点集合に対するグラム行列 $K_{ij}=k(x_i,x_j)$ が半正定値であること（<strong>Mercer の条件</strong>）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 再生核 Hilbert 空間(RKHS)と表現定理</div>
+      <p>半正定値カーネル $k$ には<strong>再生核 Hilbert 空間</strong> $\mathcal H_k$ が一意に対応し，再生性 $\langle f, k(x,\cdot)\rangle_{\mathcal H_k} = f(x)$ を満たす。さらに<strong>表現定理</strong>により，正則化された経験リスク最小化</p>
+      $$\min_{f\in\mathcal H_k}\ \frac1n\sum_i\ell(f(x_i),y_i) + \lambda\lVert f\rVert_{\mathcal H_k}^2$$
+      <p>の最小解は訓練点でのカーネルの線形結合 $f(x) = \sum_{i=1}^n \alpha_i\,k(x_i, x)$ で書ける。無限次元の最適化が有限次元（$n$ 個の係数 $\alpha$）に帰着する点が本質的である。</p>
+    </div>
+
+    <h2 id="theory">7. 確率モデルと学習理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Bayes 推論と MAP 推定</div>
+      <p>パラメータ $\theta$ に事前分布 $p(\theta)$ を置き，データ $S$ の尤度 $p(S\mid\theta)$ と合わせて事後分布を得る:</p>
+      $$p(\theta\mid S) = \frac{p(S\mid\theta)\,p(\theta)}{p(S)} \propto p(S\mid\theta)\,p(\theta).$$
+      <p>事後分布の最頻値をとるのが<strong>最大事後確率(MAP)推定</strong>:</p>
+      $$\hat\theta_{\rm MAP} = \arg\max_\theta\ \log p(S\mid\theta) + \log p(\theta).$$
+      <p>第3節で見たとおり，$\log p(\theta)$ が正則化項に対応する。事前分布が一様なら最尤推定(MLE)に一致する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 有限仮説集合の汎化上界</div>
+      <p>$0$-$1$ 損失で $|\mathcal H|<\infty$ のとき，任意の $\delta\in(0,1)$ に対し確率 $1-\delta$ 以上で，すべての $f\in\mathcal H$ について</p>
+      $$R(f) \le \hat R_S(f) + \sqrt{\frac{\log|\mathcal H| + \log(1/\delta)}{2n}}$$
+      <p>が成り立つ（Hoeffding の不等式と和集合上界による）。汎化ギャップは仮説集合の複雑さ $\log|\mathcal H|$ とともに増え，標本数 $n$ とともに $O(1/\sqrt n)$ で減る。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — VC 次元</div>
+      <p>無限の仮説集合に対しては，集合が<strong>細分（shatter）</strong>できる点の最大数を複雑さの尺度とする。$\mathcal H$ が $m$ 点をあらゆる $2^m$ 通りのラベル付けで分類できるとき，それらを細分するという。細分できる最大の点数を<strong>VC 次元</strong> $d_{\rm VC}(\mathcal H)$ と呼ぶ。例: $\mathbb R^d$ の線形分類器の VC 次元は $d+1$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — PAC 学習可能性と VC 上界</div>
+      <p><strong>PAC（Probably Approximately Correct）学習</strong>とは，任意の $\varepsilon,\delta$ に対し，多項式オーダーの標本数で確率 $1-\delta$ 以上で誤差 $\varepsilon$ 以下の仮説を返せることをいう。VC 次元 $d_{\rm VC}$ が有限なら $\mathcal H$ は PAC 学習可能で，確率 $1-\delta$ 以上で</p>
+      $$R(f) \le \hat R_S(f) + O\!\left(\sqrt{\frac{d_{\rm VC}\log(n/d_{\rm VC}) + \log(1/\delta)}{n}}\right)$$
+      <p>が成り立つ。すなわち<strong>有限の VC 次元が学習可能性と同値</strong>（基本定理）であり，モデルの表現力と汎化のトレードオフを定量的に与える。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 古典理論と深層学習</div>
+      <p>深層ネットはパラメータ数が標本数を大きく上回ることが多く，VC 次元に基づく古典的上界は緩すぎて実際の良好な汎化を説明しきれない。近年はマージン・ノルムに基づく上界，PAC-Bayes 境界，二重降下現象など，過剰パラメータ領域の理論が活発に研究されている。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>正規方程式 $X^\top Xw = X^\top y$ を $\hat R(w)=\frac1n\lVert Xw-y\rVert_2^2$ の勾配から導け。また Ridge 解 $(X^\top X+\lambda I)^{-1}X^\top y$ が常に存在することを示せ。</li>
+        <li>ロジスティック損失 $\mathcal L(w)$ の Hesse 行列を求め，半正定値であること（したがって $\mathcal L$ が凸）を証明せよ。</li>
+        <li>$\mu$-強凸かつ $L$-平滑な $J$ に対し，勾配降下法（$\eta=1/L$）が線形収束 $J(\theta_t)-J(\theta^\star)\le(1-\mu/L)^t(J(\theta_0)-J(\theta^\star))$ することを示せ。</li>
+        <li>2 層 MLP（活性化 $\phi$）に対し，誤差逆伝播の更新式 $\partial J/\partial W^{(l)} = \delta^{(l)}h^{(l-1)\top}$ を連鎖律から具体的に導出せよ。</li>
+        <li>RBF カーネル $k(x,x')=\exp(-\lVert x-x'\rVert^2/2\sigma^2)$ に対応する特徴写像が無限次元であることを，1 次元の場合に Taylor 展開を用いて説明せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

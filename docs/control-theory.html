@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>制御理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 制御理論</div>
+    <h1>制御理論</h1>
+    <p class="tagline">状態空間・安定性・可制御性・フィードバック・LQR・Kalmanフィルタ。システムを思い通りに動かす数学。</p>
+    <div class="tags"><span class="tag">状態空間</span><span class="tag">安定性</span><span class="tag">フィードバック</span><span class="tag">LQR</span><span class="tag">Kalmanフィルタ</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#systems">動的システムの表現</a></li>
+        <li><a href="#stability">解と安定性</a></li>
+        <li><a href="#controllability">可制御性・可観測性</a></li>
+        <li><a href="#feedback">フィードバック制御</a></li>
+        <li><a href="#optimal">最適制御</a></li>
+        <li><a href="#estimation">状態推定</a></li>
+        <li><a href="#frequency">周波数領域と頑健性</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="ordinary-differential-equations.html">常微分方程式</a>（線形 ODE と解の構造），<a href="linear-algebra.html">線形代数</a>（固有値・行列の階数・対角化），および <a href="dynamical-systems.html">力学系</a>（平衡点と安定性の概念）を前提とする。これらに不安があれば先に参照されたい。</p>
+    </div>
+
+    <h2 id="systems">1. 動的システムの表現</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 線形時不変システムの状態空間表現</div>
+      <p>$n$ 次元の<strong>状態ベクトル</strong> $\mathbf{x}\in\mathbb{R}^n$，$m$ 次元の<strong>入力</strong> $\mathbf{u}\in\mathbb{R}^m$，$p$ 次元の<strong>出力</strong> $\mathbf{y}\in\mathbb{R}^p$ に対し，線形時不変（LTI）システムは次の連立一階常微分方程式で表される。</p>
+      $$\dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u}, \qquad \mathbf{y} = C\mathbf{x} + D\mathbf{u}$$
+      <p>ここで $A\in\mathbb{R}^{n\times n}$ はシステム行列，$B\in\mathbb{R}^{n\times m}$ は入力行列，$C\in\mathbb{R}^{p\times n}$ は出力行列，$D\in\mathbb{R}^{p\times m}$ は直達行列。$A$ がシステムの内部ダイナミクスを支配する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 高階方程式から状態空間へ</div>
+      <p>$n$ 階の線形微分方程式 $y^{(n)} + a_{n-1}y^{(n-1)} + \cdots + a_0 y = b\,u$ は，$x_1 = y,\, x_2 = \dot y,\, \ldots,\, x_n = y^{(n-1)}$ と置けば一階の状態空間形（可制御正準形）に変換できる。$A$ は同伴行列（companion matrix）となる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 伝達関数</div>
+      <p>初期値ゼロのもとで両辺に <strong>Laplace 変換</strong> $\mathcal{L}\{f(t)\}=\int_0^\infty f(t)e^{-st}\,dt$ を施す。$\mathcal{L}\{\dot{\mathbf{x}}\}=s\mathbf{X}(s)$ より</p>
+      $$s\mathbf{X}=A\mathbf{X}+B\mathbf{U} \;\Rightarrow\; \mathbf{X}=(sI-A)^{-1}B\mathbf{U}$$
+      <p>出力との関係から，入力から出力への<strong>伝達関数行列</strong>は</p>
+      $$G(s) = C(sI-A)^{-1}B + D$$
+      <p>1入力1出力（SISO）系では $G(s)$ は $s$ の有理関数となり，分母 $\det(sI-A)$ の根が<strong>極</strong>，分子の根が<strong>零点</strong>。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 質量・ばね・ダンパ系</div>
+      <p>運動方程式 $m\ddot z + c\dot z + k z = u$。状態を $\mathbf{x}=(z,\dot z)^\top$ と取ると</p>
+      $$A=\begin{pmatrix}0 & 1\\ -k/m & -c/m\end{pmatrix},\quad B=\begin{pmatrix}0\\ 1/m\end{pmatrix},\quad C=\begin{pmatrix}1 & 0\end{pmatrix},\quad D=0$$
+      <p>伝達関数は $G(s)=\dfrac{1}{ms^2+cs+k}$。固有振動数 $\omega_n=\sqrt{k/m}$，減衰比 $\zeta=\dfrac{c}{2\sqrt{mk}}$ で特性が決まる。</p>
+    </div>
+
+    <h2 id="stability">2. 解と安定性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 行列指数と状態遷移</div>
+      <p>無入力系 $\dot{\mathbf{x}}=A\mathbf{x}$ の解は<strong>行列指数</strong>を用いて表される。</p>
+      $$e^{At} = \sum_{k=0}^{\infty}\frac{(At)^k}{k!} = I + At + \frac{(At)^2}{2!} + \cdots$$
+      <p>初期値 $\mathbf{x}(0)=\mathbf{x}_0$ に対し $\mathbf{x}(t)=e^{At}\mathbf{x}_0$。入力ありの一般解は<strong>変数変化の公式</strong>で</p>
+      $$\mathbf{x}(t) = e^{At}\mathbf{x}_0 + \int_0^t e^{A(t-\tau)}B\mathbf{u}(\tau)\,d\tau$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 固有値と漸近安定性</div>
+      <p>$A$ の固有値を $\lambda_1,\ldots,\lambda_n$ とする。原点 $\mathbf{x}=\mathbf{0}$ が<strong>漸近安定</strong>（任意初期値で $\mathbf{x}(t)\to\mathbf{0}$）であるための必要十分条件は，すべての固有値が左半平面にあること：</p>
+      $$\operatorname{Re}(\lambda_i) < 0 \quad (i=1,\ldots,n)$$
+      <p>このとき $A$ を<strong>Hurwitz 行列</strong>（安定行列）という。1つでも $\operatorname{Re}(\lambda_i)>0$ なら不安定，$\operatorname{Re}(\lambda_i)=0$ の単純根のみなら（Jordan ブロックが1次なら）安定限界。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Routh–Hurwitz 判別法</div>
+      <p>特性多項式 $\det(sI-A)=s^n+a_{n-1}s^{n-1}+\cdots+a_0$ の根を直接計算せずとも，係数から作る Routh 表の第1列がすべて同符号であれば全根が左半平面にある。安定性の代数的判定に有用。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Lyapunov 安定性と Lyapunov 方程式</div>
+      <p>正定値関数 $V(\mathbf{x})=\mathbf{x}^\top P\mathbf{x}$（$P=P^\top\succ 0$）を考える。系 $\dot{\mathbf{x}}=A\mathbf{x}$ に沿った時間微分は</p>
+      $$\dot V = \mathbf{x}^\top(A^\top P + PA)\mathbf{x}$$
+      <p>$A$ が Hurwitz であることは，任意の正定値対称 $Q\succ 0$ に対して<strong>Lyapunov 方程式</strong></p>
+      $$A^\top P + PA = -Q$$
+      <p>が唯一の正定値解 $P\succ 0$ をもつことと同値である。このとき $\dot V<0$ となり，固有値を計算せずに安定性を保証できる。非線形系へも局所的に拡張可能（Lyapunov の直接法）。</p>
+    </div>
+
+    <h2 id="controllability">3. 可制御性・可観測性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 可制御性</div>
+      <p>システムが<strong>可制御</strong>であるとは，任意の初期状態 $\mathbf{x}_0$ から任意の目標状態 $\mathbf{x}_1$ へ，有限時間内に適切な入力 $\mathbf{u}(t)$ で遷移させられること。すなわち入力によって状態空間全体に到達できることをいう。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Kalman の可制御性ランク条件</div>
+      <p>$(A,B)$ が可制御であるための必要十分条件は，<strong>可制御性行列</strong></p>
+      $$\mathcal{C} = \begin{pmatrix} B & AB & A^2B & \cdots & A^{n-1}B \end{pmatrix}$$
+      <p>が行フルランクであること：$\operatorname{rank}\,\mathcal{C}=n$。Cayley–Hamilton 定理により $A^k$（$k\geq n$）は $I,A,\ldots,A^{n-1}$ の線形結合になるため，列を $n-1$ 乗までで打ち切ってよい。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 可観測性</div>
+      <p>システムが<strong>可観測</strong>であるとは，出力 $\mathbf{y}(t)$ の有限時間にわたる観測から初期状態 $\mathbf{x}_0$ を一意に決定できること。内部状態が出力に「見えている」ことを意味する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Kalman の可観測性ランク条件</div>
+      <p>$(A,C)$ が可観測であるための必要十分条件は，<strong>可観測性行列</strong></p>
+      $$\mathcal{O} = \begin{pmatrix} C \\ CA \\ CA^2 \\ \vdots \\ CA^{n-1} \end{pmatrix}$$
+      <p>が列フルランクであること：$\operatorname{rank}\,\mathcal{O}=n$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 双対性（duality）</div>
+      <p>可制御性と可観測性は数学的に双対である。$(A,B)$ が可制御 $\iff$ $(A^\top,B^\top)$ が可観測。したがって可制御性に関する全ての結果は，置き換え $A\to A^\top,\,B\to C^\top$ により可観測性の結果へ写る。この双対性が後述のオブザーバ設計を状態フィードバック設計に帰着させる。</p>
+    </div>
+
+    <h2 id="feedback">4. フィードバック制御</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 状態フィードバック</div>
+      <p>全状態が測定できるとき，入力を状態の線形関数として与える。</p>
+      $$\mathbf{u} = -K\mathbf{x}, \qquad K\in\mathbb{R}^{m\times n}$$
+      <p>これを閉ループ系に代入すると</p>
+      $$\dot{\mathbf{x}} = (A - BK)\mathbf{x}$$
+      <p>となり，閉ループの安定性とダイナミクスは $A-BK$ の固有値で決まる。設計の自由度はゲイン行列 $K$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 極配置定理</div>
+      <p>$(A,B)$ が可制御であるとき，かつそのときに限り，$A-BK$ の固有値（閉ループ極）を複素共役対を保ちつつ<strong>任意の位置</strong>に配置するゲイン $K$ が存在する。SISO 系では Ackermann の公式</p>
+      $$K = \begin{pmatrix}0 & \cdots & 0 & 1\end{pmatrix}\,\mathcal{C}^{-1}\,\alpha(A)$$
+      <p>で与えられる（$\alpha(s)$ は所望の特性多項式）。可制御でない系では，制御できないモードの極は動かせない。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — PID 制御</div>
+      <p>誤差 $e(t)=r(t)-y(t)$（$r$: 目標値）に対する古典的かつ実用的な制御則。</p>
+      $$u(t) = K_p\,e(t) + K_i\int_0^t e(\tau)\,d\tau + K_d\,\frac{de(t)}{dt}$$
+      <p><strong>比例項</strong> $K_p$ は現在の誤差に，<strong>積分項</strong> $K_i$ は過去の累積誤差に応答し定常偏差を除去，<strong>微分項</strong> $K_d$ は誤差の変化率に応答し応答を予測的に減衰させる。伝達関数では $C(s)=K_p+\dfrac{K_i}{s}+K_d s$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 積分項と定常偏差</div>
+      <p>積分項は $s=0$ に極を加える（開ループの型を1つ上げる）。これによりステップ目標に対する定常偏差をゼロにできるが，過大にすると積分ワインドアップや振動・不安定化を招くため，整定とのトレードオフがある。</p>
+    </div>
+
+    <h2 id="optimal">5. 最適制御</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 線形二次レギュレータ（LQR）</div>
+      <p>LTI 系 $\dot{\mathbf{x}}=A\mathbf{x}+B\mathbf{u}$ に対し，無限時間の二次形式コスト</p>
+      $$J = \int_0^\infty \bigl(\mathbf{x}^\top Q\mathbf{x} + \mathbf{u}^\top R\mathbf{u}\bigr)\,dt$$
+      <p>を最小化する入力を求める問題。$Q=Q^\top\succeq 0$ は状態の偏差を，$R=R^\top\succ 0$ は制御エネルギーを重み付けする。両者の比が制御の「速さ」と「省エネ」のトレードオフを決める。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — LQR の解と代数 Riccati 方程式</div>
+      <p>$(A,B)$ が可制御で $(A,Q^{1/2})$ が可観測なら，最適制御は状態フィードバック $\mathbf{u}^\ast=-K\mathbf{x}$ で与えられ，最適ゲインは</p>
+      $$K = R^{-1}B^\top P$$
+      <p>ここで $P=P^\top\succ 0$ は<strong>代数 Riccati 方程式</strong>（ARE）</p>
+      $$A^\top P + PA - PBR^{-1}B^\top P + Q = 0$$
+      <p>の唯一の正定値安定化解である。最適コストは $J^\ast=\mathbf{x}_0^\top P\,\mathbf{x}_0$。閉ループ $A-BK$ は自動的に安定となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Pontryagin の最大原理</div>
+      <p>一般の最適制御問題 $\min \int_0^T L(\mathbf{x},\mathbf{u})\,dt$（$\dot{\mathbf{x}}=f(\mathbf{x},\mathbf{u})$）に対し，<strong>Hamiltonian</strong> $H=L+\boldsymbol{\lambda}^\top f$ を定義すると，最適軌道は次の必要条件を満たす。</p>
+      $$\dot{\mathbf{x}} = \frac{\partial H}{\partial \boldsymbol{\lambda}}, \qquad \dot{\boldsymbol{\lambda}} = -\frac{\partial H}{\partial \mathbf{x}}, \qquad \mathbf{u}^\ast = \arg\min_{\mathbf{u}} H$$
+      <p>$\boldsymbol{\lambda}(t)$ は<strong>随伴変数</strong>（共状態）。入力に制約がある場合でも，各時刻で $H$ を最小化する点を選べばよい点が変分法より強力（例：bang-bang 制御）。</p>
+    </div>
+
+    <h2 id="estimation">6. 状態推定</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Luenberger オブザーバ</div>
+      <p>状態 $\mathbf{x}$ が直接測れず出力 $\mathbf{y}$ のみ得られるとき，状態を推定する力学系を構成する。</p>
+      $$\dot{\hat{\mathbf{x}}} = A\hat{\mathbf{x}} + B\mathbf{u} + L\bigl(\mathbf{y} - C\hat{\mathbf{x}}\bigr)$$
+      <p>第3項は出力予測誤差 $\mathbf{y}-C\hat{\mathbf{x}}$ による補正で，$L\in\mathbb{R}^{n\times p}$ はオブザーバゲイン。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 推定誤差ダイナミクス</div>
+      <p>推定誤差 $\mathbf{e}=\mathbf{x}-\hat{\mathbf{x}}$ は</p>
+      $$\dot{\mathbf{e}} = (A - LC)\mathbf{e}$$
+      <p>に従う。$(A,C)$ が可観測なら（双対性により）$A-LC$ の固有値を任意に配置でき，$\mathbf{e}(t)\to\mathbf{0}$ を任意の速さで実現できる。通常オブザーバ極は閉ループ極より速く設定する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Kalman フィルタ</div>
+      <p>過程雑音 $\mathbf{w}\sim\mathcal{N}(0,W)$ と観測雑音 $\mathbf{v}\sim\mathcal{N}(0,V)$ を含む系</p>
+      $$\dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u} + \mathbf{w}, \qquad \mathbf{y} = C\mathbf{x} + \mathbf{v}$$
+      <p>に対し，推定誤差の共分散を最小にする最適オブザーバ。定常 Kalman ゲインは Riccati 方程式の解 $\Sigma$ を用いて</p>
+      $$L = \Sigma C^\top V^{-1}, \qquad A\Sigma + \Sigma A^\top - \Sigma C^\top V^{-1}C\Sigma + W = 0$$
+      <p>で与えられる。LQR の双対問題になっている点に注意（$A\to A^\top$，$B\to C^\top$，$Q\to W$，$R\to V$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 分離原理</div>
+      <p>状態フィードバック $\mathbf{u}=-K\hat{\mathbf{x}}$ を推定値に対して適用すると，閉ループ系の固有値は<strong>制御極（$A-BK$）とオブザーバ極（$A-LC$）の和集合</strong>になる。</p>
+      $$\det\!\begin{pmatrix}sI-A+BK & BK \\ 0 & sI-A+LC\end{pmatrix} = \det(sI-A+BK)\det(sI-A+LC)$$
+      <p>したがってレギュレータ設計とオブザーバ設計を<strong>独立に</strong>行ってよい。これが現代制御の出力フィードバック設計の基礎である（LQR + Kalman = LQG 制御）。</p>
+    </div>
+
+    <h2 id="frequency">7. 周波数領域と頑健性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 周波数応答と Bode 線図</div>
+      <p>伝達関数 $G(s)$ に $s=j\omega$ を代入した $G(j\omega)$ が周波数応答。<strong>Bode 線図</strong>は対数周波数軸に対して，ゲイン $20\log_{10}|G(j\omega)|$ [dB] と位相 $\angle G(j\omega)$ [deg] を別々にプロットしたもの。各一次・二次要素の寄与が加法的になるため設計に便利。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Nyquist 安定判別法</div>
+      <p>開ループ伝達関数 $L(s)$ の Nyquist 軌跡（$\omega:-\infty\to\infty$ での $L(j\omega)$）が点 $-1$ を反時計回りに囲む回数を $N$，$L(s)$ の右半平面の極の数を $P$ とすると，閉ループ系の右半平面の極の数 $Z$ は</p>
+      $$Z = P - N$$
+      <p>（偏角の原理に基づく）。閉ループ安定 $\iff Z=0$。開ループが安定（$P=0$）なら，軌跡が $-1$ を囲まないことが安定条件。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ゲイン余裕・位相余裕</div>
+      <p>安定性の余裕（安定限界までの距離）を表す指標。</p>
+      <ul>
+        <li><strong>ゲイン余裕</strong> $G_m$：位相が $-180^\circ$ となる周波数 $\omega_{pc}$ でのゲインの逆数 $1/|L(j\omega_{pc})|$（dB 表記）。</li>
+        <li><strong>位相余裕</strong> $\phi_m$：ゲインが $0$ dB（$|L|=1$）となる交差周波数 $\omega_{gc}$ での位相と $-180^\circ$ との差 $\phi_m=180^\circ+\angle L(j\omega_{gc})$。</li>
+      </ul>
+      <p>余裕が大きいほどモデル誤差や遅れに対して頑健。実用上は位相余裕 $30^\circ\!\sim\!60^\circ$ 程度が目安。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ロバスト制御</div>
+      <p>実プラントは公称モデル $G_0(s)$ から摂動 $\Delta$ だけずれる。感度関数 $S=\dfrac{1}{1+L}$ と相補感度 $T=\dfrac{L}{1+L}$ は $S+T=1$ を満たし，外乱抑制（$S$ 小）とノイズ・モデル誤差耐性（$T$ 小）は同時には達成できない。$H_\infty$ 制御は最悪ケースの $\|T_{zw}\|_\infty$ を最小化し，小ゲイン定理に基づき摂動 $\|\Delta\|_\infty<1/\|T\|_\infty$ に対する安定性を保証する。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$A=\begin{pmatrix}0&1\\-2&-3\end{pmatrix}$，$B=\begin{pmatrix}0\\1\end{pmatrix}$，$C=(1\;0)$ の系について，(a) 伝達関数 $G(s)=C(sI-A)^{-1}B$ を求めよ。(b) 固有値を計算し安定性を判定せよ。(c) 可制御性行列のランクを調べよ。</li>
+        <li>$A=\begin{pmatrix}1&0\\0&2\end{pmatrix}$，$Q=I$ とするとき Lyapunov 方程式 $A^\top P+PA=-Q$ に正定値解が存在するか論ぜよ。$A$ を $-A$ に置き換えた場合はどうか。</li>
+        <li>前問1の系に状態フィードバック $\mathbf{u}=-K\mathbf{x}$ を施す。閉ループ極を $-2\pm 2j$ に配置するゲイン $K=(k_1\;k_2)$ を求めよ。</li>
+        <li>スカラー系 $\dot x=ax+bu$，コスト $J=\int_0^\infty(qx^2+ru^2)\,dt$ の LQR を考える。代数 Riccati 方程式を書き下して正の解 $p$ を求め，最適ゲイン $K=p\,b/r$ と閉ループ極を導け。</li>
+        <li>分離原理を用いて，問1の系に対し LQR レギュレータと Luenberger オブザーバ（オブザーバ極を $-6,-8$）を組み合わせた出力フィードバック制御器を設計せよ。閉ループの全固有値を述べよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

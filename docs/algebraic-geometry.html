@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>代数幾何 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 代数幾何</div>
+    <h1>代数幾何</h1>
+    <p class="tagline">アフィン/射影多様体・零点定理・ザリスキ位相・座標環・スキーム。代数と幾何の融合。</p>
+    <div class="tags"><span class="tag">代数多様体</span><span class="tag">零点定理</span><span class="tag">ザリスキ位相</span><span class="tag">座標環</span><span class="tag">スキーム</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#affine">アフィン代数多様体</a></li>
+        <li><a href="#nullstellensatz">イデアルと零点定理</a></li>
+        <li><a href="#zariski">ザリスキ位相</a></li>
+        <li><a href="#projective">射影多様体</a></li>
+        <li><a href="#morphism">座標環と射</a></li>
+        <li><a href="#dimension">次元と特異点</a></li>
+        <li><a href="#schemes">スキームへ</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページでは可換環・イデアル・素イデアルなどの言葉を自由に用いる。これらは <a href="abstract-algebra.html">抽象代数学</a>（環・イデアル）を，位相の基礎については <a href="topology.html">位相空間論</a> を参照されたい。以下，$k$ は<strong>代数閉体</strong>（例: 複素数体 $\mathbb{C}$）とし，多項式環を $k[x_1,\ldots,x_n]$ と書く。</p>
+    </div>
+
+    <h2 id="affine">1. アフィン代数多様体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — アフィン空間と代数的集合</div>
+      <p>体 $k$ 上の <strong>$n$ 次元アフィン空間</strong>を $\mathbb{A}^n = \mathbb{A}^n_k = k^n$（点の集合としての $n$ 個組）と定める。多項式の集合 $S \subseteq k[x_1,\ldots,x_n]$ に対し，その<strong>共通零点集合</strong>を</p>
+      $$V(S) = \{\, P \in \mathbb{A}^n \mid f(P) = 0 \;\;(\forall f \in S) \,\}$$
+      <p>とする。ある $S$ について $X = V(S)$ と書ける $\mathbb{A}^n$ の部分集合 $X$ を<strong>（アフィン）代数的集合</strong>と呼ぶ。後述のように，既約な代数的集合を特に<strong>アフィン代数多様体</strong>という。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 アフィン空間は座標を「忘れた」ベクトル空間</div>
+      <p>$\mathbb{A}^n$ は集合としては $k^n$ と同じだが，原点を特別視せず線型構造を強調しない点が異なる。代数幾何では「どの多項式が消えるか」だけに注目するため，この視点が便利である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 曲線と曲面</div>
+      <p>(1) $\mathbb{A}^2$ 内の <strong>放物線</strong>: $V(y - x^2) = \{(t, t^2) \mid t \in k\}$。</p>
+      <p>(2) $\mathbb{A}^2$ 内の <strong>円</strong>（$k=\mathbb{C}$ で考える）: $V(x^2 + y^2 - 1)$。</p>
+      <p>(3) $\mathbb{A}^3$ 内の <strong>球面型曲面</strong>: $V(x^2 + y^2 + z^2 - 1)$ は超曲面（1本の方程式で定義）。</p>
+      <p>(4) $\mathbb{A}^3$ 内の <strong>ねじれ三次曲線</strong>: $V(y - x^2,\, z - x^3) = \{(t, t^2, t^3)\}$。2本の方程式の共通零点。</p>
+      <p>(5) 自明な例: $V(1) = \varnothing$，$V(0) = \mathbb{A}^n$，$V(x_1,\ldots,x_n) = \{0\}$（1点）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 代数的集合の基本演算</div>
+      <p>代数的集合は次を満たす：</p>
+      $$V(S_1) \cup V(S_2) = V(\{ fg \mid f \in S_1,\, g \in S_2 \}), \qquad \bigcap_{\alpha} V(S_\alpha) = V\!\left(\bigcup_\alpha S_\alpha\right).$$
+      <p>すなわち，有限和集合と任意交叉集合は再び代数的集合となる。これがザリスキ位相（第3節）の閉集合の公理を保証する。</p>
+    </div>
+
+    <h2 id="nullstellensatz">2. イデアルと零点定理</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — $V$ と $I$ の対応</div>
+      <p>多項式の集合 $S$ が生成するイデアルを $(S)$ とすると $V(S) = V((S))$ なので，零点集合を考える際はイデアルだけで十分である。逆に，部分集合 $X \subseteq \mathbb{A}^n$ に対しそこで消える多項式全体</p>
+      $$I(X) = \{\, f \in k[x_1,\ldots,x_n] \mid f(P) = 0 \;\;(\forall P \in X) \,\}$$
+      <p>は常にイデアルになり，これを $X$ の<strong>イデアル</strong>と呼ぶ。$V$ と $I$ は包含関係を反転させる：$X_1 \subseteq X_2 \Rightarrow I(X_1) \supseteq I(X_2)$，$J_1 \subseteq J_2 \Rightarrow V(J_1) \supseteq V(J_2)$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Hilbert の基底定理</div>
+      <p>$k$ がネーター環ならば多項式環 $k[x_1,\ldots,x_n]$ もネーター環である。とくに体上の多項式環の任意のイデアルは<strong>有限生成</strong>である。</p>
+      <p>帰結として，任意の代数的集合は有限個の多項式の共通零点として表せる：$V(S) = V(f_1,\ldots,f_r)$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 根基イデアル</div>
+      <p>イデアル $J \subseteq k[x_1,\ldots,x_n]$ の<strong>根基</strong>を</p>
+      $$\sqrt{J} = \{\, f \mid f^m \in J \text{ となる } m \ge 1 \text{ が存在} \,\}$$
+      <p>と定める。$\sqrt{J} = J$ を満たすイデアルを<strong>根基イデアル</strong>という。例: $\sqrt{(x^2)} = (x)$。常に $V(J) = V(\sqrt{J})$ が成り立つ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Hilbert の零点定理（Nullstellensatz）</div>
+      <p>$k$ を代数閉体とする。任意のイデアル $J \subseteq k[x_1,\ldots,x_n]$ に対し</p>
+      $$I(V(J)) = \sqrt{J}.$$
+      <p>さらに（弱形）$J \ne (1)$ ならば $V(J) \ne \varnothing$。これにより，</p>
+      $$\{\text{$\mathbb{A}^n$ の代数的集合}\} \;\longleftrightarrow\; \{\text{$k[x_1,\ldots,x_n]$ の根基イデアル}\}$$
+      <p>は包含を逆にする<strong>一対一対応</strong>を与える。代数（イデアル）と幾何（零点集合）の橋渡しを担う中心定理である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 代数閉性が本質的</div>
+      <p>$k$ が代数閉でないと弱形は崩れる。例えば $\mathbb{R}[x]$ で $J = (x^2 + 1) \ne (1)$ だが $V(J) = \varnothing$（実数解なし）。零点定理は代数閉体の上ではじめて成立する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 対応の確認</div>
+      <p>$J = (x^2) \subseteq \mathbb{C}[x]$ のとき $V(J) = \{0\}$，$I(\{0\}) = (x) = \sqrt{(x^2)}$。根基をとると確かに一致する。$J$ 自身は根基イデアルでないため，$I(V(J))$ は $J$ より真に大きい。</p>
+    </div>
+
+    <h2 id="zariski">3. ザリスキ位相</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ザリスキ位相</div>
+      <p>$\mathbb{A}^n$ 上で，<strong>閉集合</strong>を代数的集合全体（$V(J)$ の形）と定めると，第1節の演算法則により位相の公理を満たす。この位相を<strong>ザリスキ位相</strong>という。開集合は代数的集合の補集合である。</p>
+      <p>この位相は Hausdorff でなく非常に「粗い」。例えば $\mathbb{A}^1$ の閉集合は $\mathbb{A}^1$ 自身と有限個の点のみで，空でない開集合はすべて稠密かつ互いに交わる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 既約性と既約成分</div>
+      <p>位相空間 $X$ が<strong>既約</strong>であるとは，$X$ が空でなく，2つの真の閉集合の和 $X = X_1 \cup X_2$ に分解できないことをいう。既約なアフィン代数的集合を<strong>アフィン代数多様体</strong>と呼ぶ。</p>
+      <p>$X$ の極大な既約閉部分集合を $X$ の<strong>既約成分</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 既約性と素イデアル</div>
+      <p>代数的集合 $X$ が既約 $\iff$ $I(X)$ が<strong>素イデアル</strong>。零点定理と合わせ，</p>
+      $$\{\text{アフィン代数多様体}\} \;\longleftrightarrow\; \{\text{素イデアル}\}$$
+      <p>の対応が得られる（点 $\leftrightarrow$ 極大イデアル）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Noether 性と既約分解</div>
+      <p>$\mathbb{A}^n$ はザリスキ位相に関して<strong>ネーター空間</strong>（閉集合の降鎖が必ず安定する）である。したがって任意の代数的集合 $X$ は有限個の既約成分の和に一意分解できる：</p>
+      $$X = X_1 \cup X_2 \cup \cdots \cup X_r, \qquad X_i \not\subseteq X_j \;(i \ne j).$$
+      <p>この有限性は Hilbert の基底定理（イデアルの昇鎖が安定）の幾何的言い換えである。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 既約分解</div>
+      <p>$V(xy) \subseteq \mathbb{A}^2$ は $V(x) \cup V(y)$（2本の座標軸）に分解し，これが既約成分である。対応して $(xy) = (x) \cap (y)$，それぞれ素イデアル。</p>
+    </div>
+
+    <h2 id="projective">4. 射影多様体</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 射影空間と斉次座標</div>
+      <p>$n$ 次元<strong>射影空間</strong>を，$\mathbb{A}^{n+1} \setminus \{0\}$ をスカラー倍の同値関係で割った商集合</p>
+      $$\mathbb{P}^n = \bigl(\mathbb{A}^{n+1}\setminus\{0\}\bigr)/\sim, \qquad (a_0,\ldots,a_n) \sim (\lambda a_0,\ldots,\lambda a_n)\;(\lambda \ne 0)$$
+      <p>と定める。点を<strong>斉次座標</strong> $[a_0 : a_1 : \cdots : a_n]$ で表す。$\mathbb{P}^n$ はアフィン空間 $\mathbb{A}^n$ に「無限遠の超平面」$\mathbb{P}^{n-1}$ を付け加えたものと見なせる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 斉次多項式と射影多様体</div>
+      <p>多項式 $F$ が<strong>斉次</strong>（次数 $d$）とは，すべての項の次数が $d$ で揃うことをいう。このとき $F(\lambda a) = \lambda^d F(a)$ なので，$F(P) = 0$ かどうかは代表元のとり方によらず定まる。斉次多項式の集合 $S$ に対し</p>
+      $$V_+(S) = \{\, [a] \in \mathbb{P}^n \mid F(a) = 0 \;\;(\forall F \in S) \,\}$$
+      <p>を<strong>射影代数的集合</strong>，その既約なものを<strong>射影多様体</strong>と呼ぶ。$\mathbb{P}^n$ にも斉次イデアルの $V_+$ を閉集合とするザリスキ位相が入る。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 なぜ射影空間か</div>
+      <p>射影化により交点理論が綺麗になる。例えば $\mathbb{A}^2$ で平行な2直線は交わらないが，$\mathbb{P}^2$ では無限遠点で必ず交わる。Bézout の定理（第6節）が成立するのも射影空間の上である。また射影多様体は「コンパクト性（完備性）」を持ち，多くの定理が成り立ちやすい。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 射影曲線</div>
+      <p>$\mathbb{P}^2$ の斉次座標 $[X:Y:Z]$ で，平面射影曲線は1本の斉次方程式 $F(X,Y,Z)=0$ で与えられる。アフィン放物線 $y = x^2$ を斉次化すると $YZ = X^2$（$x = X/Z,\,y=Y/Z$）。$Z = 0$（無限遠直線）との交点は $[0:1:0]$ である。</p>
+    </div>
+
+    <h2 id="morphism">5. 座標環と射</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 座標環</div>
+      <p>アフィン代数多様体 $V \subseteq \mathbb{A}^n$ に対し，その<strong>座標環</strong>（アフィン環）を</p>
+      $$k[V] = k[x_1,\ldots,x_n]\,/\,I(V)$$
+      <p>と定める。これは $V$ 上の<strong>多項式関数</strong>のなす環である。$V$ が既約のとき $I(V)$ は素イデアルなので $k[V]$ は整域。さらに $k[V]$ は有限生成かつ被約な $k$-代数で，$V \mapsto k[V]$ は次の<strong>圏同値</strong>を与える：</p>
+      $$\{\text{アフィン多様体}\}^{\mathrm{op}} \;\simeq\; \{\text{有限生成被約 $k$-代数}\}.$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 正則関数</div>
+      <p>$V$ 上の点 $P$ の近傍で「多項式の商 $g/h$（$h(P)\ne 0$）」として表せる関数を <strong>正則関数</strong>という。開集合 $U$ 上の正則関数全体 $\mathcal{O}_V(U)$ は環をなし，$V$ 全体上の正則関数は座標環 $k[V]$ に一致する。これにより多様体に<strong>構造層</strong> $\mathcal{O}_V$ が定まる（第7節への布石）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 多様体の射と環準同型</div>
+      <p>アフィン多様体 $V \subseteq \mathbb{A}^n$，$W \subseteq \mathbb{A}^m$ の間の<strong>射（正則写像）</strong> $\varphi : V \to W$ は，各成分が $V$ 上の正則関数で与えられる写像である。これと座標環の間の $k$-代数準同型が一対一対応する：</p>
+      $$\varphi : V \to W \quad\longleftrightarrow\quad \varphi^* : k[W] \to k[V], \quad \varphi^*(g) = g \circ \varphi.$$
+      <p>幾何的な射が完全に代数的データへ翻訳される，反変関手としての対応である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 有理写像と双有理同値</div>
+      <p>$V$ の空でない開集合の上だけで定義される正則写像（の同値類）を<strong>有理写像</strong> $\varphi : V \dashrightarrow W$ という。既約多様体 $V$ の有理関数全体は<strong>関数体</strong> $k(V)$（$k[V]$ の商体）をなす。</p>
+      <p>互いに逆向きの有理写像が存在して稠密開集合上で恒等になるとき，$V$ と $W$ は<strong>双有理同値</strong>であるという。これは $k(V) \cong k(W)$（関数体の $k$-同型）と同値であり，多様体の分類における重要な同値関係である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 射影と双有理</div>
+      <p>$\mathbb{A}^1 \to V(y - x^2),\; t \mapsto (t, t^2)$ は座標環の同型 $k[x,y]/(y-x^2) \cong k[t]$ を誘導し，放物線はアフィン直線と同型。一方，結節点を持つ三次曲線 $y^2 = x^2(x+1)$ は特異点を持つが $\mathbb{A}^1$ と双有理同値である（同型ではない）。</p>
+    </div>
+
+    <h2 id="dimension">6. 次元と特異点</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 次元</div>
+      <p>既約多様体 $V$ の<strong>次元</strong> $\dim V$ を，既約閉部分集合の真の昇鎖</p>
+      $$Z_0 \subsetneq Z_1 \subsetneq \cdots \subsetneq Z_d = V$$
+      <p>の長さ $d$ の最大値と定める。これは座標環 $k[V]$ の<strong>クルル次元</strong>（素イデアルの鎖の長さ）に一致し，また関数体 $k(V)$ の $k$ 上の超越次数にも等しい。例: $\dim \mathbb{A}^n = \dim \mathbb{P}^n = n$，超曲面の次元は $n-1$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 接空間・滑らかな点と特異点</div>
+      <p>$V = V(f_1,\ldots,f_r) \subseteq \mathbb{A}^n$ の点 $P$ における<strong>ザリスキ接空間</strong>は，ヤコビ行列 $J(P) = \bigl(\partial f_i/\partial x_j (P)\bigr)$ の核として定まる線型空間で，その次元は常に $\dim V$ 以上である。</p>
+      <p>$\dim T_P V = \dim V$ となる点 $P$ を<strong>滑らかな点（非特異点）</strong>，そうでない点（接空間が大きくなる点）を<strong>特異点</strong>と呼ぶ。特異点全体は真の閉部分集合をなす。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 尖点と結節点</div>
+      <p>$y^2 = x^3$（尖点 cusp）と $y^2 = x^2(x+1)$（結節点 node）は，いずれも原点 $(0,0)$ でヤコビ行列が消え，特異点となる。これらの点では曲線が「滑らかな曲線」として一意の接線を持たない。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Bézout の定理</div>
+      <p>$\mathbb{P}^2$ 内の次数 $d$ と $e$ の射影曲線 $C, D$ が共通成分を持たないなら，重複度を込めて数えた交点数はちょうど</p>
+      $$\#(C \cap D) = d \cdot e$$
+      <p>に等しい（代数閉体上，射影空間で，かつ重複度・無限遠点を正しく数える）。例: 2本の直線（$d=e=1$）は1点で，円錐曲線と直線（$d=2,e=1$）は2点で交わる。</p>
+    </div>
+
+    <h2 id="schemes">7. スキームへ</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 素スペクトル $\mathrm{Spec}\,R$</div>
+      <p>任意の可換環 $R$ に対し，その<strong>素スペクトル</strong>を素イデアル全体の集合</p>
+      $$\mathrm{Spec}\,R = \{\, \mathfrak{p} \subset R \mid \mathfrak{p} \text{ は素イデアル} \,\}$$
+      <p>と定める。イデアル $I$ に対し $V(I) = \{\mathfrak{p} \mid \mathfrak{p} \supseteq I\}$ を閉集合とすることでザリスキ位相が入る。極大イデアルが「古典的な点」に，他の素イデアルが「既約部分多様体（生成点）」に対応する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 構造層とスキーム</div>
+      <p>$\mathrm{Spec}\,R$ には<strong>構造層</strong> $\mathcal{O}_{\mathrm{Spec}\,R}$ が定まり，基本開集合 $D(f) = \{\mathfrak{p} \mid f \notin \mathfrak{p}\}$ 上で局所化 $\mathcal{O}(D(f)) = R_f$ を与える。組 $(\mathrm{Spec}\,R, \mathcal{O})$ を<strong>アフィンスキーム</strong>という。局所的にアフィンスキームと同型な局所環付き空間を一般に<strong>スキーム</strong>と呼ぶ。</p>
+      <p>これは Grothendieck による代数幾何の再構築であり，環 $\to$ 空間の対応を任意の可換環へ拡張する。被約でない環（$\sqrt{0}\ne 0$）や非代数閉体・整数環 $\mathbb{Z}$ までも幾何の対象にできるのが革命的な点である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 古典的多様体との関係</div>
+      <p>代数閉体 $k$ 上のアフィン多様体 $V$ は $\mathrm{Spec}\,k[V]$ として再現でき，その閉点が古典的な点 $V$ に対応する（零点定理による）。スキーム論は古典理論を完全に含み，かつ族・基底変換・無限遠・数論的状況を統一的に扱う言語を提供する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 楕円曲線への応用</div>
+      <p>$\mathrm{char}\,k \ne 2,3$ のとき，Weierstrass 形 $y^2 = x^3 + ax + b$（判別式 $\Delta = -16(4a^3 + 27b^2) \ne 0$ で非特異）で定まる射影曲線を<strong>楕円曲線</strong> $E$ という。$E$ の点全体には無限遠点 $\mathcal{O}$ を単位元とする<strong>アーベル群構造</strong>が入る（3点が一直線上 $\iff$ 群で和が $\mathcal{O}$）。</p>
+      <p>$\mathbb{Z}$ や数体 $\mathbb{Q}$ 上のスキームとして見ることで，有理点の構造（Mordell–Weil の定理）など <a href="number-theory.html">数論</a> の中心的問題に直結する。</p>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>楕円曲線の有理点・$L$ 関数や Diophantus 方程式への応用は <a href="number-theory.html">数論</a>（楕円曲線）へ。多様体のコホモロジーや位相不変量（Betti 数・基本群）への一般化は <a href="algebraic-topology.html">代数的位相幾何</a> へと続く。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$V(xy,\, xz) \subseteq \mathbb{A}^3$ の既約成分をすべて求め，対応する素イデアルを書け。</li>
+        <li>イデアル $J = (x^2, xy) \subseteq \mathbb{C}[x,y]$ について $V(J)$，$\sqrt{J}$，$I(V(J))$ を求め，零点定理 $I(V(J)) = \sqrt{J}$ を確認せよ。</li>
+        <li>アフィン放物線 $y = x^2$ を $\mathbb{P}^2$ に斉次化し，無限遠直線 $Z = 0$ との交点を斉次座標で求めよ。</li>
+        <li>三次曲線 $y^2 = x^3$ について，原点が特異点であることをヤコビ行列を用いて示せ。また $t \mapsto (t^2, t^3)$ が $\mathbb{A}^1$ からの双有理写像を与えることを確認せよ。</li>
+        <li>$\mathbb{P}^2$ 内の円錐曲線 $V_+(X^2 + Y^2 - Z^2)$ と直線 $V_+(Y - Z)$ の交点数を，Bézout の定理が主張する値と比較せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
