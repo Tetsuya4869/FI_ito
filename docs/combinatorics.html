@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>組合せ論・グラフ理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 組合せ論・グラフ理論</div>
+    <h1>組合せ論・グラフ理論</h1>
+    <p class="tagline">数え上げ・二項定理・包除原理・母関数・グラフ理論。離散数学の中核。</p>
+    <div class="tags"><span class="tag">数え上げ</span><span class="tag">二項定理</span><span class="tag">包除原理</span><span class="tag">母関数</span><span class="tag">グラフ理論</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#counting">数え上げの基本</a></li>
+        <li><a href="#binomial">二項定理と恒等式</a></li>
+        <li><a href="#inclusion">包除原理</a></li>
+        <li><a href="#generating">漸化式と母関数</a></li>
+        <li><a href="#pigeonhole">鳩の巣原理と Ramsey 理論</a></li>
+        <li><a href="#graphs">グラフの基礎</a></li>
+        <li><a href="#graph-problems">グラフの諸問題</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="counting">1. 数え上げの基本</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 和の法則・積の法則</div>
+      <p><strong>和の法則</strong>: 互いに排反な選択肢があり，第 1 の方法が $m$ 通り，第 2 の方法が $n$ 通りなら，どちらか一方を選ぶ方法は $m + n$ 通り。</p>
+      <p><strong>積の法則</strong>: 連続して行う 2 つの操作がそれぞれ $m$ 通り，$n$ 通りなら，両方を行う方法は $m \times n$ 通り。</p>
+      <p>一般に集合 $A, B$ について，排反なら $|A \cup B| = |A| + |B|$，独立な選択なら $|A \times B| = |A|\,|B|$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 順列と組合せ</div>
+      <p><strong>順列</strong>: 異なる $n$ 個から $r$ 個を選んで一列に並べる方法の数</p>
+      $$P(n,r) = \frac{n!}{(n-r)!} = n(n-1)\cdots(n-r+1)$$
+      <p><strong>組合せ</strong>: 異なる $n$ 個から $r$ 個を（順序を無視して）選ぶ方法の数</p>
+      $$\binom{n}{r} = \frac{P(n,r)}{r!} = \frac{n!}{r!\,(n-r)!}$$
+      <p>対称性 $\binom{n}{r} = \binom{n}{n-r}$ が成り立つ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 重複順列・重複組合せ</div>
+      <p><strong>重複順列</strong>: $n$ 種類から重複を許して $r$ 個を順に並べる方法は $n^r$ 通り。</p>
+      <p><strong>重複組合せ</strong>: $n$ 種類から重複を許して $r$ 個を選ぶ方法は</p>
+      $$H(n,r) = \binom{n+r-1}{r}$$
+      <p>これは $x_1 + x_2 + \cdots + x_n = r$（$x_i \ge 0$ の整数）の解の個数に等しい（仕切りと玉の対応）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 数え上げの典型</div>
+      <p>異なる 5 冊の本から 3 冊を選んで並べる: $P(5,3) = 5\cdot4\cdot3 = 60$ 通り。</p>
+      <p>同じ 5 冊から 3 冊を選ぶだけ: $\binom{5}{3} = 10$ 通り。</p>
+      <p>3 種類の菓子から重複を許して 4 個買う: $\binom{3+4-1}{4} = \binom{6}{4} = 15$ 通り。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 「順序を区別するか」を最初に問う</div>
+      <p>数え上げでは常に「並べるのか（順列）／選ぶだけか（組合せ）」「重複を許すか」の 2 軸を最初に確認する。この分類だけで多くの問題が機械的に解ける。</p>
+    </div>
+
+    <h2 id="binomial">2. 二項定理と恒等式</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 二項定理</div>
+      <p>任意の非負整数 $n$ に対して</p>
+      $$(x+y)^n = \sum_{k=0}^{n} \binom{n}{k} x^k y^{n-k}$$
+      <p>係数 $\binom{n}{k}$ を<strong>二項係数</strong>という。$x^k y^{n-k}$ の項は，$n$ 個の因数から $x$ を取る因数を $k$ 個選ぶ方法に対応する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Pascal の三角形</div>
+      <p>各段に $\binom{n}{0}, \binom{n}{1}, \ldots, \binom{n}{n}$ を並べると次の三角形になる。</p>
+      <table>
+        <tr><th>$n$</th><th colspan="7">係数</th></tr>
+        <tr><td>0</td><td colspan="7">1</td></tr>
+        <tr><td>1</td><td colspan="7">1&nbsp;&nbsp;1</td></tr>
+        <tr><td>2</td><td colspan="7">1&nbsp;&nbsp;2&nbsp;&nbsp;1</td></tr>
+        <tr><td>3</td><td colspan="7">1&nbsp;&nbsp;3&nbsp;&nbsp;3&nbsp;&nbsp;1</td></tr>
+        <tr><td>4</td><td colspan="7">1&nbsp;&nbsp;4&nbsp;&nbsp;6&nbsp;&nbsp;4&nbsp;&nbsp;1</td></tr>
+      </table>
+      <p>各数はすぐ上の左右 2 数の和になっている。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Pascal の漸化式</div>
+      $$\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}$$
+      <p><strong>組合せ論的証明</strong>: $n$ 個から $k$ 個を選ぶとき，特定の 1 個を「選ぶ」場合は残り $n-1$ 個から $k-1$ 個（$\binom{n-1}{k-1}$ 通り），「選ばない」場合は残り $n-1$ 個から $k$ 個（$\binom{n-1}{k}$ 通り）。両者は排反で，和の法則から従う。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Vandermonde の恒等式</div>
+      $$\binom{m+n}{r} = \sum_{k=0}^{r} \binom{m}{k}\binom{n}{r-k}$$
+      <p>$m$ 人の男性と $n$ 人の女性から計 $r$ 人を選ぶとき，男性を $k$ 人，女性を $r-k$ 人選ぶ場合に分けて足し合わせれば左辺に一致する。</p>
+      <p>特に $m=n=r$ とすると $\displaystyle\sum_{k=0}^{n}\binom{n}{k}^2 = \binom{2n}{n}$。また $x=y=1$ で $\displaystyle\sum_{k=0}^{n}\binom{n}{k} = 2^n$ を得る。</p>
+    </div>
+
+    <h2 id="inclusion">3. 包除原理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 包除原理（一般式）</div>
+      <p>有限集合 $A_1, \ldots, A_n$ に対して</p>
+      $$\left|\bigcup_{i=1}^{n} A_i\right| = \sum_{i} |A_i| - \sum_{i<j} |A_i \cap A_j| + \sum_{i<j<k} |A_i \cap A_j \cap A_k| - \cdots + (-1)^{n-1} |A_1 \cap \cdots \cap A_n|$$
+      <p>すなわち $\displaystyle\left|\bigcup_i A_i\right| = \sum_{\emptyset \ne S \subseteq \{1,\ldots,n\}} (-1)^{|S|-1} \left|\bigcap_{i \in S} A_i\right|$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 完全順列（モンモール数）</div>
+      <p>$1,\ldots,n$ の順列のうち，どの $i$ も $i$ 番目に来ない（不動点を持たない）ものの個数 $D_n$ を求める。$A_i$ を「$i$ が $i$ 番目にある順列の集合」とすると，包除原理から</p>
+      $$D_n = n! \sum_{k=0}^{n} \frac{(-1)^k}{k!} \approx \frac{n!}{e}$$
+      <p>たとえば $D_1=0,\ D_2=1,\ D_3=2,\ D_4=9$。確率 $D_n/n! \to e^{-1} \approx 0.3679$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — オイラーの φ 関数</div>
+      <p>$1$ 以上 $n$ 以下で $n$ と互いに素な整数の個数 $\varphi(n)$ を，$n$ の相異なる素因数 $p_1, \ldots, p_r$ に対する「$p_i$ の倍数の集合」への包除原理で求めると</p>
+      $$\varphi(n) = n \prod_{i=1}^{r}\left(1 - \frac{1}{p_i}\right)$$
+      <p>各因子 $(1-1/p_i)$ が「$p_i$ で割り切れるものを除く」操作に対応する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 補集合で数える発想</div>
+      <p>「条件を満たすもの」を直接数えにくいときは，「少なくとも 1 つの禁止条件に触れるもの」を包除原理で数え，全体から引くと見通しが良くなることが多い。</p>
+    </div>
+
+    <h2 id="generating">4. 漸化式と母関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 線形漸化式（Fibonacci）</div>
+      <p>Fibonacci 数列は $F_0 = 0,\ F_1 = 1$ と漸化式</p>
+      $$F_n = F_{n-1} + F_{n-2} \quad (n \ge 2)$$
+      <p>で定義される。特性方程式 $x^2 = x + 1$ の解 $\phi = \frac{1+\sqrt5}{2},\ \psi = \frac{1-\sqrt5}{2}$ を用いて閉じた形（Binet の公式）</p>
+      $$F_n = \frac{\phi^n - \psi^n}{\sqrt5}$$
+      <p>が得られる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 通常型母関数</div>
+      <p>数列 $\{a_n\}_{n\ge0}$ の<strong>通常型母関数 (OGF)</strong> は形式的べき級数</p>
+      $$G(x) = \sum_{n=0}^{\infty} a_n x^n$$
+      <p>数列の操作（漸化式・畳み込み）が母関数の代数的操作に翻訳される。例: $\dfrac{1}{1-x} = \sum_{n\ge0} x^n$（全項 1 の数列）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 母関数で漸化式を解く</div>
+      <p>Fibonacci の母関数 $G(x) = \sum_{n\ge0} F_n x^n$ を考える。漸化式に $x^n$ を掛けて和を取ると</p>
+      $$G(x) = x + x\,G(x) + x^2 G(x) \;\Longrightarrow\; G(x) = \frac{x}{1 - x - x^2}$$
+      <p>右辺を部分分数分解して $\dfrac{1}{1-\phi x},\ \dfrac{1}{1-\psi x}$ の幾何級数に展開すれば，$x^n$ の係数として再び Binet の公式 $F_n = (\phi^n - \psi^n)/\sqrt5$ が得られる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Catalan 数</div>
+      <p>$C_0 = 1$，$C_{n+1} = \sum_{i=0}^{n} C_i C_{n-i}$（畳み込み型漸化式）。母関数 $C(x) = \sum C_n x^n$ は $C(x) = 1 + x\,C(x)^2$ を満たし</p>
+      $$C(x) = \frac{1 - \sqrt{1-4x}}{2x}, \qquad C_n = \frac{1}{n+1}\binom{2n}{n}$$
+      <p>正しい括弧列・二分木・凸多角形の三角形分割などを数える。</p>
+    </div>
+
+    <h2 id="pigeonhole">5. 鳩の巣原理と Ramsey 理論</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 鳩の巣原理</div>
+      <p>$n+1$ 個の物を $n$ 個の箱に入れると，少なくとも 1 つの箱には 2 個以上入る。</p>
+      <p><strong>一般化</strong>: $N$ 個の物を $n$ 個の箱に入れると，少なくとも 1 つの箱には $\left\lceil N/n \right\rceil$ 個以上入る。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 鳩の巣原理の応用</div>
+      <p>東京都民を約 1400 万人とすると，髪の毛の本数は高々約 15 万本なので，鳩の巣原理より「髪の毛の本数が完全に同じ人」が必ず存在する。</p>
+      <p>また $1,\ldots,2n$ から $n+1$ 個を選ぶと，必ず一方が他方を割り切る 2 数の組が存在する（各数を $2^a m$（$m$ 奇数）と書いたときの奇数部分 $m$ で箱分けする）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Ramsey 数 $R(3,3) = 6$</div>
+      <p>6 人が集まれば，「互いに知り合いの 3 人組」または「互いに初対面の 3 人組」が必ず存在する。グラフ言語では，$K_6$ の辺を 2 色で塗ると単色の三角形が必ず現れる。</p>
+      <p><strong>証明の要点</strong>: 任意の 1 頂点から出る 5 本の辺を 2 色で塗ると，鳩の巣原理より同色の辺が 3 本以上ある。その 3 本の相手どうしを結ぶ辺の色で場合分けすれば，必ず単色三角形ができる。$5$ 人では反例（5 角形+対角線の 2 彩色）があるので $R(3,3) = 6$。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Ramsey 理論の精神</div>
+      <p>「十分大きな構造の中には，必ず秩序ある部分構造が現れる」というのが Ramsey 理論の核心。一般の $R(s,t)$ の正確な値は急速に難しくなり，$R(5,5)$ さえ未解明である。</p>
+    </div>
+
+    <h2 id="graphs">6. グラフの基礎</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — グラフと次数</div>
+      <p><strong>グラフ</strong> $G = (V, E)$ は頂点集合 $V$ と辺集合 $E \subseteq \binom{V}{2}$ の対。頂点 $v$ の<strong>次数</strong> $\deg(v)$ はその頂点に接続する辺の本数。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 握手補題</div>
+      $$\sum_{v \in V} \deg(v) = 2|E|$$
+      <p>各辺は 2 つの端点で 1 ずつ次数に寄与するため。系として，<strong>奇数次数の頂点は偶数個</strong>存在する。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 道・閉路・連結</div>
+      <p><strong>道 (path)</strong>: 頂点を繰り返さずに辺をたどる列。<strong>閉路 (cycle)</strong>: 始点と終点が一致する道。任意の 2 頂点が道で結ばれるグラフを<strong>連結</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 木の性質</div>
+      <p><strong>木</strong>とは連結で閉路を持たないグラフ。$n$ 頂点の木について次は同値:</p>
+      <ul>
+        <li>連結かつ閉路なし</li>
+        <li>連結かつ辺数 $|E| = n - 1$</li>
+        <li>任意の 2 頂点を結ぶ道がちょうど 1 本</li>
+      </ul>
+      <p>ラベル付き $n$ 頂点の木の総数は $n^{n-2}$（Cayley の公式）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 二部グラフ</div>
+      <p>頂点集合を $V = X \cup Y$（$X \cap Y = \emptyset$）に分割でき，すべての辺が $X$ と $Y$ の間にあるグラフを<strong>二部グラフ</strong>という。</p>
+      <p><strong>König の定理</strong>: グラフが二部であることと，奇数長の閉路を持たないことは同値。</p>
+    </div>
+
+    <h2 id="graph-problems">7. グラフの諸問題</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — オイラー路（一筆書き）</div>
+      <p>連結グラフが<strong>オイラー閉路</strong>（全辺をちょうど 1 回ずつ通る閉じた道）を持つ $\iff$ すべての頂点の次数が偶数。</p>
+      <p><strong>オイラー路</strong>（始点≠終点の一筆書き）を持つ $\iff$ 奇数次数の頂点がちょうど 2 個。ケーニヒスベルクの橋は 4 頂点すべてが奇数次数のため一筆書き不可能。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ハミルトン閉路</div>
+      <p>すべての<strong>頂点</strong>をちょうど 1 回ずつ通る閉路を<strong>ハミルトン閉路</strong>という。オイラー路（辺を全部通る）とは異なり，存在判定は NP 完全で簡単な特徴づけがない。</p>
+      <p><strong>Dirac の十分条件</strong>: $n \ge 3$ 頂点で各頂点の次数が $n/2$ 以上ならハミルトン閉路を持つ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — グラフ彩色と 4 色定理</div>
+      <p>隣り合う頂点を異色で塗るのに必要な最小色数を<strong>彩色数</strong> $\chi(G)$ という。二部グラフは $\chi = 2$。</p>
+      <p><strong>4 色定理</strong>: 任意の<strong>平面グラフ</strong>は 4 色で塗り分けられる（$\chi(G) \le 4$）。地図の塗り分け問題として有名で，1976 年に計算機を用いて証明された。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — オイラーの多面体公式</div>
+      <p>連結な平面グラフを平面に描いたとき，頂点数 $V$，辺数 $E$，面数 $F$（外側の無限面を含む）について</p>
+      $$V - E + F = 2$$
+      <p>系として，単純連結平面グラフ（$V \ge 3$）では $E \le 3V - 6$。これより $K_5$ や $K_{3,3}$ が平面的でないことが従う（Kuratowski の定理の出発点）。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$\sum_{k=0}^{n} k\binom{n}{k}$ を二項定理の微分を用いて $n2^{n-1}$ に等しいことを示せ。</li>
+        <li>$1$ から $100$ までの整数のうち，$2,\ 3,\ 5$ のいずれの倍数でもないものの個数を包除原理で求めよ。</li>
+        <li>漸化式 $a_n = 3a_{n-1} - 2a_{n-2}$（$a_0=0,\ a_1=1$）を母関数を用いて解け。</li>
+        <li>任意の単純グラフには次数が等しい 2 頂点が必ず存在することを鳩の巣原理で示せ。</li>
+        <li>正十二面体のグラフについてオイラーの公式 $V-E+F=2$ を確認し，さらにハミルトン閉路を 1 つ見つけよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>オイラーの φ 関数や互いに素な整数の数え上げをさらに深めたい人は <a href="number-theory.html">数論</a> へ。グラフの最短路・マッチング・ネットワークフローといった最適化の応用は <a href="optimization.html">最適化</a> で扱う。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

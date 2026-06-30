@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>熱力学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 熱力学</div>
+    <h1>熱力学</h1>
+    <p class="tagline">3つの法則・エントロピー・Carnotサイクル・熱力学ポテンシャル・相転移。マクロな熱の科学。</p>
+    <div class="tags"><span class="tag">熱力学第1法則</span><span class="tag">エントロピー</span><span class="tag">Carnotサイクル</span><span class="tag">熱力学ポテンシャル</span><span class="tag">相転移</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#basics">熱力学の基本概念</a></li>
+        <li><a href="#first-law">第1法則</a></li>
+        <li><a href="#second-law">第2法則とエントロピー</a></li>
+        <li><a href="#carnot">熱機関とCarnotサイクル</a></li>
+        <li><a href="#potentials">熱力学ポテンシャルとMaxwell関係式</a></li>
+        <li><a href="#phase">相平衡と相転移</a></li>
+        <li><a href="#third-law">第3法則と低温</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 関連</div>
+      <p>熱力学はマクロな量（温度・圧力・体積・エントロピーなど）の間の関係を，分子の詳細によらず普遍的に記述する。これらマクロ量のミクロな対応物（分配関数・ミクロ状態数）を扱うのが <a href="statistical-mechanics.html">統計力学</a> である。本ページの法則は，統計力学から導出することもできる。</p>
+    </div>
+
+    <h2 id="basics">1. 熱力学の基本概念</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 系・外界・状態量</div>
+      <p><strong>系</strong>（system）は注目する物体の集まり，その外部を<strong>外界</strong>（surroundings）と呼ぶ。境界を通じた物質・エネルギーのやり取りによって，孤立系・閉じた系・開いた系に分類する。</p>
+      <p><strong>状態量</strong>（状態変数）は系の現在の状態だけで決まる量で，経路によらない。温度 $T$，圧力 $P$，体積 $V$，内部エネルギー $U$，エントロピー $S$ などが該当する。一方，熱 $Q$ と仕事 $W$ は経路に依存する<strong>過程量</strong>であり，状態量ではない。</p>
+      <p>状態量は<strong>示量変数</strong>（系の大きさに比例: $V, U, S, n$）と<strong>示強変数</strong>（大きさによらない: $T, P, \mu$）に分けられる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 熱平衡</div>
+      <p>系のマクロな状態量が時間とともに変化しなくなった状態を<strong>熱平衡</strong>という。平衡状態は少数の状態量で完全に指定できる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 第0法則 — 温度の存在</div>
+      <p>系 $A$ と $C$ が熱平衡にあり，$B$ と $C$ も熱平衡にあるならば，$A$ と $B$ も熱平衡にある（熱平衡の推移律）。</p>
+      <p>この推移律により，すべての系に共通する状態量として<strong>温度</strong> $T$ が定義でき，温度計による温度測定が正当化される。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 理想気体の状態方程式</div>
+      <p>希薄な気体（分子間相互作用と分子の大きさを無視）は，物質量 $n$ [mol] に対して</p>
+      $$PV = nRT$$
+      <p>に従う。ここで $R = 8.314\ \mathrm{J\,K^{-1}\,mol^{-1}}$ は気体定数。分子数 $N$ と Boltzmann 定数 $k_B = R/N_A$ を用いれば $PV = Nk_BT$ とも書ける。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 等温膨張での状態</div>
+      <p>$T$ 一定で理想気体を $V_1 \to V_2$ に膨張させると，$PV = nRT = $ 一定なので圧力は $P_1V_1 = P_2V_2$ に従って減少する。等温線（$PV$ 図上の双曲線）に沿って状態が移動する。</p>
+    </div>
+
+    <h2 id="first-law">2. 第1法則</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 内部エネルギー</div>
+      <p><strong>内部エネルギー</strong> $U$ は系を構成する分子の運動エネルギーと相互作用ポテンシャルの総和で，状態量である。系全体の重心運動・外場のエネルギーは含めない。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 熱力学第1法則（エネルギー保存）</div>
+      <p>系に流入する微小熱量 $\delta Q$ と系が外界にする微小仕事 $\delta W$ に対して，内部エネルギーの変化は</p>
+      $$dU = \delta Q - \delta W$$
+      <p>$dU$ は完全微分（状態量の変化）だが，$\delta Q,\ \delta W$ は不完全微分（過程に依存）であることを記号 $\delta$ で区別する。準静的過程では体積変化による仕事が</p>
+      $$\delta W = P\,dV$$
+      <p>で与えられる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 準静的過程</div>
+      <p>系が常に平衡状態を保ったまま無限にゆっくり進む理想化された過程を<strong>準静的過程</strong>という。各瞬間で状態量が定義でき，可逆過程の前提となる。実際の有限速度の過程は不可逆である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 熱容量 $C_V,\ C_P$</div>
+      <p>単位温度上昇に要する熱量を<strong>熱容量</strong>という。体積一定と圧力一定で値が異なる:</p>
+      $$C_V = \left(\frac{\partial U}{\partial T}\right)_V, \qquad C_P = \left(\frac{\partial H}{\partial T}\right)_P$$
+      <p>ここで $H = U + PV$ はエンタルピー（第5節参照）。体積一定では $\delta W = 0$ なので $\delta Q = dU$，圧力一定では $\delta Q = dH$ となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Mayer の関係式（理想気体）</div>
+      <p>理想気体では内部エネルギーが温度のみの関数（$U = U(T)$）であることから，</p>
+      $$C_P - C_V = nR$$
+      <p>が成り立つ。1 mol 当たりのモル比熱では $c_P - c_V = R$。比熱比 $\gamma = C_P/C_V$ は単原子理想気体で $5/3$，二原子分子で $7/5$ となる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 理想気体の等温膨張で系がする仕事</div>
+      <p>温度 $T$ 一定で $V_1 \to V_2$ に準静的膨張させると，</p>
+      $$W = \int_{V_1}^{V_2} P\,dV = \int_{V_1}^{V_2}\frac{nRT}{V}\,dV = nRT\ln\frac{V_2}{V_1}$$
+      <p>等温では $dU = 0$ なので $Q = W = nRT\ln(V_2/V_1)$。膨張のために吸収した熱がすべて仕事に変換される。</p>
+    </div>
+
+    <h2 id="second-law">3. 第2法則とエントロピー</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 第2法則 — Clausius の表現と Kelvin の表現</div>
+      <p><strong>Clausius の表現</strong>: 低温の物体から高温の物体へ，他に何の変化も残さずに熱を移すことはできない。</p>
+      <p><strong>Kelvin（Thomson）の表現</strong>: 一つの熱源から熱を取り出し，それを全部仕事に変える以外に何の変化も残さない過程は存在しない。</p>
+      <p>この2つの表現は等価であることが証明できる。いずれも「熱の自発的な流れには方向性がある」ことを述べている。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 可逆過程と不可逆過程</div>
+      <p>系と外界をともに元の状態に完全に戻せる過程を<strong>可逆過程</strong>，戻せない過程を<strong>不可逆過程</strong>という。摩擦・有限温度差での熱伝導・自由膨張などはすべて不可逆である。可逆過程は準静的かつ散逸のない理想化された極限である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — エントロピー</div>
+      <p>可逆過程に沿って系に流入する熱 $\delta Q_{rev}$ を温度 $T$ で割った量の積分により，状態量<strong>エントロピー</strong> $S$ を定義する:</p>
+      $$dS = \frac{\delta Q_{rev}}{T}$$
+      <p>$S$ が状態量であることは Clausius の不等式 $\oint \delta Q/T \le 0$（可逆なら等号）から保証される。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ エントロピー増大則</div>
+      <p>孤立系では，任意の自発過程に対してエントロピーは決して減少しない:</p>
+      $$dS \ge 0$$
+      <p>等号は可逆過程，不等号は不可逆過程で成り立つ。一般の系では，系と外界を合わせた全エントロピー $S_{\rm sys} + S_{\rm surr}$ について $dS_{\rm total} \ge 0$ となる。これが時間の矢を与える。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 理想気体の自由膨張</div>
+      <p>真空への自由膨張（$V_1 \to V_2$，断熱・仕事なし）では $Q = W = 0$ ゆえ $dU = 0$，温度は不変。しかし $S$ は状態量なので，同じ始終状態を結ぶ可逆等温膨張で計算でき，</p>
+      $$\Delta S = nR\ln\frac{V_2}{V_1} > 0$$
+      <p>外界に変化はないので全体でも $\Delta S > 0$。自由膨張が不可逆であることを示す。</p>
+    </div>
+
+    <h2 id="carnot">4. 熱機関とCarnotサイクル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 熱機関と効率</div>
+      <p><strong>熱機関</strong>は高温熱源（温度 $T_h$）から熱 $Q_h$ を受け取り，仕事 $W$ をして，低温熱源（温度 $T_c$）に熱 $Q_c$ を捨てるサイクル装置である。エネルギー保存から $W = Q_h - Q_c$。<strong>熱効率</strong>は</p>
+      $$\eta = \frac{W}{Q_h} = 1 - \frac{Q_c}{Q_h}$$
+      <p>で定義される（$0 \le \eta < 1$）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Carnot サイクル</div>
+      <p>2つの等温過程と2つの断熱過程からなる可逆サイクル:</p>
+      <ol>
+        <li>等温膨張（$T_h$）: 高温熱源から $Q_h$ を吸収。</li>
+        <li>断熱膨張: $T_h \to T_c$ に温度低下。</li>
+        <li>等温圧縮（$T_c$）: 低温熱源へ $Q_c$ を放出。</li>
+        <li>断熱圧縮: $T_c \to T_h$ に戻る。</li>
+      </ol>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Carnot の定理と効率</div>
+      <p>同じ2つの熱源で動作するすべての熱機関のうち，可逆機関（Carnot 機関）の効率が最大であり，作業物質によらず温度のみで決まる。理想気体の Carnot サイクルを計算すると $Q_c/Q_h = T_c/T_h$ となり，</p>
+      $$\eta_{\rm Carnot} = 1 - \frac{T_c}{T_h}$$
+      <p>不可逆機関では $\eta < \eta_{\rm Carnot}$。これは第2法則の直接の帰結であり，熱力学温度（絶対温度）の定義の基礎にもなる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Carnot 効率の数値</div>
+      <p>$T_h = 600\ \mathrm{K}$，$T_c = 300\ \mathrm{K}$ のとき，$\eta_{\rm Carnot} = 1 - 300/600 = 0.5$（50%）。すなわち吸収熱の半分しか仕事にできず，残りは必ず低温側へ捨てられる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 エントロピーとの整合</div>
+      <p>Carnot サイクル1周ではエントロピーが元に戻るため $\oint dS = Q_h/T_h - Q_c/T_c = 0$，すなわち $Q_c/Q_h = T_c/T_h$。Carnot 効率の式はエントロピーが状態量であることと等価である。</p>
+    </div>
+
+    <h2 id="potentials">5. 熱力学ポテンシャルとMaxwell関係式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 熱力学ポテンシャル</div>
+      <p>内部エネルギー $U(S,V)$ の Legendre 変換により，扱いやすい独立変数に応じた4つのポテンシャルを定義する:</p>
+      <table>
+        <tr><th>ポテンシャル</th><th>定義</th><th>自然な変数</th><th>全微分</th></tr>
+        <tr><td>内部エネルギー $U$</td><td>$U$</td><td>$(S,V)$</td><td>$dU = T\,dS - P\,dV$</td></tr>
+        <tr><td>エンタルピー $H$</td><td>$H = U + PV$</td><td>$(S,P)$</td><td>$dH = T\,dS + V\,dP$</td></tr>
+        <tr><td>Helmholtz 自由エネルギー $F$</td><td>$F = U - TS$</td><td>$(T,V)$</td><td>$dF = -S\,dT - P\,dV$</td></tr>
+        <tr><td>Gibbs 自由エネルギー $G$</td><td>$G = U - TS + PV$</td><td>$(T,P)$</td><td>$dG = -S\,dT + V\,dP$</td></tr>
+      </table>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ポテンシャルの物理的意味</div>
+      <p>等温過程（$T$ 一定）で系がなし得る最大仕事は $-\Delta F$，等温等圧過程での自発変化の方向は $G$ が減少する向き（$dG \le 0$）で決まる。化学反応・相平衡では $G$ が中心的役割を果たす。$H$ は定圧過程の熱の出入りに対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Maxwell 関係式</div>
+      <p>各ポテンシャルが状態量で，全微分の2階偏微分が交換可能（$\partial^2/\partial x\partial y = \partial^2/\partial y\partial x$）であることから，4つの関係式が得られる:</p>
+      $$\left(\frac{\partial T}{\partial V}\right)_S = -\left(\frac{\partial P}{\partial S}\right)_V, \qquad \left(\frac{\partial T}{\partial P}\right)_S = \left(\frac{\partial V}{\partial S}\right)_P$$
+      $$\left(\frac{\partial S}{\partial V}\right)_T = \left(\frac{\partial P}{\partial T}\right)_V, \qquad \left(\frac{\partial S}{\partial P}\right)_T = -\left(\frac{\partial V}{\partial T}\right)_P$$
+      <p>左の2式は $U,H$ から，下の2式は $F,G$ から導かれる。測定困難なエントロピー微分を，測定可能な $P,V,T$ の微分に置き換える強力な道具である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Maxwell 関係式の応用</div>
+      <p>$F$ から得られる $\left(\partial S/\partial V\right)_T = \left(\partial P/\partial T\right)_V$ を用いると，等温膨張でのエントロピー変化や熱の出入りを，状態方程式 $P(T,V)$ だけから計算できる。理想気体では $\left(\partial P/\partial T\right)_V = nR/V$ なので $\Delta S = nR\ln(V_2/V_1)$ が再現される。</p>
+    </div>
+
+    <h2 id="phase">6. 相平衡と相転移</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 相・相図・化学ポテンシャル</div>
+      <p><strong>相</strong>とは固体・液体・気体のように物理的性質が一様な状態をいう。$P$-$T$ 平面に各相の存在領域と境界線を描いたものが<strong>相図</strong>で，境界線上では2相が共存する。</p>
+      <p><strong>化学ポテンシャル</strong>は1粒子（または1 mol）当たりの Gibbs 自由エネルギー $\mu = (\partial G/\partial N)_{T,P}$。多相系の平衡条件は，各相の化学ポテンシャルが等しいこと: $\mu_1 = \mu_2$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Clausius-Clapeyron の式</div>
+      <p>2相共存線 $P(T)$ の傾きは，潜熱 $L$（モル当たり）と両相のモル体積差 $\Delta v = v_2 - v_1$ を用いて</p>
+      $$\frac{dP}{dT} = \frac{L}{T\,\Delta v}$$
+      <p>で与えられる（共存線上で $\mu_1 = \mu_2$ を $T$ で微分して導く）。気液転移で気相を理想気体・$v_g \gg v_l$ と近似すると</p>
+      $$\frac{dP}{dT} \approx \frac{LP}{RT^2} \;\Rightarrow\; \ln P \approx -\frac{L}{RT} + \text{const.}$$
+      <p>となり，蒸気圧の温度依存性を説明する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Gibbs の相律</div>
+      <p>$c$ 成分・$p$ 相が平衡共存する系の自由度（独立に変えられる示強変数の数）は</p>
+      $$f = c - p + 2$$
+      <p>純物質（$c=1$）では，1相で $f=2$（$T,P$ を自由に選べる面），2相共存で $f=1$（共存線），3相共存で $f=0$（三重点，1点に固定）。これが相図の次元構造を決める。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 水の三重点</div>
+      <p>水は $c=1$ で，固・液・気の3相が共存する点では $f = 1 - 3 + 2 = 0$。すなわち三重点は唯一の温度・圧力（$T = 273.16\ \mathrm{K}$，$P \approx 611\ \mathrm{Pa}$）でのみ実現する。</p>
+    </div>
+
+    <h2 id="third-law">7. 第3法則と低温</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 第3法則（Nernst の定理）</div>
+      <p>温度が絶対零度に近づくとき，あらゆる可逆等温過程に伴うエントロピー変化はゼロに近づく:</p>
+      $$\lim_{T\to 0}\Delta S = 0$$
+      <p>Planck の強い形では，純粋な完全結晶のエントロピーは $T \to 0$ で普遍的な定数（ふつう $0$）に近づく:</p>
+      $$\lim_{T\to 0} S = 0$$
+      <p>これによりエントロピーの絶対値が定まる。統計力学的には，基底状態の縮退度を $g$ として $S(0) = k_B \ln g$ に対応する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 低温での熱容量</div>
+      <p>第3法則から $S(T) = \int_0^T (C/T')\,dT'$ が有限であるためには，$T\to 0$ で $C \to 0$ でなければならない。実際，固体の比熱は Debye の $T^3$ 則，金属の電子比熱は $T$ に比例して $0$ へ向かう。古典統計の Dulong-Petit 則（$C = 3R$ 一定）は低温で破綻する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 絶対零度到達不可能性</div>
+      <p>第3法則の帰結として，<strong>有限回の操作で絶対零度に到達することはできない</strong>。断熱消磁などの冷却サイクルは，$T \to 0$ で各ステップの温度降下が次第に小さくなり，無限のステップを要する。絶対零度は近づけても決して到達できない極限である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — エントロピーの絶対値の利用</div>
+      <p>第3法則を基準（$S(0)=0$）にとると，物質の標準エントロピー $S(T) = \int_0^T (C_P/T')\,dT'$（相転移の潜熱項を加える）を実験的熱容量から積分で求められる。これは化学反応の $\Delta G = \Delta H - T\Delta S$ を通じて反応の自発性を予測するのに使われる。</p>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>本ページのマクロな法則をミクロな分子描像（分配関数・状態数・ゆらぎ）から基礎づけるのが <a href="statistical-mechanics.html">統計力学</a> である。エントロピー $S = k_B\ln W$ や熱力学ポテンシャルの統計的導出はそこで扱う。また，流体の熱輸送・対流・状態方程式の連続体への応用は <a href="fluid-dynamics.html">流体力学</a> へ続く。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>単原子理想気体（$C_V = \tfrac{3}{2}nR$）が断熱準静的過程を行うとき，$PV^\gamma = $ 一定（$\gamma = 5/3$）となることを第1法則から導け。</li>
+        <li>$T_h = 500\ \mathrm{K}$，$T_c = 300\ \mathrm{K}$ で動作する Carnot 機関が $1000\ \mathrm{J}$ の熱を吸収するとき，する仕事 $W$ と捨てる熱 $Q_c$ を求めよ。</li>
+        <li>2つの同質量・同熱容量 $C$ の物体（初期温度 $T_1,\ T_2$）を接触させて熱平衡に達したときの全エントロピー変化を求め，常に正であることを示せ。</li>
+        <li>Maxwell 関係式 $\left(\partial S/\partial P\right)_T = -\left(\partial V/\partial T\right)_P$ を Gibbs 自由エネルギー $G$ の全微分から導け。</li>
+        <li>Clausius-Clapeyron の式を用い，水の蒸発潜熱（$L \approx 40.7\ \mathrm{kJ/mol}$）から，沸点付近で温度を $1\ \mathrm{K}$ 上げたときの蒸気圧の相対変化 $\Delta P/P$ を概算せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

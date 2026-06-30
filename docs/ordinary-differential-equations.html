@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常微分方程式 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 常微分方程式</div>
+    <h1>常微分方程式</h1>
+    <p class="tagline">変数分離・線形ODE・定数係数系・Laplace変換・存在一意性。PDEと力学系への基礎。</p>
+    <div class="tags"><span class="tag">変数分離</span><span class="tag">線形ODE</span><span class="tag">行列指数</span><span class="tag">Laplace変換</span><span class="tag">存在一意性</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#basics">基本概念と分類</a></li>
+        <li><a href="#first-order">1階ODE</a></li>
+        <li><a href="#second-order">定数係数線形2階</a></li>
+        <li><a href="#systems">連立線形系と行列指数</a></li>
+        <li><a href="#series">級数解法と特殊関数</a></li>
+        <li><a href="#laplace">Laplace変換</a></li>
+        <li><a href="#existence">存在と一意性</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページでは微分・積分・初等関数の取り扱いを前提とする。不安があれば <a href="calculus-basics.html">微分積分の基礎</a> を先に確認してほしい。線形系の節では固有値・固有ベクトルなど線形代数の知識も役立つ。</p>
+    </div>
+
+    <h2 id="basics">1. 基本概念と分類</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 常微分方程式</div>
+      <p>未知関数 $y(x)$ とその導関数の間の関係式</p>
+      $$F\bigl(x, y, y', y'', \ldots, y^{(n)}\bigr) = 0$$
+      <p>を <strong>常微分方程式</strong>（ODE）という。「常」とは独立変数が1つ（ここでは $x$）であることを指す。最高階の導関数 $y^{(n)}$ の階数 $n$ をその方程式の <strong>階数</strong> という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 線形 ODE と分類</div>
+      <p>未知関数とその導関数について1次（線形）であるものを <strong>線形 ODE</strong> という。$n$ 階線形 ODE は</p>
+      $$a_n(x)\,y^{(n)} + \cdots + a_1(x)\,y' + a_0(x)\,y = g(x)$$
+      <p>の形。$g(x)\equiv 0$ のとき <strong>斉次</strong>，そうでないとき <strong>非斉次</strong>。係数 $a_k$ がすべて定数なら <strong>定数係数</strong>。これ以外は <strong>非線形</strong> という。また右辺が独立変数 $x$ を陽に含まない $y'=f(y)$ の形を <strong>自励系（autonomous）</strong> と呼ぶ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 解・一般解・初期値問題</div>
+      <p>方程式を満たす関数を <strong>解</strong> という。$n$ 階 ODE の一般解は $n$ 個の任意定数を含む。条件</p>
+      $$y(x_0) = y_0,\quad y'(x_0)=y_1,\ \ldots,\ y^{(n-1)}(x_0)=y_{n-1}$$
+      <p>を与えて定数を決定する問題を <strong>初期値問題（IVP）</strong> という。境界の2点で条件を課す場合は境界値問題と呼ぶ。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 分類の練習</div>
+      <table>
+        <tr><th>方程式</th><th>階数</th><th>分類</th></tr>
+        <tr><td>$y' = ky$</td><td>1</td><td>線形・定数係数・斉次・自励</td></tr>
+        <tr><td>$y'' + \sin y = 0$</td><td>2</td><td>非線形（$\sin y$）・自励</td></tr>
+        <tr><td>$y'' + 3y' + 2y = e^{x}$</td><td>2</td><td>線形・定数係数・非斉次</td></tr>
+        <tr><td>$x\,y' + y = x^2$</td><td>1</td><td>線形・変数係数・非斉次</td></tr>
+      </table>
+    </div>
+
+    <h2 id="first-order">2. 1階ODE</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 変数分離形</div>
+      <p>$\dfrac{dy}{dx} = f(x)\,g(y)$ の形を <strong>変数分離形</strong> という。$g(y)\neq 0$ の範囲で変数を分離して積分する：</p>
+      $$\int \frac{dy}{g(y)} = \int f(x)\,dx + C$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 指数的増殖</div>
+      <p>$y' = ky$ を解く。$\dfrac{dy}{y} = k\,dx$ より $\ln|y| = kx + C_1$，したがって</p>
+      $$y(x) = C\,e^{kx}\quad (C = \pm e^{C_1}).$$
+      <p>初期条件 $y(0)=y_0$ なら $C = y_0$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 1階線形 ODE と積分因子</div>
+      <p>$y' + p(x)\,y = q(x)$ に対し，<strong>積分因子</strong></p>
+      $$\mu(x) = e^{\int p(x)\,dx}$$
+      <p>を掛けると左辺は $\bigl(\mu y\bigr)'$ にまとまる。ゆえに一般解は</p>
+      $$y(x) = \frac{1}{\mu(x)}\left( \int \mu(x)\,q(x)\,dx + C \right).$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 積分因子の適用</div>
+      <p>$y' + 2y = e^{-x}$。$p=2$ なので $\mu = e^{2x}$。両辺に掛けて $(e^{2x}y)' = e^{x}$。積分して $e^{2x}y = e^{x} + C$，よって</p>
+      $$y(x) = e^{-x} + C\,e^{-2x}.$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 完全微分方程式</div>
+      <p>$M(x,y)\,dx + N(x,y)\,dy = 0$ が <strong>完全</strong> であるとは，ある $\Phi(x,y)$ で $d\Phi = M\,dx + N\,dy$ となること。判定条件は</p>
+      $$\frac{\partial M}{\partial y} = \frac{\partial N}{\partial x}.$$
+      <p>このとき $\Phi_x = M,\ \Phi_y = N$ から $\Phi$ を復元し，解は $\Phi(x,y)=C$。条件を満たさない場合でも積分因子で完全化できることがある。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Bernoulli 型の線形化</div>
+      <p>$y' + p(x)\,y = q(x)\,y^{n}\ (n\neq 0,1)$ は $v = y^{1-n}$ と置くと</p>
+      $$v' + (1-n)\,p(x)\,v = (1-n)\,q(x)$$
+      <p>という1階線形 ODE になり，積分因子で解ける。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 解法の見分け方</div>
+      <p>1階 ODE はまず「変数分離できるか」を試し，だめなら「線形（$y$ について1次）か」を確認して積分因子へ。$M\,dx+N\,dy=0$ の形なら完全性を判定。$y^n$ が右辺にあれば Bernoulli を疑う。</p>
+    </div>
+
+    <h2 id="second-order">3. 定数係数線形2階</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 定数係数線形2階 ODE</div>
+      <p>$a y'' + b y' + c y = g(x)$（$a\neq 0$，$a,b,c$ は定数）。一般解は斉次解 $y_h$ と特殊解 $y_p$ の和 $y = y_h + y_p$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 特性方程式と斉次解</div>
+      <p>斉次方程式 $a y'' + b y' + c y = 0$ に $y=e^{\lambda x}$ を代入すると <strong>特性方程式</strong></p>
+      $$a\lambda^2 + b\lambda + c = 0$$
+      <p>を得る。その根 $\lambda_1,\lambda_2$ に応じて：</p>
+      <table>
+        <tr><th>判別式</th><th>根</th><th>斉次解 $y_h$</th></tr>
+        <tr><td>$b^2-4ac>0$</td><td>相異なる実根 $\lambda_1,\lambda_2$</td><td>$C_1 e^{\lambda_1 x} + C_2 e^{\lambda_2 x}$</td></tr>
+        <tr><td>$b^2-4ac=0$</td><td>重根 $\lambda$</td><td>$(C_1 + C_2 x)\,e^{\lambda x}$</td></tr>
+        <tr><td>$b^2-4ac<0$</td><td>複素根 $\alpha\pm i\beta$</td><td>$e^{\alpha x}(C_1\cos\beta x + C_2\sin\beta x)$</td></tr>
+      </table>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 減衰振動</div>
+      <p>$y'' + 2y' + 5y = 0$。特性方程式 $\lambda^2 + 2\lambda + 5 = 0$ の根は $\lambda = -1 \pm 2i$。よって</p>
+      $$y(x) = e^{-x}\bigl(C_1\cos 2x + C_2\sin 2x\bigr).$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 未定係数法と定数変化法</div>
+      <p>非斉次項 $g(x)$ が多項式・指数・$\sin/\cos$（およびその積）なら，同型の試行解を仮定して係数を決める <strong>未定係数法</strong> が使える（$g$ が斉次解と重なる場合は $x$ を掛けて修正）。一般の $g$ には <strong>定数変化法</strong>：基本解 $y_1,y_2$（Wronskian $W=y_1 y_2'-y_1'y_2$）から</p>
+      $$y_p = -y_1\!\int\!\frac{y_2\,g/a}{W}\,dx + y_2\!\int\!\frac{y_1\,g/a}{W}\,dx.$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 強制振動と共鳴</div>
+      <p>無減衰の強制振動 $y'' + \omega_0^2 y = F\cos\omega x$。$\omega \neq \omega_0$ のとき特殊解は $y_p = \dfrac{F}{\omega_0^2-\omega^2}\cos\omega x$。</p>
+      <p>外力の振動数が固有振動数に一致する $\omega=\omega_0$（<strong>共鳴</strong>）では，試行解に $x$ を掛けて</p>
+      $$y_p = \frac{F}{2\omega_0}\,x\sin\omega_0 x$$
+      <p>となり，振幅が $x$ に比例して増大する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 重ね合わせの原理</div>
+      <p>斉次線形 ODE では，解の線形結合もまた解になる。非斉次でも右辺が $g_1+g_2$ なら，それぞれの特殊解の和が全体の特殊解になる。</p>
+    </div>
+
+    <h2 id="systems">4. 連立線形系と行列指数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 1階線形連立系</div>
+      <p>ベクトル $\mathbf{x}(t)\in\mathbb{R}^n$ と定数行列 $A$ に対し</p>
+      $$\dot{\mathbf{x}} = A\,\mathbf{x}$$
+      <p>を定数係数の <strong>1階線形連立系</strong> という。高階の単独 ODE も補助変数を導入してこの形に書き直せる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 行列指数による解</div>
+      <p>初期値問題 $\dot{\mathbf{x}}=A\mathbf{x},\ \mathbf{x}(0)=\mathbf{x}_0$ の解は</p>
+      $$\mathbf{x}(t) = e^{At}\,\mathbf{x}_0,\qquad e^{At} = \sum_{k=0}^{\infty}\frac{(At)^k}{k!}.$$
+      <p>$\dfrac{d}{dt}e^{At} = A\,e^{At}$ かつ $e^{A\cdot 0}=I$ ゆえ確かに解。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 固有値による解の構成</div>
+      <p>$A$ が対角化可能で固有値 $\lambda_k$，固有ベクトル $\mathbf{v}_k$ をもつなら，基本解は $e^{\lambda_k t}\,\mathbf{v}_k$ であり一般解は</p>
+      $$\mathbf{x}(t) = \sum_{k=1}^{n} c_k\, e^{\lambda_k t}\,\mathbf{v}_k.$$
+      <p>複素固有値 $\alpha\pm i\beta$ は実部・虚部をとって $e^{\alpha t}\cos\beta t,\ e^{\alpha t}\sin\beta t$ の実解にする。重複固有値で固有ベクトルが不足する場合は一般化固有ベクトル（$x e^{\lambda t}$ 型）を補う。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 2次元系の対角化</div>
+      <p>$A = \begin{pmatrix} 1 & 1 \\ 4 & 1 \end{pmatrix}$。固有値は $\det(A-\lambda I)=(1-\lambda)^2-4=0$ より $\lambda = 3,\,-1$。対応する固有ベクトルは $\mathbf{v}_1=\binom{1}{2},\ \mathbf{v}_2=\binom{1}{-2}$。よって</p>
+      $$\mathbf{x}(t) = c_1 e^{3t}\binom{1}{2} + c_2 e^{-t}\binom{1}{-2}.$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 相平面と安定性の概観</div>
+      <p>固有値の符号で原点まわりの相平面の様相が決まる：両方負なら安定ノード，両方正なら不安定ノード，異符号なら鞍点（サドル），複素で実部負なら安定渦状点。詳しくは <a href="dynamical-systems.html">力学系</a> を参照。</p>
+    </div>
+
+    <h2 id="series">5. 級数解法と特殊関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 正則点と確定特異点</div>
+      <p>$y'' + P(x)\,y' + Q(x)\,y = 0$ について，$x_0$ で $P,Q$ がともに解析的なら $x_0$ は <strong>正則点（通常点）</strong>。そうでなくても $(x-x_0)P$ と $(x-x_0)^2 Q$ がともに解析的なら $x_0$ は <strong>確定特異点</strong> という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — べき級数解（正則点）</div>
+      <p>$x_0$ が正則点なら，解は</p>
+      $$y(x) = \sum_{n=0}^{\infty} a_n (x-x_0)^n$$
+      <p>と展開でき，方程式に代入して係数の <strong>漸化式</strong> を得る。収束半径は最も近い特異点までの距離以上。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Frobenius 法（確定特異点）</div>
+      <p>確定特異点 $x_0$ のまわりでは，指数 $r$ を含む</p>
+      $$y(x) = (x-x_0)^{r}\sum_{n=0}^{\infty} a_n (x-x_0)^n,\quad a_0\neq 0$$
+      <p>を仮定する。最低次の項から <strong>指数方程式（indicial equation）</strong> が出て $r$ が定まる。2つの指数の差が整数のときは第2解に対数項が現れることがある。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Bessel・Legendre 方程式</div>
+      <p><strong>Bessel 方程式</strong>（$x=0$ が確定特異点，円筒対称な問題に頻出）：</p>
+      $$x^2 y'' + x y' + (x^2 - \nu^2)\,y = 0,\quad \text{解は } J_\nu(x),\ Y_\nu(x).$$
+      <p><strong>Legendre 方程式</strong>（球対称な問題に頻出，$\ell$ が非負整数のとき多項式解）：</p>
+      $$(1-x^2)\,y'' - 2x\,y' + \ell(\ell+1)\,y = 0,\quad \text{解は } P_\ell(x).$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 物理での登場場所</div>
+      <p>これらの特殊関数は，<a href="pde.html">偏微分方程式</a> を球座標・円筒座標で変数分離したときに必ず現れる。級数解法は「閉じた初等関数で書けない解」を扱う標準手段である。</p>
+    </div>
+
+    <h2 id="laplace">6. Laplace変換</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Laplace 変換</div>
+      <p>$t\geq 0$ で定義された関数 $f(t)$ に対し</p>
+      $$\mathcal{L}\{f\}(s) = F(s) = \int_0^{\infty} e^{-st} f(t)\,dt$$
+      <p>を <strong>Laplace 変換</strong> という（積分が収束する $s$ について定義）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 線形性と微分の変換</div>
+      <p>線形性 $\mathcal{L}\{af+bg\}=aF+bG$ に加え，微分は</p>
+      $$\mathcal{L}\{f'\} = sF(s) - f(0),\qquad \mathcal{L}\{f''\} = s^2 F(s) - s f(0) - f'(0).$$
+      <p>初期値が変換式に自然に組み込まれる点が鍵。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 基本的な変換表</div>
+      <table>
+        <tr><th>$f(t)$</th><th>$F(s)$</th></tr>
+        <tr><td>$1$</td><td>$1/s$</td></tr>
+        <tr><td>$t^n$</td><td>$n!/s^{n+1}$</td></tr>
+        <tr><td>$e^{at}$</td><td>$1/(s-a)$</td></tr>
+        <tr><td>$\sin\omega t$</td><td>$\omega/(s^2+\omega^2)$</td></tr>
+        <tr><td>$\cos\omega t$</td><td>$s/(s^2+\omega^2)$</td></tr>
+      </table>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 初期値問題への応用</div>
+      <p>$y'' + y = 0,\ y(0)=1,\ y'(0)=0$ を変換する。$s^2 Y - s + Y = 0$ より</p>
+      $$Y(s) = \frac{s}{s^2+1}\ \xrightarrow{\ \mathcal{L}^{-1}\ }\ y(t) = \cos t.$$
+      <p>微分方程式が代数方程式に化け，逆変換（部分分数分解＋変換表）で解が得られる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — たたみ込み定理</div>
+      <p>たたみ込み $(f*g)(t) = \displaystyle\int_0^t f(\tau)\,g(t-\tau)\,d\tau$ に対し</p>
+      $$\mathcal{L}\{f*g\} = F(s)\,G(s).$$
+      <p>積の逆変換がたたみ込みになるため，外力 $g(t)$ に対する応答を系のインパルス応答との畳み込みで表せる。</p>
+    </div>
+
+    <h2 id="existence">7. 存在と一意性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Lipschitz 条件</div>
+      <p>$f(x,y)$ が領域内で $y$ について <strong>Lipschitz 連続</strong> とは，ある定数 $L>0$ が存在して</p>
+      $$|f(x,y_1) - f(x,y_2)| \le L\,|y_1 - y_2|$$
+      <p>が成り立つこと。$\partial f/\partial y$ が有界なら十分条件として成立する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Picard–Lindelöf（存在と一意性）</div>
+      <p>$f(x,y)$ が $(x_0,y_0)$ の近傍で連続，かつ $y$ について Lipschitz 連続ならば，初期値問題</p>
+      $$y' = f(x,y),\quad y(x_0)=y_0$$
+      <p>は $x_0$ のある区間で <strong>解が一意に存在する</strong>。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Picard の逐次近似</div>
+      <p>IVP を積分方程式 $y(x) = y_0 + \displaystyle\int_{x_0}^{x} f(t,y(t))\,dt$ に書き換え，</p>
+      $$y_0(x)=y_0,\qquad y_{k+1}(x) = y_0 + \int_{x_0}^{x} f\bigl(t, y_k(t)\bigr)\,dt$$
+      <p>と反復する。Lipschitz 条件のもとでこの列は縮小写像の不動点（＝真の解）に一様収束する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 一意性が崩れる場合</div>
+      <p>$y' = \sqrt{|y|},\ y(0)=0$ では $f=\sqrt{|y|}$ が $y=0$ で Lipschitz でない。実際 $y\equiv 0$ と $y=\tfrac{1}{4}x^2\,(x\ge 0)$ の両方が解となり一意性が破れる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 解の延長</div>
+      <p>局所解は，解が領域の境界に近づくか発散するまで一意に延長できる。たとえば $y'=y^2,\ y(0)=1$ の解 $y=1/(1-x)$ は $x\to 1^-$ で有限時間爆発し，区間 $(-\infty,1)$ までしか延長できない。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>独立変数が複数になると偏微分方程式 <a href="pde.html">偏微分方程式</a> へ，解の長時間挙動・安定性・分岐を調べると <a href="dynamical-systems.html">力学系</a> へとつながる。本ページの線形系・存在一意性はそのどちらの土台にもなる。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>変数分離形 $y' = x\,(1+y^2)$ を初期条件 $y(0)=0$ のもとで解け。</li>
+        <li>1階線形 ODE $x y' + y = \cos x\ (x>0)$ を積分因子を用いて解け（ヒント：$\mu=x$）。</li>
+        <li>定数係数 ODE $y'' - 4y' + 4y = e^{2x}$ の一般解を，未定係数法（重根との重なりに注意）で求めよ。</li>
+        <li>連立系 $\dot{\mathbf{x}} = \begin{pmatrix} 0 & 1 \\ -2 & -3 \end{pmatrix}\mathbf{x}$ の一般解を固有値・固有ベクトルから構成し，相平面での型（ノード／サドル等）を答えよ。</li>
+        <li>Laplace 変換を用いて初期値問題 $y'' + 3y' + 2y = 0,\ y(0)=1,\ y'(0)=0$ を解け。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

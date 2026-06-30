@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>量子場理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 量子場理論</div>
+    <h1>量子場理論</h1>
+    <p class="tagline">場の量子化・Klein-Gordon/Dirac場・Feynman図・くりこみ・ゲージ理論。素粒子物理の言語。</p>
+    <div class="tags"><span class="tag">場の量子化</span><span class="tag">Klein-Gordon場</span><span class="tag">Dirac方程式</span><span class="tag">Feynman図</span><span class="tag">ゲージ理論</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="quantum-mechanics.html">量子力学</a>（演算子形式・生成消滅演算子）と <a href="relativity.html">相対性理論</a>（Lorentz 変換・四元ベクトル）を前提とする。また場の Lagrangian 形式については <a href="classical-mechanics.html">古典力学</a>（解析力学・最小作用の原理）の理解が必要である。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#motivation">場の量子化への動機</a></li>
+        <li><a href="#klein-gordon">Klein-Gordon 場</a></li>
+        <li><a href="#quantization">正準量子化</a></li>
+        <li><a href="#dirac">Dirac 方程式とスピノル</a></li>
+        <li><a href="#feynman">相互作用と Feynman 図</a></li>
+        <li><a href="#renormalization">くりこみ</a></li>
+        <li><a href="#standard-model">ゲージ理論と標準模型</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="motivation">1. 場の量子化への動機</h2>
+    <div class="box note">
+      <div class="box-title">💡 なぜ場の理論が必要か</div>
+      <p>非相対論的量子力学（Schrödinger 方程式）は粒子数を保存し，単一粒子の波動関数を扱う。しかし特殊相対論ではエネルギーと質量が等価（$E=mc^2$）であり，十分高エネルギーでは粒子の<strong>生成・消滅</strong>が起こる。粒子数が変化する系を矛盾なく記述するには，粒子の数を可変にする枠組み——すなわち<strong>場の量子化</strong>が要請される。</p>
+      <p>量子場理論（QFT）は，相対論的不変性・量子力学・場の概念を統合した理論であり，素粒子物理学の基本言語である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 自然単位系</div>
+      <p>QFT では計算を簡潔にするため<strong>自然単位系</strong> $\hbar = c = 1$ を採用する。これにより質量・エネルギー・運動量・（長さや時間の逆数）はすべて同一の次元（エネルギー次元）で測られる。</p>
+      $$[\text{長さ}] = [\text{時間}] = [\text{質量}]^{-1} = [\text{エネルギー}]^{-1}$$
+      <p>四元運動量 $p^\mu = (E,\mathbf{p})$，計量 $\eta_{\mu\nu} = \mathrm{diag}(+,-,-,-)$ を用い，相対論的エネルギー関係は $p^\mu p_\mu = E^2 - |\mathbf{p}|^2 = m^2$ となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 「場」とは何か</div>
+      <p>場 $\phi(x)$ は時空の各点 $x = (t,\mathbf{x})$ に値をもつ力学変数である。古典場（電磁場など）を量子化すると，場の励起が<strong>粒子</strong>として現れる。光子は電磁場の量子であり，電子は電子場の量子である。すべての粒子は，対応する場の量子的励起として理解される。</p>
+    </div>
+
+    <h2 id="klein-gordon">2. Klein-Gordon 場</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Klein-Gordon 方程式</div>
+      <p>相対論的エネルギー関係 $E^2 = |\mathbf{p}|^2 + m^2$ に対応演算子 $E \to i\partial_t$，$\mathbf{p}\to -i\nabla$ を代入すると，質量 $m$ をもつ相対論的<strong>スカラー場</strong> $\phi(x)$ に対する方程式が得られる:</p>
+      $$(\Box + m^2)\phi = 0, \qquad \Box \equiv \partial^\mu\partial_\mu = \partial_t^2 - \nabla^2$$
+      <p>$\Box$ は d'Alembert 演算子。$\phi$ は Lorentz スカラー（スピン 0 の粒子に対応）。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Lagrangian 密度と作用</div>
+      <p>実スカラー場の Lagrangian 密度は</p>
+      $$\mathcal{L} = \frac{1}{2}(\partial_\mu\phi)(\partial^\mu\phi) - \frac{1}{2}m^2\phi^2 = \frac{1}{2}(\partial\phi)^2 - \frac{1}{2}m^2\phi^2$$
+      <p>作用は $S = \int d^4x\,\mathcal{L}$。場の Euler-Lagrange 方程式</p>
+      $$\partial_\mu\frac{\partial\mathcal{L}}{\partial(\partial_\mu\phi)} - \frac{\partial\mathcal{L}}{\partial\phi} = 0$$
+      <p>に代入すると，Klein-Gordon 方程式 $(\Box+m^2)\phi=0$ が再現される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 一粒子解釈の破綻</div>
+      <p>Klein-Gordon 方程式を一粒子波動関数の方程式と見なすと，負エネルギー解 $E = -\sqrt{|\mathbf{p}|^2+m^2}$ や負の確率密度が現れる。これらの困難は，$\phi$ を<strong>場の演算子</strong>として量子化することで解決され，負エネルギー解は反粒子として正しく解釈される。</p>
+    </div>
+
+    <h2 id="quantization">3. 正準量子化</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 共役運動量と正準交換関係</div>
+      <p>場 $\phi$ に共役な運動量密度を $\pi(x) = \partial\mathcal{L}/\partial\dot\phi = \dot\phi$ で定義する。量子力学の正準交換関係 $[\hat x,\hat p]=i$ を場に拡張し，<strong>同時刻交換関係</strong>を課す:</p>
+      $$[\hat\phi(\mathbf{x},t),\hat\pi(\mathbf{y},t)] = i\delta^3(\mathbf{x}-\mathbf{y})$$
+      $$[\hat\phi(\mathbf{x},t),\hat\phi(\mathbf{y},t)] = [\hat\pi(\mathbf{x},t),\hat\pi(\mathbf{y},t)] = 0$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ モード展開と生成・消滅演算子</div>
+      <p>場をフーリエ（平面波）モードに展開すると，各モードは調和振動子と等価になる:</p>
+      $$\hat\phi(x) = \int\frac{d^3p}{(2\pi)^3}\frac{1}{\sqrt{2E_\mathbf{p}}}\left(\hat a_\mathbf{p}\,e^{-ip\cdot x} + \hat a_\mathbf{p}^\dagger\,e^{+ip\cdot x}\right)$$
+      <p>ここで $E_\mathbf{p} = \sqrt{|\mathbf{p}|^2+m^2}$。生成・消滅演算子は</p>
+      $$[\hat a_\mathbf{p},\hat a_\mathbf{q}^\dagger] = (2\pi)^3\delta^3(\mathbf{p}-\mathbf{q}), \quad [\hat a_\mathbf{p},\hat a_\mathbf{q}] = [\hat a_\mathbf{p}^\dagger,\hat a_\mathbf{q}^\dagger] = 0$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 真空と Fock 空間</div>
+      <p>真空状態 $|0\rangle$ はすべての消滅演算子で消える状態: $\hat a_\mathbf{p}|0\rangle = 0$。$\hat a_\mathbf{p}^\dagger$ を作用させると運動量 $\mathbf{p}$ の一粒子状態 $|\mathbf{p}\rangle = \sqrt{2E_\mathbf{p}}\,\hat a_\mathbf{p}^\dagger|0\rangle$ が得られる。複数の生成演算子を作用させて得られる多粒子状態全体が張る空間を<strong>Fock 空間</strong>という。</p>
+      <p>Hamiltonian は $\hat H = \int\frac{d^3p}{(2\pi)^3}\,E_\mathbf{p}\,\hat a_\mathbf{p}^\dagger\hat a_\mathbf{p}$（零点エネルギーを正規順序で除去後）。粒子数演算子 $\hat N = \int\frac{d^3p}{(2\pi)^3}\hat a_\mathbf{p}^\dagger\hat a_\mathbf{p}$ は粒子数を数える。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 場 = 無限個の調和振動子</div>
+      <p>各運動量モードが独立な調和振動子に対応するため，量子場は「無限自由度の調和振動子の集まり」と見なせる。これが <a href="quantum-mechanics.html">量子力学</a>の昇降演算子の手法が QFT で中心的役割を果たす理由である。</p>
+    </div>
+
+    <h2 id="dirac">4. Dirac 方程式とスピノル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Dirac 方程式</div>
+      <p>スピン $1/2$ の粒子（電子など）を相対論的に記述するため，Dirac は時間・空間に関して一階の方程式を求めた:</p>
+      $$(i\gamma^\mu\partial_\mu - m)\psi = 0$$
+      <p>$\psi$ は 4 成分の<strong>スピノル</strong>場，$\gamma^\mu$（$\mu=0,1,2,3$）は $4\times4$ の<strong>ガンマ行列</strong>である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ガンマ行列と Clifford 代数</div>
+      <p>ガンマ行列は反交換関係（Clifford 代数）を満たす:</p>
+      $$\{\gamma^\mu,\gamma^\nu\} = \gamma^\mu\gamma^\nu + \gamma^\nu\gamma^\mu = 2\eta^{\mu\nu}\mathbb{1}$$
+      <p>この関係から $(i\gamma^\mu\partial_\mu - m)(i\gamma^\nu\partial_\nu + m) = -(\Box + m^2)$ が従い，Dirac 場の各成分は Klein-Gordon 方程式を満たす。Dirac Lagrangian は $\mathcal{L} = \bar\psi(i\gamma^\mu\partial_\mu - m)\psi$（$\bar\psi = \psi^\dagger\gamma^0$）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 反粒子の予言</div>
+      <p>Dirac 方程式の負エネルギー解は，場の量子化において<strong>反粒子</strong>として解釈される。電子場の量子化では，電子（$b$）と陽電子（$d$）の生成・消滅演算子が現れる:</p>
+      $$\hat\psi(x) = \int\frac{d^3p}{(2\pi)^3}\frac{1}{\sqrt{2E_\mathbf{p}}}\sum_s\left(\hat b_\mathbf{p}^s u^s(p)e^{-ip\cdot x} + \hat d_\mathbf{p}^{s\dagger}v^s(p)e^{+ip\cdot x}\right)$$
+      <p>フェルミ統計（Pauli 排他律）を満たすため，これらは<strong>反交換</strong>関係 $\{\hat b_\mathbf{p}^r,\hat b_\mathbf{q}^{s\dagger}\} = (2\pi)^3\delta^3(\mathbf{p}-\mathbf{q})\delta^{rs}$ に従う。陽電子は 1932 年に実験的に発見された。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 スピン統計定理</div>
+      <p>整数スピンの場（ボソン）は交換関係で，半整数スピンの場（フェルミオン）は反交換関係で量子化される。この対応はスピン統計定理として相対論的場の理論から導かれる。</p>
+    </div>
+
+    <h2 id="feynman">5. 相互作用と Feynman 図</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 相互作用項</div>
+      <p>自由場の Lagrangian に相互作用項を加えると粒子間の相互作用が記述される。代表例:</p>
+      $$\mathcal{L}_{\phi^4} = \frac{1}{2}(\partial\phi)^2 - \frac{1}{2}m^2\phi^2 - \frac{\lambda}{4!}\phi^4$$
+      <p>$\lambda$ は結合定数。量子電磁力学（QED）では，電子場 $\psi$ と光子場 $A_\mu$ の結合</p>
+      $$\mathcal{L}_{\mathrm{QED}} = \bar\psi(i\gamma^\mu D_\mu - m)\psi - \frac{1}{4}F_{\mu\nu}F^{\mu\nu}, \quad D_\mu = \partial_\mu + ieA_\mu$$
+      <p>が相互作用 $-e\bar\psi\gamma^\mu\psi A_\mu$ を与える。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 摂動展開と Feynman 図</div>
+      <p>結合定数が小さいとき，散乱過程の振幅を結合定数のべき級数で展開する（摂動論）。各項は<strong>Feynman 図</strong>で図示される:</p>
+      <ul>
+        <li>外線——入射・出射する実粒子</li>
+        <li>内線（プロパゲーター）——仮想粒子の伝播</li>
+        <li>頂点（バーテックス）——相互作用，結合定数の因子を与える</li>
+      </ul>
+      <p>各図は<strong>Feynman 則</strong>に従って数式（振幅への寄与）に翻訳される。例えば QED では各頂点が因子 $-ie\gamma^\mu$ を，スカラー場のプロパゲーターが $\dfrac{i}{p^2-m^2+i\epsilon}$ を与える。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 散乱振幅と断面積</div>
+      <p>2 粒子散乱 $a+b\to c+d$ の遷移確率は不変振幅 $\mathcal{M}$ で表される。微分断面積は</p>
+      $$\frac{d\sigma}{d\Omega} = \frac{1}{64\pi^2 s}\frac{|\mathbf{p}_f|}{|\mathbf{p}_i|}|\mathcal{M}|^2$$
+      <p>（重心系，$s = (p_a+p_b)^2$ は重心エネルギーの 2 乗）。$|\mathcal{M}|^2$ を Feynman 図から計算し，実験で測定される断面積と比較する。QED の予言（例: 電子の異常磁気モーメント $g-2$）は実験と $10$ 桁以上の精度で一致する。</p>
+    </div>
+
+    <h2 id="renormalization">6. くりこみ</h2>
+    <div class="box note">
+      <div class="box-title">💡 発散の出現</div>
+      <p>Feynman 図にループ（閉じた内線）が含まれると，仮想粒子の運動量について積分 $\int d^4k$ を行う。この積分は高運動量（紫外）領域でしばしば<strong>発散</strong>する。素朴に計算すると物理量が無限大になってしまう。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 正則化とくりこみ</div>
+      <p><strong>正則化</strong>: 発散を一時的に有限化する操作（カットオフ $\Lambda$ の導入，次元正則化 $d = 4-\epsilon$ など）。</p>
+      <p><strong>くりこみ</strong>: Lagrangian 中の質量・結合定数・場の規格化を「裸の量」から「物理的（観測される）量」へ再定義し，発散を吸収する手続き。有限個のパラメータの再定義ですべての発散を除去できる理論を<strong>くりこみ可能</strong>という。QED・標準模型はくりこみ可能である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 走る結合定数と繰り込み群</div>
+      <p>くりこみの結果，結合定数はエネルギースケール $\mu$ に依存する「走る結合定数」$g(\mu)$ となる。その変化は繰り込み群方程式（ベータ関数）で支配される:</p>
+      $$\mu\frac{dg}{d\mu} = \beta(g)$$
+      <p>QED では高エネルギーで結合が増大する。一方 QCD では $\beta(g)<0$ となり高エネルギーで結合が減少する——これが<strong>漸近的自由性</strong>であり，クォークが高エネルギーでほぼ自由に振る舞う理由である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 有効場理論の視点</div>
+      <p>現代的には，くりこみは「低エネルギーの物理は高エネルギーの詳細に鈍感である」という有効場理論の考え方として理解される。発散は理論の欠陥ではなく，未知の高エネルギー物理を低エネルギーパラメータへ繰り込む自然な手続きと見なされる。</p>
+    </div>
+
+    <h2 id="standard-model">7. ゲージ理論と標準模型</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 局所ゲージ対称性</div>
+      <p>場の Lagrangian が，時空各点で独立な内部対称性変換に対して不変であることを<strong>局所ゲージ対称性</strong>という。例えば QED は $U(1)$ ゲージ対称性 $\psi\to e^{i\alpha(x)}\psi$ をもつ。この不変性を保つには通常の微分を<strong>共変微分</strong> $D_\mu = \partial_\mu + ieA_\mu$ に置き換える必要があり，こうしてゲージ場（光子 $A_\mu$）の存在と相互作用の形が必然的に導かれる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 標準模型のゲージ群</div>
+      <p>素粒子の標準模型は，次の非可換（Yang-Mills）ゲージ群に基づく場の理論である:</p>
+      $$SU(3)_C \times SU(2)_L \times U(1)_Y$$
+      <ul>
+        <li>$SU(3)_C$——量子色力学（QCD），グルーオン 8 個，クォークの「色」を扱う強い相互作用</li>
+        <li>$SU(2)_L \times U(1)_Y$——電弱統一理論，$W^\pm,Z,\gamma$ を与える</li>
+      </ul>
+      <p>ゲージ群の構造は <a href="abstract-algebra.html">Lie 群・Lie 代数</a>の言語で記述される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Higgs 機構（概観）</div>
+      <p>ゲージ不変性はゲージ場の質量項を禁じるため，素朴には $W,Z$ ボソンや粒子は質量をもてない。しかし Higgs 場 $H$ が真空期待値 $\langle H\rangle \ne 0$ をもつ（<strong>自発的対称性の破れ</strong>）と，ゲージ対称性 $SU(2)_L\times U(1)_Y$ が $U(1)_{\mathrm{EM}}$ へ破れ，$W^\pm,Z$ ボソンとフェルミオンが質量を獲得する。これが<strong>Higgs 機構</strong>である。Higgs ボソンは 2012 年に LHC で発見された。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>ゲージ理論の数学的基盤である Lie 群・Lie 代数については <a href="abstract-algebra.html">抽象代数学</a>を参照。物理と数学の各分野の関係を俯瞰するには <a href="field-map.html">学問領域マップ</a>が役立つ。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>Klein-Gordon Lagrangian $\mathcal{L} = \frac12(\partial\phi)^2 - \frac12 m^2\phi^2$ に Euler-Lagrange 方程式を適用し，$(\Box+m^2)\phi=0$ を導け。</li>
+        <li>正準交換関係 $[\hat\phi(\mathbf{x},t),\hat\pi(\mathbf{y},t)] = i\delta^3(\mathbf{x}-\mathbf{y})$ から，生成・消滅演算子の交換関係 $[\hat a_\mathbf{p},\hat a_\mathbf{q}^\dagger]=(2\pi)^3\delta^3(\mathbf{p}-\mathbf{q})$ を導け。</li>
+        <li>ガンマ行列の反交換関係 $\{\gamma^\mu,\gamma^\nu\}=2\eta^{\mu\nu}$ を用いて，Dirac 演算子の積 $(i\gamma^\mu\partial_\mu - m)(i\gamma^\nu\partial_\nu + m)$ が $-(\Box+m^2)$ に等しいことを示せ。</li>
+        <li>$\phi^4$ 理論における最低次（ツリーレベル）の $2\to2$ 散乱振幅 $\mathcal{M}$ を Feynman 則から求めよ。</li>
+        <li>$U(1)$ ゲージ変換 $\psi\to e^{i\alpha(x)}\psi$ のもとで $\bar\psi(i\gamma^\mu\partial_\mu)\psi$ は不変でないことを確認し，共変微分 $D_\mu=\partial_\mu+ieA_\mu$ と $A_\mu$ の変換則を用いれば不変になることを示せ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
