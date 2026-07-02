@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>強化学習 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 強化学習</div>
+    <h1>強化学習</h1>
+    <p class="tagline">MDP・Bellman方程式・Q学習・DQN・方策勾配。試行錯誤から最適方策を学ぶ。</p>
+    <div class="tags"><span class="tag">マルコフ決定過程</span><span class="tag">Bellman方程式</span><span class="tag">Q学習</span><span class="tag">深層強化学習</span><span class="tag">方策勾配</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#mdp">マルコフ決定過程</a></li>
+        <li><a href="#bellman">価値関数とBellman方程式</a></li>
+        <li><a href="#dp">動的計画法</a></li>
+        <li><a href="#model-free">モデルフリー学習</a></li>
+        <li><a href="#deep">関数近似と深層強化学習</a></li>
+        <li><a href="#policy-gradient">方策勾配法</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="machine-learning.html">機械学習の数理</a>（勾配降下法・関数近似），<a href="stochastic-processes.html">確率過程論</a>（マルコフ連鎖・期待値），<a href="optimization.html">最適化</a>（凸最適化・確率的最適化）の知識を前提とする。</p>
+    </div>
+
+    <h2 id="mdp">1. マルコフ決定過程</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — マルコフ決定過程 (MDP)</div>
+      <p><strong>マルコフ決定過程</strong>は5つ組 $(\mathcal{S}, \mathcal{A}, P, R, \gamma)$ で定義される：</p>
+      <ul>
+        <li>$\mathcal{S}$：<strong>状態</strong>空間</li>
+        <li>$\mathcal{A}$：<strong>行動</strong>空間</li>
+        <li>$P(s' \mid s, a)$：<strong>遷移確率</strong>（状態 $s$ で行動 $a$ をとったとき $s'$ へ遷移する確率）</li>
+        <li>$R(s, a)$：<strong>報酬</strong>関数（即時報酬の期待値）</li>
+        <li>$\gamma \in [0, 1)$：<strong>割引率</strong></li>
+      </ul>
+      <p>マルコフ性: 次状態と報酬は現在の状態と行動のみに依存し，過去の履歴に依存しない。</p>
+      <p>$$\Pr(s_{t+1} \mid s_t, a_t) = \Pr(s_{t+1} \mid s_0, a_0, \ldots, s_t, a_t)$$</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 方策と収益</div>
+      <p><strong>方策</strong> $\pi(a \mid s)$ は状態 $s$ において行動 $a$ を選ぶ確率分布である（決定的方策なら $a = \pi(s)$）。</p>
+      <p>時刻 $t$ 以降の<strong>収益</strong>（割引累積報酬）は</p>
+      $$G_t = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots$$
+      <p>割引率 $\gamma$ は将来の報酬をどれだけ重視するかを制御し，$\gamma < 1$ は無限和の収束を保証する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 強化学習の目標</div>
+      <p>環境モデル $P, R$ が未知でも，エージェントは環境との相互作用（試行錯誤）を通じて期待収益 $\mathbb{E}_\pi[G_0]$ を最大化する方策 $\pi$ を学習する。これが教師あり学習との本質的な違いである。</p>
+    </div>
+
+    <h2 id="bellman">2. 価値関数とBellman方程式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 状態価値関数と行動価値関数</div>
+      <p>方策 $\pi$ のもとでの<strong>状態価値関数</strong>:</p>
+      $$V^\pi(s) = \mathbb{E}_\pi\!\left[G_t \mid S_t = s\right]$$
+      <p><strong>行動価値関数</strong>（Q関数）:</p>
+      $$Q^\pi(s, a) = \mathbb{E}_\pi\!\left[G_t \mid S_t = s, A_t = a\right]$$
+      <p>両者の関係: $V^\pi(s) = \sum_a \pi(a \mid s)\, Q^\pi(s, a)$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Bellman 方程式</div>
+      <p>価値関数は再帰的関係（<strong>Bellman 期待方程式</strong>）を満たす：</p>
+      $$V^\pi(s) = \sum_a \pi(a \mid s) \left[ R(s, a) + \gamma \sum_{s'} P(s' \mid s, a)\, V^\pi(s') \right]$$
+      $$Q^\pi(s, a) = R(s, a) + \gamma \sum_{s'} P(s' \mid s, a) \sum_{a'} \pi(a' \mid s')\, Q^\pi(s', a')$$
+      <p>これは価値関数を未知数とする線形方程式系であり，一意解をもつ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最適方策と Bellman 最適方程式</div>
+      <p><strong>最適価値関数</strong> $V^*(s) = \max_\pi V^\pi(s)$，$Q^*(s,a) = \max_\pi Q^\pi(s,a)$ は<strong>Bellman 最適方程式</strong>を満たす：</p>
+      $$V^*(s) = \max_a \left[ R(s, a) + \gamma \sum_{s'} P(s' \mid s, a)\, V^*(s') \right]$$
+      $$Q^*(s, a) = R(s, a) + \gamma \sum_{s'} P(s' \mid s, a)\, \max_{a'} Q^*(s', a')$$
+      <p>最適方策は貪欲に得られる: $\pi^*(s) = \arg\max_a Q^*(s, a)$。任意の MDP には決定的な最適方策が少なくとも1つ存在する。</p>
+    </div>
+
+    <h2 id="dp">3. 動的計画法</h2>
+    <p>環境モデル $(P, R)$ が既知のとき，Bellman 方程式を用いて最適方策を計算できる。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 方策評価</div>
+      <p>与えられた方策 $\pi$ の価値 $V^\pi$ を，Bellman 期待方程式を更新則として反復計算する：</p>
+      $$V_{k+1}(s) \leftarrow \sum_a \pi(a \mid s) \left[ R(s, a) + \gamma \sum_{s'} P(s' \mid s, a)\, V_k(s') \right]$$
+      <p>この写像は縮小写像であり，$k \to \infty$ で $V_k \to V^\pi$ に収束する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 方策反復と価値反復</div>
+      <p><strong>方策反復</strong>は次の2段階を交互に繰り返す：</p>
+      <ol>
+        <li>方策評価: 現方策 $\pi$ の $V^\pi$ を計算</li>
+        <li>方策改善: $\pi'(s) = \arg\max_a \left[R(s,a) + \gamma \sum_{s'} P(s'\mid s,a) V^\pi(s')\right]$</li>
+      </ol>
+      <p><strong>価値反復</strong>は評価を1回で打ち切り，Bellman 最適方程式を直接反復する：</p>
+      $$V_{k+1}(s) \leftarrow \max_a \left[ R(s, a) + \gamma \sum_{s'} P(s' \mid s, a)\, V_k(s') \right]$$
+      <p>いずれも有限 MDP で最適方策 $\pi^*$ に収束する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 縮小写像としての Bellman 作用素</div>
+      <p>Bellman 最適作用素 $T$ は上限ノルムに関して係数 $\gamma$ の縮小写像である: $\|TV - TV'\|_\infty \le \gamma \|V - V'\|_\infty$。Banach の不動点定理により，反復は唯一の不動点 $V^*$ へ幾何級数的に収束する。</p>
+    </div>
+
+    <h2 id="model-free">4. モデルフリー学習</h2>
+    <p>遷移確率 $P$ と報酬 $R$ が未知のとき，経験（サンプル）から直接学習する。</p>
+    <div class="box def">
+      <div class="box-title">📖 定義 — モンテカルロ法とTD学習</div>
+      <p><strong>モンテカルロ (MC) 法</strong>: エピソード完了後の実収益 $G_t$ で価値を更新する。</p>
+      $$V(S_t) \leftarrow V(S_t) + \alpha \bigl[ G_t - V(S_t) \bigr]$$
+      <p><strong>TD (時間的差分) 学習</strong>: 1ステップ先のブートストラップ推定を目標に用いる。</p>
+      $$V(S_t) \leftarrow V(S_t) + \alpha \underbrace{\bigl[ R_{t+1} + \gamma V(S_{t+1}) - V(S_t) \bigr]}_{\text{TD誤差 } \delta_t}$$
+      <p>MC は不偏だが分散が大きく，TD は有偏だが分散が小さくオンラインで学習できる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Q学習 (Off-policy)</div>
+      <p><strong>Q学習</strong>は Bellman 最適方程式をサンプルで近似し，行動価値を更新する：</p>
+      $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \bigl[ R_{t+1} + \gamma \max_{a'} Q(S_{t+1}, a') - Q(S_t, A_t) \bigr]$$
+      <p>行動選択に用いる挙動方策（例: $\varepsilon$-貪欲）と学習対象の目標方策（貪欲）が異なる<strong>方策オフ型</strong>である。適切な学習率とすべての状態行動対の無限回訪問のもとで $Q \to Q^*$ に収束する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — SARSA (On-policy)</div>
+      <p><strong>SARSA</strong> は実際にとった次行動 $A_{t+1}$ を用いて更新する<strong>方策オン型</strong>手法である（名称は $(S,A,R,S',A')$ に由来）：</p>
+      $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \bigl[ R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \bigr]$$
+      <p>Q学習が $\max$ を用いるのに対し，SARSA は挙動方策自身の価値を学習するため，探索中のリスクをより考慮した保守的な方策を得やすい（例: 崖歩き問題）。</p>
+    </div>
+
+    <h2 id="deep">5. 関数近似と深層強化学習</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 価値関数近似</div>
+      <p>状態空間が巨大・連続の場合，価値をテーブルで表現できない。パラメータ $\theta$ をもつ関数（線形モデルやニューラルネット）で近似する：</p>
+      $$Q(s, a; \theta) \approx Q^*(s, a)$$
+      <p>目標 $y = R + \gamma \max_{a'} Q(s', a'; \theta)$ と予測の二乗誤差を最小化する半勾配法で $\theta$ を更新する：</p>
+      $$\theta \leftarrow \theta + \alpha \bigl[ y - Q(s, a; \theta) \bigr] \nabla_\theta Q(s, a; \theta)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — DQN (Deep Q-Network)</div>
+      <p><strong>DQN</strong> は深層ニューラルネットで Q関数を近似し，学習を安定化する2つの工夫を導入する。損失関数は</p>
+      $$L(\theta) = \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}} \left[ \bigl( r + \gamma \max_{a'} Q(s', a'; \theta^-) - Q(s, a; \theta) \bigr)^2 \right]$$
+      <ul>
+        <li><strong>経験再生</strong> (Experience Replay): 遷移 $(s,a,r,s')$ をバッファ $\mathcal{D}$ に蓄積し，ランダムサンプリングして学習。サンプル間の時間相関を断ち，データ効率を高める。</li>
+        <li><strong>目標ネットワーク</strong> (Target Network): 目標値の計算に固定パラメータ $\theta^-$ を用い，一定周期で $\theta^- \leftarrow \theta$ と同期。目標が動くことによる発散を防ぐ。</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 「死の三徴」</div>
+      <p>関数近似・ブートストラップ・方策オフ学習の3つが揃うと学習が不安定・発散しやすい（deadly triad）。DQN の経験再生と目標ネットワークはこの不安定性を緩和する実践的な対策である。</p>
+    </div>
+
+    <h2 id="policy-gradient">6. 方策勾配法</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 方策のパラメータ化</div>
+      <p>方策自身をパラメータ $\theta$ で直接表現し $\pi_\theta(a \mid s)$，目的関数 $J(\theta) = \mathbb{E}_{\pi_\theta}[G_0]$ を勾配上昇で最大化する。連続行動空間や確率的方策を自然に扱える。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 方策勾配定理</div>
+      <p>目的関数の勾配は，遷移確率の勾配を含まない次の形で表される：</p>
+      $$\nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}\!\left[ \nabla_\theta \log \pi_\theta(a \mid s)\, Q^{\pi_\theta}(s, a) \right]$$
+      <p>$Q^{\pi_\theta}$ をベースライン $b(s)$（典型的には $V(s)$）で補正した<strong>アドバンテージ</strong> $A(s,a) = Q(s,a) - V(s)$ を用いると，不偏性を保ったまま分散を低減できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — REINFORCE・Actor-Critic・PPO</div>
+      <ul>
+        <li><strong>REINFORCE</strong>: モンテカルロ収益 $G_t$ を用いる基本手法。$\theta \leftarrow \theta + \alpha\, \gamma^t\, G_t\, \nabla_\theta \log \pi_\theta(A_t \mid S_t)$。分散が大きい。</li>
+        <li><strong>Actor-Critic</strong>: 方策（Actor）と価値関数（Critic）を同時学習し，Critic の推定するアドバンテージで方策を更新。TD 誤差 $\delta_t$ がアドバンテージの推定値となる。</li>
+        <li><strong>PPO</strong> (近接方策最適化): 重要度比 $r_t(\theta) = \dfrac{\pi_\theta(a\mid s)}{\pi_{\theta_{\rm old}}(a\mid s)}$ をクリップした代理目的を最大化し，1回の更新幅を制限して安定化する。</li>
+      </ul>
+      $$L^{\rm CLIP}(\theta) = \mathbb{E}\!\left[ \min\bigl( r_t(\theta) A_t,\ \mathrm{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \bigr) \right]$$
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box example">
+      <div class="box-title">📝 例 — 実世界への応用</div>
+      <ul>
+        <li><strong>ゲーム (AlphaGo/AlphaZero)</strong>: モンテカルロ木探索と深層方策・価値ネットワークを組み合わせ，自己対戦のみで囲碁・将棋・チェスの超人的方策を獲得。</li>
+        <li><strong>ロボット制御</strong>: 連続行動空間での歩行・把持・操作の学習。方策勾配法（PPO・SAC）とシミュレーションからの転移（sim-to-real）が中心。</li>
+        <li><strong>推薦システム</strong>: ユーザとの逐次的相互作用を MDP とみなし，長期的なエンゲージメントを最大化する推薦方策を最適化。</li>
+        <li><strong>資源配分</strong>: データセンターの冷却制御，通信ネットワークのルーティング，在庫・電力管理など，逐次的意思決定問題に適用。</li>
+      </ul>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>強化学習は最適制御と深く関連している。連続時間・連続状態での最適制御（HJB 方程式・LQR）は <a href="control-theory.html">制御理論</a> で，価値関数近似や方策の学習を支える基礎技法は <a href="machine-learning.html">機械学習の数理</a> で学ぶとよい。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>2状態・2行動の小さな MDP を1つ定め，割引率 $\gamma = 0.9$ のもとで方策評価と価値反復を数ステップ手計算し，最適方策を求めよ。</li>
+        <li>Bellman 最適作用素が上限ノルムに関して係数 $\gamma$ の縮小写像であることを証明せよ。</li>
+        <li>同一の経験系列に対して Q学習と SARSA の更新式を書き下し，$\max$ の有無が更新結果に与える違いを説明せよ。崖歩き問題で両者の学習する方策が異なる理由を論ぜよ。</li>
+        <li>方策勾配定理においてベースライン $b(s)$ を導入しても勾配の期待値が変わらない（不偏性が保たれる）ことを示せ。</li>
+        <li>DQN の目標ネットワークを取り除いた場合に学習が不安定化する理由を，目標値が学習中に変動する点から説明せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

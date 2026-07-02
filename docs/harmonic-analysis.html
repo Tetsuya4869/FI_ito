@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>調和解析 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 調和解析</div>
+    <h1>調和解析</h1>
+    <p class="tagline">フーリエ変換・Plancherel・超関数・極大関数・Calderón-Zygmund。周波数の視点で関数を解析する。</p>
+    <div class="tags"><span class="tag">フーリエ変換</span><span class="tag">Plancherel</span><span class="tag">超関数</span><span class="tag">極大関数</span><span class="tag">特異積分</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="fourier-analysis.html">フーリエ解析</a>，<a href="functional-analysis.html">関数解析</a>，<a href="measure-theory.html">測度論</a> の内容を前提とする。特に $L^p$ 空間，Hilbert 空間，Lebesgue 積分の基礎を仮定する。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#fourier-series">フーリエ級数と直交系</a></li>
+        <li><a href="#fourier-transform">フーリエ変換</a></li>
+        <li><a href="#convolution">たたみ込みと近似恒等</a></li>
+        <li><a href="#distributions">超関数</a></li>
+        <li><a href="#maximal">Hardy-Littlewood 極大関数</a></li>
+        <li><a href="#singular">特異積分作用素</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="fourier-series">1. フーリエ級数と直交系</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 三角級数とフーリエ係数</div>
+      <p>周期 $2\pi$ の関数 $f \in L^1(\mathbb{T})$ に対し，<strong>フーリエ係数</strong>を</p>
+      $$\hat f(n) = \frac{1}{2\pi}\int_{-\pi}^{\pi} f(x)\,e^{-inx}\,dx \quad (n \in \mathbb{Z})$$
+      <p>と定め，形式的な<strong>フーリエ級数</strong>を $\displaystyle f(x) \sim \sum_{n\in\mathbb{Z}} \hat f(n)\,e^{inx}$ とする。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 直交性と完全性</div>
+      <p>系 $\{e^{inx}\}_{n\in\mathbb{Z}}$ は $L^2(\mathbb{T})$ の完全正規直交系をなす：</p>
+      $$\frac{1}{2\pi}\int_{-\pi}^{\pi} e^{inx}\,\overline{e^{imx}}\,dx = \delta_{nm}$$
+      <p>したがって任意の $f\in L^2(\mathbb{T})$ に対し部分和 $S_N f = \sum_{|n|\le N}\hat f(n)e^{inx}$ は $L^2$ ノルムで $f$ に収束し，<strong>Parseval の等式</strong> $\|f\|_2^2 = \sum_n |\hat f(n)|^2$ が成り立つ。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 点収束と Dirichlet 核</div>
+      <p>部分和は Dirichlet 核 $D_N$ とのたたみ込みで表される：</p>
+      $$S_N f(x) = (f * D_N)(x), \qquad D_N(t) = \sum_{|n|\le N} e^{int} = \frac{\sin\bigl((N+\tfrac12)t\bigr)}{\sin(t/2)}$$
+      <p>$\|D_N\|_{L^1} \sim \frac{4}{\pi^2}\log N \to \infty$（Lebesgue 定数の発散）ゆえ，連続関数でも点収束が保証されない。Fejér 核（Cesàro 平均）を用いると一様収束が回復する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 収束の階層</div>
+      <p>$L^2$ 収束（常に成立）・点収束（Dini 条件などが必要）・一様収束（滑らかさが必要）は別物である。Carleson の定理により，$f\in L^2(\mathbb{T})$ のフーリエ級数はほとんど至る所で $f$ に収束することが知られる（深い結果）。</p>
+    </div>
+
+    <h2 id="fourier-transform">2. フーリエ変換</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — $L^1$ 上のフーリエ変換</div>
+      <p>$f \in L^1(\mathbb{R}^n)$ に対し，フーリエ変換を</p>
+      $$\hat f(\xi) = \int_{\mathbb{R}^n} f(x)\,e^{-2\pi i x\cdot\xi}\,dx$$
+      <p>で定義する。$\hat f$ は有界連続で $\|\hat f\|_\infty \le \|f\|_1$，さらに Riemann-Lebesgue の補題より $|\xi|\to\infty$ で $\hat f(\xi)\to 0$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 反転公式</div>
+      <p>$f\in L^1(\mathbb{R}^n)$ かつ $\hat f\in L^1(\mathbb{R}^n)$ ならば，ほとんど至る所で</p>
+      $$f(x) = \int_{\mathbb{R}^n} \hat f(\xi)\,e^{2\pi i x\cdot\xi}\,d\xi$$
+      <p>が成り立つ。特に Schwartz 空間 $\mathcal{S}(\mathbb{R}^n)$ 上でフーリエ変換は全単射であり，微分と乗法を交換する：$\widehat{\partial_j f}(\xi) = 2\pi i\,\xi_j\,\hat f(\xi)$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Plancherel の定理と $L^2$ 理論</div>
+      <p>$\mathcal{S}(\mathbb{R}^n)$ 上で $\|\hat f\|_2 = \|f\|_2$ が成り立ち，フーリエ変換は $L^2(\mathbb{R}^n)$ 上のユニタリ作用素へ一意に拡張される。より一般に <strong>Parseval の等式</strong></p>
+      $$\int_{\mathbb{R}^n} f(x)\,\overline{g(x)}\,dx = \int_{\mathbb{R}^n} \hat f(\xi)\,\overline{\hat g(\xi)}\,d\xi$$
+      <p>が任意の $f,g\in L^2$ に対して成立する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Gauss 関数と Hausdorff-Young</div>
+      <p>Gauss 関数はフーリエ変換の固有関数：$f(x)=e^{-\pi|x|^2}$ に対し $\hat f(\xi)=e^{-\pi|\xi|^2}$。</p>
+      <p>補間により $1\le p\le 2$，$\frac1p+\frac1{p'}=1$ のとき <strong>Hausdorff-Young 不等式</strong> $\|\hat f\|_{p'} \le \|f\|_p$ が成り立つ。</p>
+    </div>
+
+    <h2 id="convolution">3. たたみ込みと近似恒等</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — たたみ込み</div>
+      <p>$f,g$ のたたみ込みを</p>
+      $$(f * g)(x) = \int_{\mathbb{R}^n} f(x-y)\,g(y)\,dy$$
+      <p>で定義する。フーリエ変換は積を対角化する：$\widehat{f*g} = \hat f\cdot\hat g$，$\widehat{fg} = \hat f * \hat g$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Young の不等式</div>
+      <p>$1\le p,q,r\le\infty$ が $\dfrac1p+\dfrac1q = 1+\dfrac1r$ を満たすとき，</p>
+      $$\|f * g\|_r \le \|f\|_p\,\|g\|_q$$
+      <p>が成り立つ。特に $g\in L^1$ ならば $\|f*g\|_p \le \|f\|_p\|g\|_1$ となり，たたみ込みは $L^p$ 上の有界作用素を与える。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 近似恒等（軟化子）</div>
+      <p>$\phi\in L^1(\mathbb{R}^n)$，$\int\phi = 1$ とし，$\phi_t(x) = t^{-n}\phi(x/t)$ とおく。族 $\{\phi_t\}_{t>0}$ を<strong>近似恒等</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 近似恒等による収束</div>
+      <p>$1\le p<\infty$ かつ $f\in L^p(\mathbb{R}^n)$ のとき，$t\to 0^+$ で</p>
+      $$\|f * \phi_t - f\|_p \to 0$$
+      <p>が成り立つ。これにより $C_c^\infty(\mathbb{R}^n)$ が $L^p$ で稠密であること，および軟化による滑らかな近似が正当化される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 総和核との関係</div>
+      <p>フーリエ級数の Fejér 核，フーリエ変換の Gauss 核・Poisson 核はいずれも近似恒等の具体例であり，発散する級数・積分の「総和法」を与える。</p>
+    </div>
+
+    <h2 id="distributions">4. 超関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — テスト関数と超関数</div>
+      <p>テスト関数の空間 $\mathcal{D}(\Omega) = C_c^\infty(\Omega)$ 上の連続線形汎関数を<strong>超関数（distribution）</strong>といい，その全体を $\mathcal{D}'(\Omega)$ と書く。局所可積分関数 $f$ は $\langle T_f, \varphi\rangle = \int f\varphi$ により超関数を定める。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Dirac のデルタと弱微分</div>
+      <p>$\langle \delta, \varphi\rangle = \varphi(0)$ で定まる $\delta$ は超関数であるが，どの関数からも来ない。超関数の微分は $\langle T', \varphi\rangle = -\langle T, \varphi'\rangle$ で定義され，Heaviside 関数 $H$ に対し $H' = \delta$ が成り立つ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — テンパード超関数 $\mathcal{S}'$</div>
+      <p>Schwartz 空間 $\mathcal{S}(\mathbb{R}^n)$（急減少 $C^\infty$ 関数）上の連続線形汎関数の全体を<strong>テンパード超関数</strong>の空間 $\mathcal{S}'(\mathbb{R}^n)$ という。多項式増大の関数や $\delta$ はこれに属する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — フーリエ変換の拡張</div>
+      <p>フーリエ変換は $\mathcal{S}(\mathbb{R}^n)$ 上の同相写像であるから，双対性 $\langle \hat T, \varphi\rangle = \langle T, \hat\varphi\rangle$ により $\mathcal{S}'(\mathbb{R}^n)$ 上へ一意に拡張される。例えば $\hat\delta = 1$，$\hat 1 = \delta$，$\widehat{e^{2\pi i a\cdot x}} = \delta_a$ が得られ，偏微分方程式の基本解の解析に用いられる。</p>
+    </div>
+
+    <h2 id="maximal">5. Hardy-Littlewood 極大関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 極大関数</div>
+      <p>$f\in L^1_{\rm loc}(\mathbb{R}^n)$ に対し，<strong>Hardy-Littlewood 極大関数</strong>を</p>
+      $$Mf(x) = \sup_{r>0} \frac{1}{|B(x,r)|}\int_{B(x,r)} |f(y)|\,dy$$
+      <p>と定義する。これは点 $x$ のまわりの平均の上限を表す。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 極大不等式</div>
+      <p>ある定数 $C_n$ が存在して次が成り立つ：</p>
+      <p>（弱 $(1,1)$ 型）$f\in L^1$ に対し $\displaystyle |\{x : Mf(x)>\lambda\}| \le \frac{C_n}{\lambda}\|f\|_1$，</p>
+      <p>（強 $(p,p)$ 型）$1<p\le\infty$ に対し $\|Mf\|_p \le C_{n,p}\|f\|_p$。</p>
+      <p>証明には Vitali 型の被覆補題と Marcinkiewicz の補間定理を用いる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Lebesgue 微分定理</div>
+      <p>極大不等式の帰結として，$f\in L^1_{\rm loc}(\mathbb{R}^n)$ ならばほとんど至る所の $x$ で</p>
+      $$\lim_{r\to 0^+} \frac{1}{|B(x,r)|}\int_{B(x,r)} |f(y)-f(x)|\,dy = 0$$
+      <p>が成り立つ（$x$ は $f$ の Lebesgue 点）。特に平均は a.e. で $f(x)$ に収束する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 弱型不等式の役割</div>
+      <p>強型不等式が $p=1$ で成り立たない（$Mf$ が $L^1$ でない）ため，弱型 $(1,1)$ 不等式が本質的である。弱型評価と稠密な関数族での収束を組み合わせて a.e. 収束を導くのが標準的な戦略。</p>
+    </div>
+
+    <h2 id="singular">6. 特異積分作用素</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Hilbert 変換</div>
+      <p>直線上の <strong>Hilbert 変換</strong>は主値積分</p>
+      $$Hf(x) = \frac{1}{\pi}\,\mathrm{p.v.}\!\int_{\mathbb{R}} \frac{f(y)}{x-y}\,dy$$
+      <p>で定義される。フーリエ側では乗子 $\widehat{Hf}(\xi) = -i\,\mathrm{sgn}(\xi)\,\hat f(\xi)$ を持ち，$L^2$ 上のユニタリに近い等長作用素となる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Calderón-Zygmund 核</div>
+      <p>核 $K(x)$ が (i) 大きさ条件 $|K(x)|\le A|x|^{-n}$，(ii) 平滑条件（Hörmander 条件）$\int_{|x|>2|y|}|K(x-y)-K(x)|\,dx \le B$ を満たし，対応する作用素が $L^2$ 有界であるとき，$Tf = \mathrm{p.v.}\,K * f$ を<strong>Calderón-Zygmund 作用素</strong>という。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — $L^p$ 有界性</div>
+      <p>Calderón-Zygmund 作用素 $T$ は弱 $(1,1)$ 型であり，補間と双対により $1<p<\infty$ に対して</p>
+      $$\|Tf\|_p \le C_{n,p}\,\|f\|_p$$
+      <p>が成り立つ。証明の核心は Calderón-Zygmund 分解（$f$ を「良い部分」と「悪い部分」に分ける停止時刻論法）である。Riesz 変換 $R_j$ はこの理論の典型例。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Riesz 変換と楕円型評価</div>
+      <p>Riesz 変換 $\widehat{R_j f}(\xi) = -i\,\dfrac{\xi_j}{|\xi|}\,\hat f(\xi)$ を用いると $\partial_i\partial_j f = -R_iR_j\,\Delta f$ と表せる。これと $L^p$ 有界性から<strong>Calderón-Zygmund 評価</strong> $\|\partial_i\partial_j u\|_p \le C\|\Delta u\|_p$（$1<p<\infty$）が従い，楕円型偏微分方程式の正則性理論の基礎となる。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box example">
+      <div class="box-title">📝 例 — 偏微分方程式</div>
+      <p>フーリエ変換は定数係数線形 PDE を代数方程式に変える。熱方程式 $\partial_t u = \Delta u$ は $\hat u(t,\xi) = e^{-4\pi^2|\xi|^2 t}\hat u_0(\xi)$ となり，解は熱核 Gauss 関数とのたたみ込みで表される。Sobolev 空間 $H^s = \{u : (1+|\xi|^2)^{s/2}\hat u \in L^2\}$ も周波数側で定義される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 信号処理とサンプリング</div>
+      <p>帯域制限された信号（$\hat f$ が有界台）は Shannon-Nyquist の標本化定理により離散標本から完全に再構成できる。フィルタリングは周波数側の乗算，すなわちたたみ込みとして実現され，高速フーリエ変換（FFT）が計算を支える。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 加法的数論</div>
+      <p>Hardy-Littlewood の円周法は指数和 $\sum_n e^{2\pi i n^k\alpha}$ を主要弧と副次弧に分けて評価し，Waring の問題や Goldbach 型問題における表現数の漸近公式を導く。調和解析的評価が整数論の核心に現れる好例である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ウェーブレット</div>
+      <p>フーリエ変換は周波数の局在に優れるが時間の局在を欠く。ウェーブレット変換は平行移動とスケーリングによる基底を用い，時間・周波数の同時局在を実現する。多重解像度解析（MRA）は $L^2(\mathbb{R})$ の階層的分解を与え，画像圧縮（JPEG 2000）や特異積分の離散化に応用される。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>矩形関数 $f = \mathbf{1}_{[-1,1]}$ のフーリエ変換を計算し，$\hat f \notin L^1(\mathbb{R})$ であることを確認せよ。反転公式がそのままでは適用できない理由を述べよ。</li>
+        <li>Plancherel の定理を用いて $\displaystyle\int_{\mathbb{R}} \left(\frac{\sin \pi x}{\pi x}\right)^2 dx = 1$ を示せ。</li>
+        <li>近似恒等 $\{\phi_t\}$ に対し，$f\in L^1$ かつ $f$ が $x_0$ で連続ならば $(f*\phi_t)(x_0)\to f(x_0)$ を示せ。</li>
+        <li>Hardy-Littlewood 極大不等式（弱 $(1,1)$ 型）を Vitali の被覆補題を用いて証明せよ。</li>
+        <li>Hilbert 変換の乗子表示 $\widehat{Hf}(\xi) = -i\,\mathrm{sgn}(\xi)\,\hat f(\xi)$ から $H^2 = -\mathrm{Id}$（$L^2$ 上）を導け。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>調和解析の手法は <a href="pde.html">偏微分方程式</a> の正則性理論や分散型評価で本領を発揮する。抽象的な枠組みは <a href="functional-analysis.html">関数解析</a> の作用素論・スペクトル理論と深く結びつく。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

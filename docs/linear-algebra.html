@@ -113,6 +113,33 @@
       <p>を満たすとき，$\lambda$ を<strong>固有値</strong>，$v$ を対応する<strong>固有ベクトル</strong>という。</p>
       <p>固有値は<strong>特性多項式</strong> $p_A(\lambda) = \det(\lambda I - A) = 0$ の根として求まる。</p>
     </div>
+    <figure class="diagram">
+      <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="固有ベクトル">
+        <!-- 座標軸 -->
+        <line x1="30" y1="200" x2="400" y2="200" stroke="#6e7681" stroke-width="1"/>
+        <line x1="60" y1="230" x2="60" y2="20" stroke="#6e7681" stroke-width="1"/>
+        <polygon points="400,200 392,196 392,204" fill="#6e7681"/>
+        <polygon points="60,20 56,28 64,28" fill="#6e7681"/>
+        <!-- 固有ベクトル v（向き不変） -->
+        <line x1="60" y1="200" x2="160" y2="150" stroke="#3fb950" stroke-width="2"/>
+        <polygon points="160,150 152.85,158.05 149.27,150.89" fill="#3fb950"/>
+        <!-- Av = λv（同一直線上に伸びる, 破線） -->
+        <line x1="60" y1="200" x2="260" y2="100" stroke="#3fb950" stroke-width="2" stroke-dasharray="5 3"/>
+        <polygon points="260,100 252.85,108.05 249.27,100.89" fill="#3fb950"/>
+        <!-- 一般ベクトル u -->
+        <line x1="60" y1="200" x2="140" y2="90" stroke="#2f81f7" stroke-width="2"/>
+        <polygon points="140,90 137.36,100.44 130.88,95.74" fill="#2f81f7"/>
+        <!-- Au（向きが変わる） -->
+        <line x1="60" y1="200" x2="200" y2="140" stroke="#f0883e" stroke-width="2"/>
+        <polygon points="200,140 192.39,147.62 189.23,140.26" fill="#f0883e"/>
+        <!-- ラベル -->
+        <text x="150" y="140" fill="#e6edf3" font-size="13">v</text>
+        <text x="240" y="90" fill="#e6edf3" font-size="13">Av=λv</text>
+        <text x="118" y="82" fill="#e6edf3" font-size="13">u</text>
+        <text x="205" y="152" fill="#e6edf3" font-size="13">Au</text>
+      </svg>
+      <figcaption>固有ベクトル $\mathbf{v}$ は変換 $A$ で向きを変えず $\lambda$ 倍される（$A\mathbf{v}=\lambda\mathbf{v}$）。一般のベクトル $\mathbf{u}$ は向きも変わる。</figcaption>
+    </figure>
     <div class="box thm">
       <div class="box-title">✓ 定理 — Cayley-Hamilton</div>
       <p>$p_A(A) = 0$。すなわち，行列は自身の特性多項式を零にする。</p>
@@ -174,6 +201,38 @@
         <li>行列 $A = \begin{pmatrix} 3 & 1 \\ 0 & 2 \end{pmatrix}$ の SVD を求めよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>
+        <p>特性多項式は</p>
+        $$\det(A-\lambda I)=\begin{vmatrix} 2-\lambda & 1 \\ 1 & 2-\lambda \end{vmatrix}=(2-\lambda)^2-1=\lambda^2-4\lambda+3=(\lambda-1)(\lambda-3).$$
+        <p>よって固有値は $\lambda_1=3,\ \lambda_2=1$。</p>
+        <p>$\lambda_1=3$ のとき $(A-3I)v=\begin{pmatrix}-1&1\\1&-1\end{pmatrix}v=0$ より $v_1=\begin{pmatrix}1\\1\end{pmatrix}$。</p>
+        <p>$\lambda_2=1$ のとき $(A-I)v=\begin{pmatrix}1&1\\1&1\end{pmatrix}v=0$ より $v_2=\begin{pmatrix}1\\-1\end{pmatrix}$。</p>
+        <p>$P=\begin{pmatrix}1&1\\1&-1\end{pmatrix}$ とおくと</p>
+        $$P^{-1}AP=\begin{pmatrix}3&0\\0&1\end{pmatrix}.$$
+      </li>
+      <li>
+        <p>実対称行列 $A$（$A^{*}=A^{\top}=A$）の固有値 $\lambda$ と固有ベクトル $v\neq 0$ をとり，$Av=\lambda v$ の両辺に左から $v^{*}$（共役転置）を掛ける：</p>
+        $$v^{*}Av=\lambda\,v^{*}v=\lambda\|v\|^2.$$
+        <p>この左辺のスカラーの共役転置をとると，$A^{*}=A$ より</p>
+        $$(v^{*}Av)^{*}=v^{*}A^{*}v=v^{*}Av$$
+        <p>となり $v^{*}Av$ は実数。また $\|v\|^2>0$ も実数。したがって $\lambda=\dfrac{v^{*}Av}{\|v\|^2}$ は実数である。$\blacksquare$</p>
+      </li>
+      <li>
+        <p>$A$ の固有値は $\det(A-\lambda I)=(1-\lambda)^2=0$ より $\lambda=1$（重複度2）。しかし $A-I=\begin{pmatrix}0&1\\0&0\end{pmatrix}$ の階数は1で固有空間は1次元（幾何的重複度1&lt;2）なので対角化不可能。Jordan 標準形は</p>
+        $$J=\begin{pmatrix}1&1\\0&1\end{pmatrix}=A.$$
+        <p>$A=I+N$，$N=\begin{pmatrix}0&1\\0&0\end{pmatrix}$ とおくと $N^2=O$ かつ $I$ と $N$ は可換なので</p>
+        $$e^{tA}=e^{tI}e^{tN}=e^{t}\left(I+tN\right)=e^{t}\begin{pmatrix}1&t\\0&1\end{pmatrix}.$$
+      </li>
+      <li>
+        <p>$A^{\top}A=\begin{pmatrix}3&0\\1&2\end{pmatrix}\begin{pmatrix}3&1\\0&2\end{pmatrix}=\begin{pmatrix}9&3\\3&5\end{pmatrix}$ の固有値を求める：</p>
+        $$\det(A^{\top}A-\mu I)=\mu^2-14\mu+36=0\ \Rightarrow\ \mu=7\pm\sqrt{13}.$$
+        <p>よって特異値は</p>
+        $$\sigma_1=\sqrt{7+\sqrt{13}}\approx 3.257,\qquad \sigma_2=\sqrt{7-\sqrt{13}}\approx 1.842.$$
+        <p>（検算：$\sigma_1\sigma_2=\sqrt{(7)^2-13}=\sqrt{36}=6=|\det A|$。）右特異ベクトル $v_i$ は $A^{\top}A$ の正規化固有ベクトル，左特異ベクトルは $u_i=\dfrac{1}{\sigma_i}Av_i$ で与えられ，$\Sigma=\mathrm{diag}(\sigma_1,\sigma_2)$ として</p>
+        $$A=U\Sigma V^{\top}.$$
+      </li>
+    </ol></div></details>
   </div>
 </div>
 </body>

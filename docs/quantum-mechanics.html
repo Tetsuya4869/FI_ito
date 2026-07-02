@@ -102,6 +102,28 @@
       <p>$\hat a^\dagger|n\rangle = \sqrt{n+1}|n+1\rangle$，$\hat a|n\rangle = \sqrt{n}|n-1\rangle$，$\hat a|0\rangle = 0$。</p>
       <p>基底状態波動関数: $\psi_0(x) = \left(\frac{m\omega}{\pi\hbar}\right)^{1/4} e^{-m\omega x^2/(2\hbar)}$（ガウス関数）。</p>
     </div>
+    <figure class="diagram"><svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="調和振動子のエネルギー準位">
+      <!-- 軸 -->
+      <line x1="210" y1="20" x2="210" y2="240" stroke="#6e7681" stroke-width="1"/>
+      <line x1="40" y1="230" x2="400" y2="230" stroke="#6e7681" stroke-width="1"/>
+      <polyline points="206,26 210,18 214,26" fill="none" stroke="#6e7681" stroke-width="1"/>
+      <polyline points="394,226 402,230 394,234" fill="none" stroke="#6e7681" stroke-width="1"/>
+      <text x="218" y="24" fill="#e6edf3" font-size="12">V(x)</text>
+      <text x="404" y="244" fill="#e6edf3" font-size="12">x</text>
+      <!-- 放物線ポテンシャル V(x)=½mω²x² -->
+      <polyline fill="none" stroke="#2f81f7" stroke-width="2" points="70,30 90,83 110,128 130,165 150,193 170,214 190,226 210,230 230,226 250,214 270,193 290,165 310,128 330,83 350,30"/>
+      <!-- 等間隔エネルギー準位（間隔 ℏω） -->
+      <line x1="156" y1="200" x2="264" y2="200" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="270" y="204" fill="#e6edf3" font-size="12">E₀=½ℏω</text>
+      <line x1="127" y1="160" x2="293" y2="160" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="299" y="164" fill="#e6edf3" font-size="12">E₁=3/2ℏω</text>
+      <line x1="106" y1="120" x2="314" y2="120" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="318" y="112" fill="#e6edf3" font-size="12">E₂=5/2ℏω</text>
+      <line x1="89" y1="80" x2="331" y2="80" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="333" y="72" fill="#e6edf3" font-size="12">E₃=7/2ℏω</text>
+      <line x1="73" y1="40" x2="347" y2="40" stroke="#3fb950" stroke-width="1.5"/>
+      <text x="349" y="32" fill="#e6edf3" font-size="12">E₄=9/2ℏω</text>
+    </svg><figcaption>調和振動子: エネルギー準位は等間隔 $E_n=\hbar\omega(n+\tfrac12)$。</figcaption></figure>
 
     <h2 id="hydrogen">5. 中心力場・水素原子</h2>
     <div class="box thm">
@@ -151,6 +173,28 @@
         <li>スピン1/2系が磁場 $\mathbf{B} = B\hat z$ 中に置かれたとき，Hamiltonian を書き，時間発展を求めよ（Larmor 歳差）。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>井戸内部（$0\le x\le a$）では $-\dfrac{\hbar^2}{2m}\psi''=E\psi$。$k=\sqrt{2mE}/\hbar$ とおくと $\psi=A\sin kx+B\cos kx$。境界条件 $\psi(0)=0$ より $B=0$，$\psi(a)=0$ より $ka=n\pi$（$n=1,2,\ldots$）。よって
+      $$E_n=\frac{\hbar^2 k_n^2}{2m}=\frac{n^2\pi^2\hbar^2}{2ma^2},\quad \psi_n(x)=\sqrt{\frac{2}{a}}\sin\!\frac{n\pi x}{a}.$$
+      規格化定数は $\int_0^a|\psi_n|^2dx=1$ から $A=\sqrt{2/a}$。</li>
+
+      <li>$\hat x=\sqrt{\dfrac{\hbar}{2m\omega}}(\hat a+\hat a^\dagger)$，$\hat p=i\sqrt{\dfrac{\hbar m\omega}{2}}(\hat a^\dagger-\hat a)$ を用いる。固有状態 $|n\rangle$ で $\hat a|n\rangle=\sqrt n|n-1\rangle$，$\hat a^\dagger|n\rangle=\sqrt{n+1}|n+1\rangle$ より
+      $$\langle x\rangle=0,\qquad \langle p\rangle=0.$$
+      $\hat a\hat a^\dagger=\hat a^\dagger\hat a+1$ と $\langle n|\hat a^\dagger\hat a|n\rangle=n$ を使うと
+      $$\langle x^2\rangle=\frac{\hbar}{2m\omega}\langle(\hat a+\hat a^\dagger)^2\rangle=\frac{\hbar}{2m\omega}(2n+1),$$
+      $$\langle p^2\rangle=\frac{\hbar m\omega}{2}\langle(\hat a^\dagger-\hat a)^2\rangle\cdot(-1)=\frac{\hbar m\omega}{2}(2n+1).$$
+      よって $\Delta x\,\Delta p=\dfrac{\hbar}{2}(2n+1)$，基底状態 $n=0$ で最小 $\hbar/2$。</li>
+
+      <li>一次補正は $\hat x^2=\dfrac{\hbar}{2m\omega}(\hat a+\hat a^\dagger)^2$ の対角成分から
+      $$E_n^{(1)}=\lambda\langle n|\hat x^2|n\rangle=\frac{\lambda\hbar}{2m\omega}(2n+1).$$
+      非対角成分は $\langle n\pm2|\hat x^2|n\rangle$ のみ非零で，$\langle n+2|\hat x^2|n\rangle=\dfrac{\hbar}{2m\omega}\sqrt{(n+1)(n+2)}$，$\langle n-2|\hat x^2|n\rangle=\dfrac{\hbar}{2m\omega}\sqrt{n(n-1)}$。エネルギー分母 $E_n^{(0)}-E_{n\pm2}^{(0)}=\mp2\hbar\omega$ を代入すると
+      $$E_n^{(2)}=\lambda^2\!\left(\frac{\hbar}{2m\omega}\right)^{\!2}\!\left[\frac{(n+1)(n+2)}{-2\hbar\omega}+\frac{n(n-1)}{2\hbar\omega}\right]=-\frac{\lambda^2\hbar(2n+1)}{4m^2\omega^3}.$$
+      （厳密には $\hat H'$ は実効振動数を $\omega\to\sqrt{\omega^2+2\lambda/m}$ にずらす。）</li>
+
+      <li>磁気モーメント $\boldsymbol\mu=\gamma\hat{\mathbf S}$ より $\hat H=-\boldsymbol\mu\cdot\mathbf B=-\gamma B\,\hat S_z=-\dfrac{\gamma B\hbar}{2}\sigma_z$。固有状態 $|\!\uparrow\rangle,|\!\downarrow\rangle$ のエネルギーは $\mp\dfrac{\gamma B\hbar}{2}$。Larmor 振動数を $\omega_0=\gamma B$ とおき初期状態 $|\psi(0)\rangle=\cos\frac\theta2|\!\uparrow\rangle+\sin\frac\theta2|\!\downarrow\rangle$ とすると
+      $$|\psi(t)\rangle=\cos\tfrac\theta2\,e^{i\omega_0 t/2}|\!\uparrow\rangle+\sin\tfrac\theta2\,e^{-i\omega_0 t/2}|\!\downarrow\rangle.$$
+      期待値は $\langle\hat S_z\rangle=\dfrac\hbar2\cos\theta$（一定），$\langle\hat S_x\rangle=\dfrac\hbar2\sin\theta\cos\omega_0 t$，$\langle\hat S_y\rangle=\dfrac\hbar2\sin\theta\sin\omega_0 t$。すなわちスピンは $z$ 軸まわりに角振動数 $\omega_0$ で歳差運動（Larmor 歳差）する。</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

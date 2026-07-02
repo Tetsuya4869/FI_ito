@@ -30,6 +30,7 @@ const SIDEBAR_HTML = `
       <a href="ordinary-differential-equations.html"><span class="nav-icon">y′</span>常微分方程式</a>
       <a href="complex-analysis.html"><span class="nav-icon">ℂ</span>複素解析</a>
       <a href="fourier-analysis.html"><span class="nav-icon">∿</span>フーリエ解析</a>
+      <a href="harmonic-analysis.html"><span class="nav-icon">♫</span>調和解析</a>
       <a href="pde.html"><span class="nav-icon">∂</span>偏微分方程式</a>
       <a href="functional-analysis.html"><span class="nav-icon">ℋ</span>関数解析</a>
       <a href="operator-algebras.html"><span class="nav-icon">★</span>作用素環論</a>
@@ -41,6 +42,7 @@ const SIDEBAR_HTML = `
       <a href="linear-algebra.html"><span class="nav-icon">⊞</span>線形代数</a>
       <a href="abstract-algebra.html"><span class="nav-icon">∘</span>抽象代数学</a>
       <a href="representation-theory.html"><span class="nav-icon">ρ</span>表現論</a>
+      <a href="lie-theory.html"><span class="nav-icon">𝔤</span>リー群・リー代数</a>
       <a href="number-theory.html"><span class="nav-icon">ℤ</span>数論</a>
       <a href="category-theory.html"><span class="nav-icon">⟶</span>圏論</a>
       <a href="homological-algebra.html"><span class="nav-icon">∂ₙ</span>ホモロジー代数</a>
@@ -60,6 +62,7 @@ const SIDEBAR_HTML = `
       <a href="computational-complexity.html"><span class="nav-icon">P</span>計算複雑性</a>
       <a href="cryptography.html"><span class="nav-icon">🔐</span>暗号理論</a>
       <a href="quantum-computing.html"><span class="nav-icon">⊗</span>量子計算</a>
+      <a href="type-theory.html"><span class="nav-icon">λ</span>型理論</a>
     </nav>
   </div>
   <div class="sidebar-section">
@@ -79,6 +82,7 @@ const SIDEBAR_HTML = `
       <a href="measure-theory.html"><span class="nav-icon">μ</span>測度論</a>
       <a href="probability.html"><span class="nav-icon">𝑃</span>確率論</a>
       <a href="stochastic.html"><span class="nav-icon">W</span>確率微分方程式</a>
+      <a href="stochastic-processes.html"><span class="nav-icon">Xₜ</span>確率過程論</a>
       <a href="mathematical-statistics.html"><span class="nav-icon">x̄</span>数理統計学</a>
       <a href="information-geometry.html"><span class="nav-icon">𝑔</span>情報幾何</a>
       <a href="mathematical-finance.html"><span class="nav-icon">¥</span>数理ファイナンス</a>
@@ -88,6 +92,7 @@ const SIDEBAR_HTML = `
     <div class="sidebar-label">応用数学</div>
     <nav>
       <a href="dynamical-systems.html"><span class="nav-icon">↻</span>力学系</a>
+      <a href="ergodic-theory.html"><span class="nav-icon">∮̄</span>エルゴード理論</a>
       <a href="optimization.html"><span class="nav-icon">▽</span>最適化・変分法</a>
       <a href="optimal-transport.html"><span class="nav-icon">⇆</span>最適輸送</a>
       <a href="control-theory.html"><span class="nav-icon">⟳</span>制御理論</a>
@@ -104,6 +109,7 @@ const SIDEBAR_HTML = `
       <a href="classical-mechanics.html"><span class="nav-icon">⚙</span>古典力学</a>
       <a href="continuum-mechanics.html"><span class="nav-icon">⊟</span>連続体力学</a>
       <a href="electromagnetism.html"><span class="nav-icon">⚡</span>電磁気学</a>
+      <a href="optics.html"><span class="nav-icon">☀</span>光学</a>
       <a href="thermodynamics.html"><span class="nav-icon">T</span>熱力学</a>
       <a href="fluid-dynamics.html"><span class="nav-icon">≋</span>流体力学</a>
       <a href="plasma-physics.html"><span class="nav-icon">⚛̇</span>プラズマ物理</a>
@@ -116,6 +122,8 @@ const SIDEBAR_HTML = `
       <a href="quantum-information.html"><span class="nav-icon">⟩</span>量子情報</a>
       <a href="quantum-field-theory.html"><span class="nav-icon">φ</span>量子場理論</a>
       <a href="particle-physics.html"><span class="nav-icon">⚛</span>素粒子物理</a>
+      <a href="conformal-field-theory.html"><span class="nav-icon">∮</span>共形場理論</a>
+      <a href="string-theory.html"><span class="nav-icon">§</span>弦理論</a>
     </nav>
   </div>
   <div class="sidebar-section">

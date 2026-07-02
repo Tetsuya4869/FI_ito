@@ -64,6 +64,40 @@
       <p>Euler-Lagrange 方程式: $ml^2\ddot\theta + mgl\sin\theta = 0 \;\Rightarrow\; \ddot\theta + \frac{g}{l}\sin\theta = 0$。</p>
       <p>小振幅近似 $\sin\theta \approx \theta$: $\ddot\theta + \omega_0^2\theta = 0$，$\omega_0 = \sqrt{g/l}$。</p>
     </div>
+    <figure class="diagram">
+      <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="単振り子">
+        <!-- 天井 -->
+        <line x1="120" y1="40" x2="300" y2="40" stroke="#6e7681" stroke-width="2"/>
+        <line x1="130" y1="40" x2="118" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <line x1="150" y1="40" x2="138" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <line x1="170" y1="40" x2="158" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <line x1="190" y1="40" x2="178" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <line x1="210" y1="40" x2="198" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <line x1="230" y1="40" x2="218" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <line x1="250" y1="40" x2="238" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <line x1="270" y1="40" x2="258" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <line x1="290" y1="40" x2="278" y2="52" stroke="#6e7681" stroke-width="1"/>
+        <!-- 支点 -->
+        <circle cx="210" cy="40" r="4" fill="#6e7681"/>
+        <!-- 鉛直点線 -->
+        <line x1="210" y1="40" x2="210" y2="220" stroke="#6e7681" stroke-width="1" stroke-dasharray="4 3"/>
+        <!-- 棒（鉛直から角θ傾く） -->
+        <line x1="210" y1="40" x2="320" y2="195" stroke="#2f81f7" stroke-width="2"/>
+        <!-- 角θの弧 -->
+        <path d="M 210 100 A 60 60 0 0 1 245.4 92.6" stroke="#3fb950" fill="none" stroke-width="1.5"/>
+        <!-- 質量m -->
+        <circle cx="320" cy="195" r="12" fill="#2f81f7"/>
+        <!-- 重力 mg 矢印 -->
+        <line x1="320" y1="207" x2="320" y2="245" stroke="#ff7b72" stroke-width="2"/>
+        <polygon points="320,252 315,242 325,242" fill="#ff7b72"/>
+        <!-- ラベル -->
+        <text x="255" y="118" fill="#e6edf3" font-size="13">l</text>
+        <text x="228" y="88" fill="#e6edf3" font-size="13">θ</text>
+        <text x="336" y="199" fill="#e6edf3" font-size="13">m</text>
+        <text x="328" y="240" fill="#e6edf3" font-size="13">mg</text>
+      </svg>
+      <figcaption>単振り子。一般化座標は振れ角 $\theta$。復元力は $-mg\sin\theta$。</figcaption>
+    </figure>
     <div class="box note">
       <div class="box-title">💡 拘束力が自動消去される利点</div>
       <p>Lagrange 形式では拘束条件を一般化座標に吸収するため，拘束力（糸の張力・法線反力など）は方程式に現れない。Newton 形式では拘束力も未知数として扱う必要がある。</p>
@@ -149,6 +183,41 @@
         <li>一様球の慣性テンソルを計算し，Euler 方程式の自由歳差運動を解析せよ。</li>
       </ol>
     </div>
+    <details class="solution">
+      <summary>解答例を見る</summary>
+      <div class="sol-body">
+        <ol>
+          <li>
+            <p>質量 $m_1, m_2$，長さ $l_1, l_2$，角度 $\theta_1,\theta_2$（鉛直から）とする。各質点の位置から</p>
+            <p>$x_1 = l_1\sin\theta_1,\; y_1 = -l_1\cos\theta_1$，$x_2 = x_1 + l_2\sin\theta_2,\; y_2 = y_1 - l_2\cos\theta_2$。運動エネルギーは</p>
+            $$T = \tfrac12 m_1 l_1^2\dot\theta_1^2 + \tfrac12 m_2\bigl[l_1^2\dot\theta_1^2 + l_2^2\dot\theta_2^2 + 2l_1 l_2\dot\theta_1\dot\theta_2\cos(\theta_1-\theta_2)\bigr]$$
+            <p>ポテンシャルは $V = -(m_1+m_2)gl_1\cos\theta_1 - m_2 g l_2\cos\theta_2$。よって $L = T - V$。</p>
+            <p>小振幅 $\theta_i \ll 1$（$\cos(\theta_1-\theta_2)\approx1$，$\cos\theta_i\approx1-\theta_i^2/2$）では $M\ddot\theta + K\theta = 0$ となり，</p>
+            $$M = \begin{pmatrix}(m_1+m_2)l_1^2 & m_2 l_1 l_2\\ m_2 l_1 l_2 & m_2 l_2^2\end{pmatrix},\quad K = \begin{pmatrix}(m_1+m_2)gl_1 & 0\\ 0 & m_2 g l_2\end{pmatrix}$$
+            <p>固有値問題 $\det(K-\omega^2 M)=0$ を解くと2つの正規振動数 $\omega_\pm$（同位相・逆位相モード）が得られる。等質量・等長 $m_1=m_2=m,\,l_1=l_2=l$ では $\omega_\pm^2 = (2\mp\sqrt2)\,g/l$。</p>
+          </li>
+          <li>
+            <p>$H = \dfrac{p^2}{2m} + \dfrac12 m\omega^2 q^2$ に正準方程式を適用すると</p>
+            $$\dot q = \frac{\partial H}{\partial p} = \frac{p}{m},\qquad \dot p = -\frac{\partial H}{\partial q} = -m\omega^2 q$$
+            <p>両式から $\ddot q = \dot p/m = -\omega^2 q$。よって単振動</p>
+            $$q(t) = A\cos(\omega t + \phi),\qquad p(t) = m\dot q = -mA\omega\sin(\omega t+\phi)$$
+            <p>$A,\phi$ は初期条件で決まり，$H = \tfrac12 m\omega^2 A^2$ が保存する（位相空間では楕円軌道）。</p>
+          </li>
+          <li>
+            <p>平面極座標で $L = \tfrac12 m(\dot r^2 + r^2\dot\phi^2) - V(r)$。$V$ が $r$ のみに依存するとき $L$ は $\phi$ に陽に依存しない（回転対称性）。無限小変換 $\phi \to \phi + \varepsilon$ すなわち $\eta_\phi = 1$（$\eta_r=0$）に Noether の定理を適用すると保存量は</p>
+            $$J = \frac{\partial L}{\partial \dot\phi}\,\eta_\phi = m r^2\dot\phi$$
+            <p>これが角運動量 $l = m r^2\dot\phi$ である。実際 $\phi$ は循環座標なので $\dfrac{d}{dt}\dfrac{\partial L}{\partial\dot\phi} = \dfrac{\partial L}{\partial\phi} = 0$ から直接 $l = \text{const}$ が従う。</p>
+          </li>
+          <li>
+            <p>半径 $R$，質量 $M$，密度 $\rho = \dfrac{M}{\frac43\pi R^3}$ の一様球。対称性より主軸は任意で $I_1=I_2=I_3\equiv I$。</p>
+            $$I = \int\rho\,(y^2+z^2)\,dV = \frac{2}{3}\rho\int r^2\,dV = \frac{2}{3}\rho\cdot 4\pi\int_0^R r^4\,dr = \frac{2}{3}\rho\cdot\frac{4\pi R^5}{5} = \frac{2}{5}MR^2$$
+            <p>したがって慣性テンソルは $I_{ij} = \tfrac25 MR^2\,\delta_{ij}$（等方）。Euler 方程式は $I_1=I_2=I_3$ より右辺の $(I_j-I_k)$ が全て 0 となり</p>
+            $$\dot\omega_1 = \dot\omega_2 = \dot\omega_3 = 0$$
+            <p>すなわち外力矩がなければ角速度ベクトル $\boldsymbol\omega$ は一定で歳差運動は生じない（球対称コマは自由歳差しない）。</p>
+          </li>
+        </ol>
+      </div>
+    </details>
   </div>
 </div>
 </body>

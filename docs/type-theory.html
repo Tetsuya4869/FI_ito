@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>型理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 型理論</div>
+    <h1>型理論</h1>
+    <p class="tagline">単純型付きλ計算・Curry-Howard・依存型・Martin-Löf型理論・ホモトピー型理論。証明とプログラムの統一。</p>
+    <div class="tags"><span class="tag">λ計算</span><span class="tag">Curry-Howard</span><span class="tag">依存型</span><span class="tag">Martin-Löf型理論</span><span class="tag">ホモトピー型理論</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#lambda">型付きラムダ計算</a></li>
+        <li><a href="#curry-howard">Curry-Howard 対応</a></li>
+        <li><a href="#polymorphism">多相型</a></li>
+        <li><a href="#dependent">依存型</a></li>
+        <li><a href="#mltt">Martin-Löf 型理論</a></li>
+        <li><a href="#hott">ホモトピー型理論</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>型理論は論理と計算の橋渡しである。本ページを読む前に <a href="mathematical-logic.html">数理論理</a>（自然演繹・直観主義論理）と <a href="category-theory.html">圏論</a>（対象・射・関手）に親しんでおくと理解が深まる。</p>
+    </div>
+
+    <h2 id="lambda">1. 型付きラムダ計算</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ラムダ計算</div>
+      <p><strong>ラムダ計算</strong>（λ計算）は関数の抽象と適用を基本演算とする計算モデルである。項は次の文法で与えられる：</p>
+      $$e ::= x \mid \lambda x.\, e \mid e_1\, e_2$$
+      <p>それぞれ変数，関数抽象（$x$ を引数とする関数），関数適用を表す。計算の基本規則は <strong>β簡約</strong> $(\lambda x.\, e)\, a \rightsquigarrow e[x := a]$（$e$ 中の $x$ を $a$ で置換）である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 単純型付きλ計算</div>
+      <p><strong>単純型付きλ計算</strong>（simply typed lambda calculus, STLC）では，型を次のように定める：</p>
+      $$\tau ::= \iota \mid \tau_1 \to \tau_2$$
+      <p>$\iota$ は基底型，$\tau_1 \to \tau_2$ は関数型である。型付け判断 $\Gamma \vdash e : \tau$ は「文脈 $\Gamma$（変数から型への割り当て）のもとで項 $e$ が型 $\tau$ をもつ」と読む。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 型付け規則</div>
+      <p>STLC の型付けは以下の3規則で与えられる：</p>
+      $$\frac{x : \tau \in \Gamma}{\Gamma \vdash x : \tau}\;(\text{var}) \qquad \frac{\Gamma, x : \tau_1 \vdash e : \tau_2}{\Gamma \vdash \lambda x.\, e : \tau_1 \to \tau_2}\;(\text{abs})$$
+      $$\frac{\Gamma \vdash e_1 : \tau_1 \to \tau_2 \quad \Gamma \vdash e_2 : \tau_1}{\Gamma \vdash e_1\, e_2 : \tau_2}\;(\text{app})$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 強正規化</div>
+      <p>単純型付きλ計算のすべての型付き項は<strong>強正規化する</strong>：どんな簡約の順序を選んでも有限ステップで正規形（それ以上β簡約できない項）に到達する。したがって STLC で書けるプログラムは必ず停止する（チューリング完全ではない）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 恒等関数と合成</div>
+      <p>恒等関数 $\lambda x.\, x$ は任意の型 $\tau$ に対して $\vdash \lambda x.\, x : \tau \to \tau$ をもつ。関数合成 $\lambda f.\, \lambda g.\, \lambda x.\, f\,(g\, x)$ は</p>
+      $$\vdash \lambda f.\lambda g.\lambda x.\, f\,(g\, x) : (\tau_2 \to \tau_3) \to (\tau_1 \to \tau_2) \to (\tau_1 \to \tau_3)$$
+      <p>と型付けされる。</p>
+    </div>
+
+    <h2 id="curry-howard">2. Curry-Howard 対応</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Curry-Howard 対応</div>
+      <p><strong>型は命題であり，項はその証明である</strong>という深い対応。型 $\tau$ に住む項 $e$（$\vdash e : \tau$）が存在することと，命題 $\tau$ が証明可能であることが一致する。特に STLC の型付けと直観主義命題論理の自然演繹が同型対応する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 対応表</div>
+      <table>
+        <tr><th>型理論</th><th>論理</th></tr>
+        <tr><td>型 $\tau$</td><td>命題 $\tau$</td></tr>
+        <tr><td>項 $e : \tau$</td><td>命題 $\tau$ の証明</td></tr>
+        <tr><td>関数型 $\tau_1 \to \tau_2$</td><td>含意 $\tau_1 \Rightarrow \tau_2$</td></tr>
+        <tr><td>直積型 $\tau_1 \times \tau_2$</td><td>連言 $\tau_1 \wedge \tau_2$</td></tr>
+        <tr><td>直和型 $\tau_1 + \tau_2$</td><td>選言 $\tau_1 \vee \tau_2$</td></tr>
+        <tr><td>単位型 $\mathbf{1}$</td><td>真 $\top$</td></tr>
+        <tr><td>空型 $\mathbf{0}$</td><td>偽 $\bot$</td></tr>
+        <tr><td>β簡約（項の計算）</td><td>証明の正規化（カット除去）</td></tr>
+      </table>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 なぜ直観主義論理か</div>
+      <p>対応するのは古典論理ではなく<strong>直観主義論理</strong>である。証明はそのまま計算可能な構成物（項）であり，排中律 $\tau \vee \neg\tau$ や二重否定除去 $\neg\neg\tau \to \tau$ には一般に対応する項が存在しない。証明の構成的内容がそのままプログラムになるという点が本質である。</p>
+    </div>
+
+    <h2 id="polymorphism">3. 多相型</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — パラメトリック多相と System F</div>
+      <p><strong>パラメトリック多相</strong>は，型を引数にとる項を許すことで一つの定義を任意の型に対して使えるようにする仕組み。<strong>System F</strong>（二階λ計算）は STLC に型抽象と<strong>全称型</strong> $\forall \alpha.\, \tau$ を加えて得られる：</p>
+      $$\tau ::= \alpha \mid \tau_1 \to \tau_2 \mid \forall \alpha.\, \tau$$
+      <p>型抽象 $\Lambda \alpha.\, e$ と型適用 $e[\tau]$ の規則は次の通り：</p>
+      $$\frac{\Gamma \vdash e : \tau}{\Gamma \vdash \Lambda \alpha.\, e : \forall \alpha.\, \tau}\;(\alpha \notin \Gamma) \qquad \frac{\Gamma \vdash e : \forall \alpha.\, \tau}{\Gamma \vdash e[\sigma] : \tau[\alpha := \sigma]}$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 多相恒等関数</div>
+      <p>多相恒等関数は $\Lambda \alpha.\, \lambda x{:}\alpha.\, x$ と書け，型 $\forall \alpha.\, \alpha \to \alpha$ をもつ。型適用 $(\Lambda \alpha.\, \lambda x{:}\alpha.\, x)[\text{Nat}]$ で自然数用の恒等関数 $\lambda x{:}\text{Nat}.\, x : \text{Nat} \to \text{Nat}$ が得られる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 論理との対応</div>
+      <p>Curry-Howard の観点では全称型 $\forall \alpha.\, \tau$ は二階直観主義論理の全称量化（命題変数についての量化）に対応する。System F も強正規化するが，その証明には二階算術が必要であり STLC より格段に強力である。</p>
+    </div>
+
+    <h2 id="dependent">4. 依存型</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 依存型・$\Pi$型・$\Sigma$型</div>
+      <p><strong>依存型</strong>とは値に依存する型のことである。全称型が型のみに依存したのに対し，依存型は<strong>項</strong>に依存する。二つの基本構成子がある：</p>
+      <p><strong>$\Pi$型（依存関数型）</strong>：$\Pi_{x:A}\, B(x)$ は，引数 $x : A$ に応じて返り値の型 $B(x)$ が変わる関数の型。$B$ が $x$ に依存しなければ通常の関数型 $A \to B$ に退化する。</p>
+      <p><strong>$\Sigma$型（依存対型）</strong>：$\Sigma_{x:A}\, B(x)$ は，第一成分 $a : A$ と，それに依存する型 $B(a)$ の第二成分の対 $(a, b)$ の型。$B$ が $x$ に依存しなければ直積型 $A \times B$ に退化する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 長さ付きベクトル</div>
+      <p>長さ $n$ のベクトル型を $\text{Vec}(A, n)$ とすると，「任意の自然数 $n$ に対して長さ $n$ のゼロベクトルを返す関数」は</p>
+      $$\text{zeros} : \Pi_{n : \mathbb{N}}\, \text{Vec}(\mathbb{R}, n)$$
+      <p>と型付けされる。返り値の型が引数 $n$ に依存している点に注目。連結関数は $\text{append} : \Pi_{m,n:\mathbb{N}}\, \text{Vec}(A,m) \to \text{Vec}(A,n) \to \text{Vec}(A, m+n)$ となり，型のレベルで長さの整合性が保証される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 量化子との対応</div>
+      <p>Curry-Howard を述語論理に拡張すると，$\Pi$型は全称量化 $\forall x{:}A.\, B(x)$，$\Sigma$型は存在量化 $\exists x{:}A.\, B(x)$ に対応する。依存型はこうして構成的な一階（および高階）論理を型システムに取り込む。</p>
+    </div>
+
+    <h2 id="mltt">5. Martin-Löf 型理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 構成的型理論</div>
+      <p><strong>Martin-Löf 型理論</strong>（MLTT, 直観主義型理論）は，$\Pi$型・$\Sigma$型・帰納型・等式型・宇宙を備えた構成的な基礎体系である。命題は型として表現され，証明はその型の項として構成される。判断の形式は $\Gamma \vdash a : A$（項の型付け）と $\Gamma \vdash A\ \text{type}$（型の well-formedness）である。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 等式型（identity type）</div>
+      <p>二つの項 $a, b : A$ に対して<strong>等式型</strong> $\text{Id}_A(a, b)$（$a =_A b$ とも書く）が定義される。その唯一の構成子は反射律</p>
+      $$\text{refl}_a : \text{Id}_A(a, a)$$
+      <p>である。$\text{Id}_A(a,b)$ に住む項が存在することが「$a$ と $b$ が命題的に等しい」ことを意味する。等式型に対する除去規則（$J$ 規則）が代入・対称性・推移性などを与える。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 宇宙（universe）</div>
+      <p>型そのものを要素とする型 $\mathcal{U}$ を<strong>宇宙</strong>と呼ぶ。$A : \mathcal{U}$ は「$A$ は（小さな）型である」を意味する。Russell 型のパラドックスを避けるため宇宙は階層をなす：</p>
+      $$\mathcal{U}_0 : \mathcal{U}_1 : \mathcal{U}_2 : \cdots$$
+      <p>宇宙により，型の族 $B : A \to \mathcal{U}$ を扱えるようになり，依存型の記述が可能になる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 命題的等価と判断的等価</div>
+      <p>MLTT には二種類の等しさがある。<strong>判断的等価</strong> $a \equiv b$ は計算により同一とわかる関係（型検査器が扱う）で，<strong>命題的等価</strong> $\text{Id}_A(a,b)$ は証明を要する型である。この区別が次のホモトピー型理論の出発点となる。</p>
+    </div>
+
+    <h2 id="hott">6. ホモトピー型理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 型を空間とみなす</div>
+      <p><strong>ホモトピー型理論</strong>（HoTT）は MLTT にホモトピー論的な解釈を与える。<strong>型を空間，項を点とみなす</strong>：型 $A$ は位相空間（∞-亜群），項 $a : A$ は点，等式型 $\text{Id}_A(a,b)$ は $a$ から $b$ への<strong>道（path）の空間</strong>と解釈される。$\text{refl}_a$ は定数道に対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 道と等式の高次構造</div>
+      <p>道の間の道（$\text{Id}_A(a,b)$ 上の等式型）はホモトピー，さらに高次の道は高次ホモトピーに対応する。こうして各型は無限に積み重なる等式構造（∞-亜群）をもつ。$n$ 次以上の道が自明な型を $n$-切断（$n$-truncated）と呼び，$(-1)$-切断が「命題」，$0$-切断が「集合」に対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 一価性公理（univalence）</div>
+      <p>Voevodsky の<strong>一価性公理</strong>は，型の等しさと型の同値を同一視する：</p>
+      $$(A =_{\mathcal{U}} B) \simeq (A \simeq B)$$
+      <p>すなわち「等しい型」と「同値な型」の道空間が同値になる。これにより「同型なものは等しい」という数学者の慣習が公理として正当化され，構造の移送（transport）が自由に行えるようになる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 数学の新しい基礎</div>
+      <p>HoTT は集合論に代わる数学の基礎（univalent foundations）を目指す試みである。等式が豊かな高次構造をもつため，圏論・ホモトピー論を型理論の内部で自然に展開でき，証明支援系との親和性も高い。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 証明支援系</div>
+      <p>Curry-Howard 対応と依存型を実装した<strong>証明支援系</strong>（proof assistant）では，定理を型として述べ，その証明を項として構成し，型検査器が証明の正しさを機械的に検証する。代表例に <strong>Coq</strong>（現 Rocq，Calculus of Inductive Constructions に基づく），<strong>Lean</strong>（依存型＋大規模数学ライブラリ mathlib），<strong>Agda</strong>（MLTT に近い依存型関数型言語）がある。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 形式検証</div>
+      <p>4色定理（Coq）や Feit-Thompson の奇数位数定理（Coq）の完全形式化，CompCert（検証済み C コンパイラ）や seL4（検証済み OS カーネル）などが実現された。型としての仕様を項としての実装が満たすことを保証することで，バグのないソフトウェアの構築が可能になる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 プログラム言語理論への影響</div>
+      <p>型理論は現代のプログラミング言語設計に深く根付いている。System F は Haskell や ML のジェネリクスの理論的基盤であり，依存型は Idris・Agda・F* などで実用化されつつある。型システムによる安全性保証（進行性と保存性）はプログラム言語理論の中心的テーマである。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>型付け規則を用いて，項 $\lambda f.\, \lambda x.\, f\,(f\, x)$ に型 $(\tau \to \tau) \to \tau \to \tau$ が付くことを導出木で示せ。</li>
+        <li>Curry-Howard 対応のもとで，型 $\tau_1 \to (\tau_2 \to \tau_1)$ に住む項を構成し，対応する命題が直観主義論理で証明可能であることを確認せよ。逆に $((\tau \to \bot) \to \bot) \to \tau$ に住む項が一般には存在しない理由を説明せよ。</li>
+        <li>$\Sigma$型 $\Sigma_{x:A}\, B(x)$ に対する第一射影 $\text{pr}_1 : (\Sigma_{x:A} B(x)) \to A$ を構成し，第二射影の型が依存型 $\Pi_{p : \Sigma_{x:A}B(x)}\, B(\text{pr}_1(p))$ となることを説明せよ。</li>
+        <li>等式型 $\text{Id}_A(a,b)$ について，$\text{refl}$ と $J$ 規則から等式の対称性 $\text{Id}_A(a,b) \to \text{Id}_A(b,a)$ を与える項を構成せよ。</li>
+        <li>一価性公理を用いて，$\text{Bool}$ の二つの自己同値（恒等と否定）から $\text{Id}_{\mathcal{U}}(\text{Bool}, \text{Bool})$ の相異なる二つの元が得られることを説明し，これが「型の等式は一意でない」ことを示す例になっていると論ぜよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>型理論の論理的側面をさらに深めるには <a href="mathematical-logic.html">数理論理</a> へ，計算モデルとしての側面（停止性・計算可能性・計算量）を追うには <a href="computational-complexity.html">計算複雑性</a> へ進むとよい。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

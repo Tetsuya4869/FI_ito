@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>共形場理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 共形場理論</div>
+    <h1>共形場理論</h1>
+    <p class="tagline">共形変換・Virasoro代数・中心電荷・OPE・ミニマル模型。2次元の無限次元対称性。</p>
+    <div class="tags"><span class="tag">共形変換</span><span class="tag">Virasoro代数</span><span class="tag">中心電荷</span><span class="tag">一次場</span><span class="tag">ミニマル模型</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは<a href="quantum-field-theory.html">量子場理論</a>・<a href="statistical-mechanics.html">統計力学</a>・<a href="complex-analysis.html">複素解析</a>の基礎を前提とします。特に2次元では正則関数・Laurent 展開・留数定理といった複素解析の道具が本質的な役割を果たします。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#conformal">共形変換</a></li>
+        <li><a href="#fields">共形場と一次場</a></li>
+        <li><a href="#virasoro">Virasoro代数</a></li>
+        <li><a href="#ope">演算子積展開と相関関数</a></li>
+        <li><a href="#minimal">ミニマル模型</a></li>
+        <li><a href="#critical">臨界現象との対応</a></li>
+        <li><a href="#applications">発展</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="conformal">1. 共形変換</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 共形変換</div>
+      <p>共形変換とは，計量を局所的なスケール因子 $\Omega(x)$ 倍にとどめる座標変換 $x\mapsto x'$ である:</p>
+      $$g'_{\mu\nu}(x') = \Omega(x)\,g_{\mu\nu}(x)$$
+      <p>すなわち<strong>角度を保つ</strong>変換であり，微小変換 $x'^\mu = x^\mu + \epsilon^\mu(x)$ に対して共形 Killing 方程式</p>
+      $$\partial_\mu\epsilon_\nu + \partial_\nu\epsilon_\mu = \frac{2}{d}(\partial\cdot\epsilon)\,g_{\mu\nu}$$
+      <p>を満たす。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 共形群（$d\ge 3$）</div>
+      <p>次元 $d\ge 3$ では，共形変換は並進・回転（Lorentz 変換）・スケール変換（ディラテーション）・特殊共形変換の有限個から成り，共形群は $SO(d+1,1)$（Euclid 計量の場合）に同型で，パラメータ数は $\tfrac{1}{2}(d+1)(d+2)$ である。</p>
+      $$\text{並進}\ P_\mu,\quad \text{Lorentz}\ M_{\mu\nu},\quad \text{ディラテーション}\ D,\quad \text{特殊共形}\ K_\mu$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 2次元における無限次元性</div>
+      <p>$d=2$ では事情が劇的に変わる。複素座標 $z=x^1+ix^2,\ \bar z = x^1 - ix^2$ を導入すると，共形 Killing 方程式は Cauchy–Riemann 方程式に帰着し，<strong>任意の正則関数</strong> $z\mapsto f(z)$ が局所的な共形変換を与える。したがって局所共形代数は無限次元となり，これが2次元共形場理論を特別に強力にしている。生成子は $\ell_n = -z^{n+1}\partial_z$（$n\in\mathbb{Z}$）で表され，Witt 代数 $[\ell_m,\ell_n]=(m-n)\ell_{m+n}$ を成す。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 大域的共形変換（Möbius 変換）</div>
+      <p>2次元でも球面 $S^2$（Riemann 球面）上で大域的に定義される変換は，$\ell_{-1},\ell_0,\ell_1$ が生成する有限次元部分に限られ，Möbius 変換</p>
+      $$z \mapsto \frac{az+b}{cz+d}, \qquad ad-bc=1$$
+      <p>すなわち $SL(2,\mathbb{C})$ を成す。$\ell_{-1}$ は並進，$\ell_0$ はスケール変換＋回転，$\ell_1$ は特殊共形変換に対応する。</p>
+    </div>
+
+    <h2 id="fields">2. 共形場と一次場</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 一次場（primary field）と共形次元</div>
+      <p>場 $\phi(z,\bar z)$ が共形変換 $z\mapsto w(z),\ \bar z\mapsto\bar w(\bar z)$ のもとで</p>
+      $$\phi(z,\bar z) = \left(\frac{dw}{dz}\right)^{h}\left(\frac{d\bar w}{d\bar z}\right)^{\bar h}\phi'(w,\bar w)$$
+      <p>と変換するとき，$\phi$ を<strong>一次場</strong>と呼び，$(h,\bar h)$ を<strong>共形次元</strong>（conformal weight）という。スケーリング次元は $\Delta=h+\bar h$，スピン（共形スピン）は $s=h-\bar h$ で与えられる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ スケール変換のもとでの振る舞い</div>
+      <p>ディラテーション $z\mapsto\lambda z$ のもとで一次場は</p>
+      $$\phi(z,\bar z)\ \longmapsto\ \lambda^{h}\bar\lambda^{\bar h}\,\phi(\lambda z,\bar\lambda\bar z)$$
+      <p>と変換する。無限小共形変換 $z\mapsto z+\epsilon(z)$ に対する一次場の変分は</p>
+      $$\delta_\epsilon\phi = \big(\epsilon\,\partial + h\,\partial\epsilon\big)\phi + \big(\bar\epsilon\,\bar\partial + \bar h\,\bar\partial\bar\epsilon\big)\phi$$
+      <p>となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 準一次場と二次場</div>
+      <p>大域的共形変換（Möbius 変換）のもとでのみ上の変換則を満たす場を<strong>準一次場</strong>（quasi-primary）と呼ぶ。すべての一次場は準一次場だが逆は成立しない。準一次場でない場は<strong>二次場</strong>（descendant）と呼ばれ，Virasoro 生成子を一次場に作用させて得られる。エネルギー運動量テンソル $T(z)$ は準一次場だが一次場ではない典型例である。</p>
+    </div>
+
+    <h2 id="virasoro">3. Virasoro代数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — エネルギー運動量テンソル</div>
+      <p>共形不変性の生成子はエネルギー運動量テンソル $T_{\mu\nu}$ である。2次元では対称・トレースレス（$T^\mu_{\ \mu}=0$）・保存則から，独立成分は正則成分 $T(z)\equiv -2\pi T_{zz}$ と反正則成分 $\bar T(\bar z)$ のみ。Laurent 展開により Virasoro 生成子 $L_n$ を定義する:</p>
+      $$T(z) = \sum_{n\in\mathbb{Z}} \frac{L_n}{z^{n+2}}, \qquad L_n = \frac{1}{2\pi i}\oint dz\, z^{n+1}\,T(z)$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Virasoro代数と中心電荷</div>
+      <p>生成子 $L_n$ は次の交換関係（Virasoro代数）を満たす:</p>
+      $$[L_m, L_n] = (m-n)L_{m+n} + \frac{c}{12}m(m^2-1)\delta_{m+n,0}$$
+      <p>ここで $c$ は<strong>中心電荷</strong>（central charge）と呼ばれる理論に固有の定数で，Witt 代数に対する中心拡大の係数である。反正則側にも独立な $\bar L_n$ と $\bar c$ が存在し，$[L_m,\bar L_n]=0$。部分代数 $\{L_{-1},L_0,L_1\}$ は $c$ に依らず閉じ，$SL(2,\mathbb{R})$（大域的共形変換）を成す。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 中心電荷の意味</div>
+      <p>中心電荷 $c$ は理論の「自由度の量」を測る指標であり，共形対称性の量子異常（共形アノマリー）を特徴づける。自由スカラー場は $c=1$，自由 Majorana フェルミオンは $c=1/2$ を与える。曲がった背景では $T$ の変換則に $c$ に比例するシュヴァルツ微分項が現れ，これが $T$ が一次場でない原因である:</p>
+      $$T(z) = (w')^2\,T'(w) + \frac{c}{12}\{w;z\},\quad \{w;z\}=\frac{w'''}{w'}-\frac{3}{2}\left(\frac{w''}{w'}\right)^2$$
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 最高ウェイト状態</div>
+      <p>状態と場の対応（radial quantization）により，一次場 $\phi_h$ は最高ウェイト状態 $|h\rangle=\phi_h(0)|0\rangle$ に対応し，</p>
+      $$L_0|h\rangle = h|h\rangle,\qquad L_n|h\rangle = 0\ \ (n>0)$$
+      <p>を満たす。$L_{-n}$（$n>0$）を作用させて得られる状態 $L_{-n_1}\cdots L_{-n_k}|h\rangle$ が二次状態（descendant）で，これらが Verma 加群を張る。</p>
+    </div>
+
+    <h2 id="ope">4. 演算子積展開と相関関数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 演算子積展開（OPE）</div>
+      <p>2つの局所場を近づけた積を，同じ点における局所場の和で展開したものを演算子積展開という。一次場と $T(z)$ の OPE は共形変換則を要約する:</p>
+      $$T(z)\,\phi(w,\bar w) \sim \frac{h}{(z-w)^2}\phi(w,\bar w) + \frac{1}{z-w}\partial_w\phi(w,\bar w)$$
+      <p>また $T$ 自身の OPE には中心電荷が現れる:</p>
+      $$T(z)\,T(w) \sim \frac{c/2}{(z-w)^4} + \frac{2\,T(w)}{(z-w)^2} + \frac{\partial_w T(w)}{z-w}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 共形 Ward 恒等式</div>
+      <p>共形対称性は相関関数に対する恒等式を課す。$T(z)$ を挿入した相関関数は，一次場の共形次元と位置から完全に決まる:</p>
+      $$\langle T(z)\,\phi_1(w_1)\cdots\phi_N(w_N)\rangle = \sum_{i=1}^{N}\left[\frac{h_i}{(z-w_i)^2} + \frac{1}{z-w_i}\partial_{w_i}\right]\langle\phi_1(w_1)\cdots\phi_N(w_N)\rangle$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 2点・3点関数の決定</div>
+      <p>大域的共形不変性だけで，準一次場の2点・3点関数の形が完全に固定される（規格化・構造定数を除く）:</p>
+      $$\langle\phi_i(z_i,\bar z_i)\,\phi_j(z_j,\bar z_j)\rangle = \frac{\delta_{ij}}{(z_{ij})^{2h_i}(\bar z_{ij})^{2\bar h_i}}$$
+      $$\langle\phi_1\phi_2\phi_3\rangle = \frac{C_{123}}{z_{12}^{h_1+h_2-h_3}z_{23}^{h_2+h_3-h_1}z_{13}^{h_1+h_3-h_2}}\times(\text{反正則})$$
+      <p>ここで $z_{ij}=z_i-z_j$，$C_{123}$ は構造定数。4点以上は共形不変比（クロス比）に依存する未知関数を含み，共形ブロックへ分解される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 OPE と相関関数</div>
+      <p>OPE の係数（構造定数 $C_{ijk}$）と共形次元 $\{h_i\}$ の組を<strong>CFT データ</strong>と呼ぶ。これらが与えられれば，OPE を繰り返し用いて任意の相関関数を原理的に計算できる。この事実が2次元 CFT を「厳密に解ける」理論たらしめている。</p>
+    </div>
+
+    <h2 id="minimal">5. ミニマル模型</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — ミニマル模型</div>
+      <p><strong>ミニマル模型</strong>とは，有限個の一次場のみで閉じた（OPE が有限個の一次場族で完結する）2次元 CFT である。互いに素な整数 $p,q\ (2\le p<q)$ で指定され，中心電荷は</p>
+      $$c = 1 - \frac{6(p-q)^2}{pq}$$
+      <p>で与えられる。$\mathcal{M}(p,q)$ と書く。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Kac公式</div>
+      <p>ミニマル模型に現れる一次場の共形次元は Kac 公式で与えられる:</p>
+      $$h_{r,s} = \frac{(pr-qs)^2-(p-q)^2}{4pq},\qquad 1\le r\le q-1,\ \ 1\le s\le p-1$$
+      <p>この $(r,s)$ が張る有限の格子（Kac テーブル）が理論の一次場を尽くす。対称性 $h_{r,s}=h_{q-r,p-s}$ により独立な場は有限個となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ユニタリ系列</div>
+      <p>物理的に意味のある（ノルムが正の）ユニタリなミニマル模型は，$q=p+1$ の系列 $\mathcal{M}(p,p+1)$（$p=3,4,5,\ldots$）に限られる:</p>
+      $$c = 1 - \frac{6}{p(p+1)},\qquad p=3,4,5,\ldots$$
+      <p>$p=3$ で $c=1/2$（Ising 模型），$p=4$ で $c=7/10$（三重臨界 Ising 模型），$p=5$ で $c=4/5$（3状態 Potts 模型）に対応する。$c<1$ の範囲でユニタリ理論はこの離散系列に限られるという結果は，Friedan–Qiu–Shenker による著しい定理である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Ising 模型 $\mathcal{M}(3,4)$</div>
+      <p>$c=1/2$ のミニマル模型は3つの一次場をもつ:</p>
+      $$\mathbb{1}\ (h=0),\qquad \varepsilon\ (h=\tfrac{1}{2},\ \text{エネルギー密度}),\qquad \sigma\ (h=\tfrac{1}{16},\ \text{スピン})$$
+      <p>これらが2次元 Ising 模型の臨界点における演算子（恒等・エネルギー・磁化）に対応する。</p>
+    </div>
+
+    <h2 id="critical">6. 臨界現象との対応</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 臨界点とスケール不変性</div>
+      <p>2次相転移の臨界点では相関長 $\xi\to\infty$ となり，系はスケール不変性を獲得する。局所的な相互作用をもつ統計系では，スケール不変性はしばしば完全な共形不変性へと格上げされ，臨界点は共形場理論で記述される。臨界指数は一次場の共形次元と直接結びつく:</p>
+      $$\eta = 2 - d + 2\Delta_\sigma \ (d=2),\qquad \nu = \frac{1}{d-\Delta_\varepsilon}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 2次元 Ising モデルと $c=1/2$</div>
+      <p>2次元 Ising 模型の臨界点は，中心電荷 $c=1/2$ のミニマル模型 $\mathcal{M}(3,4)$（自由 Majorana フェルミオン）で記述される。スピン場 $\sigma$ の次元 $h=\bar h=1/16$ から $\Delta_\sigma=1/8$，エネルギー場 $\varepsilon$ の $\Delta_\varepsilon=1$ が得られ，Onsager の厳密解と一致する臨界指数</p>
+      $$\eta = \frac{1}{4},\qquad \nu = 1,\qquad \beta = \frac{1}{8}$$
+      <p>を再現する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 普遍性</div>
+      <p>ミクロな詳細（格子の種類・相互作用の具体形）が異なっても，同じ臨界指数・同じ CFT で記述される系の集まりを<strong>普遍性クラス</strong>という。共形不変性はこの普遍性を対称性の言葉で説明し，中心電荷 $c$ と一次場のスペクトルが普遍性クラスの「名札」となる。くりこみ群の固定点が CFT に対応し，$c$ 定理により $c$ はくりこみ群の流れに沿って減少する。</p>
+    </div>
+
+    <h2 id="applications">7. 発展</h2>
+    <div class="box note">
+      <div class="box-title">💡 弦理論の世界面</div>
+      <p>弦が時空中を掃く2次元曲面（世界面）上の理論は，まさに2次元共形場理論である。Polyakov 作用のワイル不変性は，臨界次元でのみ共形アノマリーが相殺することを要求し，これがボソン弦の $D=26$，超弦の $D=10$ という臨界次元を決定する。世界面 CFT の Virasoro 制約が物理的状態を選び出す。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 AdS/CFT 対応</div>
+      <p>$(d+1)$ 次元の反ド・ジッター時空 $\mathrm{AdS}_{d+1}$ における重力理論と，その境界上の $d$ 次元共形場理論とが等価であるとするホログラフィー原理。境界の共形不変性 $SO(d,2)$ が $\mathrm{AdS}$ の等長変換群と一致することが対応の幾何学的核心であり，強結合ゲージ理論を古典重力で解析する強力な道具となっている。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 共形ブートストラップ</div>
+      <p>相関関数の交差対称性（クロッシング）とユニタリ性のみを課し，CFT データ（共形次元・構造定数）を無矛盾性から絞り込む手法。高次元 CFT でも適用でき，3次元 Ising 模型の臨界指数を世界最高精度で決定するなど，近年めざましい成果を上げている。展開の各項は共形ブロックで整理される。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>2次元で共形 Killing 方程式が Cauchy–Riemann 方程式に帰着することを示し，局所共形変換が任意の正則関数で与えられることを確認せよ。</li>
+        <li>生成子 $\ell_n=-z^{n+1}\partial_z$ が Witt 代数 $[\ell_m,\ell_n]=(m-n)\ell_{m+n}$ を満たすことを直接計算で示せ。</li>
+        <li>$T(z)T(w)$ の OPE から Virasoro代数 $[L_m,L_n]=(m-n)L_{m+n}+\tfrac{c}{12}m(m^2-1)\delta_{m+n,0}$ を導出せよ（留数の輪郭積分を用いよ）。</li>
+        <li>大域的共形不変性（Möbius 不変性）を課すことで，準一次場の2点関数が $\langle\phi_i(z)\phi_j(w)\rangle=\delta_{ij}(z-w)^{-2h_i}$ の形に固定されることを示せ。</li>
+        <li>ユニタリ系列 $c=1-\dfrac{6}{p(p+1)}$ において，$p=3$（Ising）の Kac テーブルから3つの一次場の共形次元 $h_{r,s}$ を求め，$0,\ 1/16,\ 1/2$ となることを確認せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>2次元共形場理論は<a href="string-theory.html">弦理論</a>の世界面記述の数学的基盤であり，そちらへ進むと臨界次元やヴィラソロ制約の意味が明確になります。また臨界現象・普遍性・くりこみ群の視点は<a href="statistical-mechanics.html">統計力学</a>で深めることができます。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

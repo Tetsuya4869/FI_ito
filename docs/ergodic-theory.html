@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>エルゴード理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / エルゴード理論</div>
+    <h1>エルゴード理論</h1>
+    <p class="tagline">測度保存変換・Poincaré 回帰・Birkhoff の定理・混合性・KS エントロピー。時間平均と空間平均を結ぶ。</p>
+    <div class="tags"><span class="tag">測度保存変換</span><span class="tag">Poincaré回帰</span><span class="tag">Birkhoff定理</span><span class="tag">混合性</span><span class="tag">エントロピー</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#mpt">測度保存変換</a></li>
+        <li><a href="#recurrence">Poincaré の回帰定理</a></li>
+        <li><a href="#ergodicity">エルゴード性</a></li>
+        <li><a href="#birkhoff">Birkhoff のエルゴード定理</a></li>
+        <li><a href="#mixing">混合性</a></li>
+        <li><a href="#entropy">エントロピー</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="measure-theory.html">測度論</a>（測度空間・可測関数・Lebesgue 積分・$L^p$ 空間）と <a href="dynamical-systems.html">力学系</a>（軌道・不変集合・写像の反復）の基礎を前提とする。まだの場合は先にそちらを参照されたい。</p>
+    </div>
+
+    <h2 id="mpt">1. 測度保存変換</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 測度保存変換</div>
+      <p>確率測度空間 $(X, \mathcal{B}, \mu)$（$\mu(X)=1$）と可測写像 $T: X \to X$ を考える。$T$ が<strong>測度保存</strong>（measure-preserving）であるとは，任意の可測集合 $A \in \mathcal{B}$ に対して</p>
+      $$\mu(T^{-1}A) = \mu(A)$$
+      <p>が成り立つことをいう。この組 $(X, \mathcal{B}, \mu, T)$ を<strong>測度保存系</strong>と呼ぶ。関数 $f \in L^1(\mu)$ に対しては $\int f\circ T\,d\mu = \int f\,d\mu$ と同値。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 円周上の回転</div>
+      <p>$X = \mathbb{R}/\mathbb{Z}$（単位円周），$\mu$ を Lebesgue 測度とし，$\alpha \in \mathbb{R}$ に対して</p>
+      $$T_\alpha(x) = x + \alpha \pmod 1$$
+      <p>とする。これは Lebesgue 測度を保存する。$\alpha$ が無理数のとき $T_\alpha$ はエルゴード的（後述），有理数のときは各軌道が周期的で非エルゴード的である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — ベーカー変換</div>
+      <p>$X = [0,1)^2$ 上の変換</p>
+      $$T(x,y) = \begin{cases} (2x,\; y/2) & 0 \le x < 1/2 \\ (2x-1,\; (y+1)/2) & 1/2 \le x < 1 \end{cases}$$
+      <p>は正方形を横に潰して縦に積み直す「パン生地をこねる」操作で，2 次元 Lebesgue 測度を保存する。強混合の代表例。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — シフト（Bernoulli シフト）</div>
+      <p>有限集合 $\{1,\ldots,k\}$ 上の確率ベクトル $(p_1,\ldots,p_k)$ から積測度 $\mu$ を入れた両側列空間 $X = \{1,\ldots,k\}^{\mathbb{Z}}$ 上で，<strong>シフト作用素</strong></p>
+      $$(Tx)_n = x_{n+1}$$
+      <p>は $\mu$ を保存する。記号力学系の基本モデルであり，強混合かつ正のエントロピーをもつ。</p>
+    </div>
+
+    <h2 id="recurrence">2. Poincaré の回帰定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Poincaré の回帰定理</div>
+      <p>$(X,\mathcal{B},\mu,T)$ を測度保存系，$A \in \mathcal{B}$ を $\mu(A) > 0$ なる集合とする。このとき $A$ の<strong>ほとんどすべての点</strong>は $A$ に無限回戻る。すなわち</p>
+      $$\mu\bigl(\{x \in A : T^n x \in A \text{ となる } n \ge 1 \text{ が無限個存在}\}\bigr) = \mu(A).$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 証明のアイデア</div>
+      <p>戻ってこない点の集合 $B = \{x \in A : T^n x \notin A \ (\forall n \ge 1)\}$ を考えると，$B, T^{-1}B, T^{-2}B, \ldots$ は互いに素で，測度保存より $\mu(T^{-n}B)=\mu(B)$。全測度が有限（$=1$）ゆえ $\mu(B)=0$ でなければならない。有限測度性が本質的な役割を果たす。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 物理的含意</div>
+      <p>有限体積の孤立系（Liouville の定理より位相空間体積が保存）では，系はほぼ確実に初期状態のいくらでも近くに何度でも戻る。これが有名な「回帰のパラドックス」（Zermelo）で，不可逆な熱力学第二法則との整合性の議論につながる。</p>
+    </div>
+
+    <h2 id="ergodicity">3. エルゴード性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — エルゴード性</div>
+      <p>測度保存系 $(X,\mathcal{B},\mu,T)$ が<strong>エルゴード的</strong>（ergodic）であるとは，$T$-不変な集合 $A$（$T^{-1}A = A$）がすべて<strong>自明</strong>，すなわち</p>
+      $$T^{-1}A = A \;\Longrightarrow\; \mu(A) = 0 \text{ または } \mu(A) = 1$$
+      <p>を満たすことをいう。直観的には「空間を非自明な不変部分に分割できない」＝力学系が既約であることを意味する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 同値条件</div>
+      <p>次は互いに同値である：</p>
+      <ol>
+        <li>$T$ はエルゴード的。</li>
+        <li>$T^{-1}A = A$（$\mathrm{mod}\ 0$）ならば $\mu(A) \in \{0,1\}$。</li>
+        <li>可測関数 $f$ が $f \circ T = f$（a.e.）を満たすならば $f$ はほとんど至るところ定数。</li>
+        <li>任意の $A,B \in \mathcal{B}$ に対して $\displaystyle \frac1n\sum_{k=0}^{n-1}\mu(T^{-k}A \cap B) \to \mu(A)\mu(B)$（Cesàro 平均の意味）。</li>
+      </ol>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 無理数回転</div>
+      <p>円周回転 $T_\alpha(x) = x+\alpha$ は，$\alpha$ が無理数のときエルゴード的である。実際，不変関数 $f$ を Fourier 級数 $f = \sum_n c_n e^{2\pi i n x}$ に展開すると，$f\circ T_\alpha = f$ は $c_n(e^{2\pi i n\alpha}-1)=0$ を要求し，$n\ne 0$ では $e^{2\pi i n\alpha}\ne 1$ ゆえ $c_n = 0$。よって $f$ は定数。</p>
+    </div>
+
+    <h2 id="birkhoff">4. Birkhoff のエルゴード定理</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Birkhoff の各点エルゴード定理</div>
+      <p>$(X,\mathcal{B},\mu,T)$ を測度保存系，$f \in L^1(\mu)$ とする。このとき<strong>時間平均</strong></p>
+      $$\bar f(x) = \lim_{n\to\infty} \frac1n \sum_{k=0}^{n-1} f(T^k x)$$
+      <p>はほとんどすべての $x$ で存在し，$\bar f$ は $T$-不変かつ $\int \bar f\,d\mu = \int f\,d\mu$。さらに $T$ が<strong>エルゴード的</strong>ならば $\bar f$ は定数で，時間平均は<strong>空間平均</strong>に一致する：</p>
+      $$\lim_{n\to\infty}\frac1n\sum_{k=0}^{n-1} f(T^k x) = \int_X f\,d\mu \qquad (\text{a.e. } x).$$
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 「時間平均＝空間平均」の意味</div>
+      <p>1 本の軌道 $x, Tx, T^2x, \ldots$ に沿った長時間平均が，位相空間全体にわたる平均に等しい。これは統計力学のエルゴード仮説を数学的に正当化する核心命題である。$L^2$ 版は von Neumann の平均エルゴード定理（射影作用素による証明）として知られ，Birkhoff は各点収束を主張する点でより強い。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 大数の強法則</div>
+      <p>Bernoulli シフトに Birkhoff の定理を $f(x) = \mathbf{1}_{[x_0 = 1]}$（第 0 座標が $1$ の指示関数）に適用すると，記号 $1$ の出現頻度が確率 $p_1$ に概収束する。これはまさに独立同分布列に対する大数の強法則に他ならない。</p>
+    </div>
+
+    <h2 id="mixing">5. 混合性</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 強混合・弱混合</div>
+      <p>測度保存系が<strong>強混合</strong>（strong mixing）であるとは，任意の $A,B \in \mathcal{B}$ に対して</p>
+      $$\lim_{n\to\infty} \mu(T^{-n}A \cap B) = \mu(A)\mu(B).$$
+      <p><strong>弱混合</strong>（weak mixing）であるとは，Cesàro 平均の意味で</p>
+      $$\lim_{n\to\infty}\frac1n\sum_{k=0}^{n-1}\bigl|\mu(T^{-k}A \cap B) - \mu(A)\mu(B)\bigr| = 0.$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 混合性の階層</div>
+      <p>次の含意が成り立ち，いずれの逆も一般には成立しない：</p>
+      $$\text{強混合} \;\Longrightarrow\; \text{弱混合} \;\Longrightarrow\; \text{エルゴード的}.$$
+      <p>強混合は「時刻を大きくずらした事象が漸近的に独立になる」ことを表す。弱混合は「密度 $1$ の時刻に沿って独立化する」やや弱い性質で，例えば固有値 $1$ 以外に離散スペクトルをもたないこと（連続スペクトル）と同値である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 回転は混合的でない</div>
+      <p>無理数回転 $T_\alpha$ はエルゴード的だが弱混合でない。$A=B$ を短い区間にとると $\mu(T^{-n}A\cap A)$ は $n$ とともに振動し続け，$\mu(A)^2$ に収束しない。一方ベーカー変換や Bernoulli シフトは強混合である。</p>
+    </div>
+
+    <h2 id="entropy">6. エントロピー</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Kolmogorov-Sinai エントロピー</div>
+      <p>有限可測分割 $\mathcal{P} = \{P_1,\ldots,P_m\}$ に対しその情報量を $H(\mathcal{P}) = -\sum_i \mu(P_i)\log\mu(P_i)$ と定める。$\mathcal{P}$ に関する<strong>エントロピー率</strong>は</p>
+      $$h(T,\mathcal{P}) = \lim_{n\to\infty}\frac1n H\!\left(\bigvee_{k=0}^{n-1} T^{-k}\mathcal{P}\right)$$
+      <p>（$\bigvee$ は分割の細分）。<strong>KS エントロピー</strong>は全分割にわたる上限</p>
+      $$h(T) = \sup_{\mathcal{P}} h(T,\mathcal{P}).$$
+      <p>これは単位時間あたりに系が生み出す情報量（予測不能性）を測る量である。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 同型不変量としてのエントロピー</div>
+      <p>$h(T)$ は測度同型で保たれる不変量である。したがって $h(T_1) \ne h(T_2)$ ならば $T_1, T_2$ は同型でない。<strong>Ornstein の定理</strong>により，Bernoulli シフトに関しては逆も成立し，同じエントロピーをもつ 2 つの Bernoulli シフトは同型である（エントロピーが完全不変量）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Bernoulli シフトのエントロピー</div>
+      <p>確率ベクトル $(p_1,\ldots,p_k)$ による Bernoulli シフトの KS エントロピーは，座標分割が生成的であることから</p>
+      $$h(T) = -\sum_{i=1}^{k} p_i \log p_i.$$
+      <p>例えば $(1/2,1/2)$ のコイン投げシフトでは $h(T) = \log 2$。これにより $(1/2,1/2)$ と $(1/3,1/3,1/3)$ のシフトは同型でないことが直ちに分かる。</p>
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box example">
+      <div class="box-title">📝 例 — 統計力学（エルゴード仮説）</div>
+      <p>Boltzmann のエルゴード仮説は「孤立系の位相空間軌道は等エネルギー面上をくまなく巡り，長時間平均は等重率のミクロカノニカル平均に一致する」と主張する。Birkhoff の定理はこの「時間平均＝空間平均」を，系がエネルギー面上でエルゴード的である限り厳密に保証する。ただし現実の多体系のエルゴード性の証明は極めて困難で，硬球気体（Sinai ビリヤード）など限られた場合に確立されている。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 数論（連分数と一様分布）</div>
+      <p><strong>Gauss 写像</strong> $T(x) = \{1/x\}$（小数部分）は，$[0,1]$ 上の Gauss 測度 $d\mu = \dfrac{1}{\ln 2}\dfrac{dx}{1+x}$ を保存しエルゴード的である。Birkhoff の定理から，ほとんどすべての $x$ の連分数展開の桁の統計（Gauss-Kuzmin 分布，Khinchin 定数）が導かれる。また Weyl の一様分布定理は，無理数回転のエルゴード性から $\{n\alpha\}$ が $[0,1]$ 上一様分布することとして理解できる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 力学系とカオス</div>
+      <p>正の KS エントロピーは決定論的なカオスの定量的指標であり，Pesin の公式を通じて Lyapunov 指数（軌道の指数的分離率）と結びつく。ビリヤード，測地流（負曲率多様体上の Anosov 流），双曲力学系はエルゴード理論の主要な研究対象であり，Furstenberg の乗法的エルゴード理論は Szemerédi の定理（等差数列）など組合せ論への応用も生んだ。</p>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>より一般の連続時間の流れや幾何的側面へは <a href="dynamical-systems.html">力学系</a> へ，物理への応用（エルゴード仮説・アンサンブル理論）を深めるには <a href="statistical-mechanics.html">統計力学</a> へ進むとよい。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>倍角写像 $T(x) = 2x \pmod 1$ が $[0,1)$ 上の Lebesgue 測度を保存することを示せ。（ヒント：区間 $[a,b)$ の逆像を求める。）</li>
+        <li>Poincaré の回帰定理の証明を，無限測度空間（例：$\mathbb{R}$ 上の平行移動）では結論が破れる例とともに再考せよ。有限測度性がどこで効いているか説明せよ。</li>
+        <li>円周回転 $T_\alpha$ について，$\alpha$ が有理数 $p/q$ のときエルゴード的でないことを，非自明な不変集合を具体的に構成して示せ。</li>
+        <li>エルゴード的な系において $f \in L^1$ の時間平均が空間平均 $\int f\,d\mu$ に一致することを，Birkhoff の定理を用いて説明し，$f$ を指示関数にとると訪問頻度の主張が得られることを確認せよ。</li>
+        <li>確率ベクトル $(1/2,1/4,1/4)$ による Bernoulli シフトの KS エントロピーを計算し，$(1/2,1/2)$ のシフトと同型かどうかを Ornstein の定理を用いて判定せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>
