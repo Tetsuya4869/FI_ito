@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>光学 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 光学</div>
+    <h1>光学</h1>
+    <p class="tagline">Snellの法則・干渉・回折・偏光・レーザー・フーリエ光学。光の振る舞いを記述する物理。</p>
+    <div class="tags"><span class="tag">幾何光学</span><span class="tag">波動光学</span><span class="tag">回折</span><span class="tag">偏光</span><span class="tag">レーザー</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#geometric">幾何光学</a></li>
+        <li><a href="#wave">波動光学と干渉</a></li>
+        <li><a href="#diffraction">回折</a></li>
+        <li><a href="#polarization">偏光</a></li>
+        <li><a href="#laser">コヒーレンスとレーザー</a></li>
+        <li><a href="#fourier">フーリエ光学</a></li>
+        <li><a href="#modern">現代光学</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは <a href="electromagnetism.html">電磁気学</a>（Maxwell 方程式と電磁波）と <a href="fourier-analysis.html">フーリエ解析</a>（周波数分解・フーリエ変換）の理解を前提とします。光は電磁波であり，その伝播・干渉・回折はこれらの数理を土台に記述されます。</p>
+    </div>
+
+    <h2 id="geometric">1. 幾何光学</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 反射と屈折</div>
+      <p>波長が対象の寸法に比べて十分小さいとき，光は「光線」として直進すると近似できる。これが幾何光学の立場である。</p>
+      <p>反射の法則: 入射角と反射角は等しい（$\theta_i = \theta_r$）。屈折の際は媒質の屈折率 $n = c/v$ に応じて光線が曲がる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Snell の法則</div>
+      <p>屈折率 $n_1$ の媒質から $n_2$ の媒質へ光が入射するとき，入射角 $\theta_1$ と屈折角 $\theta_2$ の間に:</p>
+      $$n_1\sin\theta_1 = n_2\sin\theta_2$$
+      <p>$n_1 > n_2$ のとき，臨界角 $\theta_c = \arcsin(n_2/n_1)$ を超える入射では全反射が起こる（光ファイバーの原理）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ レンズの式（薄レンズ）</div>
+      <p>物体距離 $a$，像距離 $b$，焦点距離 $f$ について:</p>
+      $$\frac{1}{a} + \frac{1}{b} = \frac{1}{f}$$
+      <p>レンズメーカーの式: $\dfrac{1}{f} = (n-1)\left(\dfrac{1}{R_1} - \dfrac{1}{R_2}\right)$。横倍率 $m = -b/a$。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Fermat の原理</div>
+      <p>光は 2 点間を「光路長」が停留値（多くは最小）となる経路を通る:</p>
+      $$\delta \int_A^B n(\mathbf{r})\,ds = 0$$
+      <p>反射の法則・Snell の法則はいずれもこの変分原理から導かれる。幾何光学の基礎原理である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 水中の物体の見かけの深さ</div>
+      <p>屈折率 $n$ の水（空気は $n\approx 1$）中，深さ $d$ にある物体を真上から見ると，見かけの深さは $d' = d/n$ となる。水（$n=1.33$）では実際の約 $3/4$ の深さに見える。</p>
+    </div>
+
+    <h2 id="wave">2. 波動光学と干渉</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 光の波動性と重ね合わせ</div>
+      <p>光は電磁波であり，電場 $E(\mathbf{r},t) = E_0\cos(\mathbf{k}\cdot\mathbf{r} - \omega t + \varphi)$ で表される。複数の波が重なるとき，電場は線形に足し合わされる（重ね合わせの原理）。</p>
+      <p>観測される強度は $I \propto \langle E^2\rangle$。2 波 $E_1, E_2$ の合成では位相差により干渉項が生じる: $I = I_1 + I_2 + 2\sqrt{I_1 I_2}\cos\delta$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ ヤングの二重スリット</div>
+      <p>スリット間隔 $d$，スクリーンまでの距離 $L$（$L\gg d$）のとき，明線の条件は:</p>
+      $$d\sin\theta = m\lambda \quad (m = 0, \pm1, \pm2, \ldots)$$
+      <p>スクリーン上の明線間隔は $\Delta y = \lambda L / d$。これは光が波であることの決定的な証拠となった。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 薄膜干渉</div>
+      <p>厚さ $t$，屈折率 $n$ の薄膜に垂直近くで光が入射するとき，反射光の強め合いの条件は（低→高屈折率反射での位相反転 $\lambda/2$ を含めて）:</p>
+      $$2nt = \left(m + \frac{1}{2}\right)\lambda \quad (m = 0,1,2,\ldots)$$
+      <p>シャボン玉や油膜の色，反射防止コーティングはこの原理による。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 コヒーレンスの必要性</div>
+      <p>安定した干渉縞を観測するには，重ね合わせる 2 波の位相差が時間的に一定である必要がある。通常の光源では単一光源からの分割（波面分割・振幅分割）でこれを実現する。詳細は第 5 節で扱う。</p>
+    </div>
+
+    <h2 id="diffraction">3. 回折</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Huygens の原理</div>
+      <p>波面上の各点は新たな球面波（素元波）の源とみなせ，次の瞬間の波面はそれら素元波の包絡面として得られる。Fresnel はこれに干渉の概念を加え，Huygens–Fresnel の原理として回折を定量化した。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Fraunhofer 回折と Fresnel 回折</div>
+      <p>観測点が開口から十分遠い（平行光近似が成立する）場合を <strong>Fraunhofer 回折</strong>，近距離で波面の曲率を無視できない場合を <strong>Fresnel 回折</strong> と呼ぶ。</p>
+      <p>幅 $a$ の単スリットの Fraunhofer 回折では暗線条件が $a\sin\theta = m\lambda$（$m=\pm1,\pm2,\ldots$），強度分布は:</p>
+      $$I(\theta) = I_0\left(\frac{\sin\beta}{\beta}\right)^2, \quad \beta = \frac{\pi a\sin\theta}{\lambda}$$
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 回折格子</div>
+      <p>格子間隔（周期）$d$ の回折格子では，主極大の条件は:</p>
+      $$d\sin\theta = m\lambda \quad (m = 0, \pm1, \pm2, \ldots)$$
+      <p>スリット数 $N$ が多いほど主極大は鋭くなる。分光器の心臓部として波長分離に用いられる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 分解能（Rayleigh の基準）</div>
+      <p>円形開口（口径 $D$）の場合，2 点を分解できる最小角は:</p>
+      $$\theta_{\min} = 1.22\frac{\lambda}{D}$$
+      <p>望遠鏡・顕微鏡の分解能はこの回折限界で決まる。回折格子の波長分解能は $\lambda/\Delta\lambda = mN$。</p>
+    </div>
+
+    <h2 id="polarization">4. 偏光</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 直線・円・楕円偏光</div>
+      <p>光は横波であり，電場ベクトルの振動方向を偏光と呼ぶ。振動方向が一定なら <strong>直線偏光</strong>，直交 2 成分に位相差 $\pm\pi/2$ かつ等振幅なら <strong>円偏光</strong>，一般の場合は <strong>楕円偏光</strong> となる。</p>
+      <p>状態は Jones ベクトルで表現できる。例: 直線（水平）$\begin{pmatrix}1\\0\end{pmatrix}$，右円偏光 $\frac{1}{\sqrt2}\begin{pmatrix}1\\-i\end{pmatrix}$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Malus の法則</div>
+      <p>強度 $I_0$ の直線偏光が，透過軸と角 $\theta$ をなす偏光子を通過した後の強度:</p>
+      $$I = I_0\cos^2\theta$$
+      <p>無偏光を偏光子に通すと強度は $I_0/2$ になる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Brewster 角</div>
+      <p>屈折率 $n_1 \to n_2$ の境界で，反射光が完全に直線偏光となる入射角:</p>
+      $$\tan\theta_B = \frac{n_2}{n_1}$$
+      <p>このとき反射光と屈折光は直交する（$\theta_B + \theta_2 = 90^\circ$）。偏光サングラスや無反射条件の基礎。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 複屈折</div>
+      <p>方解石などの異方性結晶では，偏光方向により屈折率が異なる（常光線・異常光線）。この <strong>複屈折</strong> を利用して波長板（$\lambda/4$ 板・$\lambda/2$ 板）を作り，偏光状態を制御する。</p>
+    </div>
+
+    <h2 id="laser">5. コヒーレンスとレーザー</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 時間・空間コヒーレンス</div>
+      <p><strong>時間コヒーレンス</strong>: 単色性の尺度。コヒーレンス時間 $\tau_c \sim 1/\Delta\nu$，コヒーレンス長 $L_c = c\tau_c$。</p>
+      <p><strong>空間コヒーレンス</strong>: 波面上の異なる点の位相相関の尺度。点光源に近いほど高い。レーザー光は両者が極めて高い。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 誘導放出と反転分布</div>
+      <p>入射光子が励起原子を刺激し，同一の位相・方向・波長をもつ光子を放出させる過程を <strong>誘導放出</strong> という（Einstein 係数 $B_{21}$）。</p>
+      <p>誘導放出が吸収を上回るには，上準位の占有数が下準位を上回る <strong>反転分布</strong>（$N_2 > N_1$）が必要。熱平衡では実現せず，ポンピングによって作り出す。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ レーザー発振条件</div>
+      <p>光共振器（利得媒質 + 2 枚の鏡）を 1 往復して光強度が減衰しないこと。利得を $g$，往復での損失（鏡の反射率 $R_1,R_2$，長さ $L$）を含めた発振しきい値条件:</p>
+      $$R_1 R_2\, e^{2(g - \alpha)L} \ge 1$$
+      <p>共振器の縦モードは $\nu_m = mc/(2L)$。これらが利得幅内に収まるモードで発振する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 LASER の名の由来</div>
+      <p>LASER = Light Amplification by Stimulated Emission of Radiation（誘導放出による光増幅）。高いコヒーレンス・指向性・単色性が，干渉計測・通信・加工・医療など幅広い応用を支えている。</p>
+    </div>
+
+    <h2 id="fourier">6. フーリエ光学</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 回折とフーリエ変換</div>
+      <p>Fraunhofer 回折では，遠方（あるいはレンズの焦点面）の振幅分布は，開口の透過率分布 $t(x,y)$ の 2 次元フーリエ変換で与えられる:</p>
+      $$U(f_x, f_y) \propto \iint t(x,y)\, e^{-i2\pi(f_x x + f_y y)}\,dx\,dy$$
+      <p>空間周波数は $f_x = x'/(\lambda L)$ 等で対応づく。回折は自然が行うフーリエ変換とみなせる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 空間周波数</div>
+      <p>像の細かい構造（急な明暗変化）は高い空間周波数成分に，緩やかな変化は低い空間周波数成分に対応する。凸レンズは焦点面に入力のフーリエ変換（空間スペクトル）を作り出す。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 結像と空間フィルタリング</div>
+      <p>4f 光学系では，前側焦点面に物体，中央のフーリエ面にスペクトル，後側焦点面に像が現れる。フーリエ面にマスクを置くことで <strong>空間フィルタリング</strong>（ローパス＝ぼかし，ハイパス＝エッジ強調）が可能。</p>
+      <p>結像系の応答は点像分布関数（PSF）とその変換である光学伝達関数（OTF）で記述される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 空間ローパスフィルタ</div>
+      <p>フーリエ面の中心付近（低周波）だけを通す小さな絞りを置くと，高周波のノイズや網点が除去され，滑らかな像が得られる。逆に中心を遮ると輪郭が強調される。</p>
+    </div>
+
+    <h2 id="modern">7. 現代光学</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 非線形光学</div>
+      <p>強い光では分極が電場に非線形に応答する: $P = \varepsilon_0(\chi^{(1)}E + \chi^{(2)}E^2 + \chi^{(3)}E^3 + \cdots)$。$\chi^{(2)}$ は第二高調波発生（SHG）や和・差周波発生を，$\chi^{(3)}$ は Kerr 効果や四光波混合を生む。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — フォトニック結晶</div>
+      <p>屈折率が波長スケールで周期的に変化する構造。電子のバンド構造の光版である <strong>フォトニックバンドギャップ</strong> をもち，特定波長の光の伝播を禁止できる。光の流れを制御する「光の半導体」と呼ばれる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 量子光学</div>
+      <p>光の量子性を扱う分野。電磁場を量子化し，光子数状態 $|n\rangle$，コヒーレント状態 $|\alpha\rangle$，スクイーズド状態などを記述する。単一光子・光子対（もつれ）は量子鍵配送や量子計算の資源となる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 光ファイバー</div>
+      <p>コアとクラッドの屈折率差による全反射で光を閉じ込め，長距離に低損失で伝送する。分散（波長依存の群速度差）とソリトン伝播が高速通信の鍵。石英ファイバーの損失最小は波長 $1.55\,\mu\text{m}$ 帯にある。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>量子光学からは <a href="quantum-information.html">量子情報</a> へ（光子を用いた量子ビットと通信）。非線形光学・フォトニック結晶・光と物質の相互作用は <a href="condensed-matter.html">物性物理</a> と深く結びついている。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>屈折率 $n_1 = 1.50$ のガラスから空気（$n_2 = 1.00$）へ光が入射するときの臨界角を求めよ。また Snell の法則から全反射が起こる理由を説明せよ。</li>
+        <li>波長 $\lambda = 600\,\text{nm}$ の光をスリット間隔 $d = 0.20\,\text{mm}$ の二重スリットに当て，$L = 1.5\,\text{m}$ 先のスクリーンで干渉縞を観測する。明線間隔 $\Delta y$ を求めよ。</li>
+        <li>口径 $D = 2.4\,\text{m}$ の望遠鏡で波長 $550\,\text{nm}$ を観測するときの回折限界による角分解能 $\theta_{\min}$ を求めよ。</li>
+        <li>強度 $I_0$ の無偏光を，透過軸が順に $0^\circ, 45^\circ, 90^\circ$ となる 3 枚の偏光子に通す。最終的な透過強度を Malus の法則を用いて求めよ。</li>
+        <li>透過率が $t(x) = \frac{1}{2}\left(1 + \cos(2\pi x / \Lambda)\right)$（周期 $\Lambda$ の正弦格子）である開口の Fraunhofer 回折パターンに現れる次数を，フーリエ変換の立場から説明せよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

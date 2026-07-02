@@ -145,6 +145,34 @@
       $$f(b) - f(a) = f'(\xi)(b-a)$$
       <p>を満たす $\xi \in (a,b)$ が存在する。</p>
     </div>
+    <figure class="diagram"><svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="平均値の定理">
+      <!-- 座標軸 -->
+      <line x1="40" y1="20" x2="40" y2="230" stroke="#6e7681" stroke-width="1"/>
+      <line x1="40" y1="230" x2="400" y2="230" stroke="#6e7681" stroke-width="1"/>
+      <polygon points="40,14 36,24 44,24" fill="#6e7681"/>
+      <polygon points="406,230 396,226 396,234" fill="#6e7681"/>
+      <!-- 曲線 y=f(x) -->
+      <path d="M 90 200 Q 200 30 340 120" stroke="#2f81f7" fill="none" stroke-width="2"/>
+      <!-- 割線 (a,f(a))-(b,f(b)) -->
+      <line x1="90" y1="200" x2="340" y2="120" stroke="#f0883e" stroke-width="1.5"/>
+      <!-- 接線 (点cで割線に平行) -->
+      <line x1="130" y1="120" x2="290" y2="69" stroke="#3fb950" stroke-width="2"/>
+      <!-- 端点・接点 -->
+      <circle cx="90" cy="200" r="4" fill="#e6edf3"/>
+      <circle cx="340" cy="120" r="4" fill="#e6edf3"/>
+      <circle cx="210" cy="94" r="4" fill="#e6edf3"/>
+      <!-- 補助線 (x=a,b,c) -->
+      <line x1="90" y1="200" x2="90" y2="230" stroke="#6e7681" stroke-width="1" stroke-dasharray="3 3"/>
+      <line x1="340" y1="120" x2="340" y2="230" stroke="#6e7681" stroke-width="1" stroke-dasharray="3 3"/>
+      <line x1="210" y1="94" x2="210" y2="230" stroke="#6e7681" stroke-width="1" stroke-dasharray="3 3"/>
+      <!-- ラベル -->
+      <text x="86" y="248" fill="#e6edf3" font-size="13">a</text>
+      <text x="205" y="248" fill="#e6edf3" font-size="13">c</text>
+      <text x="336" y="248" fill="#e6edf3" font-size="13">b</text>
+      <text x="68" y="196" fill="#e6edf3" font-size="13">f(a)</text>
+      <text x="348" y="118" fill="#e6edf3" font-size="13">f(b)</text>
+      <text x="352" y="128" fill="#2f81f7" font-size="13">y=f(x)</text>
+    </svg><figcaption>平均値の定理: 割線と平行な接線をもつ点 $c\in(a,b)$ が存在する。</figcaption></figure>
     <div class="box proof">
       <div class="box-title">証明（平均値定理）</div>
       <p>$g(x) = f(x) - \dfrac{f(b)-f(a)}{b-a}(x-a)$ と定義する。$g(a)=g(b)=f(a)$ なので，Rolleの定理より $g'(\xi)=0$ となる $\xi \in (a,b)$ が存在する。$g'(\xi)=f'(\xi)-\dfrac{f(b)-f(a)}{b-a}=0$ を解くと主張が得られる。</p>
@@ -208,6 +236,33 @@
         <li>$e = \sum_{n=0}^\infty 1/n!$ が無理数であることを証明せよ。（ヒント: $e$ が有理数と仮定して矛盾を導く。）</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>
+        <p>任意の $\varepsilon>0$ に対し，$\delta = \dfrac{\varepsilon}{3}$ とおく。$0<|x-2|<\delta$ ならば，</p>
+        $$|(3x-1)-5| = |3x-6| = 3|x-2| < 3\delta = 3\cdot\frac{\varepsilon}{3} = \varepsilon.$$
+        <p>よって $\varepsilon$-$\delta$ の定義より $\displaystyle\lim_{x\to 2}(3x-1)=5$。$\blacksquare$</p>
+      </li>
+      <li>
+        <p>一様連続なら「任意の $\varepsilon>0$ に対し $\delta>0$ が存在し，$|x-y|<\delta$ なら $|x^3-y^3|<\varepsilon$」が成り立つはず。これを否定する数列を作る。</p>
+        <p>$x_n = n + \dfrac{1}{n},\; y_n = n$ とすると $|x_n - y_n| = \dfrac{1}{n} \to 0$。一方，</p>
+        $$|x_n^3 - y_n^3| = \left(n+\tfrac{1}{n}\right)^3 - n^3 = 3n + \frac{3}{n} + \frac{1}{n^3} \ge 3n \to \infty.$$
+        <p>差はいくらでも大きくなるので，$\varepsilon=1$ に対しどんな $\delta>0$ をとっても条件を満たせない。ゆえに $f(x)=x^3$ は $\mathbb{R}$ 上で一様連続でない。$\blacksquare$</p>
+      </li>
+      <li>
+        <p>部分積分を行う。$u=\ln x,\; dv=x^n\,dx$ とすると $du=\dfrac{1}{x}dx,\; v=\dfrac{x^{n+1}}{n+1}$。</p>
+        $$\int_0^1 x^n \ln x\,dx = \left[\frac{x^{n+1}}{n+1}\ln x\right]_0^1 - \int_0^1 \frac{x^{n+1}}{n+1}\cdot\frac{1}{x}\,dx.$$
+        <p>境界項は $x=1$ で $\ln 1=0$，$x\to 0^+$ で $x^{n+1}\ln x\to 0$ より $0$。残る積分は</p>
+        $$-\frac{1}{n+1}\int_0^1 x^n\,dx = -\frac{1}{n+1}\cdot\frac{1}{n+1} = -\frac{1}{(n+1)^2}.$$
+        <p>よって $\displaystyle\int_0^1 x^n\ln x\,dx = -\frac{1}{(n+1)^2}$。$\blacksquare$</p>
+      </li>
+      <li>
+        <p>背理法。$e=\dfrac{p}{q}$（$p,q\in\mathbb{N},\,q\ge 1$）と仮定する。次の数を考える。</p>
+        $$x = q!\left(e - \sum_{n=0}^{q}\frac{1}{n!}\right) = q!\,e - \sum_{n=0}^{q}\frac{q!}{n!}.$$
+        <p>$q!\,e = q!\cdot\dfrac{p}{q} = (q-1)!\,p$ は整数，$\displaystyle\sum_{n=0}^{q}\frac{q!}{n!}$ も各項が整数なので整数。ゆえに $x$ は整数。一方，</p>
+        $$x = q!\sum_{n=q+1}^{\infty}\frac{1}{n!} = \frac{1}{q+1} + \frac{1}{(q+1)(q+2)} + \cdots < \sum_{k=1}^{\infty}\frac{1}{(q+1)^k} = \frac{1}{q} \le 1.$$
+        <p>また各項が正なので $x>0$。すなわち $0<x<1$ となり，$x$ が整数であることに矛盾する。よって $e$ は無理数。$\blacksquare$</p>
+      </li>
+    </ol></div></details>
   </div>
 </div>
 </body>

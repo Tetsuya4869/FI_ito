@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>弦理論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 弦理論</div>
+    <h1>弦理論</h1>
+    <p class="tagline">Nambu-Goto/Polyakov作用・臨界次元・超弦・Calabi-Yau・M理論・双対性。量子重力への最有力候補。</p>
+    <div class="tags"><span class="tag">Nambu-Goto作用</span><span class="tag">臨界次元</span><span class="tag">超弦理論</span><span class="tag">Calabi-Yau</span><span class="tag">M理論</span></div>
+  </div>
+
+  <div class="content-body">
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#action">弦の作用</a></li>
+        <li><a href="#spectrum">量子化とスペクトル</a></li>
+        <li><a href="#dimension">臨界次元</a></li>
+        <li><a href="#superstring">超対称性と超弦理論</a></li>
+        <li><a href="#compactification">コンパクト化</a></li>
+        <li><a href="#duality">双対性とM理論</a></li>
+        <li><a href="#outlook">意義と課題</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>弦理論は量子論・相対論・場の理論の総合の上に成り立つ。あらかじめ <a href="quantum-field-theory.html">量子場理論</a>，<a href="relativity.html">相対性理論</a>，<a href="conformal-field-theory.html">共形場理論</a> を学んでおくと理解が深まる。</p>
+    </div>
+
+    <h2 id="action">1. 弦の作用</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 点粒子から弦へ</div>
+      <p>相対論的な点粒子の作用は世界線 $x^\mu(\tau)$ の固有長に比例する:</p>
+      $$S_{\text{particle}} = -mc\int ds = -mc\int\sqrt{-\eta_{\mu\nu}\dot x^\mu\dot x^\nu}\,d\tau$$
+      <p>弦理論では基本対象を1次元的に拡がった弦とし，その運動は時空内に2次元の面（世界面 world-sheet）を描く。弦は世界面の座標 $(\tau,\sigma)$ から時空 $X^\mu(\tau,\sigma)$ への埋め込みとして記述される。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — Nambu-Goto 作用</div>
+      <p>作用を世界面の面積に比例させる:</p>
+      $$S_{\text{NG}} = -\frac{1}{2\pi\alpha'}\int d\tau\,d\sigma\,\sqrt{-\det h_{ab}}, \quad h_{ab} = \partial_a X^\mu\,\partial_b X_\mu$$
+      <p>$h_{ab}$ は世界面上に誘導される計量，$\alpha'$（Regge スロープ）は弦の張力 $T = 1/(2\pi\alpha')$ を定め，弦長 $\ell_s = \sqrt{\alpha'}$ に対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Polyakov 作用</div>
+      <p>平方根を避け量子化しやすくするため，独立な世界面計量 $\gamma_{ab}$ を補助場として導入する:</p>
+      $$S_{\text{P}} = -\frac{1}{4\pi\alpha'}\int d\tau\,d\sigma\,\sqrt{-\gamma}\,\gamma^{ab}\,\partial_a X^\mu\,\partial_b X_\nu\,\eta_{\mu\nu}$$
+      <p>$\gamma_{ab}$ の運動方程式（エネルギー・運動量テンソル $T_{ab}=0$）を代入すると Nambu-Goto 作用に一致する。古典レベルで両者は等価。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 世界面の対称性</div>
+      <p>Polyakov 作用は世界面の再パラメータ化不変性（微分同相）に加え，Weyl 変換 $\gamma_{ab}\to e^{2\omega}\gamma_{ab}$ に対する不変性をもつ。これらの局所対称性を用いて計量を平坦な形 $\gamma_{ab}=\eta_{ab}$（共形ゲージ）に固定でき，理論は世界面上の共形場理論に帰着する。</p>
+    </div>
+
+    <h2 id="spectrum">2. 量子化とスペクトル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — モード展開</div>
+      <p>共形ゲージでは $X^\mu$ は2次元の波動方程式 $(\partial_\tau^2-\partial_\sigma^2)X^\mu=0$ を満たし，振動モードに展開される。閉弦（周期境界条件）では右向き・左向きの独立なモードに分かれる:</p>
+      $$X^\mu(\tau,\sigma) = x^\mu + \alpha' p^\mu \tau + i\sqrt{\frac{\alpha'}{2}}\sum_{n\ne 0}\frac{1}{n}\left(\alpha_n^\mu e^{-in(\tau-\sigma)} + \tilde\alpha_n^\mu e^{-in(\tau+\sigma)}\right)$$
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 開弦と閉弦</div>
+      <p>開弦は端点をもち，Neumann または Dirichlet 境界条件を課す。Dirichlet 条件は端点が固定される超曲面 D-ブレーンの存在を意味する。閉弦は端点のない輪であり，重力を含むセクターを与える。振動子 $\alpha_n^\mu$ は正準交換関係 $[\alpha_m^\mu,\alpha_n^\nu]=m\,\delta_{m+n,0}\,\eta^{\mu\nu}$ を満たす生成・消滅演算子となる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 質量スペクトル</div>
+      <p>Virasoro 条件（$L_0$ 制約）から質量の2乗が数演算子で与えられる。開弦（ボゾン弦）では:</p>
+      $$\alpha' M^2 = N - a, \quad N = \sum_{n=1}^{\infty}\alpha_{-n}\!\cdot\!\alpha_n, \quad a = 1$$
+      <p>閉弦ではレベル整合条件 $N=\tilde N$ のもとで $\alpha' M^2 = 4(N-1)$。定数 $a$ は零点エネルギーの正則化から生じる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — タキオンと重力子</div>
+      <p>ボゾン弦の最低状態 $N=0$ は $\alpha'M^2=-a<0$，すなわち質量2乗が負のタキオンとなり真空の不安定性を示す（後に超対称性で除去される）。</p>
+      <p>閉弦の第一励起状態 $N=\tilde N=1$，$\alpha_{-1}^\mu\tilde\alpha_{-1}^\nu|0;p\rangle$ は $M^2=0$ の無質量状態で，対称・トレースレス部分がスピン2の重力子，反対称部分が反対称テンソル場 $B_{\mu\nu}$，トレースがディラトン $\phi$ に対応する。弦理論が重力を自然に含むことを示す決定的事実である。</p>
+    </div>
+
+    <h2 id="dimension">3. 臨界次元</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 共形不変性の要請</div>
+      <p>Polyakov 作用の Weyl 対称性は古典的には成り立つが，量子化すると一般に量子異常（Weyl アノマリー）として破れる。世界面の共形場理論の中心電荷を $c$ とすると，時空次元 $D$ 個のボゾン場 $X^\mu$ は $c=D$ を寄与し，ゲージ固定に伴う $bc$ ゴースト系が $c_{\text{gh}}=-26$ を寄与する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ ボゾン弦の 26 次元</div>
+      <p>Weyl アノマリーが相殺し理論が無矛盾（ユニタリでゴーストなし）となるには全中心電荷が消えねばならない:</p>
+      $$c_{\text{total}} = D - 26 = 0 \;\Longrightarrow\; D = 26$$
+      <p>同時に零点定数が $a=1$ に固定される。すなわちボゾン弦は 26 次元時空でのみ無矛盾に定義される。この時空次元が理論自身によって決定される点が弦理論の際立った特徴である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 光円錐量子化との整合</div>
+      <p>共変量子化のほか，光円錐ゲージでの量子化からも同じ結論が得られる。ローレンツ対称性 $SO(1,D-1)$ が量子論で保たれる条件が $D=26$，$a=1$ を要求し，複数の量子化法が一致する。</p>
+    </div>
+
+    <h2 id="superstring">4. 超対称性と超弦理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 世界面の超対称性</div>
+      <p>ボゾン弦はタキオンを含みフェルミオンを記述できない。世界面にフェルミオン場 $\psi^\mu(\tau,\sigma)$ を加え，作用に世界面超対称性をもたせる（RNS 形式）:</p>
+      $$S = -\frac{1}{4\pi\alpha'}\int d^2\sigma\left(\partial_a X^\mu\partial^a X_\mu + i\bar\psi^\mu\rho^a\partial_a\psi_\mu\right)$$
+      <p>GSO 射影によりタキオンが除去され，時空にフェルミオンとボゾンの超対称性が実現される。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 10 次元</div>
+      <p>フェルミオン場の追加により中心電荷の勘定が変わり，アノマリー相殺の条件は</p>
+      $$D = 10$$
+      <p>となる。超弦理論は 10 次元時空でのみ無矛盾に定義される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 5 つの超弦理論</div>
+      <p>10 次元で無矛盾な超弦理論は次の5種類に分類される:</p>
+      <ol>
+        <li>Type I（開弦と閉弦，ゲージ群 $SO(32)$，$\mathcal N=1$ 超対称性）</li>
+        <li>Type IIA（閉弦，非カイラル，$\mathcal N=2$）</li>
+        <li>Type IIB（閉弦，カイラル，$\mathcal N=2$）</li>
+        <li>ヘテロ型 $SO(32)$（左右で異なる弦，ゲージ群 $SO(32)$）</li>
+        <li>ヘテロ型 $E_8\times E_8$（ゲージ群 $E_8\times E_8$）</li>
+      </ol>
+      <p>これら5つは後に単一の理論（M理論）の異なる極限として理解される。</p>
+    </div>
+
+    <h2 id="compactification">5. コンパクト化</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 余剰次元</div>
+      <p>超弦理論は 10 次元を要求するが，観測される時空は4次元である。この不整合は，余分な6次元が非常に小さくコンパクトに丸め込まれている（コンパクト化）と考えて解消する。時空を $M_4\times K_6$ と分解し，$K_6$ を微小な内部空間とする。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Calabi-Yau 多様体</div>
+      <p>4次元に $\mathcal N=1$ 超対称性を残す（現実的な低エネルギー理論を得る）には，内部6次元空間がリッチ平坦でホロノミー群 $SU(3)$ をもつ複素3次元 Kähler 多様体，すなわち Calabi-Yau 多様体でなければならない:</p>
+      $$R_{i\bar\jmath} = 0, \quad c_1(K_6) = 0$$
+      <p>Calabi-Yau のトポロジー（Hodge 数）が4次元の粒子世代数やゲージ群を決める。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — Kaluza-Klein 分解</div>
+      <p>コンパクト化された次元の場は，内部空間のサイズ $R$ で量子化された運動量（KK モード）をもつ。円 $S^1$ 上の場を Fourier 展開すると</p>
+      $$\phi(x,y) = \sum_{n}\phi_n(x)\,e^{iny/R}, \quad M_n^2 = \frac{n^2}{R^2}$$
+      <p>となり，4次元の観測者には質量 $|n|/R$ をもつ無限個の粒子（KK タワー）として見える。$R$ が小さいほど励起は重く低エネルギーで見えない。これが高次元場を4次元の粒子スペクトルに翻訳する Kaluza-Klein 機構である。</p>
+    </div>
+
+    <h2 id="duality">6. 双対性とM理論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — T 双対と S 双対</div>
+      <p>T 双対: 半径 $R$ の円にコンパクト化した弦理論は，半径 $\alpha'/R$ の理論と物理的に等価である。運動量モード $n$ と巻き付きモード $w$ が入れ替わる:</p>
+      $$R \leftrightarrow \frac{\alpha'}{R}, \quad n \leftrightarrow w$$
+      <p>S 双対: 弦結合定数 $g_s$ の理論と $1/g_s$ の理論が等価となる強弱結合双対性。摂動的に扱えない強結合領域を弱結合の別理論で記述できる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 11 次元 M 理論</div>
+      <p>これらの双対性により，5つの超弦理論と11次元超重力理論はすべて，唯一の基礎理論 M 理論の異なる極限であることが示された。例えば Type IIA 理論を強結合にすると11番目の次元（半径 $\sim g_s$）が現れ，11次元の理論に至る:</p>
+      $$D = 11$$
+      <p>M 理論の基本自由度は弦ではなく2次元膜（M2 ブレーン）と5次元膜（M5 ブレーン）と考えられている。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — AdS/CFT 対応</div>
+      <p>Maldacena の予想により，$(d+1)$ 次元の反ド・ジッター時空 $\text{AdS}_{d+1}$ 上の重力理論（弦理論）が，その境界上の $d$ 次元共形場理論と等価である:</p>
+      $$\text{Type IIB on }\text{AdS}_5\times S^5 \;\Longleftrightarrow\; \mathcal N=4\ \text{SU}(N)\ \text{超対称ゲージ理論}$$
+      <p>これは重力と場の理論を結ぶホログラフィー原理の具体例で，強結合ゲージ理論を弱結合重力で解析する強力な手法を与える。</p>
+    </div>
+
+    <h2 id="outlook">7. 意義と課題</h2>
+    <div class="box thm">
+      <div class="box-title">✓ 量子重力の候補</div>
+      <p>弦理論は重力子を自然に含み，点粒子理論で生じる紫外発散が弦の拡がりによって和らげられる。無矛盾に量子化された重力を含む数少ない枠組みであり，一般相対論と量子論を統一する最有力候補とされる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 統一理論としての魅力</div>
+      <p>単一の弦の異なる振動状態がすべての粒子（ゲージボゾン，フェルミオン，重力子）に対応するという描像は，物質と相互作用を統一する究極理論への希望を与える。ゲージ対称性や物質内容がコンパクト化の幾何から導かれる点も特徴的である。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ランドスケープ問題と検証可能性</div>
+      <p>コンパクト化の選び方（Calabi-Yau の種類やフラックス）は膨大で，$10^{500}$ にも及ぶ多数の準安定真空（ストリング・ランドスケープ）が存在しうる。このため4次元物理を一意に予言することが難しい。またプランクスケールに直接到達できないため，超対称性粒子・余剰次元・宇宙論的痕跡などの間接的検証が現在の課題となっている。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>弦の世界面理論の数学的基礎として <a href="conformal-field-theory.html">共形場理論</a> を深め，弦理論が重力と時空の起源に迫る応用として <a href="cosmology.html">宇宙論</a> へ進むとよい。</p>
+    </div>
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>Polyakov 作用について $\gamma_{ab}$ の変分をとり，エネルギー・運動量テンソル $T_{ab}=0$ の条件を導け。さらにそれを代入して Nambu-Goto 作用が再現されることを示せ。</li>
+        <li>閉弦のモード展開において，レベル整合条件 $N=\tilde N$ が世界面の並進不変性（$\sigma$ の原点の任意性）から生じることを説明せよ。</li>
+        <li>ボゾン弦の零点エネルギーを $\sum_{n=1}^\infty n \to \zeta(-1) = -1/12$ を用いて正則化し，$D=26$ のとき $a=1$ となることを確かめよ。</li>
+        <li>半径 $R$ の円にコンパクト化した閉弦の質量公式を運動量モード $n$ と巻き付きモード $w$ で書き，$R\leftrightarrow\alpha'/R$，$n\leftrightarrow w$ の下で不変（T 双対）であることを示せ。</li>
+        <li>円 $S^1$ 上のスカラー場を Kaluza-Klein 展開し，4次元での質量スペクトル $M_n^2=n^2/R^2$ を導け。$R\to 0$ の極限で余剰次元が観測にかからない理由を述べよ。</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</body>
+</html>

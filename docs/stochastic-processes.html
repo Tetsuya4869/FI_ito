@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>確率過程論 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 確率過程論</div>
+    <h1>確率過程論</h1>
+    <p class="tagline">マルコフ連鎖・ポアソン過程・生成作用素・マルチンゲール・定常過程。時間発展するランダム現象の理論。</p>
+    <div class="tags"><span class="tag">マルコフ連鎖</span><span class="tag">ポアソン過程</span><span class="tag">生成作用素</span><span class="tag">マルチンゲール</span><span class="tag">定常過程</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは<a href="probability.html">確率論</a>の基礎（確率空間，確率変数，期待値，収束概念）と<a href="measure-theory.html">測度論</a>（σ-加法族，可測関数，条件付き期待値）を前提とする。特に条件付き期待値の測度論的定義はマルチンゲールの理解に不可欠である。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#intro">確率過程の基礎</a></li>
+        <li><a href="#markov">マルコフ連鎖</a></li>
+        <li><a href="#poisson">ポアソン過程</a></li>
+        <li><a href="#ctmc">連続時間マルコフ過程</a></li>
+        <li><a href="#martingale">マルチンゲール</a></li>
+        <li><a href="#stationary">定常過程とスペクトル</a></li>
+        <li><a href="#applications">応用</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="intro">1. 確率過程の基礎</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 確率過程</div>
+      <p>確率空間 $(\Omega, \mathcal{F}, \mathbb{P})$ と添字集合 $T$（時間）に対して，<strong>確率過程</strong>とは各 $t \in T$ に確率変数 $X_t : \Omega \to E$ を対応させる族 $\{X_t\}_{t \in T}$ である。$E$ を<strong>状態空間</strong>という。</p>
+      <p>$T = \{0,1,2,\ldots\}$ のとき<strong>離散時間</strong>，$T = [0,\infty)$ のとき<strong>連続時間</strong>過程とよぶ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 標本路と有限次元分布</div>
+      <p>各 $\omega \in \Omega$ を固定して得られる写像 $t \mapsto X_t(\omega)$ を<strong>標本路</strong>（sample path）という。</p>
+      <p>任意の有限個の時刻 $t_1 < \cdots < t_n$ に対する同時分布</p>
+      $$\mathbb{P}(X_{t_1} \in A_1, \ldots, X_{t_n} \in A_n)$$
+      <p>を<strong>有限次元分布</strong>とよぶ。Kolmogorov の拡張定理により，整合的な有限次元分布の族から確率過程が構成できる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 定常性と独立増分</div>
+      <p><strong>（強）定常性</strong>: 任意の $h$ に対して $\{X_{t+h}\}$ と $\{X_t\}$ が同じ有限次元分布をもつ。</p>
+      <p><strong>独立増分</strong>: 互いに重ならない区間の増分 $X_{t_2}-X_{t_1},\, X_{t_4}-X_{t_3},\ldots$ が独立。</p>
+      <p><strong>定常増分</strong>: 増分 $X_{t+h}-X_t$ の分布が $t$ によらず $h$ のみに依存する。ポアソン過程やブラウン運動はこれらの性質をもつ。</p>
+    </div>
+
+    <h2 id="markov">2. マルコフ連鎖</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 離散時間マルコフ連鎖</div>
+      <p>状態空間 $S$（可算）上の過程 $\{X_n\}_{n\ge 0}$ が<strong>マルコフ性</strong>をもつとは，</p>
+      $$\mathbb{P}(X_{n+1}=j \mid X_n=i, X_{n-1}=i_{n-1},\ldots,X_0=i_0) = \mathbb{P}(X_{n+1}=j \mid X_n=i)$$
+      <p>が成り立つこと。すなわち「未来は現在のみに依存し，過去には依存しない」。時間的に一様なとき<strong>推移確率</strong> $p_{ij} = \mathbb{P}(X_{n+1}=j\mid X_n=i)$ を成分とする<strong>推移確率行列</strong> $P = (p_{ij})$ を得る。各行は $\sum_j p_{ij}=1$ をみたす（確率行列）。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Chapman-Kolmogorov 方程式</div>
+      <p>$n$ 段推移確率 $p_{ij}^{(n)} = \mathbb{P}(X_n=j\mid X_0=i)$ について</p>
+      $$p_{ij}^{(m+n)} = \sum_{k\in S} p_{ik}^{(m)}\, p_{kj}^{(n)}, \qquad \text{行列表示: } P^{(m+n)} = P^m P^n$$
+      <p>したがって $n$ 段推移行列は単に $P^n$ で与えられる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 定常分布</div>
+      <p>確率ベクトル $\pi = (\pi_i)$（$\pi_i\ge 0,\ \sum_i \pi_i=1$）が</p>
+      $$\pi P = \pi, \qquad \text{すなわち}\quad \pi_j = \sum_i \pi_i p_{ij}$$
+      <p>をみたすとき<strong>定常分布</strong>という。$P$ の左固有ベクトル（固有値 $1$）に対応する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 既約性・非周期性・再帰性と収束定理</div>
+      <p>任意の状態から任意の状態へ到達可能なとき<strong>既約</strong>，$\gcd\{n : p_{ii}^{(n)}>0\}=1$ のとき状態 $i$ は<strong>非周期的</strong>，$\mathbb{P}(\text{$i$ へ再訪する})=1$ のとき<strong>再帰的</strong>という。</p>
+      <p>有限状態で既約かつ非周期的な連鎖は一意の定常分布 $\pi$ をもち，初期分布によらず</p>
+      $$\lim_{n\to\infty} p_{ij}^{(n)} = \pi_j$$
+      <p>が成り立つ（エルゴード定理）。正再帰的な状態では平均再帰時間 $m_i = 1/\pi_i$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 2 状態連鎖</div>
+      <p>状態 $\{0,1\}$，推移行列</p>
+      $$P = \begin{pmatrix} 1-a & a \\ b & 1-b \end{pmatrix}, \quad 0<a,b<1$$
+      <p>定常分布は $\pi P=\pi$ を解いて</p>
+      $$\pi = \left(\frac{b}{a+b},\ \frac{a}{a+b}\right)$$
+      <p>となる。既約かつ非周期的なので $P^n \to \mathbf{1}\pi$（各行が $\pi$）に収束する。</p>
+    </div>
+
+    <h2 id="poisson">3. ポアソン過程</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 計数過程とポアソン過程</div>
+      <p>時刻 $t$ までに起きた事象の総数を数える非減少・整数値の過程 $\{N_t\}_{t\ge 0}$（$N_0=0$）を<strong>計数過程</strong>という。強度 $\lambda>0$ の<strong>ポアソン過程</strong>とは，定常独立増分をもち，かつ</p>
+      $$\mathbb{P}(N_{t+s}-N_s = k) = e^{-\lambda t}\frac{(\lambda t)^k}{k!}, \quad k=0,1,2,\ldots$$
+      <p>をみたす計数過程である。すなわち区間長 $t$ の増分は平均 $\lambda t$ のポアソン分布に従う。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 待ち時間の指数分布</div>
+      <p>連続する事象の間隔（到着間隔）$T_1, T_2, \ldots$ は独立同分布で，パラメータ $\lambda$ の指数分布に従う：</p>
+      $$\mathbb{P}(T_i > t) = e^{-\lambda t}, \qquad \mathbb{E}[T_i] = \frac{1}{\lambda}$$
+      <p>これは指数分布の<strong>無記憶性</strong> $\mathbb{P}(T>t+s\mid T>s)=\mathbb{P}(T>t)$ に対応し，ポアソン過程のマルコフ性の源である。$n$ 番目の到着時刻 $S_n=\sum_{i=1}^n T_i$ はガンマ（Erlang）分布に従う。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 複合ポアソン過程</div>
+      <p>各事象に独立同分布のジャンプ $Y_i$ を伴わせた過程</p>
+      $$X_t = \sum_{i=1}^{N_t} Y_i$$
+      <p>を<strong>複合ポアソン過程</strong>という。平均と分散は Wald の等式より</p>
+      $$\mathbb{E}[X_t] = \lambda t\, \mathbb{E}[Y], \qquad \operatorname{Var}(X_t) = \lambda t\, \mathbb{E}[Y^2].$$
+      <p>保険数理（総クレーム額）や物理のショットノイズのモデルに用いられる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 ポアソン過程の三つの特徴づけ</div>
+      <p>(1) 定常独立増分＋ポアソン分布，(2) 到着間隔が独立な指数分布，(3) 微小区間で $\mathbb{P}(N_{t+dt}-N_t=1)=\lambda\,dt+o(dt)$，$\mathbb{P}(\ge 2)=o(dt)$。これら三つはすべて同値である。</p>
+    </div>
+
+    <h2 id="ctmc">4. 連続時間マルコフ過程</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 生成作用素（Q 行列）</div>
+      <p>連続時間マルコフ連鎖の推移確率 $p_{ij}(t)=\mathbb{P}(X_{t+s}=j\mid X_s=i)$ に対し，<strong>生成作用素</strong>（generator, $Q$ 行列）を</p>
+      $$q_{ij} = \left.\frac{d}{dt}p_{ij}(t)\right|_{t=0} \quad (i\ne j), \qquad q_{ii} = -\sum_{j\ne i} q_{ij}$$
+      <p>で定義する。$q_{ij}\ge 0$（$i\ne j$）は状態 $i$ から $j$ への遷移率，各行の和は $0$。推移半群は $P(t)=e^{tQ}$ で与えられる。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Kolmogorov 前進・後退方程式</div>
+      <p>推移確率 $P(t)=(p_{ij}(t))$ は次の行列微分方程式をみたす：</p>
+      $$\text{前進方程式:}\quad \frac{d}{dt}P(t) = P(t)\,Q$$
+      $$\text{後退方程式:}\quad \frac{d}{dt}P(t) = Q\,P(t)$$
+      <p>ともに初期条件 $P(0)=I$ のもとで解 $P(t)=e^{tQ}$ をもつ。定常分布 $\pi$ は $\pi Q = 0$ をみたす。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 出生死亡過程</div>
+      <p>状態 $\{0,1,2,\ldots\}$ で，$n$ から $n+1$ への出生率 $\lambda_n$，$n$ から $n-1$ への死亡率 $\mu_n$ をもつ過程。生成作用素は三重対角：</p>
+      $$q_{n,n+1}=\lambda_n,\quad q_{n,n-1}=\mu_n,\quad q_{n,n}=-(\lambda_n+\mu_n).$$
+      <p>詳細釣り合い $\pi_n \lambda_n = \pi_{n+1}\mu_{n+1}$ より定常分布は</p>
+      $$\pi_n = \pi_0 \prod_{k=1}^{n} \frac{\lambda_{k-1}}{\mu_k}.$$
+      <p>待ち行列 M/M/1（$\lambda_n=\lambda,\ \mu_n=\mu$）では $\pi_n=(1-\rho)\rho^n$，$\rho=\lambda/\mu<1$。</p>
+    </div>
+
+    <h2 id="martingale">5. マルチンゲール</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — マルチンゲール</div>
+      <p>フィルトレーション $\{\mathcal{F}_n\}$（情報の増大列，$\mathcal{F}_n\subseteq\mathcal{F}_{n+1}$）に適合し，$\mathbb{E}[|X_n|]<\infty$ をみたす過程 $\{X_n\}$ が<strong>マルチンゲール</strong>であるとは，条件付き期待値について</p>
+      $$\mathbb{E}[X_{n+1}\mid \mathcal{F}_n] = X_n$$
+      <p>が成り立つこと。$\le$ なら<strong>優マルチンゲール</strong>（supermartingale），$\ge$ なら<strong>劣マルチンゲール</strong>（submartingale）。直観的には「現在の情報のもとでの将来の期待値が現在値に等しい」公平な賭けである。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 任意停止定理（Optional Stopping Theorem）</div>
+      <p>$\{X_n\}$ をマルチンゲール，$\tau$ を停止時刻とする。適当な有界性条件（$\tau$ が有界，または $X_{n\wedge\tau}$ が一様可積分など）のもとで</p>
+      $$\mathbb{E}[X_\tau] = \mathbb{E}[X_0].$$
+      <p>「どんな停止戦略をとっても期待利得は変わらない」という主張であり，賭けの必勝法が存在しないことを表す。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 破産問題への応用</div>
+      <p>公平なランダムウォーク $S_n$（$\pm 1$ を等確率）は $\mathbb{E}[S_{n+1}\mid\mathcal{F}_n]=S_n$ よりマルチンゲール。$0$ と $N$ で吸収される停止時刻 $\tau$ に任意停止定理を適用すると，初期資産 $a$ から $N$ に到達する確率が $a/N$ と求まる。また $S_n^2-n$ もマルチンゲールであり，これから平均吸収時間 $\mathbb{E}[\tau]=a(N-a)$ が得られる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 収束定理</div>
+      <p>$\sup_n \mathbb{E}[|X_n|]<\infty$ なるマルチンゲールは概収束する（Doob のマルチンゲール収束定理）。この結果は極限確率変数の存在を保証し，確率論の多くの極限定理の基礎となる。</p>
+    </div>
+
+    <h2 id="stationary">6. 定常過程とスペクトル</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 弱定常と自己相関関数</div>
+      <p>過程 $\{X_t\}$ が<strong>弱定常</strong>（広義定常）であるとは，平均が一定 $\mathbb{E}[X_t]=\mu$ であり，共分散が時間差 $\tau$ のみに依存すること：</p>
+      $$R(\tau) = \operatorname{Cov}(X_{t+\tau}, X_t) = \mathbb{E}[(X_{t+\tau}-\mu)(X_t-\mu)].$$
+      <p>$R(\tau)$ を<strong>自己相関（自己共分散）関数</strong>とよぶ。$R(0)=\operatorname{Var}(X_t)$，$R(-\tau)=R(\tau)$，$|R(\tau)|\le R(0)$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ Wiener-Khinchin の定理</div>
+      <p>弱定常過程の<strong>スペクトル密度</strong> $S(f)$ は自己相関関数のフーリエ変換で与えられる：</p>
+      $$S(f) = \int_{-\infty}^{\infty} R(\tau)\, e^{-2\pi i f \tau}\,d\tau, \qquad R(\tau) = \int_{-\infty}^{\infty} S(f)\, e^{2\pi i f \tau}\,df.$$
+      <p>$S(f)\ge 0$ であり，各周波数成分がもつパワーの分布を表す。$R(0)=\int S(f)\,df$ は全パワー（分散）に等しい。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 白色雑音とOU過程</div>
+      <p><strong>白色雑音</strong>: $R(\tau)=\sigma^2\delta(\tau)$ のとき $S(f)=\sigma^2$（全周波数で一定，「白色」の由来）。</p>
+      <p><strong>Ornstein-Uhlenbeck 過程</strong>: $R(\tau)=\sigma^2 e^{-\alpha|\tau|}$ のスペクトル密度は Lorentz 型</p>
+      $$S(f) = \frac{2\alpha\sigma^2}{\alpha^2 + (2\pi f)^2}.$$
+    </div>
+
+    <h2 id="applications">7. 応用</h2>
+    <div class="box example">
+      <div class="box-title">📝 例 — 多分野への応用</div>
+      <p><strong>待ち行列理論</strong>: M/M/1 待ち行列は出生死亡過程としてモデル化され，Little の公式 $L=\lambda W$（系内平均客数＝到着率×平均滞在時間）により性能評価を行う。通信網・コールセンター設計の基礎。</p>
+      <p><strong>金融</strong>: 資産価格はしばしばマルチンゲール（リスク中立測度下）でモデル化され，無裁定条件と結びつく。ジャンプは複合ポアソン過程で表現される。詳細は<a href="mathematical-finance.html">数理ファイナンス</a>へ。</p>
+      <p><strong>物理</strong>: ランダムウォークは拡散現象の離散モデルであり，連続極限でブラウン運動・拡散方程式に至る。OU 過程は摩擦下のブラウン粒子（Langevin 方程式）を記述する。</p>
+      <p><strong>MCMC</strong>: マルコフ連鎖モンテカルロ法は，目標分布 $\pi$ を定常分布にもつ既約非周期的な連鎖を構成し，エルゴード定理により $\pi$ からのサンプリングを実現する。Metropolis-Hastings 法・Gibbs サンプラーが代表例。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 詳細釣り合いと MCMC</div>
+      <p>MCMC では詳細釣り合い条件 $\pi_i p_{ij}=\pi_j p_{ji}$ をみたすように遷移を設計する。これは $\pi$ が定常分布であるための十分条件（可逆連鎖）であり，Metropolis の受理確率 $\min(1, \pi_j q_{ji}/(\pi_i q_{ij}))$ の設計原理となる。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>推移行列 $P=\begin{pmatrix}0.5&0.5\\0.2&0.8\end{pmatrix}$ の定常分布を求め，$P^n$ の極限を述べよ。</li>
+        <li>強度 $\lambda$ のポアソン過程について，最初の事象が時刻 $t$ までに起こる確率を求め，到着間隔が指数分布に従うことを示せ。</li>
+        <li>出生死亡過程 M/M/1（$\lambda<\mu$）の定常分布 $\pi_n$ を詳細釣り合いから導き，系内平均客数 $L=\sum_n n\pi_n$ を計算せよ。</li>
+        <li>公平なランダムウォーク $S_n$ に対し $S_n^2-n$ がマルチンゲールであることを示し，任意停止定理を用いて区間 $[0,N]$ の平均吸収時間を求めよ。</li>
+        <li>自己相関関数 $R(\tau)=\sigma^2 e^{-\alpha|\tau|}$ をもつ弱定常過程のスペクトル密度を Wiener-Khinchin の定理から計算せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>連続時間の確率過程を微分方程式として扱う<a href="stochastic.html">確率微分方程式</a>（伊藤積分・ブラウン運動）へ進むと，本ページの枠組みが解析学と融合する。応用面では<a href="mathematical-finance.html">数理ファイナンス</a>でオプション価格理論やリスク中立評価を学べる。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

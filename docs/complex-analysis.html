@@ -138,6 +138,34 @@
       <p>$f$ が閉曲線 $C$ の内部で有限個の孤立特異点 $z_1,\ldots,z_k$ 以外で正則ならば，</p>
       $$\oint_C f(z)\,dz = 2\pi i \sum_{j=1}^k \mathrm{Res}(f, z_j)$$
     </div>
+    <figure class="diagram">
+      <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="周回積分と極">
+        <!-- 実軸 Re -->
+        <line x1="20" y1="150" x2="405" y2="150" stroke="#6e7681" stroke-width="1.5"/>
+        <polygon points="405,150 396,145 396,155" fill="#6e7681"/>
+        <!-- 虚軸 Im -->
+        <line x1="210" y1="248" x2="210" y2="22" stroke="#6e7681" stroke-width="1.5"/>
+        <polygon points="210,22 205,31 215,31" fill="#6e7681"/>
+        <!-- 周回路 C -->
+        <circle cx="210" cy="108" r="72" stroke="#2f81f7" fill="none" stroke-width="2"/>
+        <!-- 向き矢印（反時計回り, 上部で左向き） -->
+        <polygon points="196,36 206,31 205,42" fill="#2f81f7"/>
+        <!-- 内部の極 z1 -->
+        <line x1="181" y1="92" x2="191" y2="102" stroke="#ff7b72" stroke-width="2"/>
+        <line x1="191" y1="92" x2="181" y2="102" stroke="#ff7b72" stroke-width="2"/>
+        <!-- 内部の極 z2 -->
+        <line x1="238" y1="120" x2="248" y2="130" stroke="#ff7b72" stroke-width="2"/>
+        <line x1="248" y1="120" x2="238" y2="130" stroke="#ff7b72" stroke-width="2"/>
+        <!-- ラベル -->
+        <text x="288" y="58" fill="#e6edf3" font-size="13">C</text>
+        <text x="163" y="90" fill="#e6edf3" font-size="13">z₁</text>
+        <text x="252" y="126" fill="#e6edf3" font-size="13">z₂</text>
+        <text x="196" y="140" fill="#e6edf3" font-size="13">極</text>
+        <text x="390" y="168" fill="#e6edf3" font-size="13">Re</text>
+        <text x="218" y="34" fill="#e6edf3" font-size="13">Im</text>
+      </svg>
+      <figcaption>周回積分 $\oint_C f\,dz = 2\pi i\sum \mathrm{Res}$。閉曲線 $C$ が囲む極の留数の和で決まる。</figcaption>
+    </figure>
     <div class="box example">
       <div class="box-title">📝 例 — 実積分への応用</div>
       <p><strong>$\displaystyle\int_{-\infty}^\infty \frac{1}{1+x^2}\,dx$</strong></p>
@@ -172,6 +200,18 @@
         <li>上半平面を単位円板へ写す双正則写像を一つ構成せよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>$f(z)=|z|^2=x^2+y^2$ より $u(x,y)=x^2+y^2$，$v(x,y)=0$。よって $u_x=2x,\; u_y=2y,\; v_x=v_y=0$。C-R 方程式 $u_x=v_y,\; u_y=-v_x$ は $2x=0$ かつ $2y=0$，すなわち $x=y=0$ でのみ成立する。したがって $z=0$ を除いて複素微分可能でなく，どの開集合上でも正則にならない。</li>
+      <li>$\displaystyle f(z)=\frac{e^z}{z^2(z-1)}$。$|z|=2$ の内部の極は $z=0$（2位）と $z=1$（1位）。<br>
+        $z=1$（単純極）: $\displaystyle \mathrm{Res}(f,1)=\lim_{z\to1}(z-1)f(z)=\frac{e^{1}}{1^2}=e$。<br>
+        $z=0$（2位）: $\displaystyle \mathrm{Res}(f,0)=\lim_{z\to0}\frac{d}{dz}\!\left[z^2 f(z)\right]=\lim_{z\to0}\frac{d}{dz}\frac{e^z}{z-1}=\lim_{z\to0}\frac{e^z(z-1)-e^z}{(z-1)^2}=\frac{e^0(0-2)}{(-1)^2}=-2$。<br>
+        よって $\displaystyle\oint_{|z|=2}f(z)\,dz=2\pi i\,(e-2)$。</li>
+      <li>被積分関数は偶関数なので $\displaystyle\int_0^\infty\frac{\cos x}{1+x^2}\,dx=\frac12\int_{-\infty}^\infty\frac{\cos x}{1+x^2}\,dx=\frac12\,\mathrm{Re}\int_{-\infty}^\infty\frac{e^{ix}}{1+x^2}\,dx$。<br>
+        $\displaystyle g(z)=\frac{e^{iz}}{(z-i)(z+i)}$ を上半円弧で積分すると，上半平面の極は $z=i$（Jordan の補題より半円上の寄与は $R\to\infty$ で $0$）。<br>
+        $\displaystyle \mathrm{Res}(g,i)=\frac{e^{i\cdot i}}{2i}=\frac{e^{-1}}{2i}$ より $\displaystyle\int_{-\infty}^\infty\frac{e^{ix}}{1+x^2}\,dx=2\pi i\cdot\frac{e^{-1}}{2i}=\frac{\pi}{e}$（実数）。<br>
+        したがって $\displaystyle\int_0^\infty\frac{\cos x}{1+x^2}\,dx=\frac{\pi}{2e}$。</li>
+      <li>Cayley 変換 $\displaystyle w=\frac{z-i}{z+i}$ が一例。実軸上の点 $x$ に対し $|w|=\dfrac{|x-i|}{|x+i|}=1$ なので実軸は単位円周へ写る。また $z=i$（上半平面の内点）は $w=0$ へ写るので，上半平面 $\{\mathrm{Im}\,z>0\}$ 全体が単位円板 $\{|w|<1\}$ へ双正則に写される。</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

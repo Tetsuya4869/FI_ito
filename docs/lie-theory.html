@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>リー群・リー代数 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / リー群・リー代数</div>
+    <h1>リー群・リー代数</h1>
+    <p class="tagline">リー群と多様体・リー代数・指数写像・ルート系による分類・表現論。連続対称性の数学。</p>
+    <div class="tags"><span class="tag">リー群</span><span class="tag">リー代数</span><span class="tag">指数写像</span><span class="tag">ルート系</span><span class="tag">表現論</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 前提知識</div>
+      <p>本ページは群論・線形代数と多様体論を前提とする。<a href="abstract-algebra.html">抽象代数学</a>（群・環・体），<a href="differential-geometry.html">微分幾何学</a>（多様体・接空間），および <a href="representation-theory.html">表現論</a> の基礎を先に学んでおくと理解が深まる。</p>
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#groups">リー群</a></li>
+        <li><a href="#algebras">リー代数</a></li>
+        <li><a href="#exponential">指数写像</a></li>
+        <li><a href="#adjoint">随伴表現と Killing 形式</a></li>
+        <li><a href="#classification">単純リー代数の分類</a></li>
+        <li><a href="#representations">表現論</a></li>
+        <li><a href="#applications">物理への応用</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="groups">1. リー群</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — リー群</div>
+      <p><strong>リー群</strong> $G$ とは，群であると同時に滑らかな多様体であり，群演算</p>
+      $$\mu: G \times G \to G,\ (g,h) \mapsto gh, \qquad \iota: G \to G,\ g \mapsto g^{-1}$$
+      <p>がいずれも滑らか（$C^\infty$ 級）であるものをいう。すなわち群構造と微分構造が両立している。次元は多様体としての次元で測る。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 古典群</div>
+      <table>
+        <tr><th>記号</th><th>定義</th><th>次元</th></tr>
+        <tr><td>$GL_n(\mathbb{R})$</td><td>$\det \neq 0$ の $n\times n$ 実行列（一般線形群）</td><td>$n^2$</td></tr>
+        <tr><td>$SO(3)$</td><td>$R^{\mathsf T}R=I,\ \det R=1$ の実行列（3 次元回転群）</td><td>$3$</td></tr>
+        <tr><td>$SU(2)$</td><td>$U^\dagger U=I,\ \det U=1$ の複素 $2\times 2$ 行列</td><td>$3$</td></tr>
+        <tr><td>$U(1)$</td><td>$|z|=1$ の複素数 $e^{i\theta}$（位相の群）</td><td>$1$</td></tr>
+      </table>
+      <p>$U(1)$ は円周 $S^1$，$SU(2)$ は 3 次元球面 $S^3$ と多様体として同相。$SO(3)$ は $SU(2)$ を中心 $\{\pm I\}$ で割った商 $SU(2)/\mathbb{Z}_2$ に等しく，$SU(2)$ は $SO(3)$ の二重被覆となる。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 コンパクト性と連結性</div>
+      <p>$SO(3),\ SU(2),\ U(1)$ はコンパクト（有界閉）だが $GL_n(\mathbb{R})$ はそうでない。またコンパクト連結リー群の表現はすべて有限次元でユニタリ化でき，物理で扱いやすい理由となる。</p>
+    </div>
+
+    <h2 id="algebras">2. リー代数</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — リー代数</div>
+      <p>リー群 $G$ の単位元 $e$ における接空間 $\mathfrak{g} = T_eG$ を，$G$ の <strong>リー代数</strong> という。これはベクトル空間に <strong>リー括弧</strong> $[\,\cdot\,,\cdot\,]:\mathfrak{g}\times\mathfrak{g}\to\mathfrak{g}$ を備えたもので，次を満たす：</p>
+      $$[X,Y] = -[Y,X] \quad(\text{反対称性})$$
+      $$[X,[Y,Z]] + [Y,[Z,X]] + [Z,[X,Y]] = 0 \quad(\text{Jacobi 恒等式})$$
+      <p>行列群では括弧は交換子 $[X,Y] = XY - YX$ で与えられる。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 構造定数</div>
+      <p>基底 $\{T_a\}_{a=1}^{\dim\mathfrak{g}}$ を選ぶと，リー括弧は</p>
+      $$[T_a, T_b] = \sum_c f_{ab}{}^{c}\, T_c$$
+      <p>と展開できる。係数 $f_{ab}{}^{c}$ を <strong>構造定数</strong> と呼び，リー代数の構造を完全に決定する。反対称性より $f_{ab}{}^{c} = -f_{ba}{}^{c}$。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $\mathfrak{su}(2)$</div>
+      <p>$SU(2)$ のリー代数 $\mathfrak{su}(2)$ はトレースゼロの反エルミート行列からなる。生成子として Pauli 行列を用い $T_a = -\tfrac{i}{2}\sigma_a$ とおくと，</p>
+      $$[T_a, T_b] = \sum_c \varepsilon_{abc}\, T_c$$
+      <p>すなわち構造定数は Levi-Civita 記号 $\varepsilon_{abc}$。これは角運動量代数 $[J_a, J_b] = i\hbar\,\varepsilon_{abc} J_c$（物理的規格化）と同型であり，$\mathfrak{su}(2)\cong\mathfrak{so}(3)$ という同型を反映する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 局所と大域</div>
+      <p>リー代数は群の単位元まわりの「無限小」情報を捉える。同じリー代数を持つリー群は局所的には一致するが，大域構造（連結性・被覆）は異なりうる。例：$SU(2)$ と $SO(3)$ は同じ $\mathfrak{su}(2)\cong\mathfrak{so}(3)$ を持つ。</p>
+    </div>
+
+    <h2 id="exponential">3. 指数写像</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 指数写像</div>
+      <p>リー代数からリー群への写像 $\exp:\mathfrak{g}\to G$ を <strong>指数写像</strong> という。行列群では通常の行列指数関数</p>
+      $$\exp(X) = \sum_{n=0}^{\infty} \frac{X^n}{n!} = I + X + \frac{X^2}{2!} + \cdots$$
+      <p>で与えられる。指数写像は単位元の近傍で局所的な微分同相を与え，リー代数の要素を群の要素へ「積分」する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 1 径数部分群</div>
+      <p>各 $X\in\mathfrak{g}$ に対し，$\gamma(t) = \exp(tX)$ は $G$ の <strong>1 径数部分群</strong> を定める。すなわち</p>
+      $$\gamma(0) = e,\qquad \gamma(s+t) = \gamma(s)\gamma(t),\qquad \left.\frac{d}{dt}\right|_{t=0}\gamma(t) = X$$
+      <p>逆に $G$ の任意の連続な 1 径数部分群はこの形に書ける。$X$ はその流れの「速度ベクトル」（無限小生成子）である。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 回転の生成</div>
+      <p>$\mathfrak{so}(2)$ の生成子 $X = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ について</p>
+      $$\exp(\theta X) = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix} \in SO(2)$$
+      <p>と平面回転が得られる。$U(1)$ では $\exp(i\theta) = e^{i\theta}$ が円周上を回る。$\exp(tX)$ は物理的には「無限小変換 $X$ を時間 $t$ だけ積み重ねた」有限変換に対応する。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 Baker–Campbell–Hausdorff 公式</div>
+      <p>一般に $\exp(X)\exp(Y)\neq\exp(X+Y)$（非可換のため）。両者の差はリー括弧で表され，</p>
+      $$\exp(X)\exp(Y) = \exp\!\Big(X + Y + \tfrac{1}{2}[X,Y] + \tfrac{1}{12}\big([X,[X,Y]] + [Y,[Y,X]]\big) + \cdots\Big)$$
+      <p>これが BCH 公式で，群の積が代数の括弧だけで再構成できることを示す。$[X,Y]=0$ のときのみ $\exp(X+Y)$ に帰着する。</p>
+    </div>
+
+    <h2 id="adjoint">4. 随伴表現と Killing 形式</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 随伴表現 $\mathrm{Ad}$ と $\mathrm{ad}$</div>
+      <p>群 $G$ はリー代数 $\mathfrak{g}$ に共役で作用する。<strong>随伴表現</strong>は</p>
+      $$\mathrm{Ad}_g(X) = g\,X\,g^{-1}\qquad(g\in G,\ X\in\mathfrak{g})$$
+      <p>これを単位元で微分すると，$\mathfrak{g}$ 自身の上の表現</p>
+      $$\mathrm{ad}_X(Y) = [X, Y]$$
+      <p>が得られる。$\mathrm{ad}$ は代数の随伴作用で，$\mathrm{Ad}_{\exp X} = \exp(\mathrm{ad}_X)$ が成り立つ。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Killing 形式</div>
+      <p>$\mathfrak{g}$ 上の対称双線形形式</p>
+      $$B(X, Y) = \mathrm{tr}\big(\mathrm{ad}_X\,\mathrm{ad}_Y\big)$$
+      <p>を <strong>Killing 形式</strong> という。これは随伴不変：$B(\mathrm{Ad}_g X,\mathrm{Ad}_g Y) = B(X,Y)$。成分では $B_{ab} = f_{ac}{}^{d} f_{bd}{}^{c}$。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cartan の判定条件</div>
+      <p>リー代数 $\mathfrak{g}$ が <strong>半単純</strong>（可換な非自明イデアルを持たない）であることと，Killing 形式 $B$ が非退化であることは同値。さらに $\mathfrak{g}$ がコンパクト型であるのは $B$ が負定値であることと同値。</p>
+      <p>半単純性は分類理論の出発点であり，半単純リー代数は単純リー代数の直和に一意分解される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 なぜ Killing 形式が重要か</div>
+      <p>Killing 形式は $\mathfrak{g}$ に内在的な「計量」を与え，添字の上げ下げ・直交補空間の定義・ルート系の内積を可能にする。物理ではゲージ理論の作用 $-\tfrac{1}{4}\mathrm{tr}(F_{\mu\nu}F^{\mu\nu})$ のトレースがこの不変形式に対応する。</p>
+    </div>
+
+    <h2 id="classification">5. 単純リー代数の分類</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — カルタン部分代数とルート系</div>
+      <p>半単純リー代数 $\mathfrak{g}$ の <strong>カルタン部分代数</strong> $\mathfrak{h}$ とは，極大な可換部分代数である。その次元 $r = \dim\mathfrak{h}$ を $\mathfrak{g}$ の <strong>階数（ランク）</strong> という。$\mathfrak{h}$ の随伴作用で $\mathfrak{g}$ を同時対角化すると，</p>
+      $$\mathfrak{g} = \mathfrak{h} \oplus \bigoplus_{\alpha\in\Phi} \mathfrak{g}_\alpha,\qquad [H, E_\alpha] = \alpha(H)\,E_\alpha \ \ (H\in\mathfrak{h})$$
+      <p>各非零の固有値 $\alpha\in\mathfrak{h}^*$ を <strong>ルート</strong>，その全体 $\Phi$ を <strong>ルート系</strong> という。</p>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 Dynkin 図形</div>
+      <p>ルート系から単純ルート $\{\alpha_1,\ldots,\alpha_r\}$ を選び，その間の角度と長さの比を頂点と辺で符号化した図が <strong>Dynkin 図形</strong> である。各頂点が単純ルートに，頂点間の結合線の本数が</p>
+      $$\langle\alpha_i,\alpha_j\rangle\langle\alpha_j,\alpha_i\rangle \in \{0,1,2,3\},\qquad \langle\alpha_i,\alpha_j\rangle = \frac{2(\alpha_i,\alpha_j)}{(\alpha_j,\alpha_j)}$$
+      <p>で決まる（$(\cdot,\cdot)$ は Killing 形式由来の内積）。Dynkin 図形はリー代数を同型を除いて完全に決定する。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — Cartan–Killing の分類（ABCDE 型）</div>
+      <p>複素単純リー代数は，次の 4 つの無限系列と 5 つの例外型に尽くされる：</p>
+      <table>
+        <tr><th>型</th><th>リー代数</th><th>対応する群</th></tr>
+        <tr><td>$A_n$</td><td>$\mathfrak{sl}(n{+}1)$</td><td>$SU(n{+}1)$</td></tr>
+        <tr><td>$B_n$</td><td>$\mathfrak{so}(2n{+}1)$</td><td>$SO(2n{+}1)$</td></tr>
+        <tr><td>$C_n$</td><td>$\mathfrak{sp}(2n)$</td><td>$Sp(n)$</td></tr>
+        <tr><td>$D_n$</td><td>$\mathfrak{so}(2n)$</td><td>$SO(2n)$</td></tr>
+        <tr><td>例外型</td><td colspan="2">$G_2,\ F_4,\ E_6,\ E_7,\ E_8$</td></tr>
+      </table>
+      <p>この完全な分類こそがリー理論の金字塔であり，例外型 $E_8$（次元 248）は弦理論のゲージ群としても現れる。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $A_2 = \mathfrak{su}(3)$ のルート系</div>
+      <p>$\mathfrak{su}(3)$ は階数 2，次元 8。ルート系は 6 個のルートが正六角形をなし，2 個の単純ルート $\alpha_1,\alpha_2$ のなす角は $120^\circ$。Dynkin 図形は 2 頂点を 1 本の線で結んだ $\circ\!-\!\circ$。この六角形構造がクォークの SU(3) フレーバー対称性（八道説）の幾何学的背景である。</p>
+    </div>
+
+    <h2 id="representations">6. 表現論</h2>
+    <div class="box def">
+      <div class="box-title">📖 定義 — 表現とウェイト</div>
+      <p>リー代数 $\mathfrak{g}$ の <strong>表現</strong> とは，ベクトル空間 $V$ への準同型 $\rho:\mathfrak{g}\to\mathfrak{gl}(V)$（$\rho([X,Y]) = \rho(X)\rho(Y)-\rho(Y)\rho(X)$）である。カルタン部分代数 $\mathfrak{h}$ の同時固有値 $\lambda\in\mathfrak{h}^*$ を <strong>ウェイト</strong>，対応する固有ベクトルの空間をウェイト空間と呼ぶ。</p>
+    </div>
+    <div class="box thm">
+      <div class="box-title">✓ 定理 — 最高ウェイトの定理</div>
+      <p>半単純リー代数の任意の有限次元既約表現は，一意の <strong>最高ウェイト</strong> $\lambda$ によって（同型を除いて）決定される。逆に各 <strong>優整ウェイト</strong>（Dynkin ラベルが非負整数）$\lambda$ にちょうど一つの既約表現 $V_\lambda$ が対応する。$V_\lambda$ は最高ウェイトベクトルに下降演算子 $E_{-\alpha}$ を作用させて生成される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $SU(2)$ の既約表現</div>
+      <p>$\mathfrak{su}(2)$ の既約表現はスピン $j = 0, \tfrac12, 1, \tfrac32, \ldots$ でラベルされ，次元は $2j+1$。ウェイト（$J_z$ の固有値）は</p>
+      $$m = -j, -j{+}1, \ldots, j{-}1, j$$
+      <p>と等間隔に並ぶ 1 次元のウェイト図をなす。$j=\tfrac12$ が基本表現（2 次元スピノル），$j=1$ が随伴表現（3 次元ベクトル）。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — $SU(3)$ の既約表現とウェイト図</div>
+      <p>$\mathfrak{su}(3)$ の既約表現は 2 個の非負整数 $(p,q)$（Dynkin ラベル）で指定され，次元は</p>
+      $$\dim = \tfrac12(p+1)(q+1)(p+q+2)$$
+      <p>基本表現 $\mathbf{3}=(1,0)$ とその共役 $\bar{\mathbf{3}}=(0,1)$ のウェイト図は三角形，随伴表現 $\mathbf{8}=(1,1)$ は中心が二重に縮退した正六角形をなす。クォーク模型の $\mathbf{3}\otimes\bar{\mathbf{3}} = \mathbf{8}\oplus\mathbf{1}$ はこの表現論に基づく。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 テンソル積と分解</div>
+      <p>複数の表現の合成はテンソル積 $V_\lambda\otimes V_\mu$ で表され，これを既約表現の直和に分解する規則（Clebsch–Gordan 分解，$SU(3)$ では Young 図による）が，多粒子系の状態やハドロンの分類を与える。</p>
+    </div>
+
+    <h2 id="applications">7. 物理への応用</h2>
+    <div class="box note">
+      <div class="box-title">💡 連続対称性と保存則</div>
+      <p>Noether の定理により，作用の連続対称性（リー群の作用）は保存量を生む。リー代数の生成子がそのまま保存電荷の代数となり，物理系の対称性はリー群の言葉で体系化される。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — 角運動量と回転対称性</div>
+      <p>3 次元回転群 $SO(3)$（および被覆 $SU(2)$）の生成子が角運動量演算子で，交換関係</p>
+      $$[J_a, J_b] = i\hbar\,\varepsilon_{abc}\,J_c$$
+      <p>は $\mathfrak{su}(2)$ そのもの。既約表現のスピン $j$ が粒子の角運動量量子数を，ウェイト $m$ が磁気量子数を与える。整数スピンがボソン，半整数スピンがフェルミオンに対応する。</p>
+    </div>
+    <div class="box example">
+      <div class="box-title">📝 例 — ゲージ理論と標準模型</div>
+      <p>ゲージ理論では局所対称性がリー群で記述され，そのリー代数の生成子ごとにゲージ場（力の媒介粒子）が現れる。標準模型のゲージ群は</p>
+      $$SU(3)_C \times SU(2)_L \times U(1)_Y$$
+      <p>で，$SU(3)_C$ が 8 個のグルーオンを持つ強い相互作用（量子色力学），$SU(2)_L\times U(1)_Y$ が弱・電磁相互作用（電弱理論，4 個のゲージ場 $W^\pm, Z, \gamma$）を担う。物質場は各群の既約表現に配置され，そのウェイトが電荷・アイソスピン・ハイパーチャージを与える。大統一理論では $SU(5)$ や $SO(10)$，$E_6$ への埋め込みが探究される。</p>
+    </div>
+    <div class="box note">
+      <div class="box-title">💡 対称性の破れ</div>
+      <p>Higgs 機構による自発的対称性の破れ $SU(2)_L\times U(1)_Y \to U(1)_{\rm em}$ もリー群の部分群への還元として記述される。破れた生成子の数だけ南部–Goldstone モードが現れ，ゲージ場と結合して質量を獲得する。</p>
+    </div>
+
+    <div class="box exercise">
+      <div class="box-title">✏️ 練習問題</div>
+      <ol>
+        <li>$\mathfrak{su}(2)$ の生成子 $T_a = -\tfrac{i}{2}\sigma_a$ について $[T_a,T_b]=\varepsilon_{abc}T_c$ を Pauli 行列の性質から確かめよ。</li>
+        <li>$\exp(\theta X)$（$X$ は $\mathfrak{so}(2)$ の生成子）を級数から計算し，$2\times2$ 回転行列になることを示せ。</li>
+        <li>$\mathfrak{su}(2)$ の Killing 形式を構造定数 $\varepsilon_{abc}$ から計算し，負定値（コンパクト型）であることを確認せよ。</li>
+        <li>$\mathfrak{su}(2)$ のスピン $j$ 表現の次元が $2j+1$ であることを，最高ウェイトから下降演算子を作用させて説明せよ。</li>
+        <li>$SU(3)$ のテンソル積 $\mathbf{3}\otimes\mathbf{3}$ を既約表現の直和に分解し（結果は $\mathbf{6}\oplus\bar{\mathbf{3}}$），各表現の次元を上の次元公式で検算せよ。</li>
+      </ol>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 次のステップ</div>
+      <p>リー理論の一般論は <a href="representation-theory.html">表現論</a> でさらに深められる。物理への応用は <a href="particle-physics.html">素粒子物理</a> でゲージ理論・標準模型の具体的な構成として展開される。</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
