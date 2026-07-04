@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>記号・用語集 | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+  <style>
+    .symtable { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0.5rem 0; }
+    .symtable th { background: var(--bg3); color: var(--text2); font-weight: 600; text-align: left; padding: 6px 10px; border-bottom: 2px solid var(--border); position: sticky; top: 0; }
+    .symtable td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .symtable tr:hover td { background: var(--bg2); }
+    .symtable td.sym { white-space: nowrap; font-size: 1.05rem; width: 1%; color: var(--blue); }
+    .symtable td.read { white-space: nowrap; color: var(--text2); font-size: 0.85rem; }
+    .sym-search { margin: 1rem 0; }
+    .sym-search input { width: 100%; padding: 10px 14px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 0.95rem; }
+    .sym-search input:focus { outline: none; border-color: var(--blue); }
+    .glossary-term { font-weight: 700; color: var(--green); }
+  </style>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 記号・用語集</div>
+    <h1>記号・用語集（チートシート）</h1>
+    <p class="tagline">「この記号なんだっけ？」を一気に解決。ギリシャ文字・論理・集合・解析・線形代数・確率・物理の記号と、頻出用語の定義をまとめました。</p>
+    <div class="tags"><span class="tag">記号一覧</span><span class="tag">ギリシャ文字</span><span class="tag">用語集</span><span class="tag">早見表</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="sym-search">
+      <input type="text" id="glossary-search" placeholder="🔍 記号名・読み・意味で絞り込み（例: シグマ, 積分, 期待値）…" autocomplete="off">
+    </div>
+
+    <nav class="toc">
+      <div class="toc-title">目次</div>
+      <ol>
+        <li><a href="#greek">ギリシャ文字</a></li>
+        <li><a href="#logic">論理と集合</a></li>
+        <li><a href="#numbers">数の体系</a></li>
+        <li><a href="#calculus">微積分・解析</a></li>
+        <li><a href="#linear">線形代数</a></li>
+        <li><a href="#probability">確率・統計</a></li>
+        <li><a href="#physics">物理・量子力学</a></li>
+        <li><a href="#decoration">装飾記号（ハット・バーなど）</a></li>
+        <li><a href="#glossary">頻出用語の定義</a></li>
+      </ol>
+    </nav>
+
+    <div class="box note">
+      <div class="box-title">💡 使い方</div>
+      <p>上の検索ボックスに読み方や意味の一部を打つと、行が絞り込まれます。各記号は「どの分野で・どんな意味で使われるか」を添えています。より詳しい定義は <a href="sets-logic.html">集合と論理・証明</a> や各分野ページへ。</p>
+    </div>
+
+    <h2 id="greek">1. ギリシャ文字</h2>
+    <p>数式で最頻出。まず読めるようにすると一気に楽になります。</p>
+    <table class="symtable">
+      <tr><th>小文字</th><th>大文字</th><th>読み</th><th>よく表すもの</th></tr>
+      <tr><td class="sym">$\alpha$</td><td class="sym">$A$</td><td class="read">アルファ</td><td>角度・係数・確率の有意水準</td></tr>
+      <tr><td class="sym">$\beta$</td><td class="sym">$B$</td><td class="read">ベータ</td><td>角度・係数・回帰係数</td></tr>
+      <tr><td class="sym">$\gamma$</td><td class="sym">$\Gamma$</td><td class="read">ガンマ</td><td>ローレンツ因子・ガンマ関数 $\Gamma(x)$</td></tr>
+      <tr><td class="sym">$\delta$</td><td class="sym">$\Delta$</td><td class="read">デルタ</td><td>微小量・変化量 $\Delta x$・クロネッカー $\delta_{ij}$</td></tr>
+      <tr><td class="sym">$\varepsilon$</td><td class="sym">$E$</td><td class="read">イプシロン</td><td>微小な正の数（ε-δ論法）</td></tr>
+      <tr><td class="sym">$\zeta$</td><td class="sym">$Z$</td><td class="read">ゼータ</td><td>ゼータ関数 $\zeta(s)$</td></tr>
+      <tr><td class="sym">$\eta$</td><td class="sym">$H$</td><td class="read">エータ</td><td>効率・粘性・計量 $\eta_{\mu\nu}$</td></tr>
+      <tr><td class="sym">$\theta$</td><td class="sym">$\Theta$</td><td class="read">シータ</td><td>角度・位相・パラメータ</td></tr>
+      <tr><td class="sym">$\kappa$</td><td class="sym">$K$</td><td class="read">カッパ</td><td>曲率・条件数</td></tr>
+      <tr><td class="sym">$\lambda$</td><td class="sym">$\Lambda$</td><td class="read">ラムダ</td><td>固有値・波長・宇宙定数 $\Lambda$</td></tr>
+      <tr><td class="sym">$\mu$</td><td class="sym">$M$</td><td class="read">ミュー</td><td>平均・測度・化学ポテンシャル・添字</td></tr>
+      <tr><td class="sym">$\nu$</td><td class="sym">$N$</td><td class="read">ニュー</td><td>振動数・添字・自由度</td></tr>
+      <tr><td class="sym">$\xi$</td><td class="sym">$\Xi$</td><td class="read">クサイ（グザイ）</td><td>確率変数・座標</td></tr>
+      <tr><td class="sym">$\pi$</td><td class="sym">$\Pi$</td><td class="read">パイ</td><td>円周率・射影・総乗 $\Pi$・基本群 $\pi_1$</td></tr>
+      <tr><td class="sym">$\rho$</td><td class="sym">$P$</td><td class="read">ロー</td><td>密度・相関係数・密度行列 $\rho$</td></tr>
+      <tr><td class="sym">$\sigma$</td><td class="sym">$\Sigma$</td><td class="read">シグマ</td><td>標準偏差・応力・総和 $\Sigma$・σ加法族</td></tr>
+      <tr><td class="sym">$\tau$</td><td class="sym">$T$</td><td class="read">タウ</td><td>固有時・トルク・時定数</td></tr>
+      <tr><td class="sym">$\phi,\varphi$</td><td class="sym">$\Phi$</td><td class="read">ファイ</td><td>角度・位相・ポテンシャル・波動関数</td></tr>
+      <tr><td class="sym">$\chi$</td><td class="sym">$X$</td><td class="read">カイ</td><td>指標 $\chi$・カイ二乗分布・感受率</td></tr>
+      <tr><td class="sym">$\psi$</td><td class="sym">$\Psi$</td><td class="read">プサイ</td><td>波動関数 $\psi$（量子力学）</td></tr>
+      <tr><td class="sym">$\omega$</td><td class="sym">$\Omega$</td><td class="read">オメガ</td><td>角振動数・標本空間 $\Omega$・立体角</td></tr>
+    </table>
+
+    <h2 id="logic">2. 論理と集合</h2>
+    <table class="symtable">
+      <tr><th>記号</th><th>読み・名称</th><th>意味</th></tr>
+      <tr><td class="sym">$\forall$</td><td class="read">全称記号</td><td>「すべての〜について」</td></tr>
+      <tr><td class="sym">$\exists$</td><td class="read">存在記号</td><td>「ある〜が存在して」（$\exists!$ は「唯一存在」）</td></tr>
+      <tr><td class="sym">$\in,\notin$</td><td class="read">属する／属さない</td><td>$x\in A$: $x$ は集合 $A$ の要素</td></tr>
+      <tr><td class="sym">$\subset,\subseteq$</td><td class="read">部分集合</td><td>$A\subseteq B$: $A$ の要素はすべて $B$ に属す</td></tr>
+      <tr><td class="sym">$\cup,\cap$</td><td class="read">和／共通部分</td><td>$A\cup B$（または）, $A\cap B$（かつ）</td></tr>
+      <tr><td class="sym">$\setminus$</td><td class="read">差集合</td><td>$A\setminus B$: $A$ にあり $B$ にない要素</td></tr>
+      <tr><td class="sym">$\varnothing$</td><td class="read">空集合</td><td>要素をひとつも持たない集合</td></tr>
+      <tr><td class="sym">$\lnot,\land,\lor$</td><td class="read">否定・かつ・または</td><td>論理結合子</td></tr>
+      <tr><td class="sym">$\Rightarrow,\Leftrightarrow$</td><td class="read">ならば／同値</td><td>含意・必要十分条件</td></tr>
+      <tr><td class="sym">$\therefore,\because$</td><td class="read">ゆえに／なぜなら</td><td>結論・理由</td></tr>
+      <tr><td class="sym">$\equiv$</td><td class="read">合同・定義</td><td>合同（$\bmod$）や「定義により等しい」（$:=$）</td></tr>
+      <tr><td class="sym">$\mapsto$</td><td class="read">写す</td><td>$x\mapsto x^2$: 要素の対応（写像の規則）</td></tr>
+      <tr><td class="sym">$\vdash,\models$</td><td class="read">証明可能／充足</td><td>$\Gamma\vdash P$（構文的）, $\models P$（意味的）</td></tr>
+      <tr><td class="sym">$\square$ / $\blacksquare$</td><td class="read">証明終わり</td><td>Q.E.D.（証明の完了）</td></tr>
+    </table>
+
+    <h2 id="numbers">3. 数の体系</h2>
+    <table class="symtable">
+      <tr><th>記号</th><th>読み</th><th>意味</th></tr>
+      <tr><td class="sym">$\mathbb{N}$</td><td class="read">自然数</td><td>$1,2,3,\ldots$（流儀により $0$ を含む）</td></tr>
+      <tr><td class="sym">$\mathbb{Z}$</td><td class="read">整数</td><td>$\ldots,-1,0,1,\ldots$（独: Zahlen）</td></tr>
+      <tr><td class="sym">$\mathbb{Q}$</td><td class="read">有理数</td><td>分数で表せる数（商: Quotient）</td></tr>
+      <tr><td class="sym">$\mathbb{R}$</td><td class="read">実数</td><td>数直線上のすべての数</td></tr>
+      <tr><td class="sym">$\mathbb{C}$</td><td class="read">複素数</td><td>$a+bi$（$i^2=-1$）</td></tr>
+      <tr><td class="sym">$\mathbb{R}^n$</td><td class="read">エヌ次元実空間</td><td>実数の $n$ 個組全体</td></tr>
+      <tr><td class="sym">$\infty$</td><td class="read">無限大</td><td>限りなく大きい（数ではなく概念）</td></tr>
+      <tr><td class="sym">$i,\,e,\,\pi$</td><td class="read">虚数単位・ネイピア数・円周率</td><td>$i^2=-1$, $e\approx2.718$, $\pi\approx3.14$</td></tr>
+    </table>
+
+    <h2 id="calculus">4. 微積分・解析</h2>
+    <table class="symtable">
+      <tr><th>記号</th><th>読み・名称</th><th>意味</th></tr>
+      <tr><td class="sym">$\sum$</td><td class="read">総和（シグマ）</td><td>$\sum_{k=1}^n a_k = a_1+\cdots+a_n$</td></tr>
+      <tr><td class="sym">$\prod$</td><td class="read">総乗（パイ）</td><td>$\prod_{k=1}^n a_k = a_1\cdots a_n$</td></tr>
+      <tr><td class="sym">$\lim$</td><td class="read">極限</td><td>$\lim_{x\to a}f(x)$: $x\to a$ での行き先</td></tr>
+      <tr><td class="sym">$f'(x),\ \frac{df}{dx}$</td><td class="read">導関数</td><td>変化の割合（接線の傾き）</td></tr>
+      <tr><td class="sym">$\partial$</td><td class="read">偏微分（ラウンド）</td><td>$\partial f/\partial x$: 多変数の1変数だけの微分</td></tr>
+      <tr><td class="sym">$\int,\ \oint$</td><td class="read">積分／周回積分</td><td>面積・総量／閉曲線に沿う積分</td></tr>
+      <tr><td class="sym">$\nabla$</td><td class="read">ナブラ（勾配）</td><td>$\nabla f$: 勾配。$\nabla\cdot$（発散）, $\nabla\times$（回転）</td></tr>
+      <tr><td class="sym">$\nabla^2,\ \Delta$</td><td class="read">ラプラシアン</td><td>$\nabla^2 f=\partial_x^2 f+\partial_y^2 f+\cdots$</td></tr>
+      <tr><td class="sym">$\approx,\ \sim,\ \propto$</td><td class="read">ほぼ等しい／漸近／比例</td><td>近似・オーダーが同じ・比例関係</td></tr>
+      <tr><td class="sym">$O(\cdot),\ o(\cdot)$</td><td class="read">ランダウの記号</td><td>増大度の評価（ビッグオー・スモールオー）</td></tr>
+      <tr><td class="sym">$\ll,\ \gg$</td><td class="read">十分小さい／大きい</td><td>桁で圧倒的に小さい・大きい</td></tr>
+      <tr><td class="sym">$n!$</td><td class="read">階乗</td><td>$n!=n(n-1)\cdots 1$（$0!=1$）</td></tr>
+    </table>
+
+    <h2 id="linear">5. 線形代数</h2>
+    <table class="symtable">
+      <tr><th>記号</th><th>読み・名称</th><th>意味</th></tr>
+      <tr><td class="sym">$\mathbf{v},\ \vec{v}$</td><td class="read">ベクトル</td><td>太字や矢印でベクトルを表す</td></tr>
+      <tr><td class="sym">$A^{\mathsf{T}}$</td><td class="read">転置</td><td>行と列を入れ替えた行列</td></tr>
+      <tr><td class="sym">$A^{-1}$</td><td class="read">逆行列</td><td>$AA^{-1}=I$ を満たす行列</td></tr>
+      <tr><td class="sym">$A^\dagger$</td><td class="read">エルミート共役（ダガー）</td><td>転置して複素共役（随伴）</td></tr>
+      <tr><td class="sym">$\det A,\ |A|$</td><td class="read">行列式</td><td>体積の拡大率・可逆性の判定</td></tr>
+      <tr><td class="sym">$\operatorname{tr} A$</td><td class="read">トレース（跡）</td><td>対角成分の和</td></tr>
+      <tr><td class="sym">$\langle u,v\rangle,\ u\cdot v$</td><td class="read">内積</td><td>ベクトルの内積（大きさと角度）</td></tr>
+      <tr><td class="sym">$\|v\|$</td><td class="read">ノルム</td><td>ベクトルの大きさ（長さ）</td></tr>
+      <tr><td class="sym">$\otimes,\ \oplus$</td><td class="read">テンソル積／直和</td><td>空間の合成／分解</td></tr>
+      <tr><td class="sym">$I,\ I_n$</td><td class="read">単位行列</td><td>対角成分が $1$、他が $0$</td></tr>
+      <tr><td class="sym">$\dim,\ \operatorname{rank}$</td><td class="read">次元／階数</td><td>空間の次元・行列の階数</td></tr>
+    </table>
+
+    <h2 id="probability">6. 確率・統計</h2>
+    <table class="symtable">
+      <tr><th>記号</th><th>読み・名称</th><th>意味</th></tr>
+      <tr><td class="sym">$P(A)$</td><td class="read">確率</td><td>事象 $A$ が起こる確率</td></tr>
+      <tr><td class="sym">$P(A\mid B)$</td><td class="read">条件付き確率</td><td>$B$ が起きたもとでの $A$ の確率</td></tr>
+      <tr><td class="sym">$E[X],\ \langle X\rangle$</td><td class="read">期待値（平均）</td><td>確率変数の平均的な値</td></tr>
+      <tr><td class="sym">$V[X],\ \sigma^2$</td><td class="read">分散</td><td>ばらつきの大きさ（$\sigma$ は標準偏差）</td></tr>
+      <tr><td class="sym">$\operatorname{Cov},\ \rho$</td><td class="read">共分散／相関係数</td><td>2変数の連動の度合い</td></tr>
+      <tr><td class="sym">$X\sim N(\mu,\sigma^2)$</td><td class="read">分布に従う</td><td>$X$ は正規分布に従う</td></tr>
+      <tr><td class="sym">$\text{i.i.d.}$</td><td class="read">独立同分布</td><td>独立に同じ分布から得られる</td></tr>
+      <tr><td class="sym">$X\perp Y$</td><td class="read">独立</td><td>2つの確率変数が独立</td></tr>
+      <tr><td class="sym">$\xrightarrow{d},\ \xrightarrow{p}$</td><td class="read">分布収束／確率収束</td><td>収束の種類</td></tr>
+      <tr><td class="sym">$\hat\theta$</td><td class="read">推定量（ハット）</td><td>パラメータ $\theta$ の推定値</td></tr>
+    </table>
+
+    <h2 id="physics">7. 物理・量子力学</h2>
+    <table class="symtable">
+      <tr><th>記号</th><th>読み・名称</th><th>意味</th></tr>
+      <tr><td class="sym">$|\psi\rangle$</td><td class="read">ケット</td><td>量子状態ベクトル（Dirac記法）</td></tr>
+      <tr><td class="sym">$\langle\psi|$</td><td class="read">ブラ</td><td>ケットの双対（共役）</td></tr>
+      <tr><td class="sym">$\langle\phi|\psi\rangle$</td><td class="read">ブラケット（内積）</td><td>2状態の内積（確率振幅）</td></tr>
+      <tr><td class="sym">$\hat{H},\ \hat{A}$</td><td class="read">演算子（ハット）</td><td>観測量に対応する作用素</td></tr>
+      <tr><td class="sym">$\hbar$</td><td class="read">エイチバー</td><td>換算プランク定数 $h/2\pi$</td></tr>
+      <tr><td class="sym">$[A,B]$</td><td class="read">交換子</td><td>$AB-BA$（同時測定可能性）</td></tr>
+      <tr><td class="sym">$\{A,B\}$</td><td class="read">反交換子／Poisson括弧</td><td>$AB+BA$ または古典の $\{f,g\}$</td></tr>
+      <tr><td class="sym">$\delta_{ij}$</td><td class="read">クロネッカーのデルタ</td><td>$i=j$ で $1$、他は $0$</td></tr>
+      <tr><td class="sym">$\varepsilon_{ijk}$</td><td class="read">レヴィ＝チヴィタ記号</td><td>反対称テンソル（外積・行列式）</td></tr>
+      <tr><td class="sym">$\partial_\mu,\ g_{\mu\nu}$</td><td class="read">4元微分／計量テンソル</td><td>相対論の添字 $\mu,\nu=0,1,2,3$</td></tr>
+      <tr><td class="sym">$\nabla\cdot,\ \nabla\times$</td><td class="read">発散／回転</td><td>ベクトル場の発散・回転</td></tr>
+    </table>
+
+    <h2 id="decoration">8. 装飾記号（ハット・バーなど）</h2>
+    <p>文字の上下に付く印。同じ文字でも意味が変わります。</p>
+    <table class="symtable">
+      <tr><th>記号</th><th>読み</th><th>典型的な意味</th></tr>
+      <tr><td class="sym">$\hat{x}$</td><td class="read">エックス・ハット</td><td>演算子・推定量・単位ベクトル</td></tr>
+      <tr><td class="sym">$\bar{x}$</td><td class="read">エックス・バー</td><td>平均・複素共役・閉包</td></tr>
+      <tr><td class="sym">$\tilde{x}$</td><td class="read">エックス・チルダ</td><td>変形版・フーリエ変換後・近似</td></tr>
+      <tr><td class="sym">$\dot{x},\ \ddot{x}$</td><td class="read">エックス・ドット</td><td>時間微分 $dx/dt$・2階時間微分</td></tr>
+      <tr><td class="sym">$x^*$</td><td class="read">エックス・スター</td><td>複素共役・双対・最適値</td></tr>
+      <tr><td class="sym">$x',\ x''$</td><td class="read">エックス・プライム</td><td>微分・別の量・変換後</td></tr>
+      <tr><td class="sym">$\vec{x},\ \mathbf{x}$</td><td class="read">ベクトルエックス</td><td>ベクトル量</td></tr>
+      <tr><td class="sym">$x_i,\ x^i$</td><td class="read">添字つき</td><td>成分（下付き/上付きは共変・反変）</td></tr>
+    </table>
+
+    <h2 id="glossary">9. 頻出用語の定義</h2>
+    <p>「前提知識」として説明なく出てくることが多い用語を一言で。詳細は各リンク先へ。</p>
+    <div class="box def">
+      <div class="box-title">📖 集合・写像まわり</div>
+      <ul>
+        <li><span class="glossary-term">写像</span>: 集合から集合への対応規則 $f:A\to B$。（<a href="sets-logic.html">集合と論理</a>）</li>
+        <li><span class="glossary-term">全単射</span>: 1対1かつ漏れなし。逆写像をもつ。</li>
+        <li><span class="glossary-term">濃度</span>: 集合の「大きさ」。無限集合でも比較できる。</li>
+      </ul>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 代数まわり</div>
+      <ul>
+        <li><span class="glossary-term">群</span>: 結合律・単位元・逆元をもつ演算の集合。対称性の言語。（<a href="abstract-algebra.html">抽象代数学</a>）</li>
+        <li><span class="glossary-term">環・体</span>: 加法と乗法をもつ構造。体は割り算もできる（$\mathbb{Q},\mathbb{R},\mathbb{C}$）。</li>
+        <li><span class="glossary-term">ベクトル空間</span>: 和とスカラー倍が定義された集合。（<a href="linear-algebra.html">線形代数</a>）</li>
+        <li><span class="glossary-term">基底・次元</span>: 空間を張る独立なベクトルの組と、その本数。</li>
+        <li><span class="glossary-term">固有値・固有ベクトル</span>: $A\mathbf{v}=\lambda\mathbf{v}$。変換で向きが変わらない方向。</li>
+      </ul>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 解析・位相まわり</div>
+      <ul>
+        <li><span class="glossary-term">連続</span>: 入力の微小変化で出力も微小にしか変わらない。</li>
+        <li><span class="glossary-term">収束</span>: 数列・関数がある値に限りなく近づくこと。</li>
+        <li><span class="glossary-term">開集合・閉集合</span>: 「縁を含まない／含む」集合。（<a href="topology.html">位相空間論</a>）</li>
+        <li><span class="glossary-term">コンパクト</span>: 大まかに「有界かつ閉じている」性質。</li>
+        <li><span class="glossary-term">ノルム・内積</span>: ベクトルの長さ・角度を測る道具。（<a href="functional-analysis.html">関数解析</a>）</li>
+      </ul>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 確率・測度まわり</div>
+      <ul>
+        <li><span class="glossary-term">確率変数</span>: 試行結果に数を割り当てたもの。（<a href="probability-basics.html">確率・統計の基礎</a>）</li>
+        <li><span class="glossary-term">σ加法族</span>: 「測れる集合」の集まり。確率・測度の土台。（<a href="measure-theory.html">測度論</a>）</li>
+        <li><span class="glossary-term">測度</span>: 集合に「大きさ（長さ・面積・確率）」を与える関数。</li>
+        <li><span class="glossary-term">マルチンゲール</span>: 「今の値が将来の期待値」となる公平な過程。（<a href="stochastic.html">確率微分方程式</a>）</li>
+      </ul>
+    </div>
+    <div class="box def">
+      <div class="box-title">📖 物理まわり</div>
+      <ul>
+        <li><span class="glossary-term">ハミルトニアン</span>: 系の全エネルギーを表す関数／演算子。</li>
+        <li><span class="glossary-term">ラグランジアン</span>: $L=T-V$。最小作用の原理の主役。（<a href="classical-mechanics.html">古典力学</a>）</li>
+        <li><span class="glossary-term">エルミート演算子</span>: $\hat A=\hat A^\dagger$。実固有値をもち観測量に対応。（<a href="quantum-mechanics.html">量子力学</a>）</li>
+        <li><span class="glossary-term">テンソル</span>: 座標変換で決まった規則で変わる多重添字量。（<a href="differential-geometry.html">微分幾何学</a>）</li>
+      </ul>
+    </div>
+
+    <div class="box note">
+      <div class="box-title">💡 記号は文脈で変わる</div>
+      <p>同じ記号でも分野で意味が違います（例: $\sigma$ は標準偏差にも応力にもσ加法族にも使う）。「どの分野の話か」をまず押さえると迷いません。困ったらこのページに戻ってきてください。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var input = document.getElementById("glossary-search");
+    if (!input) return;
+    input.addEventListener("input", function () {
+      var q = this.value.toLowerCase().trim();
+      document.querySelectorAll(".symtable").forEach(function (table) {
+        var anyVisible = false;
+        table.querySelectorAll("tr").forEach(function (tr, idx) {
+          if (tr.querySelector("th")) return; // header
+          var match = !q || tr.textContent.toLowerCase().includes(q);
+          tr.style.display = match ? "" : "none";
+          if (match) anyVisible = true;
+        });
+        // hide the whole section heading if no rows match could be added; keep simple
+      });
+    });
+  });
+</script>
+</body>
+</html>

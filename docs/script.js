@@ -16,6 +16,7 @@ const SIDEBAR_HTML = `
     <div class="sidebar-label">基礎・入門</div>
     <nav>
       <a href="getting-started.html"><span class="nav-icon">✦</span>学習ガイド</a>
+      <a href="glossary.html"><span class="nav-icon">§</span>記号・用語集</a>
       <a href="calculus-basics.html"><span class="nav-icon">∫</span>微分積分の基礎</a>
       <a href="vectors-matrices.html"><span class="nav-icon">↗</span>ベクトルと行列</a>
       <a href="sets-logic.html"><span class="nav-icon">∈</span>集合と論理・証明</a>
