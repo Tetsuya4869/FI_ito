@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="analysis.html">解析学</a>（級数の収束）と <a href="linear-algebra.html">線形代数</a>（内積・直交性）。記号は <a href="glossary.html">記号・用語集</a> へ。</p></div>
+
     <h2 id="fs">1. フーリエ級数</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — フーリエ係数・フーリエ級数</div>
@@ -153,6 +155,25 @@
         <li>$\hat\delta = 1$ から $\frac{1}{2\pi}\int_{-\infty}^\infty e^{i\xi x}\,d\xi = \delta(x)$ を（超関数の意味で）説明せよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>$|\sin x|$ は偶関数なので $b_n = 0$。まず
+      $$a_0 = \frac{1}{\pi}\int_{-\pi}^\pi |\sin x|\,dx = \frac{2}{\pi}\int_0^\pi \sin x\,dx = \frac{2}{\pi}\big[-\cos x\big]_0^\pi = \frac{4}{\pi}$$
+      $n \ge 1$ では積和公式 $\sin x\cos nx = \frac{1}{2}[\sin(1+n)x + \sin(1-n)x]$ より
+      $$a_n = \frac{2}{\pi}\int_0^\pi \sin x\cos nx\,dx = \frac{2}{\pi}\cdot\frac{1 + (-1)^n}{1 - n^2} \quad (n \ne 1), \qquad a_1 = 0$$
+      奇数の $n$ では $a_n = 0$，$n = 2m$ では $a_{2m} = -\dfrac{4}{\pi(4m^2-1)}$。まとめると
+      $$|\sin x| = \frac{2}{\pi} - \frac{4}{\pi}\sum_{m=1}^\infty \frac{\cos 2mx}{4m^2 - 1}$$</li>
+      <li>矩形波 $f(x) = \mathrm{sgn}(x)$ の展開は $\frac{4}{\pi}\sum_{k=0}^\infty \frac{\sin(2k+1)x}{2k+1}$，すなわち $b_{2k+1} = \frac{4}{\pi(2k+1)}$，他は $0$。実数形の Parseval の等式
+      $$\frac{1}{\pi}\int_{-\pi}^\pi |f(x)|^2\,dx = \frac{a_0^2}{2} + \sum_{n=1}^\infty (a_n^2 + b_n^2)$$
+      に代入すると，左辺 $= \frac{1}{\pi}\cdot 2\pi = 2$，右辺 $= \sum_{k=0}^\infty \frac{16}{\pi^2(2k+1)^2}$。よって
+      $$\sum_{n=1}^\infty \frac{1}{(2n-1)^2} = \frac{2\pi^2}{16} = \frac{\pi^2}{8} \qquad \square$$</li>
+      <li>偶関数なので
+      $$\mathcal{F}[e^{-|x|}](\xi) = 2\int_0^\infty e^{-x}\cos(\xi x)\,dx = 2\,\mathrm{Re}\,\frac{1}{1 - i\xi} = \frac{2}{1+\xi^2}$$
+      $e^{-|x|}$ は連続かつ $\hat f \in L^1$ なので反転公式が各点で使え，$x = 0$ で
+      $$1 = e^{-|0|} = \frac{1}{2\pi}\int_{-\infty}^\infty \frac{2}{1+\xi^2}\,d\xi \implies \int_{-\infty}^\infty \frac{d\xi}{1+\xi^2} = \pi \qquad \square$$</li>
+      <li>超関数のフーリエ変換の定義 $\langle \hat T, \varphi\rangle = \langle T, \hat\varphi\rangle$ より，任意の $\varphi \in \mathcal{S}$ に対して
+      $$\langle \hat\delta, \varphi\rangle = \langle \delta, \hat\varphi\rangle = \hat\varphi(0) = \int_{-\infty}^\infty \varphi(x)\,dx = \langle 1, \varphi\rangle$$
+      すなわち $\hat\delta = 1$。両辺に逆変換 $\mathcal{F}^{-1}$ を施すと $\delta = \mathcal{F}^{-1}[1] = \frac{1}{2\pi}\int_{-\infty}^\infty e^{i\xi x}\,d\xi$。この積分は古典的には発散するが，「$\varphi \in \mathcal{S}$ とペアリングしたとき $\frac{1}{2\pi}\int \hat\varphi(-\xi)\,d\xi = \varphi(0)$（反転公式）を返す」という緩増加超関数の等式として意味をもつ。$\square$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

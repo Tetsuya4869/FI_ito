@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="ordinary-differential-equations.html">常微分方程式</a>（解の存在・線形系）と <a href="linear-algebra.html">線形代数</a>（固有値と安定性）。</p></div>
+
     <h2 id="ode-basics">1. ODE の基礎</h2>
     <div class="box thm">
       <div class="box-title">✓ 定理 — 存在一意性（Picard-Lindelöf）</div>
@@ -163,6 +165,23 @@
         <li>Lorenz 系でスカラー量 $V = x^2 + y^2 + (z-\rho-\sigma)^2$ が $\dot V = -2(\sigma x^2 + y^2 + \beta z(z-(\rho+\sigma)/2)) + \cdots$ 程度の形になることを計算し，解が有界であることを説明せよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>$f(x) = x - x^3 = x(1-x)(1+x) = 0$ より平衡点は $x^* = 0, \pm 1$。$f'(x) = 1 - 3x^2$ で線形化すると，$f'(0) = 1 &gt; 0$ なので $x^*=0$ は<strong>不安定</strong>，$f'(\pm 1) = -2 &lt; 0$ なので $x^* = \pm 1$ はともに<strong>漸近安定</strong>。相図は $0$ から離れて $\pm 1$ に吸い込まれる。</li>
+      <li>$V = x^2 + y^2$ は $V(0,0)=0$，$(x,y) \ne 0$ で $V &gt; 0$（正定値）。軌道に沿った微分は
+      $$\dot V = 2x\dot x + 2y\dot y = 2x(-x + xy^2) + 2y(-y - x^2 y) = -2x^2 + 2x^2y^2 - 2y^2 - 2x^2y^2 = -2(x^2 + y^2) &lt; 0 \quad ((x,y)\ne 0)$$
+      交差項 $2x^2y^2$ がちょうど打ち消し合うのがポイント。よって $V$ は Lyapunov 関数であり，原点は（大域）漸近安定。</li>
+      <li>$f(x) = \mu x + x^3$（<strong>亜臨界ピッチフォーク</strong>）。平衡点: $x^* = 0$（常に）と，$\mu &lt; 0$ のとき $x^* = \pm\sqrt{-\mu}$。$f'(x) = \mu + 3x^2$ より $f'(0) = \mu$，$f'(\pm\sqrt{-\mu}) = -2\mu &gt; 0$（$\mu&lt;0$）。
+      <ul>
+        <li>$\mu &lt; 0$: 原点は安定，$\pm\sqrt{-\mu}$ は不安定。相図は $-\sqrt{-\mu} \to 0 \leftarrow \sqrt{-\mu}$ の内側で吸引，外側では $|x| \to \infty$。</li>
+        <li>$\mu \ge 0$: 平衡点は $x^*=0$ のみで不安定（$\mu=0$ でも $\dot x = x^3$ より不安定）。$0$ 以外の解はすべて発散。</li>
+      </ul>
+      超臨界型 $\dot x = \mu x - x^3$ と異なり，分岐で生じる非自明平衡点が「不安定側」（$\mu &lt; 0$）に現れる。</li>
+      <li>$\dot V = 2x\dot x + 2y\dot y + 2(z-\rho-\sigma)\dot z$ に Lorenz 方程式を代入すると
+      $$\dot V = 2\sigma xy - 2\sigma x^2 + 2\rho xy - 2xyz - 2y^2 + 2xyz - 2\beta z^2 + 2\beta(\rho+\sigma)z - 2(\rho+\sigma)xy$$
+      $xy$ 項と $xyz$ 項がすべて相殺して
+      $$\dot V = -2\left(\sigma x^2 + y^2 + \beta z\big(z - (\rho+\sigma)\big)\right) = -2\left(\sigma x^2 + y^2 + \beta\Big(z - \tfrac{\rho+\sigma}{2}\Big)^2\right) + \frac{\beta(\rho+\sigma)^2}{2}$$
+      右辺第 1 項は楕円体 $E: \sigma x^2 + y^2 + \beta(z-\frac{\rho+\sigma}{2})^2 \le \frac{\beta(\rho+\sigma)^2}{4}$ の外側で優勢，すなわち $E$ の外では $\dot V &lt; 0$。よって十分大きな球 $\{V \le R^2\}$（$E$ を含むもの）は正不変で，すべての解は有限時間でその中に入り以後留まる — Lorenz 系の解は有界（大域アトラクターの存在）。</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

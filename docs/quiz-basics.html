@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>基礎 小テスト | 高等数学・物理</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="script.js"></script>
+  <style>
+    .quiz-q { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin: 16px 0; }
+    .quiz-q h3 { font-size: 0.95rem; margin-bottom: 10px; }
+    .quiz-q h3 .qnum { color: var(--blue); margin-right: 8px; }
+    .quiz-q label { display: block; padding: 7px 10px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: border-color .15s; }
+    .quiz-q label:hover { border-color: var(--blue); }
+    .quiz-q input { margin-right: 8px; }
+    .quiz-q.correct { border-color: var(--green); }
+    .quiz-q.wrong { border-color: var(--red); }
+    .quiz-q .verdict { margin-top: 8px; font-size: 0.85rem; display: none; }
+    .quiz-q.correct .verdict.ok { display: block; color: var(--green); }
+    .quiz-q.wrong .verdict.ng { display: block; color: var(--red); }
+    .quiz-actions { margin: 24px 0; display: flex; gap: 12px; align-items: center; }
+    .quiz-actions button { padding: 10px 22px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius); font-size: 0.95rem; cursor: pointer; font-family: var(--font); }
+    .quiz-actions button:hover { opacity: .9; }
+    #quiz-score { font-size: 1rem; font-weight: 700; }
+  </style>
+</head>
+<body>
+<button class="hamburger" aria-label="メニュー">☰</button>
+<div class="overlay"></div>
+<aside class="sidebar"></aside>
+
+<div class="main">
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">ホーム</a> / 基礎 小テスト</div>
+    <h1>基礎 小テスト（自己診断）</h1>
+    <p class="tagline">基礎6分野から10問。8問以上正解なら上級分野へ進む準備OK。間違えた分野のページに戻って復習しましょう。</p>
+    <div class="tags"><span class="tag">自己診断</span><span class="tag">選択式</span><span class="tag">10問</span></div>
+  </div>
+
+  <div class="content-body">
+    <div class="box note">
+      <div class="box-title">💡 使い方</div>
+      <p>全問に答えて「採点する」を押すと、正誤と復習先が表示されます。採点はブラウザ内で完結し、記録は保存されません。</p>
+    </div>
+
+    <form id="quiz">
+      <div class="quiz-q" data-answer="b" data-review='<a href="calculus-basics.html#derivative">微分積分の基礎 §2</a>'>
+        <h3><span class="qnum">Q1</span>$f(x)=x^3$ の導関数 $f'(x)$ は？</h3>
+        <label><input type="radio" name="q1" value="a">$x^2$</label>
+        <label><input type="radio" name="q1" value="b">$3x^2$</label>
+        <label><input type="radio" name="q1" value="c">$3x^3$</label>
+        <label><input type="radio" name="q1" value="d">$\dfrac{x^4}{4}$</label>
+        <div class="verdict ok">✓ 正解。$（x^n)' = nx^{n-1}$。</div>
+        <div class="verdict ng">✗ 不正解。正解は $3x^2$（べきの微分 $(x^n)'=nx^{n-1}$）。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="c" data-review='<a href="calculus-basics.html#ftc">微分積分の基礎 §5</a>'>
+        <h3><span class="qnum">Q2</span>$\displaystyle\int_0^1 x^2\,dx$ の値は？</h3>
+        <label><input type="radio" name="q2" value="a">$1$</label>
+        <label><input type="radio" name="q2" value="b">$\dfrac12$</label>
+        <label><input type="radio" name="q2" value="c">$\dfrac13$</label>
+        <label><input type="radio" name="q2" value="d">$\dfrac23$</label>
+        <div class="verdict ok">✓ 正解。$[x^3/3]_0^1 = 1/3$。</div>
+        <div class="verdict ng">✗ 不正解。原始関数 $x^3/3$ の差で $1/3$。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="a" data-review='<a href="vectors-matrices.html#dot">ベクトルと行列 §2</a>'>
+        <h3><span class="qnum">Q3</span>$\mathbf{a}=(1,2)$、$\mathbf{b}=(3,-1)$ の内積 $\mathbf{a}\cdot\mathbf{b}$ は？</h3>
+        <label><input type="radio" name="q3" value="a">$1$</label>
+        <label><input type="radio" name="q3" value="b">$5$</label>
+        <label><input type="radio" name="q3" value="c">$-1$</label>
+        <label><input type="radio" name="q3" value="d">$7$</label>
+        <div class="verdict ok">✓ 正解。$1\cdot3 + 2\cdot(-1) = 1$。</div>
+        <div class="verdict ng">✗ 不正解。成分ごとの積の和 $3-2=1$。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="d" data-review='<a href="vectors-matrices.html#eigen">ベクトルと行列 §6</a>'>
+        <h3><span class="qnum">Q4</span>$A=\begin{pmatrix}3&0\\0&5\end{pmatrix}$ の固有値は？</h3>
+        <label><input type="radio" name="q4" value="a">$0$ と $8$</label>
+        <label><input type="radio" name="q4" value="b">$3$ のみ</label>
+        <label><input type="radio" name="q4" value="c">$15$</label>
+        <label><input type="radio" name="q4" value="d">$3$ と $5$</label>
+        <div class="verdict ok">✓ 正解。対角行列の固有値は対角成分。</div>
+        <div class="verdict ng">✗ 不正解。対角行列の固有値は対角成分そのもの（$3$ と $5$）。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="b" data-review='<a href="sets-logic.html#quant">集合と論理 §4</a>'>
+        <h3><span class="qnum">Q5</span>$\lnot(\forall x,\ P(x))$ と同値なのは？</h3>
+        <label><input type="radio" name="q5" value="a">$\forall x,\ \lnot P(x)$</label>
+        <label><input type="radio" name="q5" value="b">$\exists x,\ \lnot P(x)$</label>
+        <label><input type="radio" name="q5" value="c">$\lnot\exists x,\ P(x)$</label>
+        <label><input type="radio" name="q5" value="d">$\exists x,\ P(x)$</label>
+        <div class="verdict ok">✓ 正解。「すべて成り立つ、の否定」＝「成り立たない例がある」。</div>
+        <div class="verdict ng">✗ 不正解。全称の否定は存在＋否定（反例の存在）。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="c" data-review='<a href="sets-logic.html#ops">集合と論理 §2</a>'>
+        <h3><span class="qnum">Q6</span>$A=\{1,2,3\}$、$B=\{2,3,4\}$ のとき $A\cap B$ は？</h3>
+        <label><input type="radio" name="q6" value="a">$\{1,2,3,4\}$</label>
+        <label><input type="radio" name="q6" value="b">$\{1\}$</label>
+        <label><input type="radio" name="q6" value="c">$\{2,3\}$</label>
+        <label><input type="radio" name="q6" value="d">$\{4\}$</label>
+        <div class="verdict ok">✓ 正解。両方に属する要素。</div>
+        <div class="verdict ng">✗ 不正解。共通部分は「両方に属する」要素で $\{2,3\}$。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="a" data-review='<a href="probability-basics.html#ev">確率・統計の基礎 §4</a>'>
+        <h3><span class="qnum">Q7</span>公平なコイン1回の表の枚数 $X$（表=1, 裏=0）の期待値は？</h3>
+        <label><input type="radio" name="q7" value="a">$\dfrac12$</label>
+        <label><input type="radio" name="q7" value="b">$1$</label>
+        <label><input type="radio" name="q7" value="c">$\dfrac14$</label>
+        <label><input type="radio" name="q7" value="d">$0$</label>
+        <div class="verdict ok">✓ 正解。$E[X]=1\cdot\frac12+0\cdot\frac12=\frac12$。</div>
+        <div class="verdict ng">✗ 不正解。$E[X]=1\cdot\frac12+0\cdot\frac12=\frac12$。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="d" data-review='<a href="probability-basics.html#cond">確率・統計の基礎 §2</a>'>
+        <h3><span class="qnum">Q8</span>事象 $A,B$ が独立であるための条件は？</h3>
+        <label><input type="radio" name="q8" value="a">$P(A\cup B)=P(A)+P(B)$</label>
+        <label><input type="radio" name="q8" value="b">$P(A\cap B)=0$</label>
+        <label><input type="radio" name="q8" value="c">$P(A)=P(B)$</label>
+        <label><input type="radio" name="q8" value="d">$P(A\cap B)=P(A)P(B)$</label>
+        <div class="verdict ok">✓ 正解。独立＝積の法則が成り立つこと。</div>
+        <div class="verdict ng">✗ 不正解。独立の定義は $P(A\cap B)=P(A)P(B)$（排反とは別概念）。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="b" data-review='<a href="newtonian-mechanics.html#laws">ニュートン力学 §2</a>'>
+        <h3><span class="qnum">Q9</span>質量 $4\,\text{kg}$ の物体に $12\,\text{N}$ の力を加えたときの加速度は？</h3>
+        <label><input type="radio" name="q9" value="a">$48\,\text{m/s}^2$</label>
+        <label><input type="radio" name="q9" value="b">$3\,\text{m/s}^2$</label>
+        <label><input type="radio" name="q9" value="c">$0.33\,\text{m/s}^2$</label>
+        <label><input type="radio" name="q9" value="d">$12\,\text{m/s}^2$</label>
+        <div class="verdict ok">✓ 正解。$a=F/m=12/4=3$。</div>
+        <div class="verdict ng">✗ 不正解。$F=ma$ より $a=F/m=3\,\text{m/s}^2$。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-q" data-answer="c" data-review='<a href="newtonian-mechanics.html#energy">ニュートン力学 §4</a>'>
+        <h3><span class="qnum">Q10</span>速さ $v$、質量 $m$ の物体の運動エネルギーは？</h3>
+        <label><input type="radio" name="q10" value="a">$mv$</label>
+        <label><input type="radio" name="q10" value="b">$mv^2$</label>
+        <label><input type="radio" name="q10" value="c">$\dfrac12 mv^2$</label>
+        <label><input type="radio" name="q10" value="d">$\dfrac12 mv$</label>
+        <div class="verdict ok">✓ 正解。$K=\frac12mv^2$。</div>
+        <div class="verdict ng">✗ 不正解。運動エネルギーは $\frac12 mv^2$。復習: <span class="rv"></span></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button type="button" id="grade">採点する</button>
+        <span id="quiz-score"></span>
+      </div>
+    </form>
+
+    <div class="box note">
+      <div class="box-title">💡 このあとは</div>
+      <p>8問以上正解 → <a href="analysis.html">解析学</a> や <a href="linear-algebra.html">線形代数</a> へ。迷ったら <a href="getting-started.html">学習ガイド</a>、記号は <a href="glossary.html">記号・用語集</a>。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var btn = document.getElementById("grade");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var qs = document.querySelectorAll(".quiz-q");
+      var score = 0, answered = 0;
+      qs.forEach(function (q) {
+        var name = q.querySelector("input").name;
+        var sel = q.querySelector('input[name="' + name + '"]:checked');
+        q.classList.remove("correct", "wrong");
+        if (!sel) return;
+        answered++;
+        var rv = q.querySelector(".verdict.ng .rv");
+        if (rv) rv.innerHTML = q.dataset.review;
+        if (sel.value === q.dataset.answer) { q.classList.add("correct"); score++; }
+        else { q.classList.add("wrong"); }
+      });
+      var el = document.getElementById("quiz-score");
+      if (answered < qs.length) {
+        el.textContent = "未回答が " + (qs.length - answered) + " 問あります";
+        el.style.color = "var(--yellow)";
+      } else {
+        el.textContent = "結果: " + score + " / " + qs.length + (score >= 8 ? " — 合格！上級分野へ🎉" : " — 間違えた分野を復習しましょう");
+        el.style.color = score >= 8 ? "var(--green)" : "var(--red)";
+      }
+      // 採点後に数式を再レンダリング（表示された verdict 内）
+      if (typeof renderMathInElement !== "undefined") {
+        renderMathInElement(document.getElementById("quiz"), {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    });
+  });
+</script>
+</body>
+</html>

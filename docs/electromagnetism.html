@@ -35,6 +35,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="vectors-matrices.html">ベクトルと行列</a>（内積・外積）、<a href="calculus-basics.html">微分積分の基礎</a>、div/rot は <a href="glossary.html">記号・用語集</a> の ∇ を参照。深く学ぶなら <a href="pde.html">偏微分方程式</a>。</p></div>
+
     <h2 id="maxwell">1. Maxwell 方程式</h2>
     <div class="box def">
       <div class="box-title">📖 Maxwell 方程式（微分形）</div>
@@ -143,6 +145,12 @@
         <li>電荷 $q$ の粒子が一様電磁場 $(\mathbf{E}, \mathbf{B})$ 中で運動する方程式を共変形で書け。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>対称性より磁場は電流を中心とする円周方向（右ねじの向き）。半径 $r$ の円 $C$ に Ampère の法則 $\oint_C \mathbf{B}\cdot d\boldsymbol{\ell} = \mu_0 I_{\rm enc}$ を適用すると $B\cdot 2\pi r = \mu_0 I$，よって $$B = \frac{\mu_0 I}{2\pi r}$$ 例えば $I = 1\,\text{A}$，$r = 1\,\text{cm}$ なら $B = \dfrac{4\pi\times10^{-7}\times 1}{2\pi\times 0.01} = 2\times10^{-5}\,\text{T}$（地磁気と同程度）。</li>
+      <li>半径 $R$ の接地導体球を一様外場 $\mathbf{E}_0 = E_0\hat z$ 中に置く。真空領域で $\nabla^2\phi = 0$，境界条件は $\phi(R,\theta)=0$ と $\phi \to -E_0 r\cos\theta$（$r\to\infty$）。Legendre 展開の $\ell=1$ 項のみ残り $$\phi(r,\theta) = -E_0\left(r - \frac{R^3}{r^2}\right)\cos\theta$$ 誘導面電荷密度は $\sigma = -\varepsilon_0\,\partial_r\phi\big|_{r=R} = 3\varepsilon_0 E_0\cos\theta$，誘起双極子モーメントは $p = 4\pi\varepsilon_0 R^3 E_0$。</li>
+      <li>$z$ 方向伝播の平面波は $\mathbf{E} = \mathrm{Re}\left[(E_x\hat x + E_y e^{i\delta}\hat y)e^{i(kz-\omega t)}\right]$ と書ける（$\delta$: 位相差）。<strong>直線偏光</strong>: $\delta = 0, \pi$（$E_x$，$E_y$ が同位相・逆位相で，振動方向が固定）。<strong>円偏光</strong>: $E_x = E_y$ かつ $\delta = \pm\pi/2$（電場ベクトルの先端が円を描く。$+$: 左回り，$-$: 右回りの慣例あり）。<strong>楕円偏光</strong>: それ以外の一般の場合（振幅比・位相差が任意で先端が楕円を描く）。</li>
+      <li>共変形の運動方程式は $$\frac{dp^\mu}{d\tau} = qF^{\mu\nu}u_\nu$$ ここで $u^\nu = \gamma(c, \mathbf{v})$，$p^\mu = mu^\mu$。空間成分は $\dfrac{d\mathbf{p}}{dt} = q(\mathbf{E} + \mathbf{v}\times\mathbf{B})$（Lorentz 力），時間成分は $\dfrac{dE}{dt} = q\,\mathbf{E}\cdot\mathbf{v}$（磁場は仕事をしない）を再現する。</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

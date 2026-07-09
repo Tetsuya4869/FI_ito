@@ -36,6 +36,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="thermodynamics.html">熱力学</a>（マクロな対応物）、<a href="probability-basics.html">確率・統計の基礎</a>、<a href="classical-mechanics.html">古典力学</a>（位相空間）。</p></div>
+
     <h2 id="ensemble">1. 統計アンサンブル</h2>
     <div class="box def">
       <div class="box-title">📖 ミクロカノニカルアンサンブル（孤立系）</div>
@@ -145,6 +147,12 @@
         <li>Fokker-Planck 方程式 $\partial_t P = \gamma\partial_x(xP) + D\partial_x^2 P$ の定常解を求めよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>角振動数 $\omega$ の量子調和振動子 1 個の分配関数は $Z_1 = \sum_{n=0}^\infty e^{-\beta\hbar\omega(n+1/2)} = \dfrac{e^{-\beta\hbar\omega/2}}{1-e^{-\beta\hbar\omega}}$。区別できる $N$ 個で $Z = Z_1^N$ より $$\langle E\rangle = N\hbar\omega\left(\frac{1}{2} + \frac{1}{e^{\beta\hbar\omega}-1}\right), \quad C_V = Nk_B\left(\frac{\hbar\omega}{k_BT}\right)^2\frac{e^{\hbar\omega/k_BT}}{(e^{\hbar\omega/k_BT}-1)^2}$$ 高温 ($k_BT\gg\hbar\omega$) で $C_V\to Nk_B$（等分配則，3次元固体なら $3Nk_B$ = Dulong-Petit 則），低温では $C_V \sim e^{-\hbar\omega/k_BT}$ で指数的に消える。</li>
+      <li>平均場近似では $s_i s_j \approx s_i m + m s_j - m^2$（$m = \langle s\rangle$）とし，各スピンは有効磁場 $h_{\rm eff} = Jzm + h$ 中の独立スピンになる（$z$: 配位数，2次元正方格子で $z=4$）。$h=0$ での自己無撞着方程式は $$m = \tanh(\beta Jzm)$$ $m\ne 0$ の解が現れる条件 $\beta_c Jz = 1$ より $k_BT_c = zJ = 4J$。厳密解（Onsager）の $k_BT_c = 2J/\ln(1+\sqrt2) \approx 2.27J$ より高く，平均場は揺らぎを無視するため転移温度を過大評価する。</li>
+      <li>$T=0$ ではスピン $1/2$ のフェルミオンが波数 $k_F$ まで詰まる: $N = 2\dfrac{V}{(2\pi)^3}\dfrac{4\pi k_F^3}{3}$ より $k_F = (3\pi^2 n)^{1/3}$（$n = N/V$）。よって $$E_F = \frac{\hbar^2}{2m}(3\pi^2 n)^{2/3}, \quad U = \int_0^{E_F}\varepsilon\,g(\varepsilon)\,d\varepsilon = \frac{3}{5}NE_F$$ 例: 銅の伝導電子 $n \approx 8.5\times10^{28}\,\text{m}^{-3}$ で $E_F \approx 7.0\,\text{eV}$，Fermi 温度 $T_F = E_F/k_B \approx 8\times10^4\,\text{K}$（室温 $\ll T_F$ なので金属電子は強く縮退）。</li>
+      <li>定常状態 $\partial_t P = 0$ では確率流 $J = -\gamma xP - D\partial_x P$ が定数。$x\to\pm\infty$ で $P\to 0$ より $J=0$，すなわち $\dfrac{dP}{dx} = -\dfrac{\gamma x}{D}P$。積分して規格化すると $$P_{\rm st}(x) = \sqrt{\frac{\gamma}{2\pi D}}\,e^{-\gamma x^2/(2D)}$$ 平均 0，分散 $\sigma^2 = D/\gamma$ の Gauss 分布（Ornstein-Uhlenbeck 過程の平衡分布。Einstein 関係 $D = \gamma k_BT/k$ 型の揺動散逸のバランスを表す）。</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

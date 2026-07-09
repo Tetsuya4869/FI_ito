@@ -3,7 +3,7 @@ const SIDEBAR_HTML = `
   <div class="sidebar-logo">
     <a href="index.html">
       <div class="logo-icon">∑</div>
-      <div><div class="logo-text">高等数学</div><div class="logo-sub">Higher Mathematics</div></div>
+      <div><div class="logo-text">高等数学・物理</div><div class="logo-sub">Math &amp; Physics</div></div>
     </a>
   </div>
   <div class="sidebar-search">
@@ -17,6 +17,7 @@ const SIDEBAR_HTML = `
     <nav>
       <a href="getting-started.html"><span class="nav-icon">✦</span>学習ガイド</a>
       <a href="glossary.html"><span class="nav-icon">§</span>記号・用語集</a>
+      <a href="quiz-basics.html"><span class="nav-icon">✎</span>基礎 小テスト</a>
       <a href="calculus-basics.html"><span class="nav-icon">∫</span>微分積分の基礎</a>
       <a href="vectors-matrices.html"><span class="nav-icon">↗</span>ベクトルと行列</a>
       <a href="sets-logic.html"><span class="nav-icon">∈</span>集合と論理・証明</a>
@@ -162,6 +163,51 @@ document.addEventListener("DOMContentLoaded", function () {
       a.classList.add("active");
     }
   });
+
+  /* ── Reading progress (localStorage) ── */
+  const PROGRESS_KEY = "fi-ito-done";
+  const getDone = () => {
+    try { return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || {}; }
+    catch { return {}; }
+  };
+  const doneMap = getDone();
+  document.querySelectorAll(".sidebar nav a").forEach(a => {
+    const href = a.getAttribute("href")?.split("/").pop();
+    if (href && doneMap[href]) a.classList.add("done");
+  });
+
+  /* ── Prev/Next navigation + done button (sidebar order) ── */
+  const contentBody = document.querySelector(".content-body");
+  const seq = [];
+  document.querySelectorAll(".sidebar nav a").forEach(a => {
+    const href = a.getAttribute("href")?.split("/").pop();
+    if (!href || href === "index.html" || seq.some(p => p.href === href)) return;
+    const clone = a.cloneNode(true);
+    clone.querySelector(".nav-icon")?.remove();
+    seq.push({ href, label: clone.textContent.trim() });
+  });
+  const curIdx = seq.findIndex(p => p.href === current);
+  if (curIdx !== -1 && contentBody) {
+    const doneBtn = document.createElement("button");
+    const isDone = !!doneMap[current];
+    doneBtn.className = "done-btn" + (isDone ? " is-done" : "");
+    doneBtn.textContent = isDone ? "✓ 読了済み（クリックで解除）" : "☐ このページを読了にする";
+    doneBtn.addEventListener("click", () => {
+      const d = getDone();
+      if (d[current]) delete d[current]; else d[current] = true;
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(d));
+      location.reload();
+    });
+    contentBody.appendChild(doneBtn);
+
+    const prev = seq[curIdx - 1], next = seq[curIdx + 1];
+    const nav = document.createElement("div");
+    nav.className = "page-nav";
+    nav.innerHTML =
+      (prev ? `<a class="pn-prev" href="${prev.href}"><span class="pn-dir">← 前</span>${prev.label}</a>` : "<span></span>") +
+      (next ? `<a class="pn-next" href="${next.href}"><span class="pn-dir">次 →</span>${next.label}</a>` : "<span></span>");
+    contentBody.appendChild(nav);
+  }
 
   /* ── Sidebar search ── */
   const searchInput = document.getElementById("nav-search");

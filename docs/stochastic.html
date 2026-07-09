@@ -55,6 +55,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="probability.html">確率論</a>（条件付き期待値・収束）、<a href="measure-theory.html">測度論</a>、<a href="analysis.html">解析学</a>。入門は <a href="probability-basics.html">確率・統計の基礎</a> から。</p></div>
+
     <h2 id="brownian">1. ブラウン運動</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — ブラウン運動（Wiener 過程）</div>
@@ -246,6 +248,15 @@
         $$C_0 - P_0 = e^{-rT}\cdot S_0 e^{rT} - Ke^{-rT} = S_0 - Ke^{-rT}.$$
       </li>
     </ol></div></details>
+    <div class="box note">
+      <div class="box-title">💻 コードで確かめる</div>
+      <p>このリポジトリには伊藤の公式を数値検証する Python 教材があります。ブラウン運動の生成・伊藤積分の収束・GBM のシミュレーションを実際に動かして確認できます。</p>
+      <ul>
+        <li><a href="https://github.com/Tetsuya4869/FI_ito/blob/main/ito_formula.py">ito_formula.py</a> — GBM と伊藤の公式の数値検証・Black-Scholes 公式</li>
+        <li><a href="https://github.com/Tetsuya4869/FI_ito/blob/main/ito_integral.py">ito_integral.py</a> — 伊藤積分の定義どおりの近似と収束確認</li>
+        <li><a href="https://github.com/Tetsuya4869/FI_ito/blob/main/processes.py">processes.py</a> — ブラウン運動・OU 過程などの標本路生成</li>
+      </ul>
+    </div>
   </div>
 </div>
 </body>

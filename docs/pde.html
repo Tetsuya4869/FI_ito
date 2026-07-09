@@ -54,6 +54,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="ordinary-differential-equations.html">常微分方程式</a>、<a href="fourier-analysis.html">フーリエ解析</a>（変数分離・変換解法）、<a href="analysis.html">解析学</a>。</p></div>
+
     <h2 id="classification">1. PDE の分類</h2>
     <p>2 階線形 PDE $au_{xx} + 2bu_{xy} + cu_{yy} + \cdots = 0$ の判別式 $\Delta = b^2 - ac$ で分類する：</p>
     <table>
@@ -175,6 +177,24 @@
         <li>$\widehat{e^{-a|x|}}(\xi)$（$a&gt;0$）を計算せよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>$x$ についてフーリエ変換すると $\partial_t \hat u = -\xi^2 \hat u$，初期条件は $\hat u(\xi, 0) = \hat\delta(\xi) = 1$。よって
+      $$\hat u(\xi, t) = e^{-\xi^2 t}$$
+      Gauss 関数の変換公式 $\mathcal{F}[e^{-ax^2}] = \sqrt{\pi/a}\,e^{-\xi^2/(4a)}$（$a = 1/(4t)$）で逆変換して
+      $$u(x,t) = \frac{1}{\sqrt{4\pi t}}\,e^{-x^2/4t}$$
+      これは熱核 $\Phi(x,t)$（$\kappa = 1$，$n=1$）に一致する。</li>
+      <li>d'Alembert の公式に $f(x) = \sin x$，$g = 0$，$c = 1$ を代入:
+      $$u(x,t) = \frac{\sin(x+t) + \sin(x-t)}{2} = \sin x \cos t$$
+      （積和公式による）。定在波であることが分かる。</li>
+      <li>球対称解 $u = u(r)$（$r = |x|$）に対し，2 次元の極座標ラプラシアンは
+      $$\Delta u = u'' + \frac{1}{r}u' = \frac{1}{r}(r u')' = 0$$
+      よって $r u' = C_1$，$u' = C_1/r$ を積分して
+      $$u(r) = C_1 \ln r + C_2$$
+      （$C_1 \ne 0$ の解は Green 関数 $-\frac{1}{2\pi}\ln|x|$ の定数倍に対応する。）</li>
+      <li>偶関数なので
+      $$\widehat{e^{-a|x|}}(\xi) = \int_{-\infty}^\infty e^{-a|x|} e^{-i\xi x}\,dx = 2\int_0^\infty e^{-ax}\cos(\xi x)\,dx = 2\,\mathrm{Re}\int_0^\infty e^{-(a - i\xi)x}\,dx = 2\,\mathrm{Re}\,\frac{1}{a - i\xi}$$
+      $$= \frac{2a}{a^2 + \xi^2}$$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

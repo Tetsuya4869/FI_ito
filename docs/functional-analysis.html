@@ -54,6 +54,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="linear-algebra.html">線形代数</a>（内積・ノルム）、<a href="topology.html">位相空間論</a>（完備性・コンパクト）、<a href="measure-theory.html">測度論</a>（$L^p$ 空間）。</p></div>
+
     <h2 id="normed">1. ノルム空間とバナッハ空間</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — ノルム空間・バナッハ空間</div>
@@ -193,6 +195,17 @@
         <li>閉グラフ定理を使って，$T: C^1[0,1] \to C[0,1]$，$Tf = f'$ が非有界であることを示せ（$\|T\| = \infty$ を直接示してもよい）。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li><strong>完備性</strong>は Riesz-Fischer の定理（測度論）。<strong>可分性</strong>: 有理数係数の多項式全体 $\mathcal{P}_{\mathbb{Q}}$ は可算集合。単関数は $L^p$ で稠密，Lusin の定理より連続関数も稠密，さらに Weierstrass の近似定理より多項式は $C[0,1]$ で一様稠密。$[0,1]$ 上では一様収束 $\Rightarrow L^p$ 収束（$\|f\|_p \le \|f\|_\infty$）なので，$\mathcal{P}_{\mathbb{Q}}$ は $L^p[0,1]$ で稠密。よって可分。$\square$</li>
+      <li>$T^* g(x) = \int_x^1 g(t)\,dt$ であり，$\|T\|^2 = \|T^*T\|$ は $T^*T$ の最大固有値。$T^*Tf = \lambda f$ とおくと $(T^*Tf)(x) = \int_x^1\!\int_0^s f(t)\,dt\,ds$ より，2 回微分して
+      $$\lambda f'' = -f, \qquad f'(0) = 0,\; f(1) = 0$$
+      解は $f(x) = \cos(x/\sqrt{\lambda})$ で，境界条件から $\cos(1/\sqrt{\lambda}) = 0$，すなわち $\frac{1}{\sqrt{\lambda_k}} = \frac{(2k-1)\pi}{2}$。最大固有値は $\lambda_1 = (2/\pi)^2$ なので
+      $$\|T\| = \sqrt{\lambda_1} = \frac{2}{\pi}$$</li>
+      <li>$y \in \ell^\infty$ に対し $f_y(x) = \sum_n x_n y_n$ とおくと，Hölder（$p=1, q=\infty$）より $|f_y(x)| \le \|y\|_\infty \|x\|_1$，すなわち $\|f_y\| \le \|y\|_\infty$。逆に $f \in (\ell^1)^*$ に対し $y_n = f(e_n)$（$e_n$ は標準基底）とおくと $|y_n| \le \|f\|\,\|e_n\|_1 = \|f\|$ より $y \in \ell^\infty$，$\|y\|_\infty \le \|f\|$。有限列は $\ell^1$ で稠密かつ $f$ は連続なので $f = f_y$。以上より $y \mapsto f_y$ は等長同型 $(\ell^1)^* \cong \ell^\infty$。$\square$</li>
+      <li>$f_n(x) = \sin(nx)$ とおくと $\|f_n\|_\infty \le 1$ だが $\|Tf_n\|_\infty = \|n\cos(nx)\|_\infty = n$。よって
+      $$\|T\| \ge \sup_n \frac{\|Tf_n\|_\infty}{\|f_n\|_\infty} = \infty$$
+      で非有界。閉グラフ定理との整合性: $f_n \to f$ かつ $f_n' \to g$ が一様収束なら $f' = g$（微分と極限の交換定理）なので $T$ のグラフは閉。それでも非有界なのは，$(C^1[0,1], \|\cdot\|_\infty)$ が完備でない（バナッハ空間でない）ため閉グラフ定理の仮定を満たさないからである。$\square$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="sets-logic.html">集合と論理・証明</a>（写像・同値関係・証明の型）。記号に迷ったら <a href="glossary.html">記号・用語集</a>。</p></div>
+
     <h2 id="groups">1. 群の定義と例</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — 群</div>
@@ -185,6 +187,12 @@
         <li>$\mathbb{Q}(\sqrt{2},\sqrt{3})/\mathbb{Q}$ のガロア群を求め，中間体と部分群の対応を完成させよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>$\mathbb{Z}/6\mathbb{Z}$ は巡回群なので，部分群は $6$ の約数 $d$ ごとにちょうど1つ: $\{\bar 0\}$（位数 1），$\langle \bar 3 \rangle = \{\bar 0, \bar 3\}$（位数 2），$\langle \bar 2 \rangle = \{\bar 0, \bar 2, \bar 4\}$（位数 3），$\mathbb{Z}/6\mathbb{Z}$ 自身（位数 6）。各位数 $1, 2, 3, 6$ はすべて $|G| = 6$ を割り切り，Lagrange の定理と整合する。$\square$</li>
+      <li>$D_3$ は正三角形の対称変換群で，頂点集合 $\{1,2,3\}$ への作用から準同型 $\varphi: D_3 \to S_3$ を得る。対称変換は3頂点の像で完全に決まるので，全頂点を固定するのは恒等変換のみ，すなわち $\ker\varphi = \{e\}$。第一準同型定理より $D_3 \cong D_3/\ker\varphi \cong \mathrm{Im}\,\varphi \le S_3$。ここで $|D_3| = 6 = 3! = |S_3|$ だから $\mathrm{Im}\,\varphi = S_3$，よって $D_3 \cong S_3$。$\square$</li>
+      <li>可逆行列は行ベクトルが一次独立な行列。第1行は零ベクトル以外の任意のベクトルで $p^2 - 1$ 通り。第2行は第1行のスカラー倍（$p$ 通り）を除く $p^2 - p$ 通り。よって $$|\mathrm{GL}_2(\mathbb{F}_p)| = (p^2-1)(p^2-p).$$</li>
+      <li>$K = \mathbb{Q}(\sqrt{2},\sqrt{3})$ は $(x^2-2)(x^2-3)$ の分解体でガロア拡大，$[K:\mathbb{Q}] = 2 \cdot 2 = 4$。$\sigma: \sqrt{2} \mapsto -\sqrt{2}$（$\sqrt{3}$ 固定），$\tau: \sqrt{3} \mapsto -\sqrt{3}$（$\sqrt{2}$ 固定）とすると $\sigma^2 = \tau^2 = e$，$\sigma\tau = \tau\sigma$ より $$\mathrm{Gal}(K/\mathbb{Q}) = \{e, \sigma, \tau, \sigma\tau\} \cong \mathbb{Z}/2\mathbb{Z} \times \mathbb{Z}/2\mathbb{Z} \;(\text{Klein の四元群}).$$ ガロア対応（包含反転）: $\{e\} \leftrightarrow K$，$\langle\sigma\rangle \leftrightarrow \mathbb{Q}(\sqrt{3})$，$\langle\tau\rangle \leftrightarrow \mathbb{Q}(\sqrt{2})$，$\langle\sigma\tau\rangle \leftrightarrow \mathbb{Q}(\sqrt{6})$（$\sigma\tau$ は $\sqrt{6} = \sqrt{2}\sqrt{3} \mapsto (-\sqrt{2})(-\sqrt{3}) = \sqrt{6}$ を固定），全体 $\leftrightarrow \mathbb{Q}$。$\square$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

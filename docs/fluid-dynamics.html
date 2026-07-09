@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="vectors-matrices.html">ベクトル</a> と <a href="calculus-basics.html">微分積分の基礎</a>。応力テンソルは <a href="continuum-mechanics.html">連続体力学</a>、解析は <a href="pde.html">偏微分方程式</a> と地続き。</p></div>
+
     <h2 id="continuum">1. 連続体としての流体</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — 連続体近似と速度場</div>
@@ -205,6 +207,42 @@
         <li>直径 $2\,\mathrm{cm}$ の管を水（$\nu\approx 10^{-6}\,\mathrm{m^2/s}$）が平均速度 $0.5\,\mathrm{m/s}$ で流れるときのレイノルズ数を求め，層流か乱流かを判定せよ。</li>
       </ol>
     </div>
+    <details class="solution">
+      <summary>解答例を見る</summary>
+      <div class="sol-body">
+        <ol>
+          <li>
+            <p>定常（$\partial_t\mathbf{u}=0$）・非粘性・非圧縮の Euler 方程式 $\rho(\mathbf{u}\cdot\nabla)\mathbf{u} = -\nabla p - \rho g\,\hat{\mathbf{z}}$ を，流線に沿う弧長 $s$ 方向の成分で書く。流線方向の単位ベクトルを $\hat{\mathbf{t}}$，流速の大きさを $u$ とすると $(\mathbf{u}\cdot\nabla)\mathbf{u}\cdot\hat{\mathbf{t}} = u\,\dfrac{du}{ds}$ なので</p>
+            $$\rho u\frac{du}{ds} = -\frac{dp}{ds} - \rho g\frac{dz}{ds}$$
+            <p>$\rho = $ 一定として $s$ で積分すると</p>
+            $$\frac{d}{ds}\left(\frac{1}{2}\rho u^2 + p + \rho g z\right) = 0 \;\Rightarrow\; \frac{1}{2}\rho u^2 + p + \rho g z = \text{一定（流線に沿って）}$$
+          </li>
+          <li>
+            <p>恒等式 $\nabla\cdot(\rho\mathbf{u}) = \mathbf{u}\cdot\nabla\rho + \rho\,\nabla\cdot\mathbf{u}$ を連続の式に代入すると</p>
+            $$\frac{\partial\rho}{\partial t} + \mathbf{u}\cdot\nabla\rho + \rho\,\nabla\cdot\mathbf{u} = \frac{D\rho}{Dt} + \rho\,\nabla\cdot\mathbf{u} = 0$$
+            <p>$\nabla\cdot\mathbf{u}=0$ ならば直ちに $D\rho/Dt = 0$。逆に $D\rho/Dt = 0$ ならば $\rho\,\nabla\cdot\mathbf{u}=0$ で，$\rho>0$ より $\nabla\cdot\mathbf{u}=0$。よって両者は等価である。</p>
+          </li>
+          <li>
+            <p>軸対称・定常・軸方向のみの流れ $u = u(r)$ では移流項が消え，Navier-Stokes の軸方向成分は</p>
+            $$0 = G + \mu\,\frac{1}{r}\frac{d}{dr}\left(r\frac{du}{dr}\right) \qquad (G = -dp/dx)$$
+            <p>2回積分すると $u(r) = -\dfrac{G}{4\mu}r^2 + C_1\ln r + C_2$。中心軸 $r=0$ で有限であるためには $C_1 = 0$，壁での粘着条件 $u(R)=0$ から $C_2 = GR^2/(4\mu)$。よって</p>
+            $$u(r) = \frac{G}{4\mu}\bigl(R^2 - r^2\bigr)$$
+            <p>流量は断面で積分して</p>
+            $$Q = \int_0^R u(r)\,2\pi r\,dr = \frac{2\pi G}{4\mu}\left(\frac{R^4}{2} - \frac{R^4}{4}\right) = \frac{\pi G R^4}{8\mu}$$
+          </li>
+          <li>
+            <p>渦なしより $\mathbf{u} = \nabla\phi$，非圧縮 $\nabla\cdot\mathbf{u}=0$ に代入して $\nabla^2\phi = 0$。2次元非圧縮流れでは流れ関数 $\psi$ を $u = \partial\psi/\partial y,\ v = -\partial\psi/\partial x$ で定義できる（これで $\nabla\cdot\mathbf{u}=0$ が自動的に満たされる）。$u = \partial\phi/\partial x,\ v = \partial\phi/\partial y$ と見比べると</p>
+            $$\frac{\partial\phi}{\partial x} = \frac{\partial\psi}{\partial y}, \qquad \frac{\partial\phi}{\partial y} = -\frac{\partial\psi}{\partial x}$$
+            <p>これは Cauchy-Riemann 方程式であり，複素ポテンシャル $w(z) = \phi + i\psi$ は $z = x+iy$ の正則関数となる（$\psi$ も $\nabla^2\psi = 0$ を満たす）。等ポテンシャル線と流線は直交する。</p>
+          </li>
+          <li>
+            <p>代表長さを管の直径 $L = 2\,\mathrm{cm} = 0.02\,\mathrm{m}$ として</p>
+            $$Re = \frac{UL}{\nu} = \frac{0.5 \times 0.02}{10^{-6}} = 10^4$$
+            <p>円管の遷移の目安 $Re \sim 2300$ を大きく超えるので，この流れは<strong>乱流</strong>である。</p>
+          </li>
+        </ol>
+      </div>
+    </details>
 
     <div class="box note">
       <div class="box-title">💡 次のステップ</div>
