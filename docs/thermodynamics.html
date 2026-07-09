@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="calculus-basics.html">微分積分の基礎</a>（偏微分・全微分）と <a href="newtonian-mechanics.html">ニュートン力学</a>（仕事とエネルギー）。ミクロな根拠は <a href="statistical-mechanics.html">統計力学</a> へ。</p></div>
+
     <div class="box note">
       <div class="box-title">💡 関連</div>
       <p>熱力学はマクロな量（温度・圧力・体積・エントロピーなど）の間の関係を，分子の詳細によらず普遍的に記述する。これらマクロ量のミクロな対応物（分配関数・ミクロ状態数）を扱うのが <a href="statistical-mechanics.html">統計力学</a> である。本ページの法則は，統計力学から導出することもできる。</p>
@@ -257,6 +259,43 @@
         <li>Clausius-Clapeyron の式を用い，水の蒸発潜熱（$L \approx 40.7\ \mathrm{kJ/mol}$）から，沸点付近で温度を $1\ \mathrm{K}$ 上げたときの蒸気圧の相対変化 $\Delta P/P$ を概算せよ。</li>
       </ol>
     </div>
+    <details class="solution">
+      <summary>解答例を見る</summary>
+      <div class="sol-body">
+        <ol>
+          <li>
+            <p>断熱（$\delta Q = 0$）準静的過程では第1法則より $dU = -P\,dV$。理想気体では $dU = C_V\,dT = \tfrac32 nR\,dT$，$P = nRT/V$ なので</p>
+            $$\frac{3}{2}nR\,dT = -\frac{nRT}{V}\,dV \;\Rightarrow\; \frac{3}{2}\frac{dT}{T} = -\frac{dV}{V}$$
+            <p>積分して $\tfrac32\ln T + \ln V = \text{const}$，すなわち $TV^{2/3} = $ 一定。$T = PV/(nR)$ を代入すると</p>
+            $$PV^{5/3} = \text{一定}$$
+            <p>一般には $C_V\,dT = -P\,dV$ から $TV^{\gamma-1} = $ 一定，$PV^{\gamma} = $ 一定（$\gamma = C_P/C_V$）。単原子理想気体では $\gamma = \tfrac{5/2}{3/2} = 5/3$。</p>
+          </li>
+          <li>
+            <p>Carnot 効率は $\eta = 1 - T_c/T_h = 1 - 300/500 = 0.4$。よって</p>
+            $$W = \eta\,Q_h = 0.4 \times 1000\ \mathrm{J} = 400\ \mathrm{J}, \qquad Q_c = Q_h - W = 600\ \mathrm{J}$$
+            <p>検算: $Q_c/Q_h = 600/1000 = 0.6 = T_c/T_h = 300/500$ が成り立つ。</p>
+          </li>
+          <li>
+            <p>エネルギー保存より終温度は $T_f = \dfrac{T_1 + T_2}{2}$。各物体のエントロピー変化は $\Delta S_i = \displaystyle\int_{T_i}^{T_f}\frac{C\,dT}{T} = C\ln\frac{T_f}{T_i}$ なので</p>
+            $$\Delta S = C\ln\frac{T_f}{T_1} + C\ln\frac{T_f}{T_2} = C\ln\frac{T_f^2}{T_1 T_2} = C\ln\frac{(T_1+T_2)^2}{4T_1T_2}$$
+            <p>相加・相乗平均の不等式 $\dfrac{T_1+T_2}{2} \ge \sqrt{T_1T_2}$（等号は $T_1 = T_2$）より対数の中身は $\ge 1$，したがって $\Delta S \ge 0$。$T_1 \neq T_2$ なら厳密に正で，有限温度差の熱伝導が不可逆であることを示す。</p>
+          </li>
+          <li>
+            <p>Gibbs 自由エネルギーの全微分 $dG = -S\,dT + V\,dP$ から</p>
+            $$S = -\left(\frac{\partial G}{\partial T}\right)_P, \qquad V = \left(\frac{\partial G}{\partial P}\right)_T$$
+            <p>$G$ は状態量なので2階偏微分は順序交換可能: $\dfrac{\partial^2 G}{\partial P\,\partial T} = \dfrac{\partial^2 G}{\partial T\,\partial P}$。左辺は $-\left(\partial S/\partial P\right)_T$，右辺は $\left(\partial V/\partial T\right)_P$ であるから</p>
+            $$\left(\frac{\partial S}{\partial P}\right)_T = -\left(\frac{\partial V}{\partial T}\right)_P$$
+          </li>
+          <li>
+            <p>気相を理想気体・$v_g \gg v_l$ と近似した Clausius-Clapeyron の式より</p>
+            $$\frac{\Delta P}{P} \approx \frac{L}{RT^2}\,\Delta T$$
+            <p>$L = 40.7\times 10^3\ \mathrm{J/mol}$，$T = 373\ \mathrm{K}$，$\Delta T = 1\ \mathrm{K}$ を代入すると</p>
+            $$\frac{\Delta P}{P} \approx \frac{40.7\times 10^3}{8.314 \times 373^2} \approx \frac{40.7\times 10^3}{1.16\times 10^6} \approx 0.035$$
+            <p>すなわち沸点付近では温度が $1\ \mathrm{K}$ 上がるごとに蒸気圧は約 $3.5\%$ 増加する。</p>
+          </li>
+        </ol>
+      </div>
+    </details>
   </div>
 </div>
 </body>

@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="sets-logic.html">集合と論理・証明</a>（帰納法・背理法）と <a href="abstract-algebra.html">抽象代数学</a>（合同類は剰余群）。</p></div>
+
     <h2 id="divisibility">1. 整除性と Euclid 互除法</h2>
     <div class="box thm">
       <div class="box-title">✓ 定理 — Euclid 互除法</div>
@@ -161,6 +163,12 @@
         <li>$\zeta(2) = \pi^2/6$ を証明せよ（ヒント: フーリエ級数 $\sum n^{-2} = \int_0^1 \pi^2 x(1-x) dx$ など複数の方法がある）。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>互除法: $1071 = 2 \cdot 462 + 147$，$462 = 3 \cdot 147 + 21$，$147 = 7 \cdot 21 + 0$。よって $\gcd(1071, 462) = 21$。逆にたどると $$21 = 462 - 3 \cdot 147 = 462 - 3(1071 - 2 \cdot 462) = (-3) \cdot 1071 + 7 \cdot 462.$$ Bezout 係数は $x = -3$，$y = 7$。検算: $-3213 + 3234 = 21$ ✓</li>
+      <li>$M = 3 \cdot 5 \cdot 7 = 105$。$M_1 = 35 \equiv 2 \pmod 3$ の逆元は $2$（$2 \cdot 2 = 4 \equiv 1$），$M_2 = 21 \equiv 1 \pmod 5$ の逆元は $1$，$M_3 = 15 \equiv 1 \pmod 7$ の逆元は $1$。よって $$x \equiv 2 \cdot 35 \cdot 2 + 3 \cdot 21 \cdot 1 + 2 \cdot 15 \cdot 1 = 140 + 63 + 30 = 233 \equiv 23 \pmod{105}.$$ 検算: $23 = 3 \cdot 7 + 2$，$23 = 4 \cdot 5 + 3$，$23 = 3 \cdot 7 + 2$ で全条件を満たす ✓</li>
+      <li>$7, 13$ は相異なる奇素数で $\frac{7-1}{2} \cdot \frac{13-1}{2} = 3 \cdot 6$ は偶数なので $\left(\frac{7}{13}\right)\left(\frac{13}{7}\right) = (+1)$，すなわち $\left(\frac{7}{13}\right) = \left(\frac{13}{7}\right) = \left(\frac{6}{7}\right) = \left(\frac{2}{7}\right)\left(\frac{3}{7}\right)$。補足法則より $\left(\frac{2}{7}\right) = (-1)^{(49-1)/8} = (-1)^6 = 1$。また $\left(\frac{3}{7}\right)\left(\frac{7}{3}\right) = (-1)^{1 \cdot 3} = -1$ で，$7 \equiv 1 \pmod 3$ より $\left(\frac{7}{3}\right) = \left(\frac{1}{3}\right) = 1$，ゆえに $\left(\frac{3}{7}\right) = -1$。したがって $$\left(\frac{7}{13}\right) = 1 \cdot (-1) = -1$$（7 は 13 を法として非平方剰余）。検算: $13$ を法とする平方剰余は $\{1, 3, 4, 9, 10, 12\}$ で $7$ を含まない ✓</li>
+      <li>$f(x) = x^2$（$-\pi \le x \le \pi$）のフーリエ級数を使う。$f$ は偶関数なので余弦級数 $x^2 = \frac{a_0}{2} + \sum_{n \ge 1} a_n \cos nx$ で，$$\frac{a_0}{2} = \frac{1}{2\pi}\int_{-\pi}^{\pi} x^2\,dx = \frac{\pi^2}{3}, \qquad a_n = \frac{2}{\pi}\int_0^{\pi} x^2 \cos nx\,dx = \frac{4(-1)^n}{n^2}$$（部分積分を2回）。よって $x^2 = \frac{\pi^2}{3} + 4\sum_{n=1}^{\infty} \frac{(-1)^n}{n^2}\cos nx$。$f$ は連続かつ区分的に滑らかなので $x = \pi$ で級数は $f(\pi)$ に収束し，$\cos n\pi = (-1)^n$ より $$\pi^2 = \frac{\pi^2}{3} + 4\sum_{n=1}^{\infty} \frac{1}{n^2} \implies \zeta(2) = \sum_{n=1}^{\infty}\frac{1}{n^2} = \frac{1}{4}\left(\pi^2 - \frac{\pi^2}{3}\right) = \frac{\pi^2}{6}. \; \square$$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="analysis.html">解析学</a>（多変数の微分）、<a href="linear-algebra.html">線形代数</a>（双線形形式）、<a href="topology.html">位相空間論</a>。</p></div>
+
     <h2 id="manifold">1. 滑らかな多様体</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — 滑らかな多様体</div>
@@ -181,6 +183,12 @@
         <li>トーラス $T^2 = S^1 \times S^1$ の $H^k_{dR}(T^2)$ を求めよ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>北極 $N = (0,0,1)$・南極 $S = (0,0,-1)$ からの立体射影で2枚のチャートを取る: $U_N = S^2 \setminus \{N\}$，$U_S = S^2 \setminus \{S\}$，$$\varphi_N(x,y,z) = \left(\frac{x}{1-z}, \frac{y}{1-z}\right), \qquad \varphi_S(x,y,z) = \left(\frac{x}{1+z}, \frac{y}{1+z}\right).$$ $(u,v) = \varphi_N(x,y,z)$ とすると $u^2 + v^2 = \frac{x^2+y^2}{(1-z)^2} = \frac{1-z^2}{(1-z)^2} = \frac{1+z}{1-z}$ なので，遷移写像は $$\varphi_S \circ \varphi_N^{-1}(u,v) = \left(\frac{u}{u^2+v^2}, \frac{v}{u^2+v^2}\right)$$（反転写像）。定義域 $\varphi_N(U_N \cap U_S) = \mathbb{R}^2 \setminus \{0\}$ 上で分母 $u^2 + v^2 \ne 0$ だから $C^\infty$。逆向きも同じ形で $C^\infty$，よって適合条件を満たすアトラスである。$\square$</li>
+      <li>$df = \frac{\partial f}{\partial x}dx + \frac{\partial f}{\partial y}dy = 2x\,dx + 2y\,dy$。各点 $p = (x_0, y_0)$ で $(df)_p = 2x_0\,dx|_p + 2y_0\,dy|_p \in T_p^*M$ であり，接ベクトル $v = a\,\partial/\partial x + b\,\partial/\partial y$ に対して $(df)_p(v) = 2x_0 a + 2y_0 b = v(f)$ を返す余接ベクトルである。</li>
+      <li>$g_{11} = g_{22} = 1$，$g_{12} = 0$ はすべて定数なので $\frac{\partial g_{ij}}{\partial x^l} = 0$，よって Christoffel 記号は $$\Gamma^k_{ij} = \frac{1}{2}g^{kl}\left(\partial_i g_{lj} + \partial_j g_{il} - \partial_l g_{ij}\right) = 0.$$ 測地線方程式は $\frac{d^2x}{dt^2} = 0$，$\frac{d^2y}{dt^2} = 0$ となり，解は $$x(t) = x_0 + at, \quad y(t) = y_0 + bt$$ すなわち等速でパラメータ付けられた直線である。$\square$</li>
+      <li>$S^1$ の座標を $\theta_1, \theta_2$（$1$-形式 $d\theta_1, d\theta_2$ は大域的に定義され閉だが完全でない）とする。$H^\bullet_{dR}(S^1) = (\mathbb{R}, \mathbb{R})$ と Künneth の公式 $H^k(T^2) \cong \bigoplus_{i+j=k} H^i(S^1) \otimes H^j(S^1)$ より $$H^0_{dR}(T^2) \cong \mathbb{R}, \quad H^1_{dR}(T^2) \cong \mathbb{R}^2, \quad H^2_{dR}(T^2) \cong \mathbb{R}.$$ 生成元はそれぞれ定数関数 $1$，$[d\theta_1], [d\theta_2]$，$[d\theta_1 \wedge d\theta_2]$。Euler 標数の検算: $1 - 2 + 1 = 0 = \chi(T^2)$ ✓</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

@@ -55,6 +55,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="sets-logic.html">集合と論理・証明</a>（開集合の言葉は集合演算そのもの）と <a href="analysis.html">解析学</a>（ε-δ と収束）。記号に迷ったら <a href="glossary.html">記号・用語集</a> へ。</p></div>
+
     <h2 id="topology">1. 位相空間の定義</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — 位相空間</div>
@@ -190,6 +192,12 @@
         <li>$\mathbb{Q}$ の全体は $\mathbb{R}$ の第一類集合であることを示せ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>$\{(1/n,1)\}_{n \ge 2}$ は $(0,1)$ の開被覆である。実際，任意の $x \in (0,1)$ に対しアルキメデスの性質より $1/n &lt; x$ なる $n$ が存在し $x \in (1/n,1)$。もし有限部分被覆 $(1/n_1,1),\ldots,(1/n_k,1)$ が存在したとすると，$N = \max\{n_1,\ldots,n_k\}$ として和集合は $(1/N,1)$ に等しい。しかし点 $\dfrac{1}{2N} \in (0,1)$ は $\dfrac{1}{2N} \le \dfrac{1}{N}$ より $(1/N,1)$ に含まれず矛盾。よって有限部分被覆をもたない開被覆が存在するので $(0,1)$ はコンパクトでない。 $\square$</li>
+      <li>$g(x) = f(x) - x$ とおくと $g$ は $[0,1]$ 上連続。$f$ の値域が $[0,1]$ に含まれるので $g(0) = f(0) - 0 \ge 0$，$g(1) = f(1) - 1 \le 0$。$g(0)=0$ または $g(1)=0$ ならその点が不動点。そうでなければ $g(0) &gt; 0 &gt; g(1)$ なので，中間値定理よりある $c \in (0,1)$ で $g(c) = 0$，すなわち $f(c) = c$。 $\square$</li>
+      <li>まず $T$ が $[\sqrt{2},2]$ を自分自身に写すことを確認する。$T'(x) = \dfrac{1}{2} - \dfrac{1}{x^2}$ であり，$x \in [\sqrt{2},2]$ では $x^2 \ge 2$ より $0 \le T'(x) \le \dfrac{1}{2} - \dfrac{1}{4} = \dfrac{1}{4}$。よって $T$ は単調増加で，$T(\sqrt{2}) = \dfrac{\sqrt{2}}{2} + \dfrac{1}{\sqrt{2}} = \sqrt{2}$，$T(2) = 1 + \dfrac{1}{2} = \dfrac{3}{2} \le 2$ より $T([\sqrt{2},2]) \subset [\sqrt{2},2]$。さらに平均値の定理より任意の $x,y \in [\sqrt{2},2]$ に対し $$|T(x) - T(y)| = |T'(\xi)|\,|x-y| \le \frac{1}{4}|x-y|$$ となるので $T$ は縮小定数 $k = 1/4$ の縮小写像。$[\sqrt{2},2]$ は $\mathbb{R}$ の閉集合ゆえ完備なので，Banach の不動点定理より不動点が一意に存在する。不動点方程式 $x = \dfrac{x}{2} + \dfrac{1}{x}$ を解くと $\dfrac{x}{2} = \dfrac{1}{x}$，つまり $x^2 = 2$。$x &gt; 0$ より $x^* = \sqrt{2}$。</li>
+      <li>$\mathbb{Q}$ は可算なので $\mathbb{Q} = \bigcup_{n=1}^\infty \{q_n\}$ と番号付けできる。各1点集合 $\{q_n\}$ は $\mathbb{R}$ の閉集合であり，その閉包 $\overline{\{q_n\}} = \{q_n\}$ は内点をもたない（どんな開区間も1点には含まれない）ので $\mathrm{int}(\overline{\{q_n\}}) = \emptyset$，すなわち $\{q_n\}$ は疎集合。よって $\mathbb{Q}$ は可算個の疎集合の和集合，すなわち第一類集合である。（なお Baire のカテゴリー定理より完備距離空間 $\mathbb{R}$ 自身は第二類なので，$\mathbb{Q} \ne \mathbb{R}$，特に無理数が存在することも従う。） $\square$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

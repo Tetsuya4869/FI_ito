@@ -55,6 +55,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="analysis.html">解析学</a>（極限・上限下限）と <a href="sets-logic.html">集合と論理・証明</a>（可算集合・集合演算）。</p></div>
+
     <h2 id="sigma-algebra">1. σ加法族と測度空間</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — σ加法族</div>
@@ -162,6 +164,11 @@
         <li>確率密度関数 $f$ をもつ確率測度 $P$ はルベーグ測度 $\lambda$ に対して絶対連続であることを示せ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>各 $n$ に対して $$\int_0^1 f_n\,dx = n \cdot \lambda\!\left([0,1/n]\right) = n \cdot \frac{1}{n} = 1$$ なので $\lim_{n\to\infty}\int_0^1 f_n\,dx = 1$。一方，各点極限は $x \in (0,1]$ では十分大きな $n$（$1/n &lt; x$）で $f_n(x) = 0$ となるから $f_n(x) \to 0$（$x = 0$ では $f_n(0) = n \to \infty$ だが1点はルベーグ測度 $0$）。よって $f_n \to 0$ a.e. であり $$\lim_{n\to\infty}\int_0^1 f_n\,dx = 1 \ne 0 = \int_0^1 \lim_{n\to\infty} f_n\,dx$$ 優収束定理は適用できない。実際，$|f_n| \le g$ を全 $n$ で満たす $g$ は $x \in (0,1]$ に対し $1/(n+1) &lt; x \le 1/n$ なる $n$ をとれば $g(x) \ge f_n(x) = n \ge \dfrac{1}{x} - 1$ を満たす必要があり，$\int_0^1 \left(\frac{1}{x}-1\right)dx = \infty$ なので可積分な優関数は存在しない。</li>
+      <li>例として $f_n = \mathbf{1}_{[n,\,n+1]}$（$\mathbb{R}$ 上，ルベーグ測度）をとる。各 $x \in \mathbb{R}$ に対し $n &gt; x$ ならば $f_n(x) = 0$ なので $\liminf_{n\to\infty} f_n(x) = 0$。よって $$\int_\mathbb{R} \liminf_{n\to\infty} f_n\,d\lambda = 0 \;&lt;\; 1 = \liminf_{n\to\infty} \int_\mathbb{R} f_n\,d\lambda$$ となり，Fatou の補題の不等号は真に成立する（等号不成立）。問1の $f_n = n\mathbf{1}_{[0,1/n]}$ も同様の例（$0 &lt; 1$）である。</li>
+      <li>仮定より任意の $A \in \mathcal{B}(\mathbb{R})$ に対して $P(A) = \displaystyle\int_A f\,d\lambda$（$f \ge 0$）。$\lambda(A) = 0$ とすると，$f\mathbf{1}_A$ は零集合 $A$ の外で $0$，すなわち $f\mathbf{1}_A = 0$ $\lambda$-a.e. であるから，ルベーグ積分の性質（a.e. で $0$ の関数の積分は $0$）より $$P(A) = \int_A f\,d\lambda = \int f\mathbf{1}_A\,d\lambda = 0$$ よって $\lambda(A) = 0 \implies P(A) = 0$，すなわち $P \ll \lambda$。（このとき Radon-Nikodym 導関数は $\dfrac{dP}{d\lambda} = f$ である。） $\square$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

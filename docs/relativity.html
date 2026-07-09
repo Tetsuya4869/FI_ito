@@ -35,6 +35,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="newtonian-mechanics.html">ニュートン力学</a> と <a href="electromagnetism.html">電磁気学</a>（光速不変の出所）。一般相対論は <a href="differential-geometry.html">微分幾何学</a> が言語。</p></div>
+
     <h2 id="special">1. 特殊相対論</h2>
     <div class="box def">
       <div class="box-title">📖 特殊相対性原理と光速不変</div>
@@ -152,6 +154,12 @@
         <li>2 つの質量 $m$ が距離 $r$ で円軌道をとる連星系の重力波放射パワーを見積もれ。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>時間の遅れ $\Delta\tau = \Delta t/\gamma$ を使う。$\beta = 0.9$ で $\gamma = 1/\sqrt{1-0.81} = 1/\sqrt{0.19} \approx 2.29$。よって船内では $$\Delta\tau = \frac{1\,\text{年}}{2.29} \approx 0.44\,\text{年} \approx 5.2\,\text{か月}$$ 「どちらも相手が遅れて見えるのでは」というパラドックスは，宇宙船側が折り返しで加速（慣性系の乗り換え）をするため対称でないことで解消される。</li>
+      <li>入射光子 ($E_\gamma = hc/\lambda$) と静止電子の系で 4-運動量保存 $p_\gamma^\mu + p_e^\mu = p_\gamma'^\mu + p_e'^\mu$ を書き，電子の分散関係 $E_e'^2 = (p_e'c)^2 + (m_ec^2)^2$ で $p_e'$ を消去する。散乱角 $\theta$ に対して $$\Delta\lambda = \lambda' - \lambda = \frac{h}{m_ec}(1-\cos\theta)$$ Compton 波長 $h/(m_ec) = 2.43\times10^{-12}\,\text{m}$。$\theta = 90^\circ$ で $\Delta\lambda \approx 2.4\,\text{pm}$，$\theta = 180^\circ$（後方散乱）で最大の $4.9\,\text{pm}$。</li>
+      <li>Schwarzschild 計量で半径方向の光 ($ds^2 = 0$) は $\dfrac{dr}{dt} = \pm c\left(1 - \dfrac{r_s}{r}\right)$ を満たす。$r \to r_s$ で座標速度 $dr/dt \to 0$ となり，遠方の観測者の座標時間では光（や落下する物体）が地平面に到達するのに無限の時間がかかるように見える（実際 $t \sim -\dfrac{r_s}{c}\ln(r/r_s - 1) \to \infty$）。一方，落下者自身の固有時間では有限時間で $r_s$ を通過する。これは事象の地平面が座標特異点にすぎないことを示す。</li>
+      <li>四重極公式 $P = \dfrac{32G^4}{5c^5}\dfrac{m_1^2m_2^2(m_1+m_2)}{r^5}$ に $m_1 = m_2 = m$ を代入して $$P = \frac{64}{5}\frac{G^4 m^5}{c^5 r^5}$$ 例: $m = 1\,M_\odot = 2\times10^{30}\,\text{kg}$ の 2 星が $r = 7\times10^8\,\text{m}$（太陽半径程度）で回る場合 $P \approx 2\times10^{25}\,\text{W}$。$P \propto r^{-5}$ なので接近するほど急増し，合体直前のブラックホール連星では瞬間的に $\sim10^{49}\,\text{W}$（全宇宙の星の光度を超える）に達する。</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

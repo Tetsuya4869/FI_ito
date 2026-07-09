@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="calculus-basics.html">微分積分の基礎</a>（テイラー展開が誤差解析の主役）、<a href="linear-algebra.html">線形代数</a>、<a href="ordinary-differential-equations.html">常微分方程式</a>。</p></div>
+
     <h2 id="floating">1. 浮動小数点数と誤差解析</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — 浮動小数点数 (IEEE 754)</div>
@@ -157,6 +159,43 @@
         <li>$y' = -y$，$y(0)=1$ を前進 Euler 法（$h=0.1$）で $t=1$ まで解き，$e^{-1}$ との誤差を求めよ。</li>
         <li>$f(x) = x^3 - 2x - 5 = 0$ の正の解を Newton 法で 3 桁精度まで求めよ。</li>
       </ol>
+    </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>節点を $\pi/12$ 単位で $t = 0, 2, 4, 6$ とおき $t = 3$（$x = \pi/4$）で Lagrange 基底を評価すると $\ell_0 = -\frac{1}{16}$，$\ell_1 = \frac{9}{16}$，$\ell_2 = \frac{9}{16}$，$\ell_3 = -\frac{1}{16}$。よって
+      $$p(\pi/4) = 0\cdot(-\tfrac{1}{16}) + \tfrac{1}{2}\cdot\tfrac{9}{16} + \tfrac{\sqrt3}{2}\cdot\tfrac{9}{16} + 1\cdot(-\tfrac{1}{16}) \approx 0.70589$$
+      真値 $\sin(\pi/4) = \frac{\sqrt2}{2} \approx 0.70711$ との実誤差は約 $1.2 \times 10^{-3}$。誤差公式による上界は $f^{(4)} = \sin$，$|\sin\xi| \le 1$ より
+      $$|f(x)-p(x)| \le \frac{1}{4!}\left|\tfrac{\pi}{4}\cdot\tfrac{\pi}{12}\cdot\big(-\tfrac{\pi}{12}\big)\cdot\big(-\tfrac{\pi}{4}\big)\right| = \frac{\pi^4}{24 \cdot 2304} \approx 1.8 \times 10^{-3}$$
+      で，実誤差は上界内に収まっている。</li>
+      <li>$h = 0.25$，$f(x) = e^{-x^2}$ の値: $f(0)=1$，$f(0.25)=0.93941$，$f(0.5)=0.77880$，$f(0.75)=0.56978$，$f(1)=0.36788$。真値は $\int_0^1 e^{-x^2}dx = 0.746824\ldots$
+      <ul>
+        <li><strong>台形則</strong>: $0.25\left[\frac{1+0.36788}{2} + 0.93941+0.77880+0.56978\right] = 0.742984$，誤差 $\approx 3.8 \times 10^{-3}$</li>
+        <li><strong>Simpson 則</strong>: $\frac{0.25}{3}\left[1 + 4(0.93941) + 2(0.77880) + 4(0.56978) + 0.36788\right] = 0.746855$，誤差 $\approx 3.1 \times 10^{-5}$</li>
+      </ul>
+      同じ 5 点の関数値で Simpson 則は約 100 倍精度が良い（$O(h^2)$ 対 $O(h^4)$ の差）。</li>
+      <li>前進 Euler は $y_{n+1} = y_n + h(-y_n) = (1-h)y_n = 0.9\,y_n$，つまり $y_n = 0.9^n$。
+      <table>
+        <tr><th>$t_n$</th><td>0.1</td><td>0.2</td><td>0.5</td><td>1.0</td></tr>
+        <tr><th>$y_n$</th><td>0.9</td><td>0.81</td><td>0.59049</td><td>0.34868</td></tr>
+        <tr><th>$e^{-t_n}$</th><td>0.90484</td><td>0.81873</td><td>0.60653</td><td>0.36788</td></tr>
+      </table>
+      $t=1$ での誤差は $|0.34868 - 0.36788| = 0.0192$（相対誤差約 5.2%）。$h$ を半分にすると誤差もほぼ半分になる（1 次精度 $O(h)$ の確認）。</li>
+      <li>$f'(x) = 3x^2 - 2$，反復式 $x_{n+1} = x_n - \dfrac{x_n^3 - 2x_n - 5}{3x_n^2 - 2}$。$f(2) = -1 &lt; 0 &lt; f(3) = 16$ より $x_0 = 2$ から開始:
+      <table>
+        <tr><th>$n$</th><th>$x_n$</th><th>$f(x_n)$</th></tr>
+        <tr><td>0</td><td>2</td><td>$-1$</td></tr>
+        <tr><td>1</td><td>$2.1$</td><td>$0.061$</td></tr>
+        <tr><td>2</td><td>$2.094568$</td><td>$1.8 \times 10^{-4}$</td></tr>
+        <tr><td>3</td><td>$2.094551$</td><td>$\approx 10^{-9}$</td></tr>
+      </table>
+      2 回の反復で既に 3 桁精度 $x^* \approx 2.09$ に到達（真の解 $x^* = 2.0945515\ldots$）。誤差がほぼ 2 乗で縮む 2 次収束が見て取れる。</li>
+    </ol></div></details>
+    <div class="box note">
+      <div class="box-title">💻 コードで確かめる</div>
+      <p>リポジトリの Python 教材にモンテカルロ法・確率過程の数値シミュレーション例があります。Euler-Maruyama 法など SDE の数値解法の実例としても読めます。</p>
+      <ul>
+        <li><a href="https://github.com/Tetsuya4869/FI_ito/blob/main/monte_carlo.py">monte_carlo.py</a> — モンテカルロ積分と収束レートの確認</li>
+        <li><a href="https://github.com/Tetsuya4869/FI_ito/blob/main/processes.py">processes.py</a> — 確率過程の離散化シミュレーション</li>
+      </ul>
     </div>
   </div>
 </div>

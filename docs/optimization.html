@@ -37,6 +37,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="calculus-basics.html">微分積分の基礎</a>（勾配・極値）と <a href="linear-algebra.html">線形代数</a>（二次形式・正定値性）。</p></div>
+
     <h2 id="convex">1. 凸集合と凸関数</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — 凸集合・凸関数</div>
@@ -176,6 +178,24 @@
         <li>$\min \|x\|_1$ s.t. $Ax=b$ の双対問題を導け。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>$\|x\|_1 = \sum_i |x_i|$ は成分ごとに分離するので，劣微分は各成分の劣微分の直積:
+      $$\partial \|x\|_1 = \{g \in \mathbb{R}^n \mid g_i = \mathrm{sign}(x_i) \;(x_i \ne 0),\;\; g_i \in [-1,1] \;(x_i = 0)\}$$
+      すなわち $x_i \ne 0$ の成分では一点 $\pm 1$，$x_i = 0$ の成分では区間 $[-1,1]$ 全体。まとめて $\partial\|x\|_1 = \{g \mid \|g\|_\infty \le 1,\; \langle g, x\rangle = \|x\|_1\}$ とも書ける。</li>
+      <li>Lagrangian $\mathcal{L} = -\sum_i x_i \ln x_i + \lambda\left(\sum_i x_i - 1\right)$。停留条件 $\partial\mathcal{L}/\partial x_i = -\ln x_i - 1 + \lambda = 0$ より $x_i = e^{\lambda - 1}$：すべての成分が等しい。制約 $\sum x_i = 1$ から
+      $$x_i^* = \frac{1}{n} \quad (i = 1,\ldots,n)$$
+      （内点解なので $x_i \ge 0$ は非有効）。最大値は $H(x^*) = \ln n$ — エントロピーは<strong>一様分布</strong>で最大になる。目的関数は凹・制約は線形なので，この停留点が大域最大。</li>
+      <li>$F = y'^2$ は $y$ に依存しないので Euler-Lagrange 方程式は
+      $$\frac{\partial F}{\partial y} - \frac{d}{dx}\frac{\partial F}{\partial y'} = 0 - \frac{d}{dx}(2y') = -2y'' = 0$$
+      よって $y = ax + b$。境界条件 $y(0)=0$，$y(1)=1$ より $b=0$，$a=1$：
+      $$y^*(x) = x$$
+      （$J[y]=\int_0^1 y'^2 dx$ は凸汎関数なので直線が最小解，$J[y^*] = 1$。）</li>
+      <li>Lagrangian $\mathcal{L}(x, y) = \|x\|_1 + y^T(b - Ax)$。双対関数は
+      $$q(y) = \inf_x \left(\|x\|_1 - (A^Ty)^T x\right) + b^Ty = \begin{cases} b^Ty &amp; \|A^Ty\|_\infty \le 1 \\ -\infty &amp; \text{それ以外}\end{cases}$$
+      （各成分で $\inf_{x_i}(|x_i| - (A^Ty)_i x_i)$ は $|(A^Ty)_i| \le 1$ のとき $0$，それ以外 $-\infty$。前問の $\partial\|x\|_1$ と対応。）よって双対問題は
+      $$\max_y \; b^T y \quad \text{s.t.} \quad \|A^T y\|_\infty \le 1$$
+      これは基底追跡（basis pursuit）の双対で，強双対性が成り立つ（制約が線形）。</li>
+    </ol></div></details>
   </div>
 </div>
 </body>

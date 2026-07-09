@@ -236,6 +236,53 @@ details.solution .sol-body > *:last-child { margin-bottom: 0; }
 details.solution ol, details.solution ul { padding-left: 1.3rem; }
 details.solution li { margin-bottom: 6px; }
 
+/* ── Prev/Next navigation ── */
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.page-nav a {
+  display: block;
+  max-width: 46%;
+  padding: 10px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: border-color .15s, background .15s;
+}
+.page-nav a:hover { border-color: var(--blue); background: var(--bg3); }
+.page-nav .pn-next { text-align: right; margin-left: auto; }
+.page-nav .pn-dir {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text3);
+  margin-bottom: 2px;
+}
+
+/* ── Reading progress ── */
+.done-btn {
+  display: block;
+  margin: 28px 0 0;
+  padding: 8px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text2);
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.done-btn:hover { border-color: var(--green); color: var(--text); }
+.done-btn.is-done { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+.sidebar nav a.done::after { content: '✓'; color: var(--green); margin-left: 6px; font-size: 0.8em; }
+
 /* ── Diagrams ── */
 figure.diagram { margin: 20px 0; text-align: center; }
 figure.diagram svg {

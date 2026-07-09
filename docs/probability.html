@@ -56,6 +56,8 @@
       </ol>
     </nav>
 
+    <div class="box note"><div class="box-title">💡 前提知識</div><p><a href="probability-basics.html">確率・統計の基礎</a> と <a href="measure-theory.html">測度論</a>（厳密な定式化に使う）。</p></div>
+
     <h2 id="prob-space">1. 確率空間</h2>
     <div class="box def">
       <div class="box-title">📖 定義 — 確率空間 (Kolmogorov, 1933)</div>
@@ -188,6 +190,12 @@
         <li>Markov の不等式 $P(X \ge a) \le E[X]/a$（$X \ge 0$，$a > 0$）を証明し，これから Chebyshev の不等式を導け。</li>
       </ol>
     </div>
+    <details class="solution"><summary>解答例を見る</summary><div class="sol-body"><ol>
+      <li>各回の結果を $X_k \sim \mathrm{Bernoulli}(1/2)$（表なら $1$，裏なら $0$）とすると $X_1,\ldots,X_n$ は i.i.d. で，$\mu = E[X_1] = \dfrac{1}{2}$，$\sigma^2 = \mathrm{Var}(X_1) = \dfrac{1}{2}\left(1-\dfrac{1}{2}\right) = \dfrac{1}{4}$。表の回数は $S_n = \sum_{k=1}^n X_k$ なので，Lindeberg-Lévy の CLT より $$\frac{S_n - n/2}{\sqrt{n/4}} = \frac{S_n - n\mu}{\sigma\sqrt{n}} \xrightarrow{d} \mathcal{N}(0,1) \quad (n\to\infty)$$ すなわち大きな $n$ に対して $S_n$ は近似的に平均 $n/2$，分散 $n/4$ の正規分布 $\mathcal{N}(n/2,\, n/4)$ に従う。 $\square$</li>
+      <li>$X \sim \mathrm{Exp}(\lambda)$ の生存関数は $s \ge 0$ に対し $$P(X &gt; s) = \int_s^\infty \lambda e^{-\lambda x}\,dx = \left[-e^{-\lambda x}\right]_s^\infty = e^{-\lambda s} &gt; 0$$ である。$\{X &gt; s+t\} \subset \{X &gt; s\}$ に注意して条件付き確率の定義を使うと，$s,t \ge 0$ に対して $$P(X &gt; s+t \mid X &gt; s) = \frac{P(X &gt; s+t,\, X &gt; s)}{P(X &gt; s)} = \frac{P(X &gt; s+t)}{P(X &gt; s)} = \frac{e^{-\lambda(s+t)}}{e^{-\lambda s}} = e^{-\lambda t} = P(X &gt; t)$$ となり無記憶性が成り立つ。 $\square$</li>
+      <li>$S = X+Y$，$D = X-Y$ とおく。$(X,Y)$ が独立標準正規なので $(S,D)$ は結合正規で，$$\mathrm{Cov}(S,D) = E[(X+Y)(X-Y)] = E[X^2] - E[Y^2] = 1 - 1 = 0$$ 結合正規では無相関 $\iff$ 独立なので $S$ と $D$ は独立。よって $$E[X \mid S] = E\!\left[\frac{S+D}{2} \,\middle|\, S\right] = \frac{S}{2} + \frac{1}{2}E[D \mid S] = \frac{S}{2} + \frac{1}{2}E[D] = \frac{S}{2}$$ したがって $E[X \mid X+Y = c] = \dfrac{c}{2}$。（対称性による別解：$X$ と $Y$ は $S$ を与えたもとで交換可能なので $E[X\mid S] = E[Y\mid S]$，和が $E[X+Y\mid S] = S$ より各々 $S/2$。）</li>
+      <li><strong>Markov の不等式</strong>：$X \ge 0$，$a &gt; 0$ とする。指示関数について $a\,\mathbf{1}_{\{X \ge a\}} \le X$ が各点で成り立つ（$X \ge a$ の点では左辺 $= a \le X$，それ以外では左辺 $= 0 \le X$）。両辺の期待値をとると $$a\,P(X \ge a) = E\!\left[a\,\mathbf{1}_{\{X \ge a\}}\right] \le E[X]$$ よって $P(X \ge a) \le E[X]/a$。<br><strong>Chebyshev の不等式の導出</strong>：$\mu = E[X]$，$\sigma^2 = \mathrm{Var}(X)$，$\varepsilon &gt; 0$ とする。非負確率変数 $(X-\mu)^2$ に Markov の不等式を $a = \varepsilon^2$ で適用すると $$P(|X-\mu| \ge \varepsilon) = P\!\left((X-\mu)^2 \ge \varepsilon^2\right) \le \frac{E[(X-\mu)^2]}{\varepsilon^2} = \frac{\sigma^2}{\varepsilon^2}$$ $\square$</li>
+    </ol></div></details>
   </div>
 </div>
 </body>
